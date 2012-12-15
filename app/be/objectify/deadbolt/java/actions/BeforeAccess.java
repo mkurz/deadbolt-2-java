@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  */
 @With(BeforeAccessAction.class)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Inherited
 @Documented
 public @interface BeforeAccess
