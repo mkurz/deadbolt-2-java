@@ -31,6 +31,19 @@ public class RequestUtils
         // no-op
     }
 
+    /**
+     * Get the {@link Subject} from somewhere.
+     *
+     * <p>If per-request subject caching is enabled, the request is checked first.
+     * If no subject is present there, DeadboltHandler#getSubject is called.  The resulting subject, if any, is
+     * cached in the request.</p>
+     *
+     * <p>If per-request subject caching is not enabled, DeadboltHandler#getSubject is called.</p>
+     *
+     * @param deadboltHandler
+     * @param ctx
+     * @return
+     */
     public static Subject getSubject(DeadboltHandler deadboltHandler,
                                      Http.Context ctx)
     {
