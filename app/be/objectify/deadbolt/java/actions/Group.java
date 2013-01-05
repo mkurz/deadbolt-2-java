@@ -20,19 +20,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * An AND-ed group of names which form an individual part of Deadbolt {@link Restrictions}.  This exists for two reasons
- * - it allows a 2-dimensional array as an annotation parameter
- * - re-using the {@link Restrict} annotation to parameterize isn't possible, because Play will apply
- * {@link RestrictAction}s to the individual parameters
+ * An AND-ed group of names which form an individual part of Deadbolt {@link Restrict}.
  * <p/>
- * The semantics are the same as {@link Restrict}, e.g. @And({"foo", "bar"}) , for example, requires the
+ * The names with the group are AND-ed together, e.g. @Group({"foo", "bar"}) requires the
  * {@link be.objectify.deadbolt.core.models.Subject} to have both the foo and bar roles.
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface And
+public @interface Group
 {
     /**
      * The role names of roles with access to the target.

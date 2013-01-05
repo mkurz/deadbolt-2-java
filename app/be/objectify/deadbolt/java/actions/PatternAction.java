@@ -90,9 +90,9 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
             else
             {
                 markActionAsUnauthorised(ctx);
-                result = onAccessFailure(deadboltHandler,
-                                         configuration.content(),
-                                         ctx);
+                result = onAuthFailure(deadboltHandler,
+                                       configuration.content(),
+                                       ctx);
             }
         }
         return result;
@@ -120,9 +120,9 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         else
         {
             markActionAsUnauthorised(ctx);
-            result = onAccessFailure(deadboltHandler,
-                                     configuration.content(),
-                                     ctx);
+            result = onAuthFailure(deadboltHandler,
+                                   configuration.content(),
+                                   ctx);
         }
 
         return result;
@@ -154,9 +154,9 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         else
         {
             markActionAsUnauthorised(ctx);
-            result = onAccessFailure(deadboltHandler,
-                                     configuration.content(),
-                                     ctx);
+            result = onAuthFailure(deadboltHandler,
+                                   configuration.content(),
+                                   ctx);
         }
 
         return result;

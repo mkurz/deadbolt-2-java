@@ -135,28 +135,28 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     }
 
     /**
-     * Wrapper for {@link DeadboltHandler#onAccessFailure} to ensure the access failure is logged.
+     * Wrapper for {@link DeadboltHandler#onAuthFailure} to ensure the access failure is logged.
      *
      * @param deadboltHandler the Deadbolt handler
      * @param content         the content type hint
      * @param ctx             th request context
-     * @return the result of {@link DeadboltHandler#onAccessFailure}
+     * @return the result of {@link DeadboltHandler#onAuthFailure}
      */
-    protected Result onAccessFailure(DeadboltHandler deadboltHandler,
-                                     String content,
-                                     Http.Context ctx)
+    protected Result onAuthFailure(DeadboltHandler deadboltHandler,
+                                   String content,
+                                   Http.Context ctx)
     {
         Logger.warn(String.format("Deadbolt: Access failure on [%s]",
                                   ctx.request().uri()));
 
         try
         {
-            return deadboltHandler.onAccessFailure(ctx,
-                                                   content);
+            return deadboltHandler.onAuthFailure(ctx,
+                                                 content);
         }
         catch (Exception e)
         {
-            Logger.warn("Deadbolt: Exception when invoking onAccessFailure",
+            Logger.warn("Deadbolt: Exception when invoking onAuthFailure",
                         e);
             return Results.internalServerError();
         }

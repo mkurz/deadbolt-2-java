@@ -55,8 +55,8 @@ public interface DeadboltHandler
      *                type, e.g. JSON
      * @return the action result
      */
-    Result onAccessFailure(Http.Context context,
-                           String content);
+    Result onAuthFailure(Http.Context context,
+                         String content);
 
     /**
      * Gets the handler used for dealing with resources restricted to specific users/groups.

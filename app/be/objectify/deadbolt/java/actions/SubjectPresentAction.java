@@ -37,9 +37,9 @@ public class SubjectPresentAction extends AbstractDeadboltAction<SubjectPresent>
         Result result;
         if (isActionUnauthorised(ctx))
         {
-            result = onAccessFailure(getDeadboltHandler(configuration.handler()),
-                                     configuration.content(),
-                                     ctx);
+            result = onAuthFailure(getDeadboltHandler(configuration.handler()),
+                                   configuration.content(),
+                                   ctx);
         }
         else
         {
@@ -55,9 +55,9 @@ public class SubjectPresentAction extends AbstractDeadboltAction<SubjectPresent>
             else
             {
                 markActionAsUnauthorised(ctx);
-                result = onAccessFailure(deadboltHandler,
-                                         configuration.content(),
-                                         ctx);
+                result = onAuthFailure(deadboltHandler,
+                                       configuration.content(),
+                                       ctx);
             }
         }
 

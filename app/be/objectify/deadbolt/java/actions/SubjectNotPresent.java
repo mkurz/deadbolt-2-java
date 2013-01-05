@@ -40,7 +40,7 @@ public @interface SubjectNotPresent
 {
     /**
      * Indicates the expected response type.  Useful when working with non-HTML responses.  This is free text, which you
-     * can use in {@link be.objectify.deadbolt.java.DeadboltHandler#onAccessFailure} to decide on how to handle the response.
+     * can use in {@link be.objectify.deadbolt.java.DeadboltHandler#onAuthFailure} to decide on how to handle the response.
      *
      * @return a content indicator
      */

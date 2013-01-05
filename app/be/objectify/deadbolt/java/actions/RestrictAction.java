@@ -21,9 +21,12 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Implements the {@link Restrict} functionality, i.e. a single set of ANDed roles.
- * ,
+ * Implements the {@link Restrict} functionality, i.e. within an {@link Group} roles are ANDed, and between
+ * {@link Group}s the role groups are ORed.
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
@@ -46,6 +49,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                                    DeadboltHandler deadboltHandler) throws Throwable
     {
         Result result;
+
         if (isAllowed(ctx,
                       deadboltHandler))
         {
@@ -55,9 +59,9 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
         else
         {
             markActionAsUnauthorised(ctx);
-            result = onAccessFailure(deadboltHandler,
-                                     configuration.content(),
-                                     ctx);
+            result = onAuthFailure(deadboltHandler,
+                                   configuration.content(),
+                                   ctx);
         }
 
         return result;
@@ -73,21 +77,31 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
         boolean roleOk = false;
         if (subject != null)
         {
-            roleOk = checkRole(subject,
-                               getRoleNames());
+            List<String[]> roleGroups = getRoleGroups();
+
+            for (int i = 0; !roleOk && i < roleGroups.size(); i++)
+            {
+                roleOk = checkRole(subject,
+                                   roleGroups.get(i));
+            }
         }
 
         return roleOk;
+    }
+
+    public List<String[]> getRoleGroups()
+    {
+        List<String[]> roleGroups = new ArrayList<String[]>();
+        for (Group group : configuration.value())
+        {
+            roleGroups.add(group.value());
+        }
+        return roleGroups;
     }
 
     @Override
     public Class<? extends DeadboltHandler> getDeadboltHandlerClass()
     {
         return configuration.handler();
-    }
-
-    public String[] getRoleNames()
-    {
-        return configuration.value();
     }
 }

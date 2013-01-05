@@ -26,12 +26,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An ANDed set of restrictions.  @Restrict({"foo", "bar"}) , for example, requires the {@link be.objectify.deadbolt.core.models.Subject}
- * to have both the foo and bar roles.
+ * Within an {@link Group} roles are ANDed, and between {@link Group} the role groups are ORed.  For example,
+ * @Restrict({@Group("foo"), @Group("hurdy", "gurdy)}) means the {@link be.objectify.deadbolt.core.models.Subject} must have either the
+ * foo role OR both the hurdy AND gurdy roles.
  * <p/>
- * Role names that start with ! are negated, so @Restrict({"foo", "!bar"}) requires the {@link be.objectify.deadbolt.core.models.Subject}
- * to have the foo role AND NOT the bar role.
- *
+ * Role names that start with ! are negated, so @Restric({@Group("foo", "bar"), @Group("hurdy", "!gurdy")}) requires
+ * the {@link be.objectify.deadbolt.core.models.Subject} to have either the foo role AND the bar roles, or the hurdy AND NOT the gurdy
+ * roles.
+
  * @author Steve Chaloner (steve@objectify.be)
  */
 @With(RestrictAction.class)
@@ -42,15 +44,15 @@ import java.lang.annotation.Target;
 public @interface Restrict
 {
     /**
-     * The role names of roles with access to the target.
+     * Within an {@link Group}, the relation is AND.  Between {@link Group}s, the relationship is OR.
      *
-     * @return the role names
+     * @return
      */
-    String[] value();
+    Group[] value();
 
     /**
      * Indicates the expected response type.  Useful when working with non-HTML responses.  This is free text, which you
-     * can use in {@link be.objectify.deadbolt.java.DeadboltHandler#onAccessFailure} to decide on how to handle the response.
+     * can use in {@link be.objectify.deadbolt.java.DeadboltHandler#onAuthFailure} to decide on how to handle the response.
      *
      * @return a content indicator
      */

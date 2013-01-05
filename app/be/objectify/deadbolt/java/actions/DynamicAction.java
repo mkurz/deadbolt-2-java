@@ -65,9 +65,9 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
             else
             {
                 markActionAsUnauthorised(ctx);
-                result = onAccessFailure(deadboltHandler,
-                                         configuration.content(),
-                                         ctx);
+                result = onAuthFailure(deadboltHandler,
+                                       configuration.content(),
+                                       ctx);
             }
         }
         return result;

@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
-@With(RestrictAction.class)
+@With(DeferredDeadboltAction.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
