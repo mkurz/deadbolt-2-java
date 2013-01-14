@@ -67,8 +67,7 @@ public class SubjectNotPresentAction extends AbstractDeadboltAction<SubjectNotPr
     }
 
     /**
-     * Gets the {@link be.objectify.deadbolt.core.models.Subject} from the {@link DeadboltHandler}, and logs an error if it's not present. Note that
-     * at least one actions ({@link Unrestricted} does not not require a Subject to be present.
+     * Gets the {@link be.objectify.deadbolt.core.models.Subject} from the {@link DeadboltHandler}.
      *
      * @param ctx             the request context
      * @param deadboltHandler the Deadbolt handler
