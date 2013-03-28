@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.models.Subject;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 
@@ -29,7 +30,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public Subject getSubject()
+    public Subject getSubject(Http.Context context)
     {
         return null;
     }
@@ -37,7 +38,8 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public Result onAccessFailure(String content)
+    public Result onAuthFailure(Http.Context context,
+                                String content)
     {
         return unauthorized(views.html.defaultpages.unauthorized.render());
     }
@@ -45,7 +47,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public DynamicResourceHandler getDynamicResourceHandler()
+    public DynamicResourceHandler getDynamicResourceHandler(Http.Context context)
     {
         return null;
     }
