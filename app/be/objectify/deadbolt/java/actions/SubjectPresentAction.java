@@ -17,8 +17,10 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 /**
  * Implements the {@link SubjectPresent} functionality, i.e. a {@link be.objectify.deadbolt.core.models.Subject} must be provided by the
@@ -32,9 +34,9 @@ public class SubjectPresentAction extends AbstractDeadboltAction<SubjectPresent>
      * {@inheritDoc}
      */
     @Override
-    public Result execute(Http.Context ctx) throws Throwable
+    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
     {
-        Result result;
+        F.Promise<SimpleResult> result;
         if (isActionUnauthorised(ctx))
         {
             result = onAuthFailure(getDeadboltHandler(configuration.handler()),

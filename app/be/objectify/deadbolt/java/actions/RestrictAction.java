@@ -17,9 +17,11 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +47,10 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     }
 
     @Override
-    public Result applyRestriction(Http.Context ctx,
+    public F.Promise<SimpleResult> applyRestriction(Http.Context ctx,
                                    DeadboltHandler deadboltHandler) throws Throwable
     {
-        Result result;
+        F.Promise<SimpleResult> result;
 
         if (isAllowed(ctx,
                       deadboltHandler))

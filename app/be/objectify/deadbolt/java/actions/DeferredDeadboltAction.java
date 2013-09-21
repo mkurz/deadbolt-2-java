@@ -16,8 +16,10 @@
 package be.objectify.deadbolt.java.actions;
 
 import play.Logger;
+import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 /**
  * Executes a deferred method-level annotation.  Ideally, the associated annotation would be placed
@@ -28,10 +30,10 @@ import play.mvc.Result;
 public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadbolt>
 {
     @Override
-    public Result execute(Http.Context ctx) throws Throwable
+    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
     {
         AbstractDeadboltAction deferredAction = getDeferredAction(ctx);
-        Result result;
+        F.Promise<SimpleResult> result;
         if (deferredAction == null)
         {
             result = delegate.call(ctx);

@@ -18,8 +18,10 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.utils.RequestUtils;
+import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 /**
  * Implements the {@link SubjectNotPresent} functionality, i.e. the
@@ -34,9 +36,9 @@ public class SubjectNotPresentAction extends AbstractDeadboltAction<SubjectNotPr
      * {@inheritDoc}
      */
     @Override
-    public Result execute(Http.Context ctx) throws Throwable
+    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
     {
-        Result result;
+        F.Promise<SimpleResult> result;
         if (isActionUnauthorised(ctx))
         {
             result = onAuthFailure(getDeadboltHandler(configuration.handler()),

@@ -5,11 +5,12 @@ import play.Project._
 object ApplicationBuild extends Build {
 
   val appName         = "deadbolt-java"
-  val appVersion      = "2.1-RC2"
+  val appVersion      = "2.2-RC1"
 
   val appDependencies = Seq(
     javaCore,
-    "be.objectify" %% "deadbolt-core" % "2.1-RC2"
+      cache,
+    "be.objectify" %% "deadbolt-core" % "2.2-RC1"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

@@ -16,8 +16,10 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 /**
  * Invokes beforeAuthCheck on the global or a specific {@link be.objectify.deadbolt.java.DeadboltHandler}.
@@ -30,9 +32,9 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
      * {@inheritDoc}
      */
     @Override
-    public Result execute(Http.Context ctx) throws Throwable
+    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
     {
-        Result result;
+        F.Promise<SimpleResult> result;
         if (isActionAuthorised(ctx) && !configuration.alwaysExecute())
         {
             result = delegate.call(ctx);
