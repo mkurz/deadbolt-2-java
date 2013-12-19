@@ -34,7 +34,7 @@ public class SubjectPresentAction extends AbstractDeadboltAction<SubjectPresent>
     @Override
     public Result execute(Http.Context ctx) throws Throwable
     {
-        Result result;
+        Result result = null;
         if (isActionUnauthorised(ctx))
         {
             result = onAuthFailure(getDeadboltHandler(configuration.handler()),
@@ -44,20 +44,28 @@ public class SubjectPresentAction extends AbstractDeadboltAction<SubjectPresent>
         else
         {
             DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handler());
-            Subject subject = getSubject(ctx,
-                                         deadboltHandler);
-
-            if (subject != null)
+            if (configuration.forceBeforeAuthCheck())
             {
-                markActionAsAuthorised(ctx);
-                result = delegate.call(ctx);
+                result = deadboltHandler.beforeAuthCheck(ctx);
             }
-            else
+
+            if (result == null)
             {
-                markActionAsUnauthorised(ctx);
-                result = onAuthFailure(deadboltHandler,
-                                       configuration.content(),
-                                       ctx);
+                Subject subject = getSubject(ctx,
+                        deadboltHandler);
+
+                if (subject != null)
+                {
+                    markActionAsAuthorised(ctx);
+                    result = delegate.call(ctx);
+                }
+                else
+                {
+                    markActionAsUnauthorised(ctx);
+                    result = onAuthFailure(deadboltHandler,
+                            configuration.content(),
+                            ctx);
+                }
             }
         }
 
