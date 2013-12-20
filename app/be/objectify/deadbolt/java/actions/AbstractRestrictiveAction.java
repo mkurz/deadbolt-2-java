@@ -16,10 +16,13 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.utils.PluginUtils;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.SimpleResult;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Convenience class for checking if an qction has already been authorised before applying the restrictions.
@@ -41,7 +44,9 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
             DeadboltHandler deadboltHandler = getDeadboltHandler(getDeadboltHandlerClass());
             result = deadboltHandler.beforeAuthCheck(ctx);
 
-            if (result == null)
+            SimpleResult futureResult = result.get(PluginUtils.getBeforeAuthCheckTimeout(),
+                                                   TimeUnit.MILLISECONDS);
+            if (futureResult == null)
             {
                 result = applyRestriction(ctx,
                                           deadboltHandler);

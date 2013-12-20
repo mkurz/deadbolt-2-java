@@ -59,4 +59,12 @@ public @interface SubjectNotPresent
      * @return true iff the associated action should be deferred until class-level annotations are applied.
      */
     boolean deferred() default false;
+
+    /**
+     * Indicates if {@link DeadboltHandler#beforeAuthCheck} should be invoked before this constraint is applied.  Defaults to
+     * false for historic and generally good reasons, namely that a handler that complains based on user presence can shortcut this constraint.
+     *
+     * @return true iff {@link DeadboltHandler#beforeAuthCheck} should be invoked prior to applying this constraint.
+     */
+    boolean forceBeforeAuthCheck() default false;
 }
