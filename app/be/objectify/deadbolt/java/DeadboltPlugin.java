@@ -29,9 +29,6 @@ import java.util.Set;
  */
 public class DeadboltPlugin extends Plugin
 {
-    private static final String BEFORE_AUTH_CHECK_TIMEOUT = "deadbolt.before-auth-check-timeout";
-
-
     private boolean cacheUserPerRequestEnabled = false;
     private int beforeAuthCheckTimeout = 2000;
     private DeadboltHandler deadboltHandler;
@@ -74,9 +71,9 @@ public class DeadboltPlugin extends Plugin
             Logger.warn("No Java handler declared for Deadbolt");
         }
 
-        if (configurationKeys.contains(BEFORE_AUTH_CHECK_TIMEOUT))
+        if (configurationKeys.contains(PluginConfigKeys.BEFORE_AUTH_CHECK_TIMEOUT))
         {
-            beforeAuthCheckTimeout = configuration.getInt(BEFORE_AUTH_CHECK_TIMEOUT);
+            beforeAuthCheckTimeout = configuration.getInt(PluginConfigKeys.BEFORE_AUTH_CHECK_TIMEOUT);
         }
 
         cacheUserPerRequestEnabled = configuration.getBoolean(PluginConfigKeys.CACHE_DEADBOLT_USER, false);
