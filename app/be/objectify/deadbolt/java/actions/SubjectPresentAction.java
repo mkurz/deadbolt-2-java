@@ -38,7 +38,7 @@ public class SubjectPresentAction extends AbstractDeadboltAction<SubjectPresent>
     @Override
     public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
     {
-        F.Promise<SimpleResult> result = null;
+        F.Promise<SimpleResult> result = F.Promise.pure(null);
         if (isActionUnauthorised(ctx))
         {
             result = onAuthFailure(getDeadboltHandler(configuration.handler()),
