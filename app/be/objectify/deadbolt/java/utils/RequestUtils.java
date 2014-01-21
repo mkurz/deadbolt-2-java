@@ -18,7 +18,8 @@ package be.objectify.deadbolt.java.utils;
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.core.PluginConfigKeys;
-import play.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 
 /**
@@ -26,6 +27,8 @@ import play.mvc.Http;
  */
 public class RequestUtils
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
+
     private RequestUtils()
     {
         // no-op
@@ -71,7 +74,7 @@ public class RequestUtils
         }
         catch (Exception e)
         {
-            Logger.error("Error getting subject: " + e.getMessage(),
+            LOGGER.error("Error getting subject: " + e.getMessage(),
                          e);
         }
         return subject;

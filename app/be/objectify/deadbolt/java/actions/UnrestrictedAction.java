@@ -34,7 +34,8 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
         Result result;
         if (isActionUnauthorised(ctx))
         {
-            result = onAuthFailure(getDeadboltHandler(configuration.handler()),
+            result = onAuthFailure(getDeadboltHandler(configuration.handlerKey(),
+                                                      configuration.handler()),
                                    configuration.content(),
                                    ctx);
         }

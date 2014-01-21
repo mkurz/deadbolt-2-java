@@ -44,4 +44,10 @@ public class PluginUtils
         DeadboltPlugin p = getDeadboltPlugin();
         return p != null ? p.getDeadboltHandler() : null;
     }
+
+    public static DeadboltHandler getDeadboltHandler(String handlerKey) throws Exception
+    {
+        DeadboltPlugin p = getDeadboltPlugin();
+        return p != null ? p.getDeadboltHandler(handlerKey) : null;
+    }
 }

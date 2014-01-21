@@ -39,7 +39,8 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
         }
         else
         {
-            DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.value());
+            DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey(),
+                                                                 configuration.value());
             result = deadboltHandler.beforeAuthCheck(ctx);
 
             if (result == null)

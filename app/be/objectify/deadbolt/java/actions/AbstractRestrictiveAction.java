@@ -36,7 +36,8 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
         }
         else
         {
-            DeadboltHandler deadboltHandler = getDeadboltHandler(getDeadboltHandlerClass());
+            DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey(),
+                                                                 getDeadboltHandlerClass());
             result = deadboltHandler.beforeAuthCheck(ctx);
 
             if (result == null)
@@ -48,6 +49,19 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
         return result;
     }
 
+    /**
+     * Get the key of a specific DeadboltHandler instance.
+     *
+     * @return a key.  May be null.
+     */
+    public abstract String getHandlerKey();
+
+    /**
+     * Get the class of a specific Deadbolt handler.
+     *
+     * @return the class of a DeadboltHandler implementation.  May be null.
+     * @deprecated Prefer {@link be.objectify.deadbolt.java.actions.AbstractRestrictiveAction#getHandlerKey()} instead
+     */
     public abstract Class<? extends DeadboltHandler> getDeadboltHandlerClass();
 
     public abstract Result applyRestriction(Http.Context ctx,

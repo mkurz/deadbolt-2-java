@@ -21,7 +21,9 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.utils.PluginUtils;
 import be.objectify.deadbolt.java.utils.ReflectionUtils;
 import be.objectify.deadbolt.java.utils.RequestUtils;
-import play.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -35,6 +37,8 @@ import play.mvc.Results;
  */
 public abstract class AbstractDeadboltAction<T> extends Action<T>
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDeadboltAction.class);
+
     private static final String ACTION_AUTHORISED = "deadbolt.action-authorised";
 
     private static final String ACTION_UNAUTHORISED = "deadbolt.action-unauthorised";
@@ -43,20 +47,38 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
 
     /**
-     * Gets the current {@link DeadboltHandler}.  This can come from one of two places:
-     * - a class name is provided in the annotation.  A new instance of that class will be created. This has the highest priority.
-     * - the global handler defined in the application.conf by deadbolt.handler
+     * Gets the current {@link DeadboltHandler}.  This can come from one of three places:
+     * - a handler key is provided in the annotation.  A cached instance of that class will be used. This has the highest priority.
+     * - a class name is provided in the annotation.  A new instance of that class will be created.
+     * - the global handler defined in the application.conf by deadbolt.handler.  This has the lowest priority.
      *
+     * @param handlerKey the DeadboltHandler key, if any, coming from the annotation. May be null.
      * @param deadboltHandlerClass the DeadboltHandler class, if any, coming from the annotation. May be null.
      * @param <C>                  the actual class of the DeadboltHandler
      * @return an instance of DeadboltHandler.
      */
-    protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(Class<C> deadboltHandlerClass) throws
-                                                                                                            Throwable
+    protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(String handlerKey,
+                                                                             Class<C> deadboltHandlerClass) throws Throwable
     {
         DeadboltHandler deadboltHandler;
-        if (deadboltHandlerClass != null
-            && !deadboltHandlerClass.isInterface())
+        if (StringUtils.isNotEmpty(handlerKey))
+        {
+            LOGGER.info("Getting Deadbolt handler with key [{}]",
+                    handlerKey);
+            deadboltHandler = PluginUtils.getDeadboltHandler(handlerKey);
+            LOGGER.info("Deadbolt handler with key [{}] - found [{}]",
+                    handlerKey,
+                    deadboltHandler);
+
+            if (deadboltHandler == null)
+            {
+                LOGGER.error("Falling back to global handler because requested handler [{}] is null",
+                             handlerKey);
+                deadboltHandler = PluginUtils.getDeadboltHandler();
+            }
+        }
+        else if (deadboltHandlerClass != null
+                && !deadboltHandlerClass.isInterface())
         {
             try
             {
@@ -146,7 +168,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                    String content,
                                    Http.Context ctx)
     {
-        Logger.warn(String.format("Deadbolt: Access failure on [%s]",
+        LOGGER.warn(String.format("Deadbolt: Access failure on [%s]",
                                   ctx.request().uri()));
 
         try
@@ -156,7 +178,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         }
         catch (Exception e)
         {
-            Logger.warn("Deadbolt: Exception when invoking onAuthFailure",
+            LOGGER.warn("Deadbolt: Exception when invoking onAuthFailure",
                         e);
             return Results.internalServerError();
         }
@@ -177,8 +199,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                                   ctx);
         if (subject == null)
         {
-            Logger.error(String.format("Access to [%s] requires a subject, but no subject is present.",
-                                       ctx.request().uri()));
+            LOGGER.error(String.format("Access to [%s] requires a subject, but no subject is present.",
+                    ctx.request().uri()));
         }
 
         return subject;
@@ -241,7 +263,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         if (action != null)
         {
-            Logger.info(String.format("Deferring action [%s]",
+            LOGGER.info(String.format("Deferring action [%s]",
                                       this.getClass().getName()));
             ctx.args.put(ACTION_DEFERRED,
                          action);

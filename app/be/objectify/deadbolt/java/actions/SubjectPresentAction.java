@@ -37,13 +37,15 @@ public class SubjectPresentAction extends AbstractDeadboltAction<SubjectPresent>
         Result result = null;
         if (isActionUnauthorised(ctx))
         {
-            result = onAuthFailure(getDeadboltHandler(configuration.handler()),
+            result = onAuthFailure(getDeadboltHandler(configuration.handlerKey(),
+                                                      configuration.handler()),
                                    configuration.content(),
                                    ctx);
         }
         else
         {
-            DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handler());
+            DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey(),
+                                                                 configuration.handler());
             if (configuration.forceBeforeAuthCheck())
             {
                 result = deadboltHandler.beforeAuthCheck(ctx);

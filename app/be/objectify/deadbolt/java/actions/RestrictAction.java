@@ -100,6 +100,12 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     }
 
     @Override
+    public String getHandlerKey()
+    {
+        return configuration.handlerKey();
+    }
+
+    @Override
     public Class<? extends DeadboltHandler> getDeadboltHandlerClass()
     {
         return configuration.handler();

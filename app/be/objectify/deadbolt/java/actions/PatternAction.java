@@ -163,6 +163,12 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     }
 
     @Override
+    public String getHandlerKey()
+    {
+        return configuration.handlerKey();
+    }
+
+    @Override
     public Class<? extends DeadboltHandler> getDeadboltHandlerClass()
     {
         return configuration.handler();

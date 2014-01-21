@@ -19,7 +19,8 @@ import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.utils.PluginUtils;
 import be.objectify.deadbolt.java.utils.RequestUtils;
-import play.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.cache.Cache;
 import play.mvc.Http;
 
@@ -34,6 +35,8 @@ import java.util.regex.Pattern;
  */
 public class DeadboltViewSupport
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeadboltViewSupport.class);
+
     /**
      * Used for restrict tags in the template.
      *
@@ -142,7 +145,8 @@ public class DeadboltViewSupport
                                                                   value);
                 break;
             default:
-                Logger.error("Unknown pattern type: " + patternType);
+                LOGGER.error("Unknown pattern type [{}]",
+                             patternType);
         }
 
         return allowed;
