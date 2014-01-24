@@ -16,11 +16,14 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.PluginConfigKeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.Application;
 import play.Configuration;
-import play.Logger;
 import play.Plugin;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,9 +32,14 @@ import java.util.Set;
  */
 public class DeadboltPlugin extends Plugin
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeadboltPlugin.class);
+
+    private static final String DEFAULT_HANDLER_KEY = "defaultHandler";
+    private static final String NAMED_HANDLERS = "deadbolt.java.handlers";
+
     private boolean cacheUserPerRequestEnabled = false;
     private int beforeAuthCheckTimeout = 2000;
-    private DeadboltHandler deadboltHandler;
+    private Map<String, DeadboltHandler> handlers;
 
     private final Application application;
 
@@ -46,8 +54,33 @@ public class DeadboltPlugin extends Plugin
     @Override
     public void onStart()
     {
+        handlers = new HashMap<String, DeadboltHandler>();
         Configuration configuration = application.configuration();
         Set<String> configurationKeys = configuration.keys();
+        ClassLoader classloader = application.classloader();
+
+        // Get the named handlers first to allow the global handler to override if necessary
+        Object object = configuration.getObject(NAMED_HANDLERS);
+        if (object != null) {
+            Map<String, String> namedHandlers = (Map<String, String>)object;
+            for (Map.Entry<String, String> entry : namedHandlers.entrySet())
+            {
+                String key = entry.getKey();
+                try
+                {
+                    handlers.put(key,
+                                 (DeadboltHandler) Class.forName(entry.getValue(),
+                                                                 true,
+                                                                 classloader).newInstance());
+                }
+                catch (Exception e)
+                {
+                    throw configuration.reportError(NAMED_HANDLERS,
+                                                    "Error creating Deadbolt handler: " + key,
+                                                    e);
+                }
+            }
+        }
 
         if (configurationKeys.contains(PluginConfigKeys.DEADBOLT_JAVA_HANDLER_KEY))
         {
@@ -55,9 +88,10 @@ public class DeadboltPlugin extends Plugin
             try
             {
                 deadboltHandlerName = configuration.getString(PluginConfigKeys.DEADBOLT_JAVA_HANDLER_KEY);
-                deadboltHandler = (DeadboltHandler) Class.forName(deadboltHandlerName,
-                        true,
-                        application.classloader()).newInstance();
+                handlers.put(DEFAULT_HANDLER_KEY,
+                             (DeadboltHandler) Class.forName(deadboltHandlerName,
+                                                             true,
+                                     classloader).newInstance());
             }
             catch (Exception e)
             {
@@ -68,7 +102,7 @@ public class DeadboltPlugin extends Plugin
         }
         else
         {
-            Logger.warn("No Java handler declared for Deadbolt");
+            LOGGER.warn("No Java handler declared for Deadbolt");
         }
 
         if (configurationKeys.contains(PluginConfigKeys.BEFORE_AUTH_CHECK_TIMEOUT))
@@ -95,12 +129,23 @@ public class DeadboltPlugin extends Plugin
     }
 
     /**
-     * Getter for the registered Deadbolt Handler
+     * Getter for the default Deadbolt Handler
      *
      * @return the registered Deadbolt handler, or null if it's not defined
      */
     public DeadboltHandler getDeadboltHandler()
     {
-        return deadboltHandler;
+        return handlers.get(DEFAULT_HANDLER_KEY);
+    }
+
+    /**
+     * Getter for a named Deadbolt Handler
+     *
+     * @param handlerKey the key of the handler, as defined in the configuration
+     * @return the named Deadbolt handler, or null if it's not defined
+     */
+    public DeadboltHandler getDeadboltHandler(String handlerKey)
+    {
+        return handlers.get(handlerKey);
     }
 }

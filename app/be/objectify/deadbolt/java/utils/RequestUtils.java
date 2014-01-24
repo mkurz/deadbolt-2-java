@@ -18,7 +18,8 @@ package be.objectify.deadbolt.java.utils;
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.core.PluginConfigKeys;
-import play.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 
 /**
@@ -26,6 +27,8 @@ import play.mvc.Http;
  */
 public class RequestUtils
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
+
     private RequestUtils()
     {
         // no-op
@@ -40,9 +43,9 @@ public class RequestUtils
      *
      * <p>If per-request subject caching is not enabled, DeadboltHandler#getSubject is called.</p>
      *
-     * @param deadboltHandler
-     * @param ctx
-     * @return
+     * @param deadboltHandler the current Deadbolt handler
+     * @param ctx the context
+     * @return the current subject or null if one isn't present
      */
     public static Subject getSubject(DeadboltHandler deadboltHandler,
                                      Http.Context ctx)
@@ -71,7 +74,7 @@ public class RequestUtils
         }
         catch (Exception e)
         {
-            Logger.error("Error getting subject: " + e.getMessage(),
+            LOGGER.error("Error getting subject: " + e.getMessage(),
                          e);
         }
         return subject;

@@ -50,8 +50,18 @@ public @interface SubjectNotPresent
      * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global one.
      *
      * @return the class of the DeadboltHandler you want to use
+     * @deprecated Use {@link SubjectNotPresent#handlerKey()} instead
      */
+    @Deprecated
     Class<? extends DeadboltHandler> handler() default DeadboltHandler.class;
+
+    /**
+     * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global
+     * one, identified by a key.
+     *
+     * @return the key of the handler
+     */
+    String handlerKey() default "";
 
     /**
      * If true, the annotation will only be run if there is a {@link DeferredDeadbolt} annotation at the class level.

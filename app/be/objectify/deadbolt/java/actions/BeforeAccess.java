@@ -42,8 +42,17 @@ public @interface BeforeAccess
      * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global one.
      *
      * @return the class of the DeadboltHandler you want to use
+     * @deprecated Prefer {@link BeforeAccess#handlerKey()} instead.
      */
     Class<? extends DeadboltHandler> value() default DeadboltHandler.class;
+
+    /**
+     * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global
+     * one, identified by a key.
+     *
+     * @return the key of the handler
+     */
+    String handlerKey() default "";
 
     /**
      * By default, if another Deadbolt action has already been executed in the same request and has allowed access,

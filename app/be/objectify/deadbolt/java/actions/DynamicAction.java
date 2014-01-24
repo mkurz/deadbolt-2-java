@@ -86,6 +86,12 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     }
 
     @Override
+    public String getHandlerKey()
+    {
+        return configuration.handlerKey();
+    }
+
+    @Override
     public Class<? extends DeadboltHandler> getDeadboltHandlerClass()
     {
         return configuration.handler();

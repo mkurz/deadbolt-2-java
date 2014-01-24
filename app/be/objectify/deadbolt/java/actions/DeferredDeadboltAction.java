@@ -15,7 +15,8 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import play.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -29,6 +30,8 @@ import play.mvc.SimpleResult;
  */
 public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadbolt>
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeferredDeadboltAction.class);
+
     @Override
     public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
     {
@@ -40,7 +43,7 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
         }
         else
         {
-            Logger.info(String.format("Executing deferred action [%s]",
+            LOGGER.info(String.format("Executing deferred action [%s]",
                                       deferredAction.getClass().getName()));
             result = deferredAction.call(ctx);
         }
