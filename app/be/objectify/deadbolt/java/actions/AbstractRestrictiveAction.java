@@ -44,8 +44,9 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
                                                                  getDeadboltHandlerClass());
             result = deadboltHandler.beforeAuthCheck(ctx);
 
-            SimpleResult futureResult = result.get(PluginUtils.getBeforeAuthCheckTimeout(),
-                                                   TimeUnit.MILLISECONDS);
+            SimpleResult futureResult = result == null ? null
+                                                       : result.get(PluginUtils.getBeforeAuthCheckTimeout(),
+                                                                    TimeUnit.MILLISECONDS);
             if (futureResult == null)
             {
                 result = applyRestriction(ctx,
