@@ -10,7 +10,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     javaCore,
     cache,
-    "be.objectify" %% "deadbolt-core" % "2.2-RC4"
+    "be.objectify" %% "deadbolt-core" % "2.2-RC5"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
