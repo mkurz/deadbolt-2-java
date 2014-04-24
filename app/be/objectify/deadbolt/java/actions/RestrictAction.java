@@ -21,7 +21,6 @@ import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.SimpleResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +46,10 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     }
 
     @Override
-    public F.Promise<SimpleResult> applyRestriction(Http.Context ctx,
+    public F.Promise<Result> applyRestriction(Http.Context ctx,
                                    DeadboltHandler deadboltHandler) throws Throwable
     {
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
 
         if (isAllowed(ctx,
                       deadboltHandler))

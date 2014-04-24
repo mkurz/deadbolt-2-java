@@ -21,7 +21,7 @@ import be.objectify.deadbolt.java.utils.PluginUtils;
 import be.objectify.deadbolt.java.utils.RequestUtils;
 import play.libs.F;
 import play.mvc.Http;
-import play.mvc.SimpleResult;
+import play.mvc.Result;
 
 import java.util.concurrent.TimeUnit;
 
@@ -38,9 +38,9 @@ public class SubjectNotPresentAction extends AbstractDeadboltAction<SubjectNotPr
      * {@inheritDoc}
      */
     @Override
-    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
+    public F.Promise<Result> execute(Http.Context ctx) throws Throwable
     {
-        F.Promise<SimpleResult> result = F.Promise.pure(null);
+        F.Promise<Result> result = F.Promise.pure(null);
         if (isActionUnauthorised(ctx))
         {
             result = onAuthFailure(getDeadboltHandler(configuration.handlerKey(),
@@ -57,7 +57,7 @@ public class SubjectNotPresentAction extends AbstractDeadboltAction<SubjectNotPr
                result = deadboltHandler.beforeAuthCheck(ctx);
             }
 
-            SimpleResult futureResult = result.get(PluginUtils.getBeforeAuthCheckTimeout(),
+            Result futureResult = result.get(PluginUtils.getBeforeAuthCheckTimeout(),
                                                    TimeUnit.MILLISECONDS);
             if (futureResult == null)
             {

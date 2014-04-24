@@ -97,9 +97,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     /** {@inheritDoc} */
     @Override
-    public F.Promise<SimpleResult> call(Http.Context ctx) throws Throwable
+    public F.Promise<Result> call(Http.Context ctx) throws Throwable
     {
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
 
         Class annClass = configuration.getClass();
         if (isDeferred(ctx))
@@ -128,7 +128,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @return the result
      * @throws Throwable if something bad happens
      */
-    public abstract F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable;
+    public abstract F.Promise<Result> execute(Http.Context ctx) throws Throwable;
 
     /**
      * @param subject
@@ -162,7 +162,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param ctx             th request context
      * @return the result of {@link DeadboltHandler#onAuthFailure}
      */
-    protected F.Promise<SimpleResult> onAuthFailure(DeadboltHandler deadboltHandler,
+    protected F.Promise<Result> onAuthFailure(DeadboltHandler deadboltHandler,
                                                     String content,
                                                     Http.Context ctx)
     {
@@ -178,10 +178,10 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         {
             LOGGER.warn("Deadbolt: Exception when invoking onAuthFailure",
                         e);
-            return F.Promise.promise(new F.Function0<SimpleResult>()
+            return F.Promise.promise(new F.Function0<Result>()
             {
                 @Override
-                public SimpleResult apply() throws Throwable {
+                public Result apply() throws Throwable {
                     return Results.internalServerError();
                 }
             });
