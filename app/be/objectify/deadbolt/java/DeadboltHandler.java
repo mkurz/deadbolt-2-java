@@ -19,7 +19,6 @@ import be.objectify.deadbolt.core.models.Subject;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.SimpleResult;
 
 /**
  * DeadboltHandler implementations are the main hook into the Deadbolt system.  Here, you can apply authentication
@@ -38,7 +37,7 @@ public interface DeadboltHandler {
      *         the user is authenticated (or whatever your test condition is), this will be null otherwise the restriction
      *         won't be applied.
      */
-    F.Promise<SimpleResult> beforeAuthCheck(Http.Context context);
+    F.Promise<Result> beforeAuthCheck(Http.Context context);
 
     /**
      * Gets the current {@link be.objectify.deadbolt.core.models.Subject}, e.g. the current user.
@@ -56,7 +55,7 @@ public interface DeadboltHandler {
      *                type, e.g. JSON
      * @return the action result
      */
-    F.Promise<SimpleResult> onAuthFailure(Http.Context context,
+    F.Promise<Result> onAuthFailure(Http.Context context,
                                           String content);
 
     /**

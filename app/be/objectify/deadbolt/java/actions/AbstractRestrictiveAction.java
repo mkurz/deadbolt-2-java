@@ -19,7 +19,7 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.utils.PluginUtils;
 import play.libs.F;
 import play.mvc.Http;
-import play.mvc.SimpleResult;
+import play.mvc.Result;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,9 +31,9 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltAction<T>
 {
     @Override
-    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
+    public F.Promise<Result> execute(Http.Context ctx) throws Throwable
     {
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
         if (isActionAuthorised(ctx))
         {
             result = delegate.call(ctx);
@@ -44,7 +44,7 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
                                                                  getDeadboltHandlerClass());
             result = deadboltHandler.beforeAuthCheck(ctx);
 
-            SimpleResult futureResult = result == null ? null
+            Result futureResult = result == null ? null
                                                        : result.get(PluginUtils.getBeforeAuthCheckTimeout(),
                                                                     TimeUnit.MILLISECONDS);
             if (futureResult == null)
@@ -71,6 +71,6 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
      */
     public abstract Class<? extends DeadboltHandler> getDeadboltHandlerClass();
 
-    public abstract F.Promise<SimpleResult> applyRestriction(Http.Context ctx,
+    public abstract F.Promise<Result> applyRestriction(Http.Context ctx,
                                                              DeadboltHandler deadboltHandler) throws Throwable;
 }
