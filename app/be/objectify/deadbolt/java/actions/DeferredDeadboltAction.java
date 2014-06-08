@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.SimpleResult;
 
 /**
  * Executes a deferred method-level annotation.  Ideally, the associated annotation would be placed
@@ -33,10 +32,10 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     private static final Logger LOGGER = LoggerFactory.getLogger(DeferredDeadboltAction.class);
 
     @Override
-    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
+    public F.Promise<Result> execute(Http.Context ctx) throws Throwable
     {
         AbstractDeadboltAction deferredAction = getDeferredAction(ctx);
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
         if (deferredAction == null)
         {
             result = delegate.call(ctx);

@@ -40,13 +40,13 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public F.Promise<SimpleResult> onAuthFailure(Http.Context context,
+    public F.Promise<Result> onAuthFailure(Http.Context context,
                                                  String content)
     {
-        return F.Promise.promise(new F.Function0<SimpleResult>()
+        return F.Promise.promise(new F.Function0<Result>()
         {
             @Override
-            public SimpleResult apply() throws Throwable
+            public Result apply() throws Throwable
             {
                 return unauthorized(views.html.defaultpages.unauthorized.render());
             }

@@ -23,7 +23,6 @@ import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.SimpleResult;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -43,10 +42,10 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     }
 
     @Override
-    public F.Promise<SimpleResult> applyRestriction(Http.Context ctx,
-                                                    DeadboltHandler deadboltHandler) throws Throwable
+    public F.Promise<Result> applyRestriction(Http.Context ctx,
+                                              DeadboltHandler deadboltHandler) throws Throwable
     {
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
 
         switch (configuration.patternType())
         {
@@ -69,11 +68,11 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return result;
     }
 
-    private F.Promise<SimpleResult> custom(Http.Context ctx,
-                                           DeadboltHandler deadboltHandler) throws Throwable
+    private F.Promise<Result> custom(Http.Context ctx,
+                                     DeadboltHandler deadboltHandler) throws Throwable
     {
         DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(ctx);
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
 
         if (resourceHandler == null)
         {
@@ -105,10 +104,10 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return configuration.value();
     }
 
-    private F.Promise<SimpleResult> equality(Http.Context ctx,
-                                             DeadboltHandler deadboltHandler) throws Throwable
+    private F.Promise<Result> equality(Http.Context ctx,
+                                       DeadboltHandler deadboltHandler) throws Throwable
     {
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
 
         final String patternValue = getValue();
 
@@ -138,10 +137,10 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
      * @return the necessary result
      * @throws Throwable if something needs throwing
      */
-    private F.Promise<SimpleResult> regex(Http.Context ctx,
-                                          DeadboltHandler deadboltHandler) throws Throwable
+    private F.Promise<Result> regex(Http.Context ctx,
+                                    DeadboltHandler deadboltHandler) throws Throwable
     {
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
 
         final String patternValue = getValue();
         java.util.regex.Pattern pattern = DeadboltViewSupport.getPattern(patternValue);

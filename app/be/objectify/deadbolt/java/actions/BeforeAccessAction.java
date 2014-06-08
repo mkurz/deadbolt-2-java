@@ -20,7 +20,6 @@ import be.objectify.deadbolt.java.utils.PluginUtils;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.SimpleResult;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,9 +34,9 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
      * {@inheritDoc}
      */
     @Override
-    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
+    public F.Promise<Result> execute(Http.Context ctx) throws Throwable
     {
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
         if (isActionAuthorised(ctx) && !configuration.alwaysExecute())
         {
             result = delegate.call(ctx);
@@ -48,8 +47,8 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
                                                                  configuration.value());
             result = deadboltHandler.beforeAuthCheck(ctx);
 
-            SimpleResult futureResult = result.get(PluginUtils.getBeforeAuthCheckTimeout(),
-                                                   TimeUnit.MILLISECONDS);
+            Result futureResult = result.get(PluginUtils.getBeforeAuthCheckTimeout(),
+                                             TimeUnit.MILLISECONDS);
 
             if (futureResult == null)
             {

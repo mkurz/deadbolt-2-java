@@ -21,7 +21,6 @@ import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.SimpleResult;
 
 /**
  * A dynamic restriction is user-defined, and so completely arbitrary.  Hence, no checks on subjects, etc, occur
@@ -44,11 +43,11 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     }
 
     @Override
-    public F.Promise<SimpleResult> applyRestriction(Http.Context ctx,
+    public F.Promise<Result> applyRestriction(Http.Context ctx,
                                                     DeadboltHandler deadboltHandler) throws Throwable
     {
         DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(ctx);
-        F.Promise<SimpleResult> result;
+        F.Promise<Result> result;
 
         if (resourceHandler == null)
         {
