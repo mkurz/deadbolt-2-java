@@ -39,6 +39,7 @@ public class DeadboltPlugin extends Plugin
 
     private boolean cacheUserPerRequestEnabled = false;
     private int beforeAuthCheckTimeout = 2000;
+    private int getSubjectTimeout = 2000;
     private Map<String, DeadboltHandler> handlers;
 
     private final Application application;
@@ -110,6 +111,11 @@ public class DeadboltPlugin extends Plugin
             beforeAuthCheckTimeout = configuration.getInt(PluginConfigKeys.BEFORE_AUTH_CHECK_TIMEOUT);
         }
 
+        if (configurationKeys.contains(PluginConfigKeys.GET_SUBJECT_TIMEOUT))
+        {
+            getSubjectTimeout = configuration.getInt(PluginConfigKeys.GET_SUBJECT_TIMEOUT);
+        }
+
         cacheUserPerRequestEnabled = configuration.getBoolean(PluginConfigKeys.CACHE_DEADBOLT_USER, false);
     }
 
@@ -126,6 +132,11 @@ public class DeadboltPlugin extends Plugin
     public int getBeforeAuthCheckTimeout()
     {
         return beforeAuthCheckTimeout;
+    }
+
+    public int getSubjectTimeout()
+    {
+        return getSubjectTimeout;
     }
 
     /**

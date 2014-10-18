@@ -45,6 +45,12 @@ public class PluginUtils
         return p.getBeforeAuthCheckTimeout();
     }
 
+    public static int getSubjectTimeout() throws Exception
+    {
+        DeadboltPlugin p = getDeadboltPlugin();
+        return p.getSubjectTimeout();
+    }
+
     public static DeadboltHandler getDeadboltHandler() throws Exception
     {
         DeadboltPlugin p = getDeadboltPlugin();

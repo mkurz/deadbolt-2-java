@@ -45,9 +45,9 @@ public interface DeadboltHandler {
      * Gets the current {@link be.objectify.deadbolt.core.models.Subject}, e.g. the current user.
      *
      * @param context the HTTP context
-     * @return the current subject
+     * @return a promise for the current subject
      */
-    Subject getSubject(Http.Context context);
+    F.Promise<Subject> getSubject(Http.Context context);
 
     /**
      * Invoked when an access failure is detected on <i>controllerClassName</i>.

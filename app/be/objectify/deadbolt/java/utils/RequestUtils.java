@@ -20,7 +20,10 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.core.PluginConfigKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.libs.F;
 import play.mvc.Http;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -47,30 +50,40 @@ public class RequestUtils
      * @param ctx the context
      * @return the current subject or null if one isn't present
      */
-    public static Subject getSubject(DeadboltHandler deadboltHandler,
-                                     Http.Context ctx)
+    public static Subject getSubject(final DeadboltHandler deadboltHandler,
+                                     final Http.Context ctx)
     {
         Object cachedUser = ctx.args.get(PluginConfigKeys.CACHE_DEADBOLT_USER);
         Subject subject = null;
         try
         {
+            final F.Promise<Subject> promise;
             if (PluginUtils.isUserCacheEnabled())
             {
                 if (cachedUser != null)
                 {
-                    subject = (Subject) cachedUser;
+                    promise = F.Promise.pure((Subject) cachedUser);
                 }
                 else
                 {
-                    subject = deadboltHandler.getSubject(ctx);
-                    ctx.args.put(PluginConfigKeys.CACHE_DEADBOLT_USER,
-                                 subject);
+                    promise = deadboltHandler.getSubject(ctx).map(new F.Function<Subject, Subject>()
+                    {
+                        @Override
+                        public Subject apply(Subject s) throws Throwable
+                        {
+                            ctx.args.put(PluginConfigKeys.CACHE_DEADBOLT_USER,
+                                         s);
+                            return s;
+                        }
+                    });
                 }
             }
             else
             {
-                subject = deadboltHandler.getSubject(ctx);
+                promise = deadboltHandler.getSubject(ctx);
             }
+            subject = promise.get(PluginUtils.getSubjectTimeout(),
+                                  TimeUnit.MILLISECONDS);
         }
         catch (Exception e)
         {

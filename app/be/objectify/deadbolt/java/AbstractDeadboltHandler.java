@@ -32,9 +32,9 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public Subject getSubject(Http.Context context)
+    public F.Promise<Subject> getSubject(Http.Context context)
     {
-        return null;
+        return F.Promise.pure(null);
     }
 
     /**
