@@ -2,7 +2,11 @@ language: scala
 scala:
   - 2.11.1
 script:
-  - "sbt ++$TRAVIS_SCALA_VERSION test"
-  - "sbt ++$TRAVIS_SCALA_VERSION publish-local"
-notifications:
-  email: false
+  - sbt ++$TRAVIS_SCALA_VERSION test
+  - sbt ++$TRAVIS_SCALA_VERSION publish-local
+env:
+  global:
+  - secure: PznQxOpomV8oxBSugNHJclAdtVg6iHahp7DH+92Gb0yFmhXtSowFs7UApi63i4plfWyKI2U4PMe1FcHlsZmJMBa18GNC9wtY5E1X/7L4EagfSACeT+JOpMHKNEcCvVuzy6+I9vOBSPrFSS7Z4x3TfAOi81knoGitnq9BeW3fIe4=
+  - secure: tNkO4BYDdJ+F7ie/uGpp8JSARIhYzqTXIVFCyp0dMQ3KWlivlqURIO7B5gj/ccdguFsE1qs7C/mz/sPYjT0XlxUdpAV1qezhzr8qHBCozjYTcMZOmfANs1uPNBekKVhhVUDSxOLPkrE4XNBYOafPtKzA1WD6BfgKnaOh9lpeQRI=
+after_success:
+  - "[[ $TRAVIS_BRANCH == \"master\" ]] && { sbt +publish; };"
