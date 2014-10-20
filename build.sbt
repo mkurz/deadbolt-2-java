@@ -1,6 +1,6 @@
 name := "deadbolt-java"
 
-version := "2.3.2"
+version := "2.3.3-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
@@ -12,7 +12,7 @@ organization := "be.objectify"
 
 libraryDependencies ++= Seq(
   cache,
-  "be.objectify" %% "deadbolt-core" % "2.3.2"
+  "be.objectify" %% "deadbolt-core" % "2.3.3-SNAPSHOT"
 )
 
 publishMavenStyle := true
