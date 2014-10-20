@@ -92,4 +92,58 @@ public class RequestUtils
         }
         return subject;
     }
+
+    /**
+     * Get the {@link Subject} as an {#link F.Promise}.
+     *
+     * <p>If per-request subject caching is enabled, the request is checked first.
+     * If no subject is present there, DeadboltHandler#getSubject is called.  The resulting subject, if any, is
+     * cached in the request.</p>
+     *
+     * <p>If per-request subject caching is not enabled, DeadboltHandler#getSubject is called.</p>
+     *
+     * @param deadboltHandler the current Deadbolt handler
+     * @param ctx the context
+     * @return a promises that resolves to the current subject or null if one isn't present
+     */
+    public static F.Promise<Subject> getSubjectAsPromise(final DeadboltHandler deadboltHandler,
+                                                         final Http.Context ctx)
+    {
+        Object cachedUser = ctx.args.get(PluginConfigKeys.CACHE_DEADBOLT_USER);
+        F.Promise<Subject> subject = null;
+        try
+        {
+            final F.Promise<Subject> promise;
+            if (PluginUtils.isUserCacheEnabled())
+            {
+                if (cachedUser != null)
+                {
+                    subject = F.Promise.pure((Subject) cachedUser);
+                }
+                else
+                {
+                    subject = deadboltHandler.getSubject(ctx).map(new F.Function<Subject, Subject>()
+                    {
+                        @Override
+                        public Subject apply(Subject s) throws Throwable
+                        {
+                            ctx.args.put(PluginConfigKeys.CACHE_DEADBOLT_USER,
+                                         s);
+                            return s;
+                        }
+                    });
+                }
+            }
+            else
+            {
+                subject = deadboltHandler.getSubject(ctx);
+            }
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Error getting subject: " + e.getMessage(),
+                         e);
+        }
+        return subject;
+    }
 }

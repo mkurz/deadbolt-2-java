@@ -22,10 +22,12 @@ import be.objectify.deadbolt.java.utils.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.cache.Cache;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -118,38 +120,46 @@ public class DeadboltViewSupport
         return subject == null;
     }
 
-    public static boolean viewPattern(String value,
-                                      PatternType patternType,
-                                      DeadboltHandler handler) throws Exception
+    public static boolean viewPattern(final String value,
+                                      final PatternType patternType,
+                                      final DeadboltHandler handler) throws Exception
     {
-        boolean allowed = false;
+        final Http.Context context = Http.Context.current();
+        final DeadboltHandler deadboltHandler = handler == null ? PluginUtils.getDeadboltHandler() : handler;
 
-        Http.Context context = Http.Context.current();
-        DeadboltHandler deadboltHandler = handler == null ? PluginUtils.getDeadboltHandler() : handler;
-        Subject subject = RequestUtils.getSubject(deadboltHandler,
-                                                  context);
-        switch (patternType)
-        {
-            case EQUALITY:
-                allowed = JavaDeadboltAnalyzer.checkPatternEquality(subject,
-                                                                    value);
-                break;
-            case REGEX:
-                allowed = JavaDeadboltAnalyzer.checkRegexPattern(subject,
-                                                                 getPattern(value));
-                break;
-            case CUSTOM:
-                allowed = JavaDeadboltAnalyzer.checkCustomPattern(subject,
-                                                                  deadboltHandler,
-                                                                  context,
-                                                                  value);
-                break;
-            default:
-                LOGGER.error("Unknown pattern type [{}]",
-                             patternType);
-        }
+        return RequestUtils.getSubjectAsPromise(deadboltHandler,
+                                                context)
+                           .map(new F.Function<Subject, Boolean>()
+                           {
+                               @Override
+                               public Boolean apply(Subject subject) throws Throwable
+                               {
+                                   boolean allowed = false;
+                                   switch (patternType)
+                                   {
+                                       case EQUALITY:
+                                           allowed = JavaDeadboltAnalyzer.checkPatternEquality(subject,
+                                                                                               value);
+                                           break;
+                                       case REGEX:
+                                           allowed = JavaDeadboltAnalyzer.checkRegexPattern(subject,
+                                                                                            getPattern(value));
+                                           break;
+                                       case CUSTOM:
+                                           allowed = JavaDeadboltAnalyzer.checkCustomPattern(deadboltHandler,
+                                                                                             context,
+                                                                                             value);
+                                           break;
+                                       default:
+                                           LOGGER.error("Unknown pattern type [{}]",
+                                                        patternType);
+                                   }
 
-        return allowed;
+                                   return allowed;
+                               }
+                           })
+                           .get(PluginUtils.getSubjectTimeout(),
+                                TimeUnit.MILLISECONDS);
     }
 
     public static Pattern getPattern(final String patternValue) throws Exception

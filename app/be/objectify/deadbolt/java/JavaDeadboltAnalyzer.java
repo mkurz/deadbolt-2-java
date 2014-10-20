@@ -25,15 +25,14 @@ import play.mvc.Http;
 public class JavaDeadboltAnalyzer extends DeadboltAnalyzer
 {
     /**
+     * Checks a custom pattern using the {@link be.objectify.deadbolt.java.DynamicResourceHandler} obtained via the handler.
      *
-     * @param subject
-     * @param handler
-     * @param context
-     * @param value
-     * @return
+     * @param handler the handler
+     * @param context the context
+     * @param value the pattern value
+     * @return true iff the custom check succeeds
      */
-    public static boolean checkCustomPattern(Subject subject,
-                                             DeadboltHandler handler,
+    public static boolean checkCustomPattern(DeadboltHandler handler,
                                              Http.Context context,
                                              String value)
     {
