@@ -31,15 +31,18 @@ public class ReflectionUtils
     {
         boolean found = false;
 
-        try
+        if (clazz != null)
         {
-            clazz.getMethod(name,
-                            parameterTypes);
-            found = true;
-        }
-        catch (NoSuchMethodException e)
-        {
-            // no logging needed, since a) this is possible, and b) the use of reflection should never be admitted to
+            try
+            {
+                clazz.getMethod(name,
+                                parameterTypes);
+                found = true;
+            }
+            catch (NoSuchMethodException e)
+            {
+                // no logging needed, since a) this is possible, and b) the use of reflection should never be admitted to
+            }
         }
 
         return found;

@@ -110,10 +110,9 @@ public class RequestUtils
                                                          final Http.Context ctx)
     {
         Object cachedUser = ctx.args.get(PluginConfigKeys.CACHE_DEADBOLT_USER);
-        F.Promise<Subject> subject = null;
+        F.Promise<Subject> subject = F.Promise.pure(null);
         try
         {
-            final F.Promise<Subject> promise;
             if (PluginUtils.isUserCacheEnabled())
             {
                 if (cachedUser != null)
