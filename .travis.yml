@@ -1,14 +1,15 @@
 language: scala
 jdk:
-  - openjdk6
+- openjdk6
 scala:
-  - 2.11.1
+- 2.11.1
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION +test
-  - sbt ++$TRAVIS_SCALA_VERSION +publish-local
+- cd code
+- sbt ++$TRAVIS_SCALA_VERSION +test
+- sbt ++$TRAVIS_SCALA_VERSION +publish-local
+after_success:
+- ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt +publish; };'
 env:
   global:
-  - secure: PznQxOpomV8oxBSugNHJclAdtVg6iHahp7DH+92Gb0yFmhXtSowFs7UApi63i4plfWyKI2U4PMe1FcHlsZmJMBa18GNC9wtY5E1X/7L4EagfSACeT+JOpMHKNEcCvVuzy6+I9vOBSPrFSS7Z4x3TfAOi81knoGitnq9BeW3fIe4=
-  - secure: tNkO4BYDdJ+F7ie/uGpp8JSARIhYzqTXIVFCyp0dMQ3KWlivlqURIO7B5gj/ccdguFsE1qs7C/mz/sPYjT0XlxUdpAV1qezhzr8qHBCozjYTcMZOmfANs1uPNBekKVhhVUDSxOLPkrE4XNBYOafPtKzA1WD6BfgKnaOh9lpeQRI=
-after_success:
-  - "[[ $TRAVIS_BRANCH == \"master\" ]] && { sbt +publish; };"
+  - secure: lWiAEXvfiZWpdhly/x9OHewK2xwLHFH32m5KbeYqGnNxpzJLrR0nSXUDMJabKQZ8msbqh7MUBSgCsWKhI0cqYO/rq22kAZGzKj3sHShe0Eg8uNGb4lMbU8PqWzYfXSfMf2pmnrrNpWLlCkHXr7WKwr+7QGS97D2w/7pOoIb19q8=
+  - secure: q/WADPRt9glUwpu0Gi63FDiHbG0CKcKqhsWz5ihULxQErck3gKpcIqeoM5z3i+UWeA36d/h2hcPUG0pso4ro888FFC4ZWjuz/LNn0XupktdLcfCERRKqNCe6+DvIbgS8R3BbTy76TauS18VG31glXS9KUC6uFmGlzLPx+uPoPVc=
