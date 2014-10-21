@@ -1,9 +1,11 @@
 language: scala
+jdk:
+  - openjdk6
 scala:
   - 2.11.1
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION test
-  - sbt ++$TRAVIS_SCALA_VERSION publish-local
+  - sbt ++$TRAVIS_SCALA_VERSION +test
+  - sbt ++$TRAVIS_SCALA_VERSION +publish-local
 env:
   global:
   - secure: PznQxOpomV8oxBSugNHJclAdtVg6iHahp7DH+92Gb0yFmhXtSowFs7UApi63i4plfWyKI2U4PMe1FcHlsZmJMBa18GNC9wtY5E1X/7L4EagfSACeT+JOpMHKNEcCvVuzy6+I9vOBSPrFSS7Z4x3TfAOi81knoGitnq9BeW3fIe4=
