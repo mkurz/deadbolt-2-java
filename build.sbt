@@ -15,4 +15,4 @@ libraryDependencies ++= Seq(
   "be.objectify" %% "deadbolt-core" % "2.3.3-SNAPSHOT"
 )
 
-resolvers += Resolver.url("sonatype-public-with-snapshots", url("https://oss.sonatype.org/content/groups/public/"))
+resolvers += Resolver.sonatypeRepo("snapshots") 
