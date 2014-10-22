@@ -1,4 +1,4 @@
-package be.objectify.deadbolt.java.test.controllers;
+package be.objectify.deadbolt.java.test.controllers.restrict;
 
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;

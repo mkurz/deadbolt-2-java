@@ -1,4 +1,4 @@
-package be.objectify.deadbolt.java.test.controllers;
+package be.objectify.deadbolt.java.test.controllers.restrict;
 
 import be.objectify.deadbolt.java.test.DataLoader;
 import com.google.common.collect.ImmutableMap;
@@ -37,7 +37,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooAndBar");
+                                   .get("/restrict/m/restrictedToFooAndBar");
                     }
                 });
     }
@@ -60,7 +60,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(200)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooAndBar");
+                                   .get("/restrict/m/restrictedToFooAndBar");
                     }
                 });
 
@@ -84,7 +84,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooAndBar");
+                                   .get("/restrict/m/restrictedToFooAndBar");
                     }
                 });
 
@@ -108,7 +108,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooAndBar");
+                                   .get("/restrict/m/restrictedToFooAndBar");
                     }
                 });
 
@@ -131,7 +131,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooOrBar");
+                                   .get("/restrict/m/restrictedToFooOrBar");
                     }
                 });
     }
@@ -154,7 +154,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(200)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooOrBar");
+                                   .get("/restrict/m/restrictedToFooOrBar");
                     }
                 });
 
@@ -178,7 +178,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(200)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooOrBar");
+                                   .get("/restrict/m/restrictedToFooOrBar");
                     }
                 });
 
@@ -202,7 +202,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooOrBar");
+                                   .get("/restrict/m/restrictedToFooOrBar");
                     }
                 });
 
@@ -225,7 +225,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooAndNotBar");
+                                   .get("/restrict/m/restrictedToFooAndNotBar");
                     }
                 });
     }
@@ -248,7 +248,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooAndNotBar");
+                                   .get("/restrict/m/restrictedToFooAndNotBar");
                     }
                 });
 
@@ -272,7 +272,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooAndNotBar");
+                                   .get("/restrict/m/restrictedToFooAndNotBar");
                     }
                 });
 
@@ -296,7 +296,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooAndNotBar");
+                                   .get("/restrict/m/restrictedToFooAndNotBar");
                     }
                 });
 
@@ -319,7 +319,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooOrNotBar");
+                                   .get("/restrict/m/restrictedToFooOrNotBar");
                     }
                 });
     }
@@ -342,7 +342,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(200)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooOrNotBar");
+                                   .get("/restrict/m/restrictedToFooOrNotBar");
                     }
                 });
 
@@ -366,7 +366,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(401)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooOrNotBar");
+                                   .get("/restrict/m/restrictedToFooOrNotBar");
                     }
                 });
 
@@ -390,7 +390,7 @@ public class RestrictMethodConstraintsTest {
                                    .expect()
                                    .statusCode(200)
                                    .when()
-                                   .get("/restrictMethods/restrictedToFooOrNotBar");
+                                   .get("/restrict/m/restrictedToFooOrNotBar");
                     }
                 });
 

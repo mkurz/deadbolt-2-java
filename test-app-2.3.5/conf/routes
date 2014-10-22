@@ -1,5 +1,14 @@
 # Restrict constraints
-GET     /restrictMethods/restrictedToFooAndBar         be.objectify.deadbolt.java.test.controllers.RestrictMethodConstraints.restrictedToFooAndBar()
-GET     /restrictMethods/restrictedToFooOrBar          be.objectify.deadbolt.java.test.controllers.RestrictMethodConstraints.restrictedToFooOrBar()
-GET     /restrictMethods/restrictedToFooAndNotBar      be.objectify.deadbolt.java.test.controllers.RestrictMethodConstraints.restrictedToFooAndNotBar()
-GET     /restrictMethods/restrictedToFooOrNotBar       be.objectify.deadbolt.java.test.controllers.RestrictMethodConstraints.restrictedToFooOrNotBar()
+GET     /restrict/m/restrictedToFooAndBar               be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooAndBar()
+GET     /restrict/m/restrictedToFooOrBar                be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooOrBar()
+GET     /restrict/m/restrictedToFooAndNotBar            be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooAndNotBar()
+GET     /restrict/m/restrictedToFooOrNotBar             be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooOrNotBar()
+
+GET     /restrict/c/restrictedToFooAndBar               be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndBar.index()
+GET     /restrict/c/restrictedToFooAndBar/open          be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndBar.unrestricted()
+GET     /restrict/c/restrictedToFooOrBar                be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrBar.index()
+GET     /restrict/c/restrictedToFooOrBar/open           be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrBar.unrestricted()
+GET     /restrict/c/restrictedToFooAndNotBar            be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndNotBar.index()
+GET     /restrict/c/restrictedToFooAndNotBar/open       be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndNotBar.unrestricted()
+GET     /restrict/c/restrictedToFooOrNotBar             be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.index()
+GET     /restrict/c/restrictedToFooOrNotBar/open        be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.unrestricted()
