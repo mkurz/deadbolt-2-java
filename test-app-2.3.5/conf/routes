@@ -1,9 +1,5 @@
-# Routes
-# This file defines all application routes (Higher priority routes first)
-# ~~~~
-
-# Home page
-GET     /                           controllers.Application.index()
-
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+# Restrict constraints
+GET     /restrictMethods/restrictedToFooAndBar         be.objectify.deadbolt.java.test.controllers.RestrictMethodConstraints.restrictedToFooAndBar()
+GET     /restrictMethods/restrictedToFooOrBar          be.objectify.deadbolt.java.test.controllers.RestrictMethodConstraints.restrictedToFooOrBar()
+GET     /restrictMethods/restrictedToFooAndNotBar      be.objectify.deadbolt.java.test.controllers.RestrictMethodConstraints.restrictedToFooAndNotBar()
+GET     /restrictMethods/restrictedToFooOrNotBar       be.objectify.deadbolt.java.test.controllers.RestrictMethodConstraints.restrictedToFooOrNotBar()

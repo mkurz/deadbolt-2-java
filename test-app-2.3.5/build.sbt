@@ -10,7 +10,9 @@ libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
   cache,
-  javaWs
+  javaWs,
+  "com.jayway.restassured" % "rest-assured" % "1.8.1" % "test",
+  "org.dbunit" % "dbunit" % "2.4.9" % "test"
 )
 
 lazy val deadboltJava = (project in file("modules/deadbolt-java")).enablePlugins(PlayJava)

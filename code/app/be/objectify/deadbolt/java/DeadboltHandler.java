@@ -24,7 +24,7 @@ import play.mvc.SimpleResult;
 /**
  * DeadboltHandler implementations are the main hook into the Deadbolt system.  Here, you can apply authentication
  * checks using {@link DeadboltHandler#beforeAuthCheck}, get the current user, decide what to do when access fails and
- * provide implementations for dynamic security.
+ * provide implementations for dynamic be.objectify.deadbolt.java.test.security.
  *
  * @author Steve Chaloner (steve@objectify.be)
  */

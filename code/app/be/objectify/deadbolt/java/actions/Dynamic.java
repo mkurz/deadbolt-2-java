@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A dynamic security restriction.  The implementation of the block/allow behaviour is provided through a
+ * A dynamic be.objectify.deadbolt.java.test.security restriction.  The implementation of the block/allow behaviour is provided through a
  * {@link be.objectify.deadbolt.java.DynamicResourceHandler}.
  *
  * @author Steve Chaloner (steve@objectify.be)

@@ -1,0 +1,25 @@
+<dataset>
+    <security_role id="1" role_name="foo"/>
+    <security_role id="2" role_name="bar"/>
+    <security_role id="3" role_name="hurdy"/>
+
+    <security_permission id="1" value="printers.view"/>
+    <security_permission id="2" value="printers.edit"/>
+    <security_permission id="3" value="printers.delete"/>
+
+    <user user_name="greet"/>
+    <user user_name="lotte"/>
+    <user user_name="steve"/>
+    <user user_name="mani"/>
+    <user user_name="trippel"/>
+
+    <user_security_role user_user_name="greet" security_role_id="1"/>
+    <user_security_role user_user_name="greet" security_role_id="2"/>
+    <user_security_role user_user_name="lotte" security_role_id="3"/>
+    <user_security_role user_user_name="steve" security_role_id="2"/>
+    <user_security_role user_user_name="mani" security_role_id="1"/>
+    <user_security_role user_user_name="mani" security_role_id="2"/>
+    <user_security_role user_user_name="mani" security_role_id="3"/>
+    <user_security_role user_user_name="trippel" security_role_id="1"/>
+    <user_security_role user_user_name="trippel" security_role_id="3"/>
+</dataset>
