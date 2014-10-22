@@ -18,3 +18,5 @@ libraryDependencies ++= Seq(
 lazy val deadboltJava = (project in file("modules/deadbolt-java")).enablePlugins(PlayJava)
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava).dependsOn(deadboltJava).aggregate(deadboltJava)
+
+resolvers += Resolver.sonatypeRepo("snapshots")
