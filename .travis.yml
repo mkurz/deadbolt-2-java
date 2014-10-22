@@ -8,7 +8,7 @@ script:
 - sbt ++$TRAVIS_SCALA_VERSION +test
 - sbt ++$TRAVIS_SCALA_VERSION +publish-local
 - cd ../test-app-2.3.5
-- sbt ++$TRAVIS_SCALA_VERSION +test
+- sbt ++$TRAVIS_SCALA_VERSION test
 after_success:
 - ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt +publish; };'
 env:
