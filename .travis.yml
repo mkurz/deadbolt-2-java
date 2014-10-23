@@ -7,7 +7,7 @@ script:
 - cd code
 - sbt ++$TRAVIS_SCALA_VERSION +test
 - cd ../test-app-2.3.5
-- sbt ++$TRAVIS_SCALA_VERSION test
+- for i in {1..5}; do sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.${i} +test; done;
 - cd ../code
 - sbt ++$TRAVIS_SCALA_VERSION +publish-local
 after_success:

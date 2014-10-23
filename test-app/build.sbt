@@ -1,4 +1,4 @@
-name := """test-app-2.3.5"""
+name := """test-app"""
 
 version := "2.3.3-SNAPSHOT"
 
