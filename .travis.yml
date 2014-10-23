@@ -6,7 +6,7 @@ scala:
 script:
 - cd code
 - sbt ++$TRAVIS_SCALA_VERSION +test
-- cd ../test-app-2.3.5
+- cd ../test-app
 - for i in {1..5}; do sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.${i} +test; done;
 - cd ../code
 - sbt ++$TRAVIS_SCALA_VERSION +publish-local
