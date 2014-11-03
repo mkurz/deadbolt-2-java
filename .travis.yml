@@ -12,6 +12,7 @@ script:
 - sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.3 +test
 - sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.4 +test
 - sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.5 +test
+- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.6 +test
 - cd ../code
 - sbt ++$TRAVIS_SCALA_VERSION +publish-local
 after_success:
