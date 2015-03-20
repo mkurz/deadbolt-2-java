@@ -16,8 +16,12 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.PluginConfigKeys;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+
 import play.Application;
 import play.Configuration;
 import play.Plugin;
@@ -44,6 +48,7 @@ public class DeadboltPlugin extends Plugin
 
     private final Application application;
 
+    @Inject
     public DeadboltPlugin(Application application)
     {
         this.application = application;

@@ -20,7 +20,6 @@ import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import play.mvc.SimpleResult;
 
 /**
  * Abstract implementation of {@link DeadboltHandler} that gives a standard unauthorised result when access fails.

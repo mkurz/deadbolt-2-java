@@ -19,7 +19,6 @@ import be.objectify.deadbolt.core.models.Subject;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.SimpleResult;
 
 /**
  * DeadboltHandler implementations are the main hook into the Deadbolt system.  Here, you can apply authentication
