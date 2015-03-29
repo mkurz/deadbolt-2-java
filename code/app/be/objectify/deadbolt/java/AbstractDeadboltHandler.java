@@ -20,7 +20,6 @@ import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import play.mvc.SimpleResult;
 
 /**
  * Abstract implementation of {@link DeadboltHandler} that gives a standard unauthorised result when access fails.
@@ -32,16 +31,16 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public F.Promise<Subject> getSubject(Http.Context context)
+    public Subject getSubject(final Http.Context context)
     {
-        return F.Promise.pure(null);
+        return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public F.Promise<Result> onAuthFailure(Http.Context context,
-                                                 String content)
+    public F.Promise<Result> onAuthFailure(final Http.Context context,
+                                           final String content)
     {
         return F.Promise.promise(new F.Function0<Result>()
         {
@@ -56,7 +55,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public DynamicResourceHandler getDynamicResourceHandler(Http.Context context)
+    public DynamicResourceHandler getDynamicResourceHandler(final Http.Context context)
     {
         return null;
     }

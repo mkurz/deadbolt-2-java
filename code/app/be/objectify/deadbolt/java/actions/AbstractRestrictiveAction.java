@@ -16,12 +16,9 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.utils.PluginUtils;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Convenience class for checking if an qction has already been authorised before applying the restrictions.
@@ -31,27 +28,38 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltAction<T>
 {
     @Override
-    public F.Promise<Result> execute(Http.Context ctx) throws Throwable
+    public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        F.Promise<Result> result;
+        final F.Promise<Result> result;
         if (isActionAuthorised(ctx))
         {
             result = delegate.call(ctx);
         }
         else
         {
-            DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey(),
-                                                                 getDeadboltHandlerClass());
-            result = deadboltHandler.beforeAuthCheck(ctx);
-
-            Result futureResult = result == null ? null
-                                                 : result.get(PluginUtils.getBeforeAuthCheckTimeout(),
-                                                              TimeUnit.MILLISECONDS);
-            if (futureResult == null)
-            {
-                result = applyRestriction(ctx,
-                                          deadboltHandler);
-            }
+            final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey(),
+                                                                       getDeadboltHandlerClass());
+            result = preAuth(true,
+                             ctx,
+                             deadboltHandler)
+                    .flatMap(new F.Function<Result, F.Promise<Result>>()
+                    {
+                        @Override
+                        public F.Promise<Result> apply(final Result preAuthResult) throws Throwable
+                        {
+                            final F.Promise<Result> innerResult;
+                            if (preAuthResult != null)
+                            {
+                                innerResult = F.Promise.pure(preAuthResult);
+                            }
+                            else
+                            {
+                                innerResult = applyRestriction(ctx,
+                                                               deadboltHandler);
+                            }
+                            return innerResult;
+                        }
+                    });
         }
         return result;
     }

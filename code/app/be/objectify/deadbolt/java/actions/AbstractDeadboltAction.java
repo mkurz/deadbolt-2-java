@@ -47,6 +47,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     private static final String ACTION_DEFERRED = "deadbolt.action-deferred";
     private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
 
+    private static final JavaDeadboltAnalyzer ANALYZER = new JavaDeadboltAnalyzer();
+
     /**
      * Gets the current {@link DeadboltHandler}.  This can come from one of three places:
      * - a handler key is provided in the annotation.  A cached instance of that class will be used. This has the highest priority.
@@ -141,8 +143,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     protected boolean checkRole(Subject subject,
                                 String[] roleNames)
     {
-        return JavaDeadboltAnalyzer.checkRole(subject,
-                                              roleNames);
+        return ANALYZER.checkRole(subject,
+                                  roleNames);
     }
 
     /**
@@ -153,8 +155,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     protected boolean hasAllRoles(Subject subject,
                                   String[] roleNames)
     {
-        return JavaDeadboltAnalyzer.hasAllRoles(subject,
-                                                roleNames);
+        return ANALYZER.hasAllRoles(subject,
+                                    roleNames);
     }
 
     /**
@@ -165,30 +167,33 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param ctx             th request context
      * @return the result of {@link DeadboltHandler#onAuthFailure}
      */
-    protected F.Promise<Result> onAuthFailure(DeadboltHandler deadboltHandler,
-                                              String content,
-                                              Http.Context ctx)
+    protected F.Promise<Result> onAuthFailure(final DeadboltHandler deadboltHandler,
+                                              final String content,
+                                              final Http.Context ctx)
     {
         LOGGER.warn(String.format("Deadbolt: Access failure on [%s]",
                                   ctx.request().uri()));
 
+        F.Promise<Result> result;
         try
         {
-            return deadboltHandler.onAuthFailure(ctx,
-                                                 content);
+            result = deadboltHandler.onAuthFailure(ctx,
+                                                   content);
         }
         catch (Exception e)
         {
             LOGGER.warn("Deadbolt: Exception when invoking onAuthFailure",
                         e);
-            return F.Promise.promise(new F.Function0<Result>()
+            result = F.Promise.promise(new F.Function0<Result>()
             {
                 @Override
-                public Result apply() throws Throwable {
+                public Result apply() throws Throwable
+                {
                     return Results.internalServerError();
                 }
             });
         }
+        return result;
     }
 
     /**
@@ -294,7 +299,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param ctx the request context
      * @return the deferred action, or null if it doesn't exist
      */
-    public AbstractDeadboltAction getDeferredAction(Http.Context ctx)
+    public AbstractDeadboltAction getDeferredAction(final Http.Context ctx)
     {
         AbstractDeadboltAction action = null;
         Object o = ctx.args.get(ACTION_DEFERRED);
@@ -307,5 +312,13 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                          true);
         }
         return action;
+    }
+
+    public F.Promise<Result> preAuth(final boolean forcePreAuthCheck,
+                                     final Http.Context ctx,
+                                     final DeadboltHandler deadboltHandler)
+    {
+        return forcePreAuthCheck ? deadboltHandler.beforeAuthCheck(ctx)
+                                 : F.Promise.<Result>pure(null);
     }
 }

@@ -19,7 +19,6 @@ import be.objectify.deadbolt.core.models.Subject;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.SimpleResult;
 
 /**
  * DeadboltHandler implementations are the main hook into the Deadbolt system.  Here, you can apply authentication
@@ -45,9 +44,9 @@ public interface DeadboltHandler {
      * Gets the current {@link be.objectify.deadbolt.core.models.Subject}, e.g. the current user.
      *
      * @param context the HTTP context
-     * @return a promise for the current subject
+     * @return the current subject
      */
-    F.Promise<Subject> getSubject(Http.Context context);
+    Subject getSubject(Http.Context context);
 
     /**
      * Invoked when an access failure is detected on <i>controllerClassName</i>.

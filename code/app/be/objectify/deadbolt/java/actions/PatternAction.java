@@ -29,13 +29,15 @@ import play.mvc.Result;
  */
 public class PatternAction extends AbstractRestrictiveAction<Pattern>
 {
+    private static final JavaDeadboltAnalyzer ANALYZER = new JavaDeadboltAnalyzer();
+
     public PatternAction()
     {
         // no-op
     }
 
-    public PatternAction(Pattern configuration,
-                         Action<?> delegate)
+    public PatternAction(final Pattern configuration,
+                         final Action<?> delegate)
     {
         this.configuration = configuration;
         this.delegate = delegate;
@@ -68,10 +70,10 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return result;
     }
 
-    private F.Promise<Result> custom(Http.Context ctx,
-                                     DeadboltHandler deadboltHandler) throws Throwable
+    private F.Promise<Result> custom(final Http.Context ctx,
+                                     final DeadboltHandler deadboltHandler) throws Throwable
     {
-        DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(ctx);
+        final DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(ctx);
         F.Promise<Result> result;
 
         if (resourceHandler == null)
@@ -81,20 +83,36 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         }
         else
         {
-            if (resourceHandler.checkPermission(getValue(),
-                                                deadboltHandler,
-                                                ctx))
+            result = F.Promise.promise(new F.Function0<Boolean>()
             {
-                markActionAsAuthorised(ctx);
-                result = delegate.call(ctx);
-            }
-            else
+                @Override
+                public Boolean apply() throws Throwable
+                {
+                    return resourceHandler.checkPermission(getValue(),
+                                                           deadboltHandler,
+                                                           ctx);
+                }
+            }).flatMap(new F.Function<Boolean, F.Promise<Result>>()
             {
-                markActionAsUnauthorised(ctx);
-                result = onAuthFailure(deadboltHandler,
-                                       configuration.content(),
-                                       ctx);
-            }
+                @Override
+                public F.Promise<Result> apply(final Boolean allowed) throws Throwable
+                {
+                    final F.Promise<Result> innerResult;
+                    if (allowed)
+                    {
+                        markActionAsAuthorised(ctx);
+                        innerResult = delegate.call(ctx);
+                    }
+                    else
+                    {
+                        markActionAsUnauthorised(ctx);
+                        innerResult = onAuthFailure(deadboltHandler,
+                                                    configuration.content(),
+                                                    ctx);
+                    }
+                    return innerResult;
+                }
+            });
         }
         return result;
     }
@@ -104,29 +122,41 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return configuration.value();
     }
 
-    private F.Promise<Result> equality(Http.Context ctx,
-                                       DeadboltHandler deadboltHandler) throws Throwable
+    private F.Promise<Result> equality(final Http.Context ctx,
+                                       final DeadboltHandler deadboltHandler) throws Throwable
     {
-        F.Promise<Result> result;
-
         final String patternValue = getValue();
-
-        if (JavaDeadboltAnalyzer.checkPatternEquality(getSubject(ctx,
-                                                                 deadboltHandler),
-                                                      patternValue))
+        return F.Promise.promise(new F.Function0<Boolean>()
         {
-            markActionAsAuthorised(ctx);
-            result = delegate.call(ctx);
-        }
-        else
+            @Override
+            public Boolean apply() throws Throwable
+            {
+                return ANALYZER.checkPatternEquality(getSubject(ctx,
+                                                                deadboltHandler),
+                                                     patternValue);
+            }
+        }).flatMap(new F.Function<Boolean, F.Promise<Result>>()
         {
-            markActionAsUnauthorised(ctx);
-            result = onAuthFailure(deadboltHandler,
-                                   configuration.content(),
-                                   ctx);
-        }
+            @Override
+            public F.Promise<Result> apply(final Boolean equal) throws Throwable
+            {
+                final F.Promise<Result> result;
+                if (equal)
+                {
+                    markActionAsAuthorised(ctx);
+                    result = delegate.call(ctx);
+                }
+                else
+                {
+                    markActionAsUnauthorised(ctx);
+                    result = onAuthFailure(deadboltHandler,
+                                           configuration.content(),
+                                           ctx);
+                }
 
-        return result;
+                return result;
+            }
+        });
     }
 
     /**
@@ -137,30 +167,47 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
      * @return the necessary result
      * @throws Throwable if something needs throwing
      */
-    private F.Promise<Result> regex(Http.Context ctx,
-                                    DeadboltHandler deadboltHandler) throws Throwable
+    private F.Promise<Result> regex(final Http.Context ctx,
+                                    final DeadboltHandler deadboltHandler) throws Throwable
     {
-        F.Promise<Result> result;
-
         final String patternValue = getValue();
-        java.util.regex.Pattern pattern = DeadboltViewSupport.getPattern(patternValue);
-
-        if (JavaDeadboltAnalyzer.checkRegexPattern(getSubject(ctx,
-                                                              deadboltHandler),
-                                                   pattern))
+        return F.Promise.promise(new F.Function0<java.util.regex.Pattern>()
         {
-            markActionAsAuthorised(ctx);
-            result = delegate.call(ctx);
-        }
-        else
+            @Override
+            public java.util.regex.Pattern apply() throws Throwable
+            {
+                return DeadboltViewSupport.getPattern(patternValue);
+            }
+        }).map(new F.Function<java.util.regex.Pattern, Boolean>()
         {
-            markActionAsUnauthorised(ctx);
-            result = onAuthFailure(deadboltHandler,
-                                   configuration.content(),
-                                   ctx);
-        }
-
-        return result;
+            @Override
+            public Boolean apply(final java.util.regex.Pattern pattern) throws Throwable
+            {
+                return ANALYZER.checkRegexPattern(getSubject(ctx,
+                                                             deadboltHandler),
+                                                  pattern);
+            }
+        }).flatMap(new F.Function<Boolean, F.Promise<Result>>()
+        {
+            @Override
+            public F.Promise<Result> apply(final Boolean applicable) throws Throwable
+            {
+                final F.Promise<Result> result;
+                if (applicable)
+                {
+                    markActionAsAuthorised(ctx);
+                    result = delegate.call(ctx);
+                }
+                else
+                {
+                    markActionAsUnauthorised(ctx);
+                    result = onAuthFailure(deadboltHandler,
+                                           configuration.content(),
+                                           ctx);
+                }
+                return result;
+            }
+        });
     }
 
     @Override

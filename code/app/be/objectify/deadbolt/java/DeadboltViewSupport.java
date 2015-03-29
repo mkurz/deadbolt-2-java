@@ -22,12 +22,10 @@ import be.objectify.deadbolt.java.utils.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.cache.Cache;
-import play.libs.F;
 import play.mvc.Http;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -39,23 +37,26 @@ public class DeadboltViewSupport
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeadboltViewSupport.class);
 
+    private static final JavaDeadboltAnalyzer ANALYZER = new JavaDeadboltAnalyzer();
+
     /**
      * Used for restrict tags in the template.
      *
      * @param roles a list of String arrays.  Within an array, the roles are ANDed.  The arrays in the list are OR'd.
      * @return true if the view can be accessed, otherwise false
      */
-    public static boolean viewRestrict(List<String[]> roles,
-                                       DeadboltHandler handler) throws Throwable
+    public static boolean viewRestrict(final List<String[]> roles,
+                                       final DeadboltHandler handler) throws Throwable
     {
+        final Subject subject = RequestUtils.getSubject(handler == null ? PluginUtils.getDeadboltHandler()
+                                                                        : handler,
+                                                        Http.Context.current());
+
         boolean roleOk = false;
-        DeadboltHandler deadboltHandler = handler == null ? PluginUtils.getDeadboltHandler() : handler;
-        Subject subject = RequestUtils.getSubject(deadboltHandler,
-                                                  Http.Context.current());
         for (int i = 0; !roleOk && i < roles.size(); i++)
         {
-            roleOk = JavaDeadboltAnalyzer.checkRole(subject,
-                                                roles.get(i));
+            roleOk = ANALYZER.checkRole(subject,
+                                        roles.get(i));
         }
 
         return roleOk;
@@ -68,13 +69,14 @@ public class DeadboltViewSupport
      * @param meta meta information on the resource
      * @return true if the view can be accessed, otherwise false
      */
-    public static boolean viewDynamic(String name,
-                                      String meta,
-                                      DeadboltHandler handler) throws Throwable
+    public static boolean viewDynamic(final String name,
+                                      final String meta,
+                                      final DeadboltHandler handler) throws Throwable
     {
-        Http.Context context = Http.Context.current();
-        DeadboltHandler deadboltHandler = handler == null ? PluginUtils.getDeadboltHandler() : handler;
-        DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(context);
+        final Http.Context context = Http.Context.current();
+        final DeadboltHandler deadboltHandler = handler == null ? PluginUtils.getDeadboltHandler()
+                                                                : handler;
+        final DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(context);
         boolean allowed = false;
         if (resourceHandler == null)
         {
@@ -99,12 +101,11 @@ public class DeadboltViewSupport
      *
      * @return true if the view can be accessed, otherwise false
      */
-    public static boolean viewSubjectPresent(DeadboltHandler handler) throws Throwable
+    public static boolean viewSubjectPresent(final DeadboltHandler handler) throws Throwable
     {
-        DeadboltHandler deadboltHandler = handler == null ? PluginUtils.getDeadboltHandler() : handler;
-        Subject subject = RequestUtils.getSubject(deadboltHandler,
-                                                  Http.Context.current());
-        return subject != null;
+        return RequestUtils.getSubject(handler == null ? PluginUtils.getDeadboltHandler()
+                                                       : handler,
+                                       Http.Context.current()) != null;
     }
 
     /**
@@ -112,12 +113,11 @@ public class DeadboltViewSupport
      *
      * @return true if the view can be accessed, otherwise false
      */
-    public static boolean viewSubjectNotPresent(DeadboltHandler handler) throws Throwable
+    public static boolean viewSubjectNotPresent(final DeadboltHandler handler) throws Throwable
     {
-        DeadboltHandler deadboltHandler = handler == null ? PluginUtils.getDeadboltHandler() : handler;
-        Subject subject = RequestUtils.getSubject(deadboltHandler,
-                                                  Http.Context.current());
-        return subject == null;
+        return RequestUtils.getSubject(handler == null ? PluginUtils.getDeadboltHandler()
+                                                       : handler,
+                                       Http.Context.current()) == null;
     }
 
     public static boolean viewPattern(final String value,
@@ -125,43 +125,37 @@ public class DeadboltViewSupport
                                       final DeadboltHandler handler) throws Exception
     {
         final Http.Context context = Http.Context.current();
-        final DeadboltHandler deadboltHandler = handler == null ? PluginUtils.getDeadboltHandler() : handler;
+        final DeadboltHandler deadboltHandler = handler == null ? PluginUtils.getDeadboltHandler()
+                                                                : handler;
 
-        return RequestUtils.getSubjectAsPromise(deadboltHandler,
-                                                context)
-                           .map(new F.Function<Subject, Boolean>()
-                           {
-                               @Override
-                               public Boolean apply(Subject subject) throws Throwable
-                               {
-                                   boolean allowed = false;
-                                   switch (patternType)
-                                   {
-                                       case EQUALITY:
-                                           allowed = JavaDeadboltAnalyzer.checkPatternEquality(subject,
-                                                                                               value);
-                                           break;
-                                       case REGEX:
-                                           allowed = JavaDeadboltAnalyzer.checkRegexPattern(subject,
-                                                                                            getPattern(value));
-                                           break;
-                                       case CUSTOM:
-                                           allowed = JavaDeadboltAnalyzer.checkCustomPattern(deadboltHandler,
-                                                                                             context,
-                                                                                             value);
-                                           break;
-                                       default:
-                                           LOGGER.error("Unknown pattern type [{}]",
-                                                        patternType);
-                                   }
+        final Subject subject = RequestUtils.getSubject(deadboltHandler,
+                                                        context);
+        final boolean allowed;
+        switch (patternType)
+        {
+            case EQUALITY:
+                allowed = ANALYZER.checkPatternEquality(subject,
+                                                        value);
+                break;
+            case REGEX:
+                allowed = ANALYZER.checkRegexPattern(subject,
+                                                     getPattern(value));
+                break;
+            case CUSTOM:
+                allowed = ANALYZER.checkCustomPattern(deadboltHandler,
+                                                      context,
+                                                      value);
+                break;
+            default:
+                allowed = false;
+                LOGGER.error("Unknown pattern type [{}]",
+                             patternType);
+        }
 
-                                   return allowed;
-                               }
-                           })
-                           .get(PluginUtils.getSubjectTimeout(),
-                                TimeUnit.MILLISECONDS);
+        return allowed;
     }
 
+    // todo - this should not be here, it's also used in PatternAction
     public static Pattern getPattern(final String patternValue) throws Exception
     {
         return Cache.getOrElse("Deadbolt." + patternValue,

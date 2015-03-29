@@ -32,20 +32,33 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     private static final Logger LOGGER = LoggerFactory.getLogger(DeferredDeadboltAction.class);
 
     @Override
-    public F.Promise<Result> execute(Http.Context ctx) throws Throwable
+    public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        AbstractDeadboltAction deferredAction = getDeferredAction(ctx);
-        F.Promise<Result> result;
-        if (deferredAction == null)
+        return F.Promise.promise(new F.Function0<AbstractDeadboltAction>()
         {
-            result = delegate.call(ctx);
-        }
-        else
+            @Override
+            public AbstractDeadboltAction apply() throws Throwable
+            {
+                return getDeferredAction(ctx);
+            }
+        }).flatMap(new F.Function<AbstractDeadboltAction, F.Promise<Result>>()
         {
-            LOGGER.info(String.format("Executing deferred action [%s]",
-                                      deferredAction.getClass().getName()));
-            result = deferredAction.call(ctx);
-        }
-        return result;
+            @Override
+            public F.Promise<Result> apply(final AbstractDeadboltAction deferredAction) throws Throwable
+            {
+                F.Promise<Result> result;
+                if (deferredAction == null)
+                {
+                    result = delegate.call(ctx);
+                }
+                else
+                {
+                    LOGGER.info(String.format("Executing deferred action [%s]",
+                                              deferredAction.getClass().getName()));
+                    result = deferredAction.call(ctx);
+                }
+                return result;
+            }
+        });
     }
 }

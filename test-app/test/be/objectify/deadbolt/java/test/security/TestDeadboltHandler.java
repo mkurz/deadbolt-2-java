@@ -13,16 +13,9 @@ import play.mvc.Http;
 public class TestDeadboltHandler extends MyDeadboltHandler
 {
     @Override
-    public F.Promise<Subject> getSubject(Http.Context context)
+    public Subject getSubject(Http.Context context)
     {
         final Http.Cookie userCookie = context.request().cookie("user");
-        return F.Promise.promise(new F.Function0<Subject>()
-        {
-            @Override
-            public Subject apply() throws Throwable
-            {
-                return User.findByUserName(userCookie.value());
-            }
-        });
+        return User.findByUserName(userCookie.value());
     }
 }

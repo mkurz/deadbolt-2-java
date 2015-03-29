@@ -34,26 +34,37 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
      * {@inheritDoc}
      */
     @Override
-    public F.Promise<Result> execute(Http.Context ctx) throws Throwable
+    public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        F.Promise<Result> result;
+        final F.Promise<Result> result;
         if (isActionAuthorised(ctx) && !configuration.alwaysExecute())
         {
             result = delegate.call(ctx);
         }
         else
         {
-            DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey(),
+            final DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey(),
                                                                  configuration.value());
-            result = deadboltHandler.beforeAuthCheck(ctx);
-
-            Result futureResult = result.get(PluginUtils.getBeforeAuthCheckTimeout(),
-                                             TimeUnit.MILLISECONDS);
-
-            if (futureResult == null)
-            {
-                result = delegate.call(ctx);
-            }
+            result = preAuth(true,
+                             ctx,
+                             deadboltHandler)
+                    .flatMap(new F.Function<Result, F.Promise<Result>>()
+                    {
+                        @Override
+                        public F.Promise<Result> apply(final Result preAuthResult) throws Throwable
+                        {
+                            final F.Promise<Result> innerResult;
+                            if (preAuthResult != null)
+                            {
+                                innerResult = F.Promise.pure(preAuthResult);
+                            }
+                            else
+                            {
+                                innerResult = delegate.call(ctx);
+                            }
+                            return innerResult;
+                        }
+                    });
         }
         return result;
     }

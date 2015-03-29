@@ -18,9 +18,9 @@ public class JavaDeadboltAnalyzerTest
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
                .thenReturn(null);
 
-        JavaDeadboltAnalyzer.checkCustomPattern(deadboltHandler,
-                                                context,
-                                                "foo");
+        new JavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
+                                                      context,
+                                                      "foo");
     }
 
     @Test
@@ -42,9 +42,9 @@ public class JavaDeadboltAnalyzerTest
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
                .thenReturn(dynamicResourceHandler);
 
-        final boolean result = JavaDeadboltAnalyzer.checkCustomPattern(deadboltHandler,
-                                                                       context,
-                                                                       "foo");
+        final boolean result = new JavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
+                                                                             context,
+                                                                             "foo");
         Assert.assertFalse(result);
     }
 
@@ -67,9 +67,9 @@ public class JavaDeadboltAnalyzerTest
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
                .thenReturn(dynamicResourceHandler);
 
-        final boolean result = JavaDeadboltAnalyzer.checkCustomPattern(deadboltHandler,
-                                                                       context,
-                                                                       "foo");
+        final boolean result = new JavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
+                                                                             context,
+                                                                             "foo");
         Assert.assertTrue(result);
     }
 }

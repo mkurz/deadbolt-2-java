@@ -35,19 +35,18 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
         // no-op
     }
 
-    public DynamicAction(Dynamic configuration,
-                         Action<?> delegate)
+    public DynamicAction(final Dynamic configuration,
+                         final Action<?> delegate)
     {
         this.configuration = configuration;
         this.delegate = delegate;
     }
 
     @Override
-    public F.Promise<Result> applyRestriction(Http.Context ctx,
-                                                    DeadboltHandler deadboltHandler) throws Throwable
+    public F.Promise<Result> applyRestriction(final Http.Context ctx,
+                                              final DeadboltHandler deadboltHandler) throws Throwable
     {
-        DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(ctx);
-        F.Promise<Result> result;
+        final DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(ctx);
 
         if (resourceHandler == null)
         {
@@ -55,23 +54,38 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
         }
         else
         {
-            if (resourceHandler.isAllowed(getValue(),
-                                          getMeta(),
-                                          deadboltHandler,
-                                          ctx))
+            return F.Promise.promise(new F.Function0<Boolean>()
             {
-                markActionAsAuthorised(ctx);
-                result = delegate.call(ctx);
-            }
-            else
+                @Override
+                public Boolean apply() throws Throwable
+                {
+                    return resourceHandler.isAllowed(getValue(),
+                                                     getMeta(),
+                                                     deadboltHandler,
+                                                     ctx);
+                }
+            }).flatMap(new F.Function<Boolean, F.Promise<Result>>()
             {
-                markActionAsUnauthorised(ctx);
-                result = onAuthFailure(deadboltHandler,
-                                       configuration.content(),
-                                       ctx);
-            }
+                @Override
+                public F.Promise<Result> apply(final Boolean allowed) throws Throwable
+                {
+                    final F.Promise<Result> result;
+                    if (allowed)
+                    {
+                        markActionAsAuthorised(ctx);
+                        result = delegate.call(ctx);
+                    }
+                    else
+                    {
+                        markActionAsUnauthorised(ctx);
+                        result = onAuthFailure(deadboltHandler,
+                                               configuration.content(),
+                                               ctx);
+                    }
+                    return result;
+                }
+            });
         }
-        return result;
     }
 
     public String getMeta()

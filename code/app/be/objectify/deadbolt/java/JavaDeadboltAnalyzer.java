@@ -16,7 +16,6 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.DeadboltAnalyzer;
-import be.objectify.deadbolt.core.models.Subject;
 import play.mvc.Http;
 
 /**
@@ -32,9 +31,9 @@ public class JavaDeadboltAnalyzer extends DeadboltAnalyzer
      * @param value the pattern value
      * @return true iff the custom check succeeds
      */
-    public static boolean checkCustomPattern(DeadboltHandler handler,
-                                             Http.Context context,
-                                             String value)
+    public boolean checkCustomPattern(final DeadboltHandler handler,
+                                      final Http.Context context,
+                                      final String value)
     {
         boolean patternOk = false;
 

@@ -38,61 +38,70 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
         // no-op
     }
 
-    public RestrictAction(Restrict configuration,
-                          Action<?> delegate)
+    public RestrictAction(final Restrict configuration,
+                          final Action<?> delegate)
     {
         this.configuration = configuration;
         this.delegate = delegate;
     }
 
     @Override
-    public F.Promise<Result> applyRestriction(Http.Context ctx,
-                                   DeadboltHandler deadboltHandler) throws Throwable
+    public F.Promise<Result> applyRestriction(final Http.Context ctx,
+                                              final DeadboltHandler deadboltHandler) throws Throwable
     {
-        F.Promise<Result> result;
-
-        if (isAllowed(ctx,
-                      deadboltHandler))
+        return F.Promise.promise(new F.Function0<Subject>()
         {
-            markActionAsAuthorised(ctx);
-            result = delegate.call(ctx);
-        }
-        else
-        {
-            markActionAsUnauthorised(ctx);
-            result = onAuthFailure(deadboltHandler,
-                                   configuration.content(),
-                                   ctx);
-        }
-
-        return result;
-    }
-
-
-    private boolean isAllowed(Http.Context ctx,
-                              DeadboltHandler deadboltHandler)
-    {
-        Subject subject = getSubject(ctx,
-                                     deadboltHandler);
-
-        boolean roleOk = false;
-        if (subject != null)
-        {
-            List<String[]> roleGroups = getRoleGroups();
-
-            for (int i = 0; !roleOk && i < roleGroups.size(); i++)
+            @Override
+            public Subject apply() throws Throwable
             {
-                roleOk = checkRole(subject,
-                                   roleGroups.get(i));
+                return getSubject(ctx,
+                                  deadboltHandler);
             }
-        }
+        }).map(new F.Function<Subject, Boolean>()
+        {
+            @Override
+            public Boolean apply(final Subject subject) throws Throwable
+            {
+                boolean roleOk = false;
+                if (subject != null)
+                {
+                    List<String[]> roleGroups = getRoleGroups();
 
-        return roleOk;
+                    for (int i = 0; !roleOk && i < roleGroups.size(); i++)
+                    {
+                        roleOk = checkRole(subject,
+                                           roleGroups.get(i));
+                    }
+                }
+
+                return roleOk;
+            }
+        }).flatMap(new F.Function<Boolean, F.Promise<Result>>()
+        {
+            @Override
+            public F.Promise<Result> apply(final Boolean allowed) throws Throwable
+            {
+                final F.Promise<Result> result;
+                if (allowed)
+                {
+                    markActionAsAuthorised(ctx);
+                    result = delegate.call(ctx);
+                }
+                else
+                {
+                    markActionAsUnauthorised(ctx);
+                    result = onAuthFailure(deadboltHandler,
+                                           configuration.content(),
+                                           ctx);
+                }
+                return result;
+            }
+        });
     }
 
     public List<String[]> getRoleGroups()
     {
-        List<String[]> roleGroups = new ArrayList<String[]>();
+        final List<String[]> roleGroups = new ArrayList<String[]>();
         for (Group group : configuration.value())
         {
             roleGroups.add(group.value());

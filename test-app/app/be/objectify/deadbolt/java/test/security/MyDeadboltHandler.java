@@ -12,18 +12,11 @@ import play.mvc.Result;
 public class MyDeadboltHandler extends AbstractDeadboltHandler
 {
     @Override
-    public F.Promise<Subject> getSubject(Http.Context context)
+    public Subject getSubject(Http.Context context)
     {
         // Example using play-authenticate
 //        final AuthUserIdentity identity = PlayAuthenticate.getUser(context);
-//        return F.Promise.promise(new F.Function0<Subject>()
-//        {
-//            @Override
-//            public Subject apply() throws Throwable
-//            {
 //                return User.<Subject>findByAuthUserIdentity(identity);
-//            }
-//        });
         return super.getSubject(context);
     }
 

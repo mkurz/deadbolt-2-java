@@ -16,13 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
-import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.utils.PluginUtils;
 import play.libs.F;
-import play.mvc.Http;
-import play.mvc.Result;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Implements the {@link SubjectPresent} functionality, i.e. a {@link be.objectify.deadbolt.core.models.Subject} must be provided by the
@@ -30,53 +24,31 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class SubjectPresentAction extends AbstractDeadboltAction<SubjectPresent>
+public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
 {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public F.Promise<Result> execute(Http.Context ctx) throws Throwable
+    public SubjectPresentAction()
     {
-        F.Promise<Result> result = F.Promise.pure(null);
-        if (isActionUnauthorised(ctx))
+        super(new PresentPredicate());
+    }
+
+    @Override
+    Config config()
+    {
+        return new Config(configuration.forceBeforeAuthCheck(),
+                          configuration.handlerKey(),
+                          configuration.handler(),
+                          configuration.content());
+    }
+
+    /**
+     * Tests if the provided subject is not null
+     */
+    private static final class PresentPredicate implements F.Predicate<Subject>
+    {
+        @Override
+        public boolean test(final Subject subject) throws Throwable
         {
-            result = onAuthFailure(getDeadboltHandler(configuration.handlerKey(),
-                                                      configuration.handler()),
-                                   configuration.content(),
-                                   ctx);
+            return subject != null;
         }
-        else
-        {
-            DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey(),
-                                                                 configuration.handler());
-            if (configuration.forceBeforeAuthCheck())
-            {
-                result = deadboltHandler.beforeAuthCheck(ctx);
-            }
-
-            Result futureResult = result.get(PluginUtils.getBeforeAuthCheckTimeout(),
-                                             TimeUnit.MILLISECONDS);
-
-            if (futureResult == null)
-            {
-                Subject subject = getSubject(ctx,
-                                             deadboltHandler);
-                if (subject != null)
-                {
-                    markActionAsAuthorised(ctx);
-                    result = delegate.call(ctx);
-                }
-                else
-                {
-                    markActionAsUnauthorised(ctx);
-                    result = onAuthFailure(deadboltHandler,
-                                           configuration.content(),
-                                           ctx);
-                }
-            }
-        }
-
-        return result;
     }
 }

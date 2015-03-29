@@ -25,9 +25,9 @@ public class ReflectionUtils
         // no-op
     }
 
-    public static boolean hasMethod(Class clazz,
-                                    String name,
-                                    Class<?>... parameterTypes)
+    public static boolean hasMethod(final Class clazz,
+                                    final String name,
+                                    final Class<?>... parameterTypes)
     {
         boolean found = false;
 

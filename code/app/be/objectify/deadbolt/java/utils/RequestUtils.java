@@ -23,8 +23,6 @@ import org.slf4j.LoggerFactory;
 import play.libs.F;
 import play.mvc.Http;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
@@ -54,83 +52,20 @@ public class RequestUtils
                                      final Http.Context ctx)
     {
         Object cachedUser = ctx.args.get(PluginConfigKeys.CACHE_DEADBOLT_USER);
-        Subject subject = null;
-        try
-        {
-            final F.Promise<Subject> promise;
-            if (PluginUtils.isUserCacheEnabled())
-            {
-                if (cachedUser != null)
-                {
-                    promise = F.Promise.pure((Subject) cachedUser);
-                }
-                else
-                {
-                    promise = deadboltHandler.getSubject(ctx).map(new F.Function<Subject, Subject>()
-                    {
-                        @Override
-                        public Subject apply(Subject s) throws Throwable
-                        {
-                            ctx.args.put(PluginConfigKeys.CACHE_DEADBOLT_USER,
-                                         s);
-                            return s;
-                        }
-                    });
-                }
-            }
-            else
-            {
-                promise = deadboltHandler.getSubject(ctx);
-            }
-            subject = promise.get(PluginUtils.getSubjectTimeout(),
-                                  TimeUnit.MILLISECONDS);
-        }
-        catch (Exception e)
-        {
-            LOGGER.error("Error getting subject: " + e.getMessage(),
-                         e);
-        }
-        return subject;
-    }
-
-    /**
-     * Get the {@link Subject} as an {#link F.Promise}.
-     *
-     * <p>If per-request subject caching is enabled, the request is checked first.
-     * If no subject is present there, DeadboltHandler#getSubject is called.  The resulting subject, if any, is
-     * cached in the request.</p>
-     *
-     * <p>If per-request subject caching is not enabled, DeadboltHandler#getSubject is called.</p>
-     *
-     * @param deadboltHandler the current Deadbolt handler
-     * @param ctx the context
-     * @return a promises that resolves to the current subject or null if one isn't present
-     */
-    public static F.Promise<Subject> getSubjectAsPromise(final DeadboltHandler deadboltHandler,
-                                                         final Http.Context ctx)
-    {
-        Object cachedUser = ctx.args.get(PluginConfigKeys.CACHE_DEADBOLT_USER);
-        F.Promise<Subject> subject = F.Promise.pure(null);
+        Subject subject;
         try
         {
             if (PluginUtils.isUserCacheEnabled())
             {
                 if (cachedUser != null)
                 {
-                    subject = F.Promise.pure((Subject) cachedUser);
+                    subject = (Subject) cachedUser;
                 }
                 else
                 {
-                    subject = deadboltHandler.getSubject(ctx).map(new F.Function<Subject, Subject>()
-                    {
-                        @Override
-                        public Subject apply(Subject s) throws Throwable
-                        {
-                            ctx.args.put(PluginConfigKeys.CACHE_DEADBOLT_USER,
-                                         s);
-                            return s;
-                        }
-                    });
+                    subject = deadboltHandler.getSubject(ctx);
+                    ctx.args.put(PluginConfigKeys.CACHE_DEADBOLT_USER,
+                                 subject);
                 }
             }
             else
@@ -140,6 +75,7 @@ public class RequestUtils
         }
         catch (Exception e)
         {
+            subject = null;
             LOGGER.error("Error getting subject: " + e.getMessage(),
                          e);
         }

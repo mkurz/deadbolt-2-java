@@ -30,9 +30,9 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
      * {@inheritDoc}
      */
     @Override
-    public F.Promise<Result> execute(Http.Context ctx) throws Throwable
+    public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        F.Promise<Result> result;
+        final F.Promise<Result> result;
         if (isActionUnauthorised(ctx))
         {
             result = onAuthFailure(getDeadboltHandler(configuration.handlerKey(),

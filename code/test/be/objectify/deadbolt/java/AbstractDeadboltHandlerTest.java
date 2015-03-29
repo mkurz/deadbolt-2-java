@@ -31,9 +31,8 @@ public class AbstractDeadboltHandlerTest
 
         final Http.Context context = Mockito.mock(Http.Context.class);
 
-        final F.Promise<Subject> subject = deadboltHandler.getSubject(context);
-        Assert.assertNotNull(subject);
-        Assert.assertNull(subject.get(0));
+        final Subject subject = deadboltHandler.getSubject(context);
+        Assert.assertNull(subject);
     }
 
     @Test
