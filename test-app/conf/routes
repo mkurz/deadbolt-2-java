@@ -12,3 +12,9 @@ GET     /restrict/c/restrictedToFooAndNotBar            be.objectify.deadbolt.ja
 GET     /restrict/c/restrictedToFooAndNotBar/open       be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndNotBar.unrestricted()
 GET     /restrict/c/restrictedToFooOrNotBar             be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.index()
 GET     /restrict/c/restrictedToFooOrNotBar/open        be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.unrestricted()
+
+# SubjectPresent constraints
+GET     /subject/present/m/subjectMustBePresent         be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForMethod.subjectMustBePresent()
+
+GET     /subject/present/c/subjectMustBePresent         be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForController.subjectMustBePresent()
+GET     /subject/present/c/subjectMustBePresent/open    be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForController.unrestricted()
