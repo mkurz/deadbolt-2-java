@@ -45,9 +45,13 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
         if (isActionUnauthorised(ctx))
         {
             result = onAuthFailure(getDeadboltHandler(config.handlerKey,
-                                                            config.handler),
-                                         config.content,
-                                         ctx);
+                                                      config.handler),
+                                   config.content,
+                                   ctx);
+        }
+        else if (isActionAuthorised(ctx))
+        {
+            result = delegate.call(ctx);
         }
         else
         {
