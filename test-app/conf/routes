@@ -26,3 +26,10 @@ GET     /subject/not/present/m/subjectMustNotBePresentInUnrestrictedController b
 
 GET     /subject/not/present/c/subjectMustNotBePresent                         be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForController.subjectMustNotBePresent()
 GET     /subject/not/present/c/subjectMustNotBePresent/open                    be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForController.unrestricted()
+
+# Dynamic constraints
+GET     /dynamic/m/niceName                                                    be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForMethod.userMustHaveTheSameNameAsMyWife()
+GET     /dynamic/m/niceNameInUnrestrictedController                            be.objectify.deadbolt.java.test.controllers.dynamic.ExplicitlyUnrestrictedControllerWithDynamicForMethod.userMustHaveTheSameNameAsMyWife()
+
+GET     /dynamic/c/niceName                                                    be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForController.protectedByControllerLevelDynamic()
+GET     /dynamic/c/niceName/open                                               be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForController.unrestricted()
