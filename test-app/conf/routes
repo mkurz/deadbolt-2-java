@@ -19,3 +19,10 @@ GET     /subject/present/m/subjectMustBePresentInUnrestrictedController         
 
 GET     /subject/present/c/subjectMustBePresent                                 be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForController.subjectMustBePresent()
 GET     /subject/present/c/subjectMustBePresent/open                            be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForController.unrestricted()
+
+# SubjectNotPresent constraints
+GET     /subject/not/present/m/subjectMustNotBePresent                         be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForMethod.subjectMustNotBePresent()
+GET     /subject/not/present/m/subjectMustNotBePresentInUnrestrictedController be.objectify.deadbolt.java.test.controllers.subject.ExplicitlyUnrestrictedControllerWithSubjectNotPresentForMethod.subjectMustNotBePresent()
+
+GET     /subject/not/present/c/subjectMustNotBePresent                         be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForController.subjectMustNotBePresent()
+GET     /subject/not/present/c/subjectMustNotBePresent/open                    be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForController.unrestricted()
