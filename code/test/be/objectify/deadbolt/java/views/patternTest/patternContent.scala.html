@@ -1,0 +1,9 @@
+@(value: String, patternType: be.objectify.deadbolt.core.PatternType, deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+
+This is before the constraint.
+
+@be.objectify.deadbolt.java.views.html.pattern(value = value, patternType = patternType, handler = deadboltHandler) {
+    This is protected by the constraint.
+}
+
+This is after the constraint.

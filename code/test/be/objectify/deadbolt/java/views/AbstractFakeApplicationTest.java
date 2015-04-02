@@ -1,0 +1,36 @@
+package be.objectify.deadbolt.java.views;
+
+import org.junit.After;
+import org.junit.Before;
+import org.mockito.Mockito;
+import play.api.mvc.RequestHeader;
+import play.mvc.Http;
+import play.test.FakeApplication;
+import play.test.Helpers;
+import play.test.WithApplication;
+
+import java.util.Collections;
+
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
+public class AbstractFakeApplicationTest extends WithApplication
+{
+    protected FakeApplication provideFakeApplication()
+    {
+        return Helpers.fakeApplication(Collections.emptyMap(),
+                                       Collections.singletonList("be.objectify.deadbolt.java.DeadboltPlugin"));
+    }
+
+    @Before
+    public void startPlay()
+    {
+        super.startPlay();
+        Http.Context.current.set(new Http.Context(1L,
+                                                  Mockito.mock(RequestHeader.class),
+                                                  Mockito.mock(Http.Request.class),
+                                                  Collections.emptyMap(),
+                                                  Collections.emptyMap(),
+                                                  Collections.emptyMap()));
+    }
+}

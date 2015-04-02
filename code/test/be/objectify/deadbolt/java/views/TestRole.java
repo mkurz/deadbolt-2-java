@@ -1,0 +1,22 @@
+package be.objectify.deadbolt.java.views;
+
+import be.objectify.deadbolt.core.models.Role;
+
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
+public class TestRole implements Role
+{
+    private final String name;
+
+    public TestRole(final String name)
+    {
+        this.name = name;
+    }
+
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+}
