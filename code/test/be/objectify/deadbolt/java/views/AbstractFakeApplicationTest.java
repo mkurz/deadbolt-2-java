@@ -1,6 +1,5 @@
 package be.objectify.deadbolt.java.views;
 
-import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mockito;
 import play.api.mvc.RequestHeader;
@@ -18,7 +17,7 @@ public class AbstractFakeApplicationTest extends WithApplication
 {
     protected FakeApplication provideFakeApplication()
     {
-        return Helpers.fakeApplication(Collections.emptyMap(),
+        return Helpers.fakeApplication(Collections.<String, Object>emptyMap(),
                                        Collections.singletonList("be.objectify.deadbolt.java.DeadboltPlugin"));
     }
 
@@ -29,8 +28,8 @@ public class AbstractFakeApplicationTest extends WithApplication
         Http.Context.current.set(new Http.Context(1L,
                                                   Mockito.mock(RequestHeader.class),
                                                   Mockito.mock(Http.Request.class),
-                                                  Collections.emptyMap(),
-                                                  Collections.emptyMap(),
-                                                  Collections.emptyMap()));
+                                                  Collections.<String, String>emptyMap(),
+                                                  Collections.<String, String>emptyMap(),
+                                                  Collections.<String, Object>emptyMap()));
     }
 }
