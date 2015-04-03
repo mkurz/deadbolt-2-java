@@ -1,16 +1,13 @@
 package be.objectify.deadbolt.java.views.dynamicTest;
 
-import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
-import be.objectify.deadbolt.java.views.AbstractFakeApplicationTest;
-import be.objectify.deadbolt.java.views.AbstractNoPreAuthDeadboltHandler;
+import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
+import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
 import org.junit.Assert;
 import org.junit.Test;
-import play.libs.F;
 import play.mvc.Http;
-import play.mvc.Result;
 import play.test.Helpers;
 import play.twirl.api.Content;
 

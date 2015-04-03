@@ -16,3 +16,4 @@ libraryDependencies ++= Seq(
 )
 
 resolvers += Resolver.sonatypeRepo("snapshots") 
+

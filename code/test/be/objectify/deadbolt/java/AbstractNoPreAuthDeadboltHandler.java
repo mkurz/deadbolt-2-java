@@ -1,4 +1,4 @@
-package be.objectify.deadbolt.java.views;
+package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import play.libs.F;

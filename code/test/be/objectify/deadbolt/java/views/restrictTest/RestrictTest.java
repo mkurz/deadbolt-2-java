@@ -2,10 +2,10 @@ package be.objectify.deadbolt.java.views.restrictTest;
 
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.views.AbstractFakeApplicationTest;
-import be.objectify.deadbolt.java.views.AbstractNoPreAuthDeadboltHandler;
-import be.objectify.deadbolt.java.views.TestRole;
-import be.objectify.deadbolt.java.views.TestSubject;
+import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
+import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
+import be.objectify.deadbolt.java.testsupport.TestRole;
+import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
 import play.mvc.Http;

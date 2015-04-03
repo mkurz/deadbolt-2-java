@@ -1,4 +1,4 @@
-package be.objectify.deadbolt.java.views;
+package be.objectify.deadbolt.java;
 
 import org.junit.Before;
 import org.mockito.Mockito;
@@ -31,5 +31,10 @@ public class AbstractFakeApplicationTest extends WithApplication
                                                   Collections.<String, String>emptyMap(),
                                                   Collections.<String, String>emptyMap(),
                                                   Collections.<String, Object>emptyMap()));
+    }
+
+    public Http.Context context()
+    {
+        return Http.Context.current.get();
     }
 }

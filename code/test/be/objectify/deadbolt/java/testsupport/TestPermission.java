@@ -1,4 +1,4 @@
-package be.objectify.deadbolt.java.views;
+package be.objectify.deadbolt.java.testsupport;
 
 import be.objectify.deadbolt.core.models.Permission;
 
