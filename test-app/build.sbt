@@ -1,6 +1,6 @@
 name := """test-app"""
 
-version := "2.3.3-SNAPSHOT"
+version := "2.3.3"
 
 scalaVersion := "2.11.1"
 
