@@ -1,5 +1,7 @@
 package be.objectify.deadbolt.java.test.security;
 
+import be.objectify.deadbolt.core.models.Permission;
+import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
@@ -8,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,7 +57,20 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
                                    final DeadboltHandler deadboltHandler,
                                    final Http.Context ctx)
     {
-        // todo - implement this for Pattern testing
-        return true;
+        // this can be completely arbitrary, but to keep things simple for testing we're
+        // just checking for zombies...just like I do every night before I go to bed
+        boolean allow = false;
+        final Subject subject = deadboltHandler.getSubject(ctx);
+        if (subject != null)
+        {
+            final List<? extends Permission> permissions = subject.getPermissions();
+            for (Iterator<? extends Permission> iterator = permissions.iterator(); !allow && iterator.hasNext(); )
+            {
+                final Permission permission = iterator.next();
+                final String value = permission.getValue();
+                allow = value != null && value.contains("zombie");
+            }
+        }
+        return allow;
     }
 }

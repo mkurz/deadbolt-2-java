@@ -1,35 +1,52 @@
 # Restrict constraints
-GET     /restrict/m/restrictedToFooAndBar                                       be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooAndBar()
-GET     /restrict/m/restrictedToFooOrBar                                        be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooOrBar()
-GET     /restrict/m/restrictedToFooAndNotBar                                    be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooAndNotBar()
-GET     /restrict/m/restrictedToFooOrNotBar                                     be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooOrNotBar()
+GET        /restrict/m/restrictedToFooAndBar                                             be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooAndBar()
+GET        /restrict/m/restrictedToFooOrBar                                              be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooOrBar()
+GET        /restrict/m/restrictedToFooAndNotBar                                          be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooAndNotBar()
+GET        /restrict/m/restrictedToFooOrNotBar                                           be.objectify.deadbolt.java.test.controllers.restrict.RestrictMethodConstraints.restrictedToFooOrNotBar()
 
-GET     /restrict/c/restrictedToFooAndBar                                       be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndBar.index()
-GET     /restrict/c/restrictedToFooAndBar/open                                  be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndBar.unrestricted()
-GET     /restrict/c/restrictedToFooOrBar                                        be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrBar.index()
-GET     /restrict/c/restrictedToFooOrBar/open                                   be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrBar.unrestricted()
-GET     /restrict/c/restrictedToFooAndNotBar                                    be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndNotBar.index()
-GET     /restrict/c/restrictedToFooAndNotBar/open                               be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndNotBar.unrestricted()
-GET     /restrict/c/restrictedToFooOrNotBar                                     be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.index()
-GET     /restrict/c/restrictedToFooOrNotBar/open                                be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.unrestricted()
+GET        /restrict/c/restrictedToFooAndBar                                             be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndBar.index()
+GET        /restrict/c/restrictedToFooAndBar/open                                        be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndBar.unrestricted()
+GET        /restrict/c/restrictedToFooOrBar                                              be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrBar.index()
+GET        /restrict/c/restrictedToFooOrBar/open                                         be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrBar.unrestricted()
+GET        /restrict/c/restrictedToFooAndNotBar                                          be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndNotBar.index()
+GET        /restrict/c/restrictedToFooAndNotBar/open                                     be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooAndNotBar.unrestricted()
+GET        /restrict/c/restrictedToFooOrNotBar                                           be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.index()
+GET        /restrict/c/restrictedToFooOrNotBar/open                                      be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.unrestricted()
 
 # SubjectPresent constraints
-GET     /subject/present/m/subjectMustBePresent                                 be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForMethod.subjectMustBePresent()
-GET     /subject/present/m/subjectMustBePresentInUnrestrictedController         be.objectify.deadbolt.java.test.controllers.subject.ExplicitlyUnrestrictedControllerWithSubjectPresentForMethod.subjectMustBePresent()
+GET        /subject/present/m/subjectMustBePresent                                       be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForMethod.subjectMustBePresent()
+GET        /subject/present/m/subjectMustBePresentInUnrestrictedController               be.objectify.deadbolt.java.test.controllers.subject.ExplicitlyUnrestrictedControllerWithSubjectPresentForMethod.subjectMustBePresent()
 
-GET     /subject/present/c/subjectMustBePresent                                 be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForController.subjectMustBePresent()
-GET     /subject/present/c/subjectMustBePresent/open                            be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForController.unrestricted()
+GET        /subject/present/c/subjectMustBePresent                                       be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForController.subjectMustBePresent()
+GET        /subject/present/c/subjectMustBePresent/open                                  be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForController.unrestricted()
 
 # SubjectNotPresent constraints
-GET     /subject/not/present/m/subjectMustNotBePresent                         be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForMethod.subjectMustNotBePresent()
-GET     /subject/not/present/m/subjectMustNotBePresentInUnrestrictedController be.objectify.deadbolt.java.test.controllers.subject.ExplicitlyUnrestrictedControllerWithSubjectNotPresentForMethod.subjectMustNotBePresent()
+GET        /subject/not/present/m/subjectMustNotBePresent                                be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForMethod.subjectMustNotBePresent()
+GET        /subject/not/present/m/subjectMustNotBePresentInUnrestrictedController        be.objectify.deadbolt.java.test.controllers.subject.ExplicitlyUnrestrictedControllerWithSubjectNotPresentForMethod.subjectMustNotBePresent()
 
-GET     /subject/not/present/c/subjectMustNotBePresent                         be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForController.subjectMustNotBePresent()
-GET     /subject/not/present/c/subjectMustNotBePresent/open                    be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForController.unrestricted()
+GET        /subject/not/present/c/subjectMustNotBePresent                                be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForController.subjectMustNotBePresent()
+GET        /subject/not/present/c/subjectMustNotBePresent/open                           be.objectify.deadbolt.java.test.controllers.subject.SubjectNotPresentForController.unrestricted()
 
 # Dynamic constraints
-GET     /dynamic/m/niceName                                                    be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForMethod.userMustHaveTheSameNameAsMyWife()
-GET     /dynamic/m/niceNameInUnrestrictedController                            be.objectify.deadbolt.java.test.controllers.dynamic.ExplicitlyUnrestrictedControllerWithDynamicForMethod.userMustHaveTheSameNameAsMyWife()
+GET        /dynamic/m/niceName                                                           be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForMethod.userMustHaveTheSameNameAsMyWife()
+GET        /dynamic/m/niceNameInUnrestrictedController                                   be.objectify.deadbolt.java.test.controllers.dynamic.ExplicitlyUnrestrictedControllerWithDynamicForMethod.userMustHaveTheSameNameAsMyWife()
 
-GET     /dynamic/c/niceName                                                    be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForController.protectedByControllerLevelDynamic()
-GET     /dynamic/c/niceName/open                                               be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForController.unrestricted()
+GET        /dynamic/c/niceName                                                           be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForController.protectedByControllerLevelDynamic()
+GET        /dynamic/c/niceName/open                                                      be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForController.unrestricted()
+
+# Pattern constraints
+GET        /pattern/equality/m/checkEquality                                             be.objectify.deadbolt.java.test.controllers.pattern.EqualityForMethod.zombieKillersOnly()
+
+GET        /pattern/equality/c/checkEquality                                             be.objectify.deadbolt.java.test.controllers.pattern.EqualityForController.protectedByControllerLevelEquality()
+GET        /pattern/equality/c/checkEquality/open                                        be.objectify.deadbolt.java.test.controllers.pattern.EqualityForController.unrestricted()
+
+GET        /pattern/regex/m/checkExactMatch                                              be.objectify.deadbolt.java.test.controllers.pattern.RegexForMethod.zombieKillersOnly()
+GET        /pattern/regex/m/checkHierarchicalMatch                                       be.objectify.deadbolt.java.test.controllers.pattern.RegexForMethod.anyKillersOfTheUndeadWelcome()
+
+GET        /pattern/regex/c/checkMatch                                                   be.objectify.deadbolt.java.test.controllers.pattern.RegexForController.protectedByControllerLevelRegex()
+GET        /pattern/regex/c/checkMatch/open                                              be.objectify.deadbolt.java.test.controllers.pattern.RegexForController.unrestricted()
+
+GET        /pattern/custom/m/checkCustom                                                 be.objectify.deadbolt.java.test.controllers.pattern.CustomForMethod.accessDependsOnTheCustomTest()
+
+GET        /pattern/custom/c/checkCustom                                                 be.objectify.deadbolt.java.test.controllers.pattern.CustomForController.protectedByControllerLevelCustom()
+GET        /pattern/custom/c/checkCustom/open                                            be.objectify.deadbolt.java.test.controllers.pattern.CustomForController.unrestricted()
