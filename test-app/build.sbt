@@ -1,20 +1,19 @@
 name := """test-app"""
 
-version := "2.3.3"
+version := "2.4.0-SNAPSHOT"
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.5"
 
-crossScalaVersions := Seq("2.11.1", "2.10.4")
+crossScalaVersions := Seq("2.11.5", "2.10.4")
 
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
 
 libraryDependencies ++= Seq(
   javaJdbc,
-  javaEbean,
   cache,
   javaWs,
-  "com.jayway.restassured" % "rest-assured" % "1.8.1" % "test",
-  "org.dbunit" % "dbunit" % "2.4.9" % "test"
+  "com.jayway.restassured" % "rest-assured" % "2.4.0" % "test",
+  "org.dbunit" % "dbunit" % "2.5.0" % "test"
 )
 
 lazy val deadboltJava = (project in file("modules/deadbolt-java")).enablePlugins(PlayJava)

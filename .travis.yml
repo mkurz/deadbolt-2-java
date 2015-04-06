@@ -1,20 +1,13 @@
 language: scala
 jdk:
-- openjdk6
+- oraclejdk8
 scala:
-- 2.11.1
+- 2.11.5
 script:
 - cd code
 - sbt ++$TRAVIS_SCALA_VERSION +test
 - cd ../test-app
-- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.1 +test
-- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.2 +test
-- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.3 +test
-- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.4 +test
-- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.5 +test
-- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.6 +test
-- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.7 +test
-- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.3.8 +test
+- sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.0-SNAPSHOT +test
 - cd ../code
 - sbt ++$TRAVIS_SCALA_VERSION +publish-local
 after_success:
