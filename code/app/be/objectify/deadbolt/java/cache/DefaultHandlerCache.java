@@ -73,7 +73,7 @@ public class DefaultHandlerCache implements
             }
         }
 
-        if (handlers.containsKey(ConfigKeys.DEFAULT_HANDLER_KEY))
+        if (!handlers.containsKey(ConfigKeys.DEFAULT_HANDLER_KEY))
         {
             LOGGER.warn("No default handler declared for Deadbolt");
         }
