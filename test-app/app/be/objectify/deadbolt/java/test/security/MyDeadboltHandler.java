@@ -20,7 +20,7 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
 
     public MyDeadboltHandler()
     {
-        Map<String, DynamicResourceHandler> delegates = new HashMap<String, DynamicResourceHandler>();
+        Map<String, DynamicResourceHandler> delegates = new HashMap<>();
         delegates.put("niceName",
                       new NiceNameDynamicResourceHandler());
         this.dynamicHandler = new CompositeDynamicResourceHandler(delegates);

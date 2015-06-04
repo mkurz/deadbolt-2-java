@@ -3,7 +3,7 @@ package be.objectify.deadbolt.java.test.models;
 import be.objectify.deadbolt.core.models.Permission;
 import be.objectify.deadbolt.core.models.Role;
 import be.objectify.deadbolt.core.models.Subject;
-import play.db.ebean.Model;
+import com.avaje.ebean.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,8 +16,8 @@ import java.util.List;
 @Entity
 public class User extends Model implements Subject
 {
-    private static final Finder<String, User> FIND = new Finder<String, User>(String.class,
-                                                                              User.class);
+    private static final Finder<String, User> FIND = new Finder<>(String.class,
+                                                                  User.class);
 
     @Id
     public String userName;

@@ -58,7 +58,10 @@ public class AbstractDeadboltHandlerTest
                                                                        "foo");
         Assert.assertNotNull(promise);
 
-        final play.api.mvc.Result result = promise.get(100, TimeUnit.MILLISECONDS).toScala();
+        final Result result = promise.get(100, TimeUnit.MILLISECONDS);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(401,
+                            result.status());
     }
 
     @Test

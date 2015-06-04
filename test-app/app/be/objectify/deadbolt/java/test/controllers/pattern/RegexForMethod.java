@@ -1,7 +1,6 @@
 package be.objectify.deadbolt.java.test.controllers.pattern;
 
 import be.objectify.deadbolt.core.PatternType;
-import be.objectify.deadbolt.java.actions.Dynamic;
 import be.objectify.deadbolt.java.actions.Pattern;
 import play.libs.F;
 import play.mvc.Controller;

@@ -28,18 +28,13 @@ public class SubjectNotPresentMethodConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/subject/not/present/m/subjectMustNotBePresent");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/subject/not/present/m/subjectMustNotBePresent");
                 });
     }
 
@@ -51,18 +46,13 @@ public class SubjectNotPresentMethodConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/subject/not/present/m/subjectMustNotBePresent");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/subject/not/present/m/subjectMustNotBePresent");
                 });
     }
 
@@ -73,18 +63,13 @@ public class SubjectNotPresentMethodConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/subject/not/present/m/subjectMustNotBePresentInUnrestrictedController");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/subject/not/present/m/subjectMustNotBePresentInUnrestrictedController");
                 });
     }
 
@@ -96,18 +81,13 @@ public class SubjectNotPresentMethodConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/subject/not/present/m/subjectMustNotBePresentInUnrestrictedController");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/subject/not/present/m/subjectMustNotBePresentInUnrestrictedController");
                 });
     }
 }

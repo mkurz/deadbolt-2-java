@@ -99,7 +99,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
 
     public List<String[]> getRoleGroups()
     {
-        final List<String[]> roleGroups = new ArrayList<String[]>();
+        final List<String[]> roleGroups = new ArrayList<>();
         for (Group group : configuration.value())
         {
             roleGroups.add(group.value());

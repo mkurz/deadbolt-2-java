@@ -20,7 +20,7 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompositeDynamicResourceHandler.class);
 
-    private final Map<String, DynamicResourceHandler> delegates = new HashMap<String, DynamicResourceHandler>();
+    private final Map<String, DynamicResourceHandler> delegates = new HashMap<>();
 
     CompositeDynamicResourceHandler(final Map<String, DynamicResourceHandler> delegates)
     {

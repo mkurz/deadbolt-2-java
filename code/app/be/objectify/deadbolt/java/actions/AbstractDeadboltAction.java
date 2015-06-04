@@ -163,7 +163,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         {
             LOGGER.warn("Deadbolt: Exception when invoking onAuthFailure",
                         e);
-            result = F.Promise.promise(() -> Results.internalServerError());
+            result = F.Promise.promise(Results::internalServerError);
         }
         return result;
     }

@@ -85,7 +85,7 @@ public class DeadboltViewSupport
         return subjectCache.apply(handler == null ? handlerCache.get()
                                                   : handler,
                                   Http.Context.current())
-                           .map(subjectOption -> testRoles.apply(subjectOption))
+                           .map(testRoles::apply)
                            .get(timeoutInMillis,
                                 TimeUnit.MILLISECONDS);
 

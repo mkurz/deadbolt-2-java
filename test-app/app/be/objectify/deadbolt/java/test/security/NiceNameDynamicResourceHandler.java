@@ -1,6 +1,5 @@
 package be.objectify.deadbolt.java.test.security;
 
-import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import play.libs.F;

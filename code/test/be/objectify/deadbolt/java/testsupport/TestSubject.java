@@ -43,8 +43,8 @@ public class TestSubject implements Subject
 
     public static final class Builder
     {
-        private final List<Role> roles = new LinkedList<Role>();
-        private final List<Permission> permissions = new LinkedList<Permission>();
+        private final List<Role> roles = new LinkedList<>();
+        private final List<Permission> permissions = new LinkedList<>();
         private String identifier;
 
         public Builder roles(final List<? extends Role> roles)

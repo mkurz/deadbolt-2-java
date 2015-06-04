@@ -28,18 +28,13 @@ public class DynamicMethodConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/dynamic/m/niceName");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/dynamic/m/niceName");
                 });
     }
 
@@ -51,18 +46,13 @@ public class DynamicMethodConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "steve")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/dynamic/m/niceName");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "steve")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/dynamic/m/niceName");
                 });
     }
 
@@ -75,18 +65,13 @@ public class DynamicMethodConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/dynamic/m/niceName");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/dynamic/m/niceName");
                 });
     }
 
@@ -98,18 +83,13 @@ public class DynamicMethodConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/dynamic/m/niceNameInUnrestrictedController");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/dynamic/m/niceNameInUnrestrictedController");
                 });
     }
 
@@ -121,18 +101,13 @@ public class DynamicMethodConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "steve")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/dynamic/m/niceNameInUnrestrictedController");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "steve")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/dynamic/m/niceNameInUnrestrictedController");
                 });
     }
 
@@ -144,18 +119,13 @@ public class DynamicMethodConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/dynamic/m/niceNameInUnrestrictedController");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/dynamic/m/niceNameInUnrestrictedController");
                 });
     }
 }

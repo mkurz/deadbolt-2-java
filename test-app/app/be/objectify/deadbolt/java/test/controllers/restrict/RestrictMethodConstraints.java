@@ -2,11 +2,9 @@ package be.objectify.deadbolt.java.test.controllers.restrict;
 
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
-import play.*;
 import play.libs.F;
-import play.mvc.*;
-
-import views.html.*;
+import play.mvc.Controller;
+import play.mvc.Result;
 
 public class RestrictMethodConstraints extends Controller
 {

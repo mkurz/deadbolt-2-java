@@ -28,18 +28,13 @@ public class CustomControllerConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/pattern/custom/c/checkCustom");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/pattern/custom/c/checkCustom");
                 });
     }
 
@@ -51,18 +46,13 @@ public class CustomControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "lotte")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/pattern/custom/c/checkCustom");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "lotte")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/pattern/custom/c/checkCustom");
                 });
     }
 
@@ -74,18 +64,13 @@ public class CustomControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/pattern/custom/c/checkCustom");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/pattern/custom/c/checkCustom");
                 });
     }
 
@@ -97,18 +82,13 @@ public class CustomControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "mani")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/pattern/custom/c/checkCustom");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "mani")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/pattern/custom/c/checkCustom");
                 });
     }
 
@@ -119,18 +99,13 @@ public class CustomControllerConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/pattern/custom/c/checkCustom/open");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/pattern/custom/c/checkCustom/open");
                 });
     }
 
@@ -142,18 +117,13 @@ public class CustomControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "steve")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/pattern/custom/c/checkCustom/open");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "steve")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/pattern/custom/c/checkCustom/open");
                 });
     }
 
@@ -166,18 +136,13 @@ public class CustomControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/pattern/custom/c/checkCustom/open");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/pattern/custom/c/checkCustom/open");
                 });
     }
 }

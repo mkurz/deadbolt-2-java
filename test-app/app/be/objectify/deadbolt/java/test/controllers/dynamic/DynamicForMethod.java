@@ -1,8 +1,6 @@
 package be.objectify.deadbolt.java.test.controllers.dynamic;
 
 import be.objectify.deadbolt.java.actions.Dynamic;
-import be.objectify.deadbolt.java.actions.SubjectPresent;
-import be.objectify.deadbolt.java.actions.Unrestricted;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;

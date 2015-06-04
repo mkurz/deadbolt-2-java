@@ -72,9 +72,10 @@ public class DefaultHandlerCache implements
                                                 e);
             }
         }
-        else
+
+        if (handlers.containsKey(ConfigKeys.DEFAULT_HANDLER_KEY))
         {
-            LOGGER.warn("No Java handler declared for Deadbolt");
+            LOGGER.warn("No default handler declared for Deadbolt");
         }
 
     }
