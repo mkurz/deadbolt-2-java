@@ -2,6 +2,8 @@ package be.objectify.deadbolt.java;
 
 import org.junit.Before;
 import org.mockito.Mockito;
+import play.Application;
+import play.inject.guice.GuiceApplicationBuilder;
 import play.api.mvc.RequestHeader;
 import play.mvc.Http;
 import play.test.FakeApplication;
@@ -15,10 +17,11 @@ import java.util.Collections;
  */
 public class AbstractFakeApplicationTest extends WithApplication
 {
-    protected FakeApplication provideFakeApplication()
+    @Override
+    protected Application provideApplication()
     {
-        return Helpers.fakeApplication(Collections.<String, Object>emptyMap(),
-                                       Collections.singletonList("be.objectify.deadbolt.java.DeadboltPlugin"));
+        return new GuiceApplicationBuilder().bindings(new DeadboltModule())
+                                            .build();
     }
 
     @Before

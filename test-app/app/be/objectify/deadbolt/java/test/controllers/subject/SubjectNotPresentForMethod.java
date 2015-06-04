@@ -1,6 +1,7 @@
 package be.objectify.deadbolt.java.test.controllers.subject;
 
 import be.objectify.deadbolt.java.actions.SubjectNotPresent;
+import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -10,8 +11,8 @@ import play.mvc.Result;
 public class SubjectNotPresentForMethod extends Controller
 {
     @SubjectNotPresent
-    public static Result subjectMustNotBePresent()
+    public static F.Promise<Result> subjectMustNotBePresent()
     {
-        return ok("Content accessible");
+        return F.Promise.promise(() -> ok("Content accessible"));
     }
 }

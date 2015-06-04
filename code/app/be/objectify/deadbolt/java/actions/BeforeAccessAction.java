@@ -16,12 +16,14 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.utils.PluginUtils;
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
 
 /**
  * Invokes beforeAuthCheck on the global or a specific {@link be.objectify.deadbolt.java.DeadboltHandler}.
@@ -30,6 +32,16 @@ import java.util.concurrent.TimeUnit;
  */
 public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
 {
+    @Inject
+    public BeforeAccessAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                              final DefaultSubjectCache subjectCache,
+                              final DefaultHandlerCache handlerCache)
+    {
+        super(analyzer,
+              subjectCache,
+              handlerCache);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -43,28 +55,12 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
         }
         else
         {
-            final DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey(),
-                                                                 configuration.value());
+            final DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey());
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .flatMap(new F.Function<Result, F.Promise<Result>>()
-                    {
-                        @Override
-                        public F.Promise<Result> apply(final Result preAuthResult) throws Throwable
-                        {
-                            final F.Promise<Result> innerResult;
-                            if (preAuthResult != null)
-                            {
-                                innerResult = F.Promise.pure(preAuthResult);
-                            }
-                            else
-                            {
-                                innerResult = delegate.call(ctx);
-                            }
-                            return innerResult;
-                        }
-                    });
+                    .flatMap(preAuthResult -> preAuthResult.map(F.Promise::pure)
+                                                           .orElseGet(() -> sneakyCall(delegate, ctx)));
         }
         return result;
     }

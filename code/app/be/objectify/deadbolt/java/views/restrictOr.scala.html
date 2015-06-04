@@ -1,8 +1,8 @@
-@(roles: List[Array[String]], handler: be.objectify.deadbolt.java.DeadboltHandler = null)(body: => Html)(alternativeBody: => Html)
+@(roles: List[Array[String]], handler: be.objectify.deadbolt.java.DeadboltHandler = null, timeoutInMillis: Long = 1000)(body: => Html)(alternativeBody: => Html)
 
 @import scala.collection.JavaConversions._
 
-@if(be.objectify.deadbolt.java.DeadboltViewSupport.viewRestrict(roles, handler)) {
+@if(be.objectify.deadbolt.java.ViewAccessPoint.VIEW_SUPPORT.viewRestrict(roles, handler, timeoutInMillis)) {
 @body
 } else {
 @alternativeBody

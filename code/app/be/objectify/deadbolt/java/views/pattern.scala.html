@@ -1,5 +1,5 @@
-@(value: String, patternType: be.objectify.deadbolt.core.PatternType = be.objectify.deadbolt.core.PatternType.EQUALITY, handler: be.objectify.deadbolt.java.DeadboltHandler = null)(body: => Html)
+@(value: String, patternType: be.objectify.deadbolt.core.PatternType = be.objectify.deadbolt.core.PatternType.EQUALITY, handler: be.objectify.deadbolt.java.DeadboltHandler = null, timeoutInMillis: Long = 1000)(body: => Html)
 
-@if(be.objectify.deadbolt.java.DeadboltViewSupport.viewPattern(value, patternType, handler)) {
+@if(be.objectify.deadbolt.java.ViewAccessPoint.VIEW_SUPPORT.viewPattern(value, patternType, handler, timeoutInMillis)) {
 @body
 }

@@ -7,9 +7,12 @@ import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
 import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
 import org.junit.Assert;
 import org.junit.Test;
+import play.libs.F;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
+
+import java.util.Optional;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -22,16 +25,19 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public DynamicResourceHandler getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return new AbstractDynamicResourceHandler()
+                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public boolean isAllowed(String name, String meta, DeadboltHandler deadboltHandler, Http.Context ctx)
+                    public F.Promise<Boolean> isAllowed(final String name,
+                                                        final String meta,
+                                                        final DeadboltHandler deadboltHandler,
+                                                        final Http.Context ctx)
                     {
-                        return true;
+                        return F.Promise.pure(true);
                     }
-                };
+                }));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicOrContent.render("foo",
@@ -47,19 +53,22 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
     @Test
     public void testName()
     {
-        DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public DynamicResourceHandler getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return new AbstractDynamicResourceHandler()
+                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public boolean isAllowed(String name, String meta, DeadboltHandler deadboltHandler, Http.Context ctx)
+                    public F.Promise<Boolean> isAllowed(final String name,
+                                                        final String meta,
+                                                        final DeadboltHandler deadboltHandler,
+                                                        final Http.Context ctx)
                     {
-                        return "foo".equals(name);
+                        return F.Promise.pure("foo".equals(name));
                     }
-                };
+                }));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicOrContent.render("foo",
@@ -78,16 +87,19 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public DynamicResourceHandler getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return new AbstractDynamicResourceHandler()
+                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public boolean isAllowed(String name, String meta, DeadboltHandler deadboltHandler, Http.Context ctx)
+                    public F.Promise<Boolean> isAllowed(final String name,
+                                                        final String meta,
+                                                        final DeadboltHandler deadboltHandler,
+                                                        final Http.Context ctx)
                     {
-                        return "bar".equals(meta);
+                        return F.Promise.pure("bar".equals(meta));
                     }
-                };
+                }));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicOrContent.render("foo",
@@ -106,16 +118,19 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public DynamicResourceHandler getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return new AbstractDynamicResourceHandler()
+                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public boolean isAllowed(String name, String meta, DeadboltHandler deadboltHandler, Http.Context ctx)
+                    public F.Promise<Boolean> isAllowed(final String name,
+                                                        final String meta,
+                                                        final DeadboltHandler deadboltHandler,
+                                                        final Http.Context ctx)
                     {
-                        return false;
+                        return F.Promise.pure(false);
                     }
-                };
+                }));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicOrContent.render("foo",

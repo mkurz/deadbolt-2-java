@@ -8,12 +8,14 @@ import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
 import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
 import org.junit.Assert;
 import org.junit.Test;
+import play.libs.F;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -26,9 +28,10 @@ public class SubjectNotPresentOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(Http.Context context)
             {
-                return new Subject() {
+                return F.Promise.promise(() -> Optional.of(new Subject()
+                {
                     @Override
                     public List<? extends Role> getRoles()
                     {
@@ -46,7 +49,7 @@ public class SubjectNotPresentOrTest extends AbstractFakeApplicationTest
                     {
                         return "foo";
                     }
-                };
+                }));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.subject.subjectNotPresentOrContent.render(deadboltHandler);

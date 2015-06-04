@@ -15,11 +15,16 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+
+import javax.inject.Inject;
 
 /**
  * Executes a deferred method-level annotation.  Ideally, the associated annotation would be placed
@@ -31,34 +36,33 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeferredDeadboltAction.class);
 
+    @Inject
+    public DeferredDeadboltAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                                  final DefaultSubjectCache subjectCache,
+                                  final DefaultHandlerCache handlerCache)
+    {
+        super(analyzer,
+              subjectCache,
+              handlerCache);
+    }
+
     @Override
     public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        return F.Promise.promise(new F.Function0<AbstractDeadboltAction>()
-        {
-            @Override
-            public AbstractDeadboltAction apply() throws Throwable
-            {
-                return getDeferredAction(ctx);
-            }
-        }).flatMap(new F.Function<AbstractDeadboltAction, F.Promise<Result>>()
-        {
-            @Override
-            public F.Promise<Result> apply(final AbstractDeadboltAction deferredAction) throws Throwable
-            {
-                F.Promise<Result> result;
-                if (deferredAction == null)
-                {
-                    result = delegate.call(ctx);
-                }
-                else
-                {
-                    LOGGER.info(String.format("Executing deferred action [%s]",
-                                              deferredAction.getClass().getName()));
-                    result = deferredAction.call(ctx);
-                }
-                return result;
-            }
-        });
+        return F.Promise.promise(() -> getDeferredAction(ctx))
+                        .flatMap(deferredAction -> {
+                            final F.Promise<Result> result;
+                            if (deferredAction == null)
+                            {
+                                result = delegate.call(ctx);
+                            }
+                            else
+                            {
+                                LOGGER.info(String.format("Executing deferred action [%s]",
+                                                          deferredAction.getClass().getName()));
+                                result = deferredAction.call(ctx);
+                            }
+                            return result;
+                        });
     }
 }

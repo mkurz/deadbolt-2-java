@@ -15,8 +15,12 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.core.models.Subject;
-import play.libs.F;
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
+
+import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * Implements the {@link SubjectPresent} functionality, i.e. a {@link be.objectify.deadbolt.core.models.Subject} must be provided by the
@@ -26,9 +30,15 @@ import play.libs.F;
  */
 public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
 {
-    public SubjectPresentAction()
+    @Inject
+    public SubjectPresentAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                                final DefaultSubjectCache subjectCache,
+                                final DefaultHandlerCache handlerCache)
     {
-        super(new PresentPredicate());
+        super(analyzer,
+              subjectCache,
+              handlerCache,
+              Optional::isPresent);
     }
 
     @Override
@@ -36,19 +46,6 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
     {
         return new Config(configuration.forceBeforeAuthCheck(),
                           configuration.handlerKey(),
-                          configuration.handler(),
                           configuration.content());
-    }
-
-    /**
-     * Tests if the provided subject is not null
-     */
-    private static final class PresentPredicate implements F.Predicate<Subject>
-    {
-        @Override
-        public boolean test(final Subject subject) throws Throwable
-        {
-            return subject != null;
-        }
     }
 }

@@ -17,20 +17,30 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.utils.RequestUtils;
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+
+import java.util.Optional;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
 public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T>
 {
-    private final F.Predicate<Subject> predicate;
+    private final F.Predicate<Optional<Subject>> predicate;
 
-    AbstractSubjectAction(final F.Predicate<Subject> predicate)
+    AbstractSubjectAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                          final DefaultSubjectCache subjectCache,
+                          final DefaultHandlerCache handlerCache,
+                          final F.Predicate<Optional<Subject>> predicate)
     {
+        super(analyzer,
+              subjectCache,
+              handlerCache);
         this.predicate = predicate;
     }
 
@@ -44,8 +54,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
         final Config config = config();
         if (isActionUnauthorised(ctx))
         {
-            result = onAuthFailure(getDeadboltHandler(config.handlerKey,
-                                                      config.handler),
+            result = onAuthFailure(getDeadboltHandler(config.handlerKey),
                                    config.content,
                                    ctx);
         }
@@ -55,22 +64,21 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
         }
         else
         {
-            final DeadboltHandler deadboltHandler = getDeadboltHandler(config.handlerKey,
-                                                                       config.handler);
+            final DeadboltHandler deadboltHandler = getDeadboltHandler(config.handlerKey);
 
             result = preAuth(config.forceBeforeAuthCheck,
                              ctx,
                              deadboltHandler)
-                    .flatMap(new SubjectTest(ctx,
-                                             deadboltHandler,
-                                             config));
+                    .flatMap(preAuthResult -> new SubjectTest(ctx,
+                                                              deadboltHandler,
+                                                              config).apply(preAuthResult));
         }
         return result;
     }
 
     abstract Config config();
 
-    private final class SubjectTest implements F.Function<Result, F.Promise<Result>>
+    private final class SubjectTest implements F.Function<Optional<Result>, F.Promise<Result>>
     {
         private final Http.Context ctx;
         private final DeadboltHandler deadboltHandler;
@@ -86,46 +94,27 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
         }
 
         @Override
-        public F.Promise<Result> apply(final Result preAuthResult) throws Throwable
+        public F.Promise<Result> apply(final Optional<Result> preAuthResult) throws Throwable
         {
-            final F.Promise<Result> result;
-            if (preAuthResult != null)
-            {
-                result = F.Promise.pure(preAuthResult);
-            }
-            else
-            {
-                result = F.Promise.promise(new F.Function0<Subject>()
-                {
-                    @Override
-                    public Subject apply() throws Throwable
-                    {
-                        return getSubject(ctx,
-                                          deadboltHandler);
-                    }
-                }).flatMap(new F.Function<Subject, F.Promise<Result>>()
-                {
-                    @Override
-                    public F.Promise<Result> apply(final Subject subject) throws Throwable
-                    {
-                        final F.Promise<Result> innerResult;
-                        if (predicate.test(subject))
-                        {
-                            markActionAsAuthorised(ctx);
-                            innerResult = delegate.call(ctx);
-                        }
-                        else
-                        {
-                            markActionAsUnauthorised(ctx);
-                            innerResult = onAuthFailure(deadboltHandler,
-                                                        config.content,
-                                                        ctx);
-                        }
-                        return innerResult;
-                    }
-                });
-            }
-            return result;
+            return preAuthResult.map(F.Promise::pure)
+                                .orElseGet(() -> getSubject(ctx,
+                                                            deadboltHandler)
+                                        .flatMap(subject -> {
+                                            final F.Promise<Result> innerResult;
+                                            if (predicate.test(subject))
+                                            {
+                                                markActionAsAuthorised(ctx);
+                                                innerResult = delegate.call(ctx);
+                                            }
+                                            else
+                                            {
+                                                markActionAsUnauthorised(ctx);
+                                                innerResult = onAuthFailure(deadboltHandler,
+                                                                            config.content,
+                                                                            ctx);
+                                            }
+                                            return innerResult;
+                                        }));
         }
     }
 
@@ -133,17 +122,14 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
     {
         public final boolean forceBeforeAuthCheck;
         public final String handlerKey;
-        public final Class<? extends DeadboltHandler> handler;
         public final String content;
 
         Config(final boolean forceBeforeAuthCheck,
                final String handlerKey,
-               final Class<? extends DeadboltHandler> handler,
                final String content)
         {
             this.forceBeforeAuthCheck = forceBeforeAuthCheck;
             this.handlerKey = handlerKey;
-            this.handler = handler;
             this.content = content;
         }
     }

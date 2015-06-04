@@ -20,6 +20,8 @@ import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import java.util.Optional;
+
 /**
  * DeadboltHandler implementations are the main hook into the Deadbolt system.  Here, you can apply authentication
  * checks using {@link DeadboltHandler#beforeAuthCheck}, get the current user, decide what to do when access fails and
@@ -38,7 +40,7 @@ public interface DeadboltHandler {
      *         the user is authenticated (or whatever your test condition is), this will be null otherwise the restriction
      *         won't be applied.
      */
-    F.Promise<Result> beforeAuthCheck(Http.Context context);
+    F.Promise<Optional<Result>> beforeAuthCheck(Http.Context context);
 
     /**
      * Gets the current {@link be.objectify.deadbolt.core.models.Subject}, e.g. the current user.
@@ -46,7 +48,7 @@ public interface DeadboltHandler {
      * @param context the HTTP context
      * @return the current subject
      */
-    Subject getSubject(Http.Context context);
+    F.Promise<Optional<Subject>> getSubject(Http.Context context);
 
     /**
      * Invoked when an access failure is detected on <i>controllerClassName</i>.
@@ -65,5 +67,5 @@ public interface DeadboltHandler {
      * @param context the HTTP context
      * @return the handler for restricted resources. May be null.
      */
-    DynamicResourceHandler getDynamicResourceHandler(Http.Context context);
+    F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context);
 }

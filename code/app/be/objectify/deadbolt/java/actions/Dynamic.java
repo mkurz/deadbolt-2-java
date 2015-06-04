@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.ConfigKeys;
 import play.mvc.With;
 
 import java.lang.annotation.Documented;
@@ -62,21 +62,12 @@ public @interface Dynamic
     String content() default "";
 
     /**
-     * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global one.
-     *
-     * @return the class of the DeadboltHandler you want to use
-     * @deprecated Use {@link Dynamic#handlerKey()} instead
-     */
-    @Deprecated
-    Class<? extends DeadboltHandler> handler() default DeadboltHandler.class;
-
-    /**
      * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global
      * one, identified by a key.
      *
      * @return the ky of the handler
      */
-    String handlerKey() default "";
+    String handlerKey() default ConfigKeys.DEFAULT_HANDLER_KEY;
 
     /**
      * If true, the annotation will only be run if there is a {@link DeferredDeadbolt} annotation at the class level.

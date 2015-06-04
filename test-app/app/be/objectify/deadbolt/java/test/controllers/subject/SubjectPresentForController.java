@@ -2,6 +2,7 @@ package be.objectify.deadbolt.java.test.controllers.subject;
 
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import be.objectify.deadbolt.java.actions.Unrestricted;
+import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -11,14 +12,14 @@ import play.mvc.Result;
 @SubjectPresent
 public class SubjectPresentForController extends Controller
 {
-    public static Result subjectMustBePresent()
+    public static F.Promise<Result> subjectMustBePresent()
     {
-        return ok("Content accessible");
+        return F.Promise.promise(() -> ok("Content accessible"));
     }
 
     @Unrestricted
-    public static Result unrestricted()
+    public static F.Promise<Result> unrestricted()
     {
-        return ok("Content accessible");
+        return F.Promise.promise(() -> ok("Content accessible"));
     }
 }

@@ -11,9 +11,12 @@ import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
+import play.libs.F;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
+
+import java.util.Optional;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -26,10 +29,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
+                                                                                    .build()));
             }
 
         };
@@ -49,10 +52,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
+                                                                                    .build()));
             }
 
         };
@@ -72,9 +75,9 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
             }
 
         };
@@ -109,10 +112,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
+                                                                                    .build()));
             }
 
         };
@@ -132,10 +135,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
+                                                                                    .build()));
             }
 
         };
@@ -155,10 +158,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
+                                                                                    .build()));
             }
 
         };
@@ -178,9 +181,9 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
             }
 
         };
@@ -215,16 +218,18 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public DynamicResourceHandler getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return new AbstractDynamicResourceHandler()
+                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public boolean checkPermission(String permissionValue, DeadboltHandler deadboltHandler, Http.Context ctx)
+                    public F.Promise<Boolean> checkPermission(final String permissionValue,
+                                                              final DeadboltHandler deadboltHandler,
+                                                              final Http.Context ctx)
                     {
-                        return "killer.undead.zombie".equals(permissionValue);
+                        return F.Promise.pure("killer.undead.zombie".equals(permissionValue));
                     }
-                };
+                }));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternOrContent.render("killer.undead.zombie",
@@ -243,16 +248,18 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public DynamicResourceHandler getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
             {
-                return new AbstractDynamicResourceHandler()
+                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public boolean checkPermission(String permissionValue, DeadboltHandler deadboltHandler, Http.Context ctx)
+                    public F.Promise<Boolean> checkPermission(final String permissionValue,
+                                                              final DeadboltHandler deadboltHandler,
+                                                              final Http.Context ctx)
                     {
-                        return true;
+                        return F.Promise.pure(true);
                     }
-                };
+                }));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternOrContent.render("killer.undead.zombie",
@@ -271,16 +278,18 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public DynamicResourceHandler getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
             {
-                return new AbstractDynamicResourceHandler()
+                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public boolean checkPermission(String permissionValue, DeadboltHandler deadboltHandler, Http.Context ctx)
+                    public F.Promise<Boolean> checkPermission(final String permissionValue,
+                                                              final DeadboltHandler deadboltHandler,
+                                                              final Http.Context ctx)
                     {
-                        return false;
+                        return F.Promise.pure(false);
                     }
-                };
+                }));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternOrContent.render("killer.undead.zombie",

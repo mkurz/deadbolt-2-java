@@ -15,9 +15,14 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+
+import javax.inject.Inject;
 
 /**
  * Implements the {@link Unrestricted} functionality, i.e. there are no restrictions on the resource.
@@ -26,26 +31,37 @@ import play.mvc.Result;
  */
 public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
 {
+    @Inject
+    public UnrestrictedAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                              final DefaultSubjectCache subjectCache,
+                              final DefaultHandlerCache handlerCache)
+    {
+        super(analyzer,
+              subjectCache,
+              handlerCache);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        final F.Promise<Result> result;
-        if (isActionUnauthorised(ctx))
-        {
-            result = onAuthFailure(getDeadboltHandler(configuration.handlerKey(),
-                                                      configuration.handler()),
-                                   configuration.content(),
-                                   ctx);
-        }
-        else
-        {
-            markActionAsAuthorised(ctx);
-            result = delegate.call(ctx);
-        }
-
-        return result;
+        return F.Promise.promise(() -> isActionUnauthorised(ctx))
+                        .flatMap(unauthorised -> {
+                            final F.Promise<Result> result;
+                            if (unauthorised)
+                            {
+                                result = onAuthFailure(getDeadboltHandler(configuration.handlerKey()),
+                                                       configuration.content(),
+                                                       ctx);
+                            }
+                            else
+                            {
+                                markActionAsAuthorised(ctx);
+                                result = delegate.call(ctx);
+                            }
+                            return result;
+                        });
     }
 }

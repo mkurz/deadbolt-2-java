@@ -16,11 +16,15 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DynamicResourceHandler;
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+
+import javax.inject.Inject;
 
 /**
  * A dynamic restriction is user-defined, and so completely arbitrary.  Hence, no checks on subjects, etc, occur
@@ -30,62 +34,55 @@ import play.mvc.Result;
  */
 public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
 {
-    public DynamicAction()
+    @Inject
+    public DynamicAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                         final DefaultSubjectCache subjectCache,
+                         final DefaultHandlerCache handlerCache)
     {
-        // no-op
+        super(analyzer,
+              subjectCache,
+              handlerCache);
     }
 
-    public DynamicAction(final Dynamic configuration,
+    public DynamicAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                         final DefaultSubjectCache subjectCache,
+                         final DefaultHandlerCache handlerCache,
+                         final Dynamic configuration,
                          final Action<?> delegate)
     {
+        this(analyzer,
+             subjectCache,
+             handlerCache);
         this.configuration = configuration;
         this.delegate = delegate;
     }
 
     @Override
     public F.Promise<Result> applyRestriction(final Http.Context ctx,
-                                              final DeadboltHandler deadboltHandler) throws Throwable
+                                              final DeadboltHandler deadboltHandler)
     {
-        final DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(ctx);
-
-        if (resourceHandler == null)
-        {
-            throw new RuntimeException("A dynamic resource is specified but no dynamic resource handler is provided");
-        }
-        else
-        {
-            return F.Promise.promise(new F.Function0<Boolean>()
-            {
-                @Override
-                public Boolean apply() throws Throwable
-                {
-                    return resourceHandler.isAllowed(getValue(),
-                                                     getMeta(),
-                                                     deadboltHandler,
-                                                     ctx);
-                }
-            }).flatMap(new F.Function<Boolean, F.Promise<Result>>()
-            {
-                @Override
-                public F.Promise<Result> apply(final Boolean allowed) throws Throwable
-                {
-                    final F.Promise<Result> result;
-                    if (allowed)
-                    {
-                        markActionAsAuthorised(ctx);
-                        result = delegate.call(ctx);
-                    }
-                    else
-                    {
-                        markActionAsUnauthorised(ctx);
-                        result = onAuthFailure(deadboltHandler,
-                                               configuration.content(),
-                                               ctx);
-                    }
-                    return result;
-                }
-            });
-        }
+        return deadboltHandler.getDynamicResourceHandler(ctx)
+                              .map(option -> option.orElseThrow(() -> new RuntimeException("A dynamic resource is specified but no dynamic resource handler is provided")))
+                              .flatMap(drh -> drh.isAllowed(getValue(),
+                                                            getMeta(),
+                                                            deadboltHandler,
+                                                            ctx))
+                              .flatMap(allowed -> {
+                                  final F.Promise<Result> result;
+                                  if (allowed)
+                                  {
+                                      markActionAsAuthorised(ctx);
+                                      result = delegate.call(ctx);
+                                  }
+                                  else
+                                  {
+                                      markActionAsUnauthorised(ctx);
+                                      result = onAuthFailure(deadboltHandler,
+                                                             configuration.content(),
+                                                             ctx);
+                                  }
+                                  return result;
+                              });
     }
 
     public String getMeta()
@@ -102,11 +99,5 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     public String getHandlerKey()
     {
         return configuration.handlerKey();
-    }
-
-    @Override
-    public Class<? extends DeadboltHandler> getDeadboltHandlerClass()
-    {
-        return configuration.handler();
     }
 }

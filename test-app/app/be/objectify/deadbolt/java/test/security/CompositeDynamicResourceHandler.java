@@ -1,12 +1,11 @@
 package be.objectify.deadbolt.java.test.security;
 
 import be.objectify.deadbolt.core.models.Permission;
-import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
-import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.HashMap;
@@ -29,18 +28,18 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
     }
 
     @Override
-    public boolean isAllowed(final String name,
-                             final String meta,
-                             final DeadboltHandler deadboltHandler,
-                             final Http.Context ctx)
+    public F.Promise<Boolean> isAllowed(final String name,
+                                        final String meta,
+                                        final DeadboltHandler deadboltHandler,
+                                        final Http.Context ctx)
     {
         final DynamicResourceHandler delegate = delegates.get(name);
-        final boolean result;
+        final F.Promise<Boolean> result;
         if (delegate == null)
         {
             LOGGER.error("No DynamicResourceHandler with name [{}] found, denying access",
                          name);
-            result = false;
+            result = F.Promise.pure(false);
         }
         else
         {
@@ -53,24 +52,27 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
     }
 
     @Override
-    public boolean checkPermission(final String permissionValue,
-                                   final DeadboltHandler deadboltHandler,
-                                   final Http.Context ctx)
+    public F.Promise<Boolean> checkPermission(final String permissionValue,
+                                              final DeadboltHandler deadboltHandler,
+                                              final Http.Context ctx)
     {
         // this can be completely arbitrary, but to keep things simple for testing we're
         // just checking for zombies...just like I do every night before I go to bed
-        boolean allow = false;
-        final Subject subject = deadboltHandler.getSubject(ctx);
-        if (subject != null)
-        {
-            final List<? extends Permission> permissions = subject.getPermissions();
-            for (Iterator<? extends Permission> iterator = permissions.iterator(); !allow && iterator.hasNext(); )
-            {
-                final Permission permission = iterator.next();
-                final String value = permission.getValue();
-                allow = value != null && value.contains("zombie");
-            }
-        }
-        return allow;
+        return deadboltHandler.getSubject(ctx)
+                .map(option -> {
+                    boolean allow = false;
+                    if (option.isPresent())
+                    {
+                        final List<? extends Permission> permissions = option.get()
+                                                                             .getPermissions();
+                        for (Iterator<? extends Permission> iterator = permissions.iterator(); !allow && iterator.hasNext(); )
+                        {
+                            final Permission permission = iterator.next();
+                            final String value = permission.getValue();
+                            allow = value != null && value.contains("zombie");
+                        }
+                    }
+                    return allow;
+                });
     }
 }

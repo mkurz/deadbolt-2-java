@@ -21,6 +21,8 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 
+import java.util.Optional;
+
 /**
  * Abstract implementation of {@link DeadboltHandler} that gives a standard unauthorised result when access fails.
  *
@@ -31,9 +33,9 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public Subject getSubject(final Http.Context context)
+    public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
     {
-        return null;
+        return F.Promise.promise(Optional::empty);
     }
 
     /**
@@ -42,21 +44,14 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     public F.Promise<Result> onAuthFailure(final Http.Context context,
                                            final String content)
     {
-        return F.Promise.promise(new F.Function0<Result>()
-        {
-            @Override
-            public Result apply() throws Throwable
-            {
-                return unauthorized(views.html.defaultpages.unauthorized.render());
-            }
-        });
+        return F.Promise.promise(() -> unauthorized(views.html.defaultpages.unauthorized.render()));
     }
 
     /**
      * {@inheritDoc}
      */
-    public DynamicResourceHandler getDynamicResourceHandler(final Http.Context context)
+    public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
     {
-        return null;
+        return F.Promise.promise(Optional::empty);
     }
 }

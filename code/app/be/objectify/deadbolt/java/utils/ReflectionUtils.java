@@ -18,7 +18,7 @@ package be.objectify.deadbolt.java.utils;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class ReflectionUtils
+public final class ReflectionUtils
 {
     private ReflectionUtils()
     {

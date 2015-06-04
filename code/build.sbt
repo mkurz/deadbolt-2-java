@@ -4,9 +4,9 @@ version := "2.4.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(play.PlayJava)
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.6"
 
-crossScalaVersions := Seq("2.11.5", "2.10.4")
+crossScalaVersions := Seq("2.11.6", "2.10.5")
 
 organization := "be.objectify"
 
@@ -17,4 +17,6 @@ libraryDependencies ++= Seq(
 )
 
 resolvers += Resolver.sonatypeRepo("snapshots") 
+
+routesGenerator := InjectedRoutesGenerator
 

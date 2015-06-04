@@ -17,9 +17,14 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.utils.RequestUtils;
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import play.libs.F;
 import play.mvc.Http;
+
+import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * Implements the {@link SubjectNotPresent} functionality, i.e. the
@@ -30,9 +35,15 @@ import play.mvc.Http;
  */
 public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPresent>
 {
-    public SubjectNotPresentAction()
+    @Inject
+    public SubjectNotPresentAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                                   final DefaultSubjectCache subjectCache,
+                                   final DefaultHandlerCache handlerCache)
     {
-        super(new NotPresentPredicate());
+        super(analyzer,
+              subjectCache,
+              handlerCache,
+              subjectOption -> !subjectOption.isPresent());
     }
 
     @Override
@@ -40,7 +51,6 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
     {
         return new Config(configuration.forceBeforeAuthCheck(),
                           configuration.handlerKey(),
-                          configuration.handler(),
                           configuration.content());
     }
 
@@ -52,20 +62,11 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
      * @return the Subject, if any
      */
     @Override
-    protected Subject getSubject(final Http.Context ctx,
-                                 final DeadboltHandler deadboltHandler)
+    protected F.Promise<Optional<Subject>> getSubject(final Http.Context ctx,
+                                                      final DeadboltHandler deadboltHandler)
     {
         // Bypass the additional - and in this case, incorrect - logging of the overridden method
-        return RequestUtils.getSubject(deadboltHandler,
-                                       ctx);
-    }
-
-    private static final class NotPresentPredicate implements F.Predicate<Subject>
-    {
-        @Override
-        public boolean test(final Subject subject) throws Throwable
-        {
-            return subject == null;
-        }
+        return subjectCache.apply(deadboltHandler,
+                                   ctx);
     }
 }

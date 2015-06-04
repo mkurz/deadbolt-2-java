@@ -4,6 +4,7 @@ import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.java.actions.Dynamic;
 import be.objectify.deadbolt.java.actions.Pattern;
 import be.objectify.deadbolt.java.actions.Unrestricted;
+import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -13,14 +14,14 @@ import play.mvc.Result;
 @Pattern(value = "killer.undead.zombie", patternType = PatternType.EQUALITY)
 public class EqualityForController extends Controller
 {
-    public static Result protectedByControllerLevelEquality()
+    public static F.Promise<Result> protectedByControllerLevelEquality()
     {
-        return ok("Content accessible");
+        return F.Promise.promise(() -> ok("Content accessible"));
     }
 
     @Unrestricted
-    public static Result unrestricted()
+    public static F.Promise<Result> unrestricted()
     {
-        return ok("Content accessible");
+        return F.Promise.promise(() -> ok("Content accessible"));
     }
 }

@@ -15,13 +15,16 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,70 +36,65 @@ import java.util.List;
  */
 public class RestrictAction extends AbstractRestrictiveAction<Restrict>
 {
-    public RestrictAction()
+    @Inject
+    public RestrictAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                          final DefaultSubjectCache subjectCache,
+                          final DefaultHandlerCache handlerCache)
     {
-        // no-op
+        super(analyzer,
+              subjectCache,
+              handlerCache);
     }
 
-    public RestrictAction(final Restrict configuration,
+    public RestrictAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                          final DefaultSubjectCache subjectCache,
+                          final DefaultHandlerCache handlerCache,
+                          final Restrict configuration,
                           final Action<?> delegate)
     {
+        this(analyzer,
+             subjectCache,
+             handlerCache);
         this.configuration = configuration;
         this.delegate = delegate;
     }
 
     @Override
     public F.Promise<Result> applyRestriction(final Http.Context ctx,
-                                              final DeadboltHandler deadboltHandler) throws Throwable
+                                              final DeadboltHandler deadboltHandler)
     {
-        return F.Promise.promise(new F.Function0<Subject>()
-        {
-            @Override
-            public Subject apply() throws Throwable
-            {
-                return getSubject(ctx,
-                                  deadboltHandler);
-            }
-        }).map(new F.Function<Subject, Boolean>()
-        {
-            @Override
-            public Boolean apply(final Subject subject) throws Throwable
-            {
-                boolean roleOk = false;
-                if (subject != null)
-                {
-                    List<String[]> roleGroups = getRoleGroups();
-
-                    for (int i = 0; !roleOk && i < roleGroups.size(); i++)
+        return getSubject(ctx,
+                          deadboltHandler)
+                .map(subjectOption -> {
+                    boolean roleOk = false;
+                    if (subjectOption.isPresent())
                     {
-                        roleOk = checkRole(subject,
-                                           roleGroups.get(i));
-                    }
-                }
+                        final List<String[]> roleGroups = getRoleGroups();
 
-                return roleOk;
-            }
-        }).flatMap(new F.Function<Boolean, F.Promise<Result>>()
-        {
-            @Override
-            public F.Promise<Result> apply(final Boolean allowed) throws Throwable
-            {
-                final F.Promise<Result> result;
-                if (allowed)
-                {
-                    markActionAsAuthorised(ctx);
-                    result = delegate.call(ctx);
-                }
-                else
-                {
-                    markActionAsUnauthorised(ctx);
-                    result = onAuthFailure(deadboltHandler,
-                                           configuration.content(),
-                                           ctx);
-                }
-                return result;
-            }
-        });
+                        for (int i = 0; !roleOk && i < roleGroups.size(); i++)
+                        {
+                            roleOk = checkRole(subjectOption,
+                                               roleGroups.get(i));
+                        }
+                    }
+                    return roleOk;
+                })
+                .flatMap(allowed -> {
+                    final F.Promise<Result> result;
+                    if (allowed)
+                    {
+                        markActionAsAuthorised(ctx);
+                        result = delegate.call(ctx);
+                    }
+                    else
+                    {
+                        markActionAsUnauthorised(ctx);
+                        result = onAuthFailure(deadboltHandler,
+                                               configuration.content(),
+                                               ctx);
+                    }
+                    return result;
+                });
     }
 
     public List<String[]> getRoleGroups()
@@ -113,11 +111,5 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     public String getHandlerKey()
     {
         return configuration.handlerKey();
-    }
-
-    @Override
-    public Class<? extends DeadboltHandler> getDeadboltHandlerClass()
-    {
-        return configuration.handler();
     }
 }

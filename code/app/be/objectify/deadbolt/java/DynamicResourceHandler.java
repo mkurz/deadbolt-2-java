@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java;
 
+import play.libs.F;
 import play.mvc.Http;
 
 /**
@@ -41,7 +42,7 @@ import play.mvc.Http;
  * // repeat for your other dynamic restrictions
  * }
  * <p/>
- * public boolean isAllowed(String name,
+ * public F.Promise<Boolean> isAllowed(String name,
  * String meta,
  * DeadboltHandler deadboltHandler)
  * {
@@ -63,10 +64,10 @@ public interface DynamicResourceHandler
      * @param ctx             the context of the current request
      * @return true if access to the resource is allowed, otherwise false
      */
-    boolean isAllowed(String name,
-                      String meta,
-                      DeadboltHandler deadboltHandler,
-                      Http.Context ctx);
+    F.Promise<Boolean> isAllowed(String name,
+                                 String meta,
+                                 DeadboltHandler deadboltHandler,
+                                 Http.Context ctx);
 
     /**
      * Invoked when a custom pattern needs checking..
@@ -76,7 +77,7 @@ public interface DynamicResourceHandler
      * @param ctx the context of the current request
      * @return true if access based on the permission is  allowed, otherwise false
      */
-    boolean checkPermission(String permissionValue,
-                            DeadboltHandler deadboltHandler,
-                            Http.Context ctx);
+    F.Promise<Boolean> checkPermission(String permissionValue,
+                                       DeadboltHandler deadboltHandler,
+                                       Http.Context ctx);
 }

@@ -3,7 +3,10 @@ package be.objectify.deadbolt.java;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import play.libs.F;
 import play.mvc.Http;
+
+import java.util.Optional;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -18,7 +21,7 @@ public class JavaDeadboltAnalyzerTest
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
                .thenReturn(null);
 
-        new JavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
+        new DefaultJavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
                                                       context,
                                                       "foo");
     }
@@ -29,23 +32,23 @@ public class JavaDeadboltAnalyzerTest
         DynamicResourceHandler dynamicResourceHandler = new AbstractDynamicResourceHandler()
         {
             @Override
-            public boolean checkPermission(String permissionValue,
+            public F.Promise<Boolean> checkPermission(String permissionValue,
                                            DeadboltHandler deadboltHandler,
                                            Http.Context ctx)
             {
-                return false;
+                return F.Promise.pure(false);
             }
         };
 
         final DeadboltHandler deadboltHandler = Mockito.mock(DeadboltHandler.class);
         final Http.Context context = Mockito.mock(Http.Context.class);
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
-               .thenReturn(dynamicResourceHandler);
+               .thenReturn(F.Promise.promise(() -> Optional.of(dynamicResourceHandler)));
 
-        final boolean result = new JavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
-                                                                             context,
-                                                                             "foo");
-        Assert.assertFalse(result);
+        final F.Promise<Boolean> result = new DefaultJavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
+                                                                                        context,
+                                                                                        "foo");
+        Assert.assertFalse(result.get(1000));
     }
 
     @Test
@@ -54,22 +57,22 @@ public class JavaDeadboltAnalyzerTest
         DynamicResourceHandler dynamicResourceHandler = new AbstractDynamicResourceHandler()
         {
             @Override
-            public boolean checkPermission(String permissionValue,
+            public F.Promise<Boolean> checkPermission(String permissionValue,
                                            DeadboltHandler deadboltHandler,
                                            Http.Context ctx)
             {
-                return true;
+                return F.Promise.pure(true);
             }
         };
 
         final DeadboltHandler deadboltHandler = Mockito.mock(DeadboltHandler.class);
         final Http.Context context = Mockito.mock(Http.Context.class);
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
-               .thenReturn(dynamicResourceHandler);
+               .thenReturn(F.Promise.promise(() -> Optional.of(dynamicResourceHandler)));
 
-        final boolean result = new JavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
-                                                                             context,
-                                                                             "foo");
-        Assert.assertTrue(result);
+        final F.Promise<Boolean> result = new DefaultJavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
+                                                                                        context,
+                                                                                        "foo");
+        Assert.assertTrue(result.get(1000));
     }
 }

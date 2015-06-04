@@ -8,12 +8,14 @@ import be.objectify.deadbolt.java.testsupport.TestRole;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
+import play.libs.F;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -26,10 +28,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
@@ -47,10 +49,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
@@ -68,9 +70,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
@@ -88,9 +90,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return null;
+                return F.Promise.promise(Optional::empty);
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
@@ -108,10 +110,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"foo"},
@@ -130,10 +132,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"foo"},
@@ -152,11 +154,11 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"foo"},
@@ -175,9 +177,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"foo"},
@@ -196,9 +198,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return null;
+                return F.Promise.promise(Optional::empty);
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
@@ -216,10 +218,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
@@ -237,10 +239,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
@@ -258,11 +260,11 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
@@ -280,9 +282,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
@@ -300,9 +302,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return null;
+                return F.Promise.promise(Optional::empty);
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
@@ -320,10 +322,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
@@ -341,10 +343,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
@@ -362,11 +364,11 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
@@ -384,9 +386,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
@@ -404,9 +406,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return null;
+                return F.Promise.promise(Optional::empty);
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
@@ -424,10 +426,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"!foo"},
@@ -446,10 +448,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"!foo"},
@@ -468,11 +470,11 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"!foo"},
@@ -491,9 +493,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"!foo"},
@@ -512,9 +514,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return null;
+                return F.Promise.promise(Optional::empty);
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
@@ -532,10 +534,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
@@ -553,10 +555,10 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
@@ -574,11 +576,11 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().role(new TestRole("foo"))
-                                                .role(new TestRole("bar"))
-                                                .build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                                                                                    .role(new TestRole("bar"))
+                                                                                    .build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
@@ -596,9 +598,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return new TestSubject.Builder().build();
+                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
@@ -616,9 +618,9 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public Subject getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return null;
+                return F.Promise.promise(Optional::empty);
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),

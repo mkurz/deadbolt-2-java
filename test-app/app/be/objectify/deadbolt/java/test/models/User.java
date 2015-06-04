@@ -58,11 +58,15 @@ public class User extends Model implements Subject
         return userName;
     }
 
-    public static User findByUserName(String userName)
+    public static User findByUserName(final String userName)
     {
         return FIND.byId(userName);
     }
 
+    public static List<User> findAll()
+    {
+        return FIND.all();
+    }
 
     public static final class Builder
     {

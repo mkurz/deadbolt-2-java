@@ -1,5 +1,5 @@
-@(handler: be.objectify.deadbolt.java.DeadboltHandler = null)(body: => Html)
+@(handler: be.objectify.deadbolt.java.DeadboltHandler = null, timeoutInMillis: Long = 1000)(body: => Html)
 
-@if(be.objectify.deadbolt.java.DeadboltViewSupport.viewSubjectNotPresent(handler)) {
+@if(be.objectify.deadbolt.java.ViewAccessPoint.VIEW_SUPPORT.viewSubjectNotPresent(handler, timeoutInMillis)) {
 @body
 }

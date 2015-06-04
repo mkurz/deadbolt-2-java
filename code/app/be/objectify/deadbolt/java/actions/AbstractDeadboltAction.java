@@ -16,12 +16,11 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
-import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.utils.PluginUtils;
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import be.objectify.deadbolt.java.utils.ReflectionUtils;
-import be.objectify.deadbolt.java.utils.RequestUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.libs.F;
@@ -29,6 +28,8 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+
+import java.util.Optional;
 
 /**
  * Provides some convenience methods for concrete Deadbolt actions, such as getting the correct {@link DeadboltHandler},
@@ -47,62 +48,40 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     private static final String ACTION_DEFERRED = "deadbolt.action-deferred";
     private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
 
-    private static final JavaDeadboltAnalyzer ANALYZER = new JavaDeadboltAnalyzer();
+    final DefaultJavaDeadboltAnalyzer analyzer;
+
+    final DefaultSubjectCache subjectCache;
+
+    final DefaultHandlerCache handlerCache;
+
+    protected AbstractDeadboltAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                                     final DefaultSubjectCache subjectCache,
+                                     final DefaultHandlerCache handlerCache)
+    {
+        this.analyzer = analyzer;
+        this.subjectCache = subjectCache;
+        this.handlerCache = handlerCache;
+    }
 
     /**
-     * Gets the current {@link DeadboltHandler}.  This can come from one of three places:
+     * Gets the current {@link DeadboltHandler}.  This can come from one of two places:
      * - a handler key is provided in the annotation.  A cached instance of that class will be used. This has the highest priority.
-     * - a class name is provided in the annotation.  A new instance of that class will be created.
      * - the global handler defined in the application.conf by deadbolt.handler.  This has the lowest priority.
      *
-     * @param handlerKey the DeadboltHandler key, if any, coming from the annotation. May be null.
-     * @param deadboltHandlerClass the DeadboltHandler class, if any, coming from the annotation. May be null.
+     * @param handlerKey the DeadboltHandler key, if any, coming from the annotation.
      * @param <C>                  the actual class of the DeadboltHandler
-     * @return an instance of DeadboltHandler.
+     * @return an option for the DeadboltHandler.
      */
-    protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(String handlerKey,
-                                                                             Class<C> deadboltHandlerClass) throws Throwable
+    protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(final String handlerKey) throws Throwable
     {
-        DeadboltHandler deadboltHandler;
-        if (StringUtils.isNotEmpty(handlerKey))
-        {
-            LOGGER.info("Getting Deadbolt handler with key [{}]",
+        LOGGER.info("Getting Deadbolt handler with key [{}]",
                     handlerKey);
-            deadboltHandler = PluginUtils.getDeadboltHandler(handlerKey);
-            LOGGER.info("Deadbolt handler with key [{}] - found [{}]",
-                    handlerKey,
-                    deadboltHandler);
-
-            if (deadboltHandler == null)
-            {
-                LOGGER.error("Falling back to global handler because requested handler [{}] is null",
-                             handlerKey);
-                deadboltHandler = PluginUtils.getDeadboltHandler();
-            }
-        }
-        else if (deadboltHandlerClass != null
-                && !deadboltHandlerClass.isInterface())
-        {
-            try
-            {
-                deadboltHandler = deadboltHandlerClass.newInstance();
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException("Error creating Deadbolt handler",
-                                           e);
-            }
-        }
-        else
-        {
-            deadboltHandler = PluginUtils.getDeadboltHandler();
-        }
-        return deadboltHandler;
+        return handlerCache.apply(handlerKey);
     }
 
     /** {@inheritDoc} */
     @Override
-    public F.Promise<Result> call(Http.Context ctx) throws Throwable
+    public F.Promise<Result> call(final Http.Context ctx) throws Throwable
     {
         F.Promise<Result> result;
 
@@ -133,17 +112,17 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @return the result
      * @throws Throwable if something bad happens
      */
-    public abstract F.Promise<Result> execute(Http.Context ctx) throws Throwable;
+    public abstract F.Promise<Result> execute(final Http.Context ctx) throws Throwable;
 
     /**
      * @param subject
      * @param roleNames
      * @return
      */
-    protected boolean checkRole(Subject subject,
+    protected boolean checkRole(Optional<Subject> subject,
                                 String[] roleNames)
     {
-        return ANALYZER.checkRole(subject,
+        return analyzer.checkRole(subject,
                                   roleNames);
     }
 
@@ -152,10 +131,10 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param roleNames
      * @return
      */
-    protected boolean hasAllRoles(Subject subject,
+    protected boolean hasAllRoles(Optional<Subject> subject,
                                   String[] roleNames)
     {
-        return ANALYZER.hasAllRoles(subject,
+        return analyzer.hasAllRoles(subject,
                                     roleNames);
     }
 
@@ -184,14 +163,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         {
             LOGGER.warn("Deadbolt: Exception when invoking onAuthFailure",
                         e);
-            result = F.Promise.promise(new F.Function0<Result>()
-            {
-                @Override
-                public Result apply() throws Throwable
-                {
-                    return Results.internalServerError();
-                }
-            });
+            result = F.Promise.promise(() -> Results.internalServerError());
         }
         return result;
     }
@@ -204,18 +176,19 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param deadboltHandler the Deadbolt handler
      * @return the Subject, if any
      */
-    protected Subject getSubject(Http.Context ctx,
-                                 DeadboltHandler deadboltHandler)
+    protected F.Promise<Optional<Subject>> getSubject(final Http.Context ctx,
+                                                      final DeadboltHandler deadboltHandler)
     {
-        Subject subject = RequestUtils.getSubject(deadboltHandler,
-                                                  ctx);
-        if (subject == null)
-        {
-            LOGGER.error(String.format("Access to [%s] requires a subject, but no subject is present.",
-                                       ctx.request().uri()));
-        }
-
-        return subject;
+        return subjectCache.apply(deadboltHandler,
+                                  ctx)
+                .map(option -> {
+                    if (!option.isPresent())
+                    {
+                        LOGGER.error(String.format("Access to [%s] requires a subject, but no subject is present.",
+                                                   ctx.request().uri()));
+                    }
+                    return option;
+                });
     }
 
     /**
@@ -314,11 +287,40 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         return action;
     }
 
-    public F.Promise<Result> preAuth(final boolean forcePreAuthCheck,
-                                     final Http.Context ctx,
-                                     final DeadboltHandler deadboltHandler)
+    public F.Promise<Optional<Result>> preAuth(final boolean forcePreAuthCheck,
+                                               final Http.Context ctx,
+                                               final DeadboltHandler deadboltHandler)
     {
         return forcePreAuthCheck ? deadboltHandler.beforeAuthCheck(ctx)
-                                 : F.Promise.<Result>pure(null);
+                                 : F.Promise.pure(Optional.empty());
+    }
+
+    public static F.Promise<Result> sneakyCall(final Action<?> action,
+                                               final Http.Context context)
+    {
+        try
+        {
+            return action.call(context);
+        }
+        catch (Throwable t)
+        {
+            throw sneakyThrow(t);
+        }
+    }
+
+    private static RuntimeException sneakyThrow(final Throwable t)
+    {
+        if (t == null)
+        {
+            throw new NullPointerException();
+        }
+        sneakyThrow0(t);
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Throwable> void sneakyThrow0(final Throwable t) throws T
+    {
+        throw (T)t;
     }
 }

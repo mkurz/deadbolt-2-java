@@ -8,6 +8,7 @@ import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,16 +24,20 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public F.Promise<Result> beforeAuthCheck(Http.Context context)
+            public F.Promise<Optional<Result>> beforeAuthCheck(Http.Context context)
             {
-                return null;
+                return F.Promise.promise(Optional::empty);
             }
         };
 
         final Http.Context context = Mockito.mock(Http.Context.class);
 
-        final Subject subject = deadboltHandler.getSubject(context);
-        Assert.assertNull(subject);
+        final F.Promise<Optional<Subject>> promise = deadboltHandler.getSubject(context);
+        Assert.assertNotNull(promise);
+
+        final Optional<Subject> option = promise.get(1000);
+        Assert.assertNotNull(option);
+        Assert.assertFalse(option.isPresent());
     }
 
     @Test
@@ -41,9 +46,9 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public F.Promise<Result> beforeAuthCheck(Http.Context context)
+            public F.Promise<Optional<Result>> beforeAuthCheck(Http.Context context)
             {
-                return null;
+                return F.Promise.promise(Optional::empty);
             }
         };
 
@@ -62,15 +67,19 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public F.Promise<Result> beforeAuthCheck(Http.Context context)
+            public F.Promise<Optional<Result>> beforeAuthCheck(Http.Context context)
             {
-                return null;
+                return F.Promise.promise(Optional::empty);
             }
         };
 
         final Http.Context context = Mockito.mock(Http.Context.class);
 
-        final DynamicResourceHandler dynamicResourceHandler = deadboltHandler.getDynamicResourceHandler(context);
-        Assert.assertNull(dynamicResourceHandler);
+        final F.Promise<Optional<DynamicResourceHandler>> promise = deadboltHandler.getDynamicResourceHandler(context);
+        Assert.assertNotNull(promise);
+
+        final Optional<DynamicResourceHandler> option = promise.get(1000);
+        Assert.assertNotNull(option);
+        Assert.assertFalse(option.isPresent());
     }
 }

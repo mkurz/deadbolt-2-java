@@ -3,6 +3,7 @@ package be.objectify.deadbolt.java.test.controllers.pattern;
 import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.java.actions.Dynamic;
 import be.objectify.deadbolt.java.actions.Pattern;
+import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -12,14 +13,14 @@ import play.mvc.Result;
 public class RegexForMethod extends Controller
 {
     @Pattern(value = "killer.undead.zombie", patternType = PatternType.REGEX)
-    public static Result zombieKillersOnly()
+    public static F.Promise<Result> zombieKillersOnly()
     {
-        return ok("Content accessible");
+        return F.Promise.promise(() -> ok("Content accessible"));
     }
 
     @Pattern(value = "killer.undead.*", patternType = PatternType.REGEX)
-    public static Result anyKillersOfTheUndeadWelcome()
+    public static F.Promise<Result> anyKillersOfTheUndeadWelcome()
     {
-        return ok("Content accessible");
+        return F.Promise.promise(() -> ok("Content accessible"));
     }
 }

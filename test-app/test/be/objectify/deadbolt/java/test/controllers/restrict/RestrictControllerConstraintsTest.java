@@ -28,18 +28,13 @@ public class RestrictControllerConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndBar");
                 });
     }
 
@@ -50,18 +45,13 @@ public class RestrictControllerConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndBar/open");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndBar/open");
                 });
     }
 
@@ -73,18 +63,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndBar");
                 });
 
     }
@@ -97,18 +82,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "steve")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "steve")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndBar");
                 });
 
     }
@@ -121,18 +101,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "lotte")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "lotte")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndBar");
                 });
 
     }
@@ -144,18 +119,13 @@ public class RestrictControllerConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrBar");
                 });
     }
 
@@ -167,18 +137,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "lotte")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrBar/open");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "lotte")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrBar/open");
                 });
 
     }
@@ -191,18 +156,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrBar");
                 });
 
     }
@@ -215,18 +175,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "steve")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "steve")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrBar");
                 });
 
     }
@@ -239,18 +194,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "lotte")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "lotte")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrBar");
                 });
 
     }
@@ -262,18 +212,13 @@ public class RestrictControllerConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndNotBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndNotBar");
                 });
     }
 
@@ -284,18 +229,13 @@ public class RestrictControllerConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndNotBar/open");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndNotBar/open");
                 });
     }
 
@@ -307,18 +247,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndNotBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndNotBar");
                 });
 
     }
@@ -331,18 +266,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "steve")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndNotBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "steve")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndNotBar");
                 });
 
     }
@@ -355,18 +285,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "lotte")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooAndNotBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "lotte")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooAndNotBar");
                 });
 
     }
@@ -378,18 +303,13 @@ public class RestrictControllerConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrNotBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrNotBar");
                 });
     }
 
@@ -400,18 +320,13 @@ public class RestrictControllerConstraintsTest
                            fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build())),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrNotBar/open");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrNotBar/open");
                 });
     }
 
@@ -423,18 +338,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "greet")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrNotBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "greet")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrNotBar");
                 });
 
     }
@@ -447,18 +357,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "steve")
-                                   .expect()
-                                   .statusCode(401)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrNotBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "steve")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrNotBar");
                 });
 
     }
@@ -471,18 +376,13 @@ public class RestrictControllerConstraintsTest
                                                                                           "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
                                                                                      .build(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        RestAssured.given()
-                                   .cookie("user", "lotte")
-                                   .expect()
-                                   .statusCode(200)
-                                   .when()
-                                   .get("/restrict/c/restrictedToFooOrNotBar");
-                    }
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "lotte")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get("/restrict/c/restrictedToFooOrNotBar");
                 });
 
     }

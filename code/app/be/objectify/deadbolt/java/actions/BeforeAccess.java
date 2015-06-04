@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.ConfigKeys;
 import play.mvc.With;
 
 import java.lang.annotation.Documented;
@@ -39,20 +39,12 @@ import java.lang.annotation.Target;
 public @interface BeforeAccess
 {
     /**
-     * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global one.
-     *
-     * @return the class of the DeadboltHandler you want to use
-     * @deprecated Prefer {@link BeforeAccess#handlerKey()} instead.
-     */
-    Class<? extends DeadboltHandler> value() default DeadboltHandler.class;
-
-    /**
      * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global
      * one, identified by a key.
      *
      * @return the key of the handler
      */
-    String handlerKey() default "";
+    String handlerKey() default ConfigKeys.DEFAULT_HANDLER_KEY;
 
     /**
      * By default, if another Deadbolt action has already been executed in the same request and has allowed access,

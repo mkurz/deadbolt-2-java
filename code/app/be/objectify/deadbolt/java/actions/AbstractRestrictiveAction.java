@@ -16,6 +16,9 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
+import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -27,6 +30,15 @@ import play.mvc.Result;
  */
 public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltAction<T>
 {
+    public AbstractRestrictiveAction(final DefaultJavaDeadboltAnalyzer analyzer,
+                                     final DefaultSubjectCache subjectCache,
+                                     final DefaultHandlerCache handlerCache)
+    {
+        super(analyzer,
+              subjectCache,
+              handlerCache);
+    }
+
     @Override
     public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
@@ -37,29 +49,13 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
         }
         else
         {
-            final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey(),
-                                                                       getDeadboltHandlerClass());
+            final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .flatMap(new F.Function<Result, F.Promise<Result>>()
-                    {
-                        @Override
-                        public F.Promise<Result> apply(final Result preAuthResult) throws Throwable
-                        {
-                            final F.Promise<Result> innerResult;
-                            if (preAuthResult != null)
-                            {
-                                innerResult = F.Promise.pure(preAuthResult);
-                            }
-                            else
-                            {
-                                innerResult = applyRestriction(ctx,
-                                                               deadboltHandler);
-                            }
-                            return innerResult;
-                        }
-                    });
+                    .flatMap(option -> option.map(F.Promise::pure)
+                                             .orElseGet(() -> applyRestriction(ctx,
+                                                                               deadboltHandler)));
         }
         return result;
     }
@@ -71,14 +67,6 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
      */
     public abstract String getHandlerKey();
 
-    /**
-     * Get the class of a specific Deadbolt handler.
-     *
-     * @return the class of a DeadboltHandler implementation.  May be null.
-     * @deprecated Prefer {@link be.objectify.deadbolt.java.actions.AbstractRestrictiveAction#getHandlerKey()} instead
-     */
-    public abstract Class<? extends DeadboltHandler> getDeadboltHandlerClass();
-
     public abstract F.Promise<Result> applyRestriction(Http.Context ctx,
-                                                       DeadboltHandler deadboltHandler) throws Throwable;
+                                                       DeadboltHandler deadboltHandler);
 }
