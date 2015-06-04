@@ -9,6 +9,24 @@ Deadbolt 2 comprises of several modules - a common core, and language-specific i
 
 All modules related to Deadbolt 2, including the user guide, are grouped together in the [Deadbolt 2](https://github.com/schaloner/deadbolt-2) Github super-module.  Installation information, including Deadbolt/Play compatibility, can also be found here.
 
+2.4.0 Release notes
+-------------------
+
+This list is incomplete!
+
+- DeadboltPlugin has been removed - delete its entry in play.plugins
+- F.Promise<> is now used by `DeadboltHandler` and `DynamicResourceHandler`.
+- Don't return `null` where an `F.Promise` or `Optional` is required!
+
+Finally, enable the DeadboltModule in application.conf
+
+    play {
+      modules {
+        enabled += "be.objectify.deadbolt.java.DeadboltModule"
+      }
+    }
+
+
 2.3.3 Release notes
 -------------------
 
