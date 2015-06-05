@@ -22,6 +22,7 @@ import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.libs.F;
 import play.mvc.Http;
 
 import javax.inject.Inject;
@@ -29,6 +30,7 @@ import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -48,6 +50,13 @@ public class DeadboltViewSupport
     private final HandlerCache handlerCache;
 
     private final PatternCache patternCache;
+
+    private BiFunction<Long, F.PromiseTimeoutException, Boolean> timeoutHandler = (timeoutInMillis, e) -> {
+        LOGGER.error("Timeout when attempting to complete future within [{}]ms.  Denying access to resource.",
+                     timeoutInMillis,
+                     e);
+        return false;
+    };
 
     @Inject
     public DeadboltViewSupport(final JavaDeadboltAnalyzer analyzer,
@@ -82,13 +91,24 @@ public class DeadboltViewSupport
             return roleOk;
 
         };
-        return subjectCache.apply(handler == null ? handlerCache.get()
-                                                  : handler,
-                                  Http.Context.current())
-                           .map(testRoles::apply)
-                           .get(timeoutInMillis,
-                                TimeUnit.MILLISECONDS);
 
+        boolean allowed;
+        try
+        {
+            allowed = subjectCache.apply(handler == null ? handlerCache.get()
+                                                         : handler,
+                                         Http.Context.current())
+                                  .map(testRoles::apply)
+                                  .get(timeoutInMillis,
+                                       TimeUnit.MILLISECONDS);
+
+        }
+        catch (F.PromiseTimeoutException e)
+        {
+            allowed = timeoutHandler.apply(timeoutInMillis,
+                                           e);
+        }
+        return allowed;
     }
 
     /**
@@ -106,14 +126,24 @@ public class DeadboltViewSupport
         final Http.Context context = Http.Context.current();
         final DeadboltHandler deadboltHandler = handler == null ? handlerCache.get()
                                                                 : handler;
-        return deadboltHandler.getDynamicResourceHandler(Http.Context.current())
-                              .map(drhOption -> drhOption.orElseThrow(() -> new RuntimeException("A dynamic resource is specified but no dynamic resource handler is provided")))
-                              .flatMap(drh -> drh.isAllowed(name,
-                                                            meta,
-                                                            deadboltHandler,
-                                                            context))
-                              .get(timeoutInMillis,
-                                   TimeUnit.MILLISECONDS);
+        boolean allowed;
+        try
+        {
+            allowed = deadboltHandler.getDynamicResourceHandler(Http.Context.current())
+                                     .map(drhOption -> drhOption.orElseThrow(() -> new RuntimeException("A dynamic resource is specified but no dynamic resource handler is provided")))
+                                     .flatMap(drh -> drh.isAllowed(name,
+                                                                   meta,
+                                                                   deadboltHandler,
+                                                                   context))
+                                     .get(timeoutInMillis,
+                                          TimeUnit.MILLISECONDS);
+        }
+        catch (F.PromiseTimeoutException e)
+        {
+            allowed = timeoutHandler.apply(timeoutInMillis,
+                                           e);
+        }
+        return allowed;
     }
 
     /**
@@ -124,11 +154,21 @@ public class DeadboltViewSupport
     public boolean viewSubjectPresent(final DeadboltHandler handler,
                                       final long timeoutInMillis) throws Throwable
     {
-        return subjectCache.apply(handler,
-                                  Http.Context.current())
-                           .get(timeoutInMillis,
-                                TimeUnit.MILLISECONDS)
-                           .isPresent();
+        boolean allowed;
+        try
+        {
+            allowed = subjectCache.apply(handler,
+                                         Http.Context.current())
+                                  .get(timeoutInMillis,
+                                       TimeUnit.MILLISECONDS)
+                                  .isPresent();
+        }
+        catch (F.PromiseTimeoutException e)
+        {
+            allowed = timeoutHandler.apply(timeoutInMillis,
+                                           e);
+        }
+        return allowed;
     }
 
     /**
@@ -139,11 +179,21 @@ public class DeadboltViewSupport
     public boolean viewSubjectNotPresent(final DeadboltHandler handler,
                                          final long timeoutInMillis) throws Throwable
     {
-        return !subjectCache.apply(handler,
-                                   Http.Context.current())
-                            .get(timeoutInMillis,
-                                 TimeUnit.MILLISECONDS)
-                            .isPresent();
+        boolean allowed;
+        try
+        {
+            allowed = !subjectCache.apply(handler,
+                                          Http.Context.current())
+                                   .get(timeoutInMillis,
+                                        TimeUnit.MILLISECONDS)
+                                   .isPresent();
+        }
+        catch (F.PromiseTimeoutException e)
+        {
+            allowed = timeoutHandler.apply(timeoutInMillis,
+                                           e);
+        }
+        return allowed;
     }
 
     public boolean viewPattern(final String value,
@@ -155,33 +205,41 @@ public class DeadboltViewSupport
         final DeadboltHandler deadboltHandler = handler == null ? handlerCache.get()
                                                                 : handler;
 
-        final boolean allowed;
-        switch (patternType)
+        boolean allowed;
+        try
         {
-            case EQUALITY:
-                allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
-                                      .map(subjectOption -> analyzer.checkPatternEquality(subjectOption,
-                                                                                          Optional.ofNullable(value)))
-                                      .get(timeoutInMillis,
-                                           TimeUnit.MILLISECONDS);
-                break;
-            case REGEX:
-                allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
-                                      .map(subjectOption -> analyzer.checkRegexPattern(subjectOption,
-                                                                                       Optional.ofNullable(patternCache.apply(value))))
-                                      .get(timeoutInMillis,
-                                           TimeUnit.MILLISECONDS);
-                break;
-            case CUSTOM:
-                allowed = analyzer.checkCustomPattern(deadboltHandler,
-                                                      context,
-                                                      value)
-                                  .get(timeoutInMillis, TimeUnit.MILLISECONDS);
-                break;
-            default:
-                allowed = false;
-                LOGGER.error("Unknown pattern type [{}]",
-                             patternType);
+            switch (patternType)
+            {
+                case EQUALITY:
+                    allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
+                                          .map(subjectOption -> analyzer.checkPatternEquality(subjectOption,
+                                                                                              Optional.ofNullable(value)))
+                                          .get(timeoutInMillis,
+                                               TimeUnit.MILLISECONDS);
+                    break;
+                case REGEX:
+                    allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
+                                          .map(subjectOption -> analyzer.checkRegexPattern(subjectOption,
+                                                                                           Optional.ofNullable(patternCache.apply(value))))
+                                          .get(timeoutInMillis,
+                                               TimeUnit.MILLISECONDS);
+                    break;
+                case CUSTOM:
+                    allowed = analyzer.checkCustomPattern(deadboltHandler,
+                                                          context,
+                                                          value)
+                                      .get(timeoutInMillis, TimeUnit.MILLISECONDS);
+                    break;
+                default:
+                    allowed = false;
+                    LOGGER.error("Unknown pattern type [{}]",
+                                 patternType);
+            }
+        }
+        catch (F.PromiseTimeoutException e)
+        {
+            allowed = timeoutHandler.apply(timeoutInMillis,
+                                           e);
         }
 
         return allowed;
