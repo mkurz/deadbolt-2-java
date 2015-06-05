@@ -1,4 +1,4 @@
-@(handler: be.objectify.deadbolt.java.DeadboltHandler = null, timeoutInMillis: Long = 1000)(body: => Html)(alternativeBody: => Html)
+@(handler: be.objectify.deadbolt.java.DeadboltHandler = be.objectify.deadbolt.java.ViewAccessPoint.HANDLER_CACHE.get(), timeoutInMillis: Long = 1000)(body: => Html)(alternativeBody: => Html)
 
 @if(be.objectify.deadbolt.java.ViewAccessPoint.VIEW_SUPPORT.viewSubjectPresent(handler, timeoutInMillis)) {
 @body
