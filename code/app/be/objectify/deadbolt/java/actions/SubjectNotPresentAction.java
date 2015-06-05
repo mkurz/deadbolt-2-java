@@ -17,9 +17,9 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
-import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
-import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
+import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.libs.F;
 import play.mvc.Http;
 
@@ -36,9 +36,9 @@ import java.util.Optional;
 public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPresent>
 {
     @Inject
-    public SubjectNotPresentAction(final DefaultJavaDeadboltAnalyzer analyzer,
-                                   final DefaultSubjectCache subjectCache,
-                                   final DefaultHandlerCache handlerCache)
+    public SubjectNotPresentAction(final JavaDeadboltAnalyzer analyzer,
+                                   final SubjectCache subjectCache,
+                                   final HandlerCache handlerCache)
     {
         super(analyzer,
               subjectCache,

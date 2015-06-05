@@ -16,9 +16,9 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
-import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
-import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
+import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
@@ -35,18 +35,18 @@ import javax.inject.Inject;
 public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
 {
     @Inject
-    public DynamicAction(final DefaultJavaDeadboltAnalyzer analyzer,
-                         final DefaultSubjectCache subjectCache,
-                         final DefaultHandlerCache handlerCache)
+    public DynamicAction(final JavaDeadboltAnalyzer analyzer,
+                         final SubjectCache subjectCache,
+                         final HandlerCache handlerCache)
     {
         super(analyzer,
               subjectCache,
               handlerCache);
     }
 
-    public DynamicAction(final DefaultJavaDeadboltAnalyzer analyzer,
-                         final DefaultSubjectCache subjectCache,
-                         final DefaultHandlerCache handlerCache,
+    public DynamicAction(final JavaDeadboltAnalyzer analyzer,
+                         final SubjectCache subjectCache,
+                         final HandlerCache handlerCache,
                          final Dynamic configuration,
                          final Action<?> delegate)
     {

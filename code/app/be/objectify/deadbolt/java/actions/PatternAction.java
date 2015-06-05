@@ -16,10 +16,10 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
-import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
-import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
+import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
+import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
@@ -36,9 +36,9 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     private final PatternCache patternCache;
 
     @Inject
-    public PatternAction(final DefaultJavaDeadboltAnalyzer analyzer,
-                         final DefaultSubjectCache subjectCache,
-                         final DefaultHandlerCache handlerCache,
+    public PatternAction(final JavaDeadboltAnalyzer analyzer,
+                         final SubjectCache subjectCache,
+                         final HandlerCache handlerCache,
                          final PatternCache patternCache)
     {
         super(analyzer,
@@ -47,9 +47,9 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         this.patternCache = patternCache;
     }
 
-    public PatternAction(final DefaultJavaDeadboltAnalyzer analyzer,
-                         final DefaultSubjectCache subjectCache,
-                         final DefaultHandlerCache handlerCache,
+    public PatternAction(final JavaDeadboltAnalyzer analyzer,
+                         final SubjectCache subjectCache,
+                         final HandlerCache handlerCache,
                          final PatternCache patternCache,
                          final Pattern configuration,
                          final Action<?> delegate)

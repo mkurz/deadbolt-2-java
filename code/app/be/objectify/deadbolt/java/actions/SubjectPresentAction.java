@@ -15,9 +15,9 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
-import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
-import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
+import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.cache.SubjectCache;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -31,9 +31,9 @@ import java.util.Optional;
 public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
 {
     @Inject
-    public SubjectPresentAction(final DefaultJavaDeadboltAnalyzer analyzer,
-                                final DefaultSubjectCache subjectCache,
-                                final DefaultHandlerCache handlerCache)
+    public SubjectPresentAction(final JavaDeadboltAnalyzer analyzer,
+                                final SubjectCache subjectCache,
+                                final HandlerCache handlerCache)
     {
         super(analyzer,
               subjectCache,

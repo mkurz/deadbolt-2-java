@@ -15,9 +15,9 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.DefaultJavaDeadboltAnalyzer;
-import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
-import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
+import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -32,9 +32,9 @@ import javax.inject.Inject;
 public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
 {
     @Inject
-    public UnrestrictedAction(final DefaultJavaDeadboltAnalyzer analyzer,
-                              final DefaultSubjectCache subjectCache,
-                              final DefaultHandlerCache handlerCache)
+    public UnrestrictedAction(final JavaDeadboltAnalyzer analyzer,
+                              final SubjectCache subjectCache,
+                              final HandlerCache handlerCache)
     {
         super(analyzer,
               subjectCache,
