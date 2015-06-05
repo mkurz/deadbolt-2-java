@@ -8,6 +8,7 @@ script:
 - sbt ++$TRAVIS_SCALA_VERSION +publishLocal
 - cd ../test-app
 - sbt ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.0 +test
+- cd ../code
 after_success:
 - ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt +publish; };'
 env:
