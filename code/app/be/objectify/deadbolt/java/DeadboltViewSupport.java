@@ -22,6 +22,7 @@ import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.Configuration;
 import play.libs.F;
 import play.mvc.Http;
 
@@ -32,6 +33,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Provides the entry point for view-level annotations.
@@ -42,6 +44,8 @@ import java.util.function.Function;
 public class DeadboltViewSupport
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeadboltViewSupport.class);
+
+    public final Supplier<Long> defaultTimeout;
 
     private final JavaDeadboltAnalyzer analyzer;
 
@@ -59,7 +63,8 @@ public class DeadboltViewSupport
     };
 
     @Inject
-    public DeadboltViewSupport(final JavaDeadboltAnalyzer analyzer,
+    public DeadboltViewSupport(final Configuration configuration,
+                               final JavaDeadboltAnalyzer analyzer,
                                final SubjectCache subjectCache,
                                final HandlerCache handlerCache,
                                final PatternCache patternCache)
@@ -68,6 +73,14 @@ public class DeadboltViewSupport
         this.subjectCache = subjectCache;
         this.handlerCache = handlerCache;
         this.patternCache = patternCache;
+
+
+        final Long timeout = configuration.getLong(ConfigKeys.DEFAULT_VIEW_TIMEOUT,
+                                                   1000L);
+        LOGGER.info("Default timeout period for blocking views is [{}]ms",
+                    timeout);
+        this.defaultTimeout = () -> timeout;
+
     }
 
 
