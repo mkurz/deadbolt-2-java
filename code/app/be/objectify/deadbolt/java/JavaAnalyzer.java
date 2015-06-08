@@ -25,7 +25,7 @@ import javax.inject.Singleton;
  * @author Steve Chaloner (steve@objectify.be)
  */
 @Singleton
-public class DefaultJavaDeadboltAnalyzer extends DeadboltAnalyzer implements JavaDeadboltAnalyzer
+public class JavaAnalyzer extends DeadboltAnalyzer
 {
     /**
      * Checks a custom pattern using the {@link be.objectify.deadbolt.java.DynamicResourceHandler} obtained via the handler.
@@ -35,7 +35,6 @@ public class DefaultJavaDeadboltAnalyzer extends DeadboltAnalyzer implements Jav
      * @param value the pattern value
      * @return true iff the custom check succeeds
      */
-    @Override
     public F.Promise<Boolean> checkCustomPattern(final DeadboltHandler handler,
                                                  final Http.Context context,
                                                  final String value)

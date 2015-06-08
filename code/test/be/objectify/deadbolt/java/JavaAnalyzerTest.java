@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class JavaDeadboltAnalyzerTest
+public class JavaAnalyzerTest
 {
     @Test(expected = RuntimeException.class)
     public void testCheckCustomPattern_noDynamicResourceHandler()
@@ -21,7 +21,7 @@ public class JavaDeadboltAnalyzerTest
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
                .thenReturn(null);
 
-        new DefaultJavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
+        new JavaAnalyzer().checkCustomPattern(deadboltHandler,
                                                       context,
                                                       "foo");
     }
@@ -45,7 +45,7 @@ public class JavaDeadboltAnalyzerTest
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
                .thenReturn(F.Promise.promise(() -> Optional.of(dynamicResourceHandler)));
 
-        final F.Promise<Boolean> result = new DefaultJavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
+        final F.Promise<Boolean> result = new JavaAnalyzer().checkCustomPattern(deadboltHandler,
                                                                                         context,
                                                                                         "foo");
         Assert.assertFalse(result.get(1000));
@@ -70,7 +70,7 @@ public class JavaDeadboltAnalyzerTest
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
                .thenReturn(F.Promise.promise(() -> Optional.of(dynamicResourceHandler)));
 
-        final F.Promise<Boolean> result = new DefaultJavaDeadboltAnalyzer().checkCustomPattern(deadboltHandler,
+        final F.Promise<Boolean> result = new JavaAnalyzer().checkCustomPattern(deadboltHandler,
                                                                                         context,
                                                                                         "foo");
         Assert.assertTrue(result.get(1000));
