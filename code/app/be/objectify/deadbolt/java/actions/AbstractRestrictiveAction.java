@@ -16,7 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.libs.F;
@@ -24,13 +24,13 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 /**
- * Convenience class for checking if an qction has already been authorised before applying the restrictions.
+ * Convenience class for checking if an action has already been authorised before applying the restrictions.
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
 public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltAction<T>
 {
-    public AbstractRestrictiveAction(final JavaDeadboltAnalyzer analyzer,
+    public AbstractRestrictiveAction(final JavaAnalyzer analyzer,
                                      final SubjectCache subjectCache,
                                      final HandlerCache handlerCache)
     {

@@ -16,7 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
@@ -36,7 +36,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     private final PatternCache patternCache;
 
     @Inject
-    public PatternAction(final JavaDeadboltAnalyzer analyzer,
+    public PatternAction(final JavaAnalyzer analyzer,
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
                          final PatternCache patternCache)
@@ -47,7 +47,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         this.patternCache = patternCache;
     }
 
-    public PatternAction(final JavaDeadboltAnalyzer analyzer,
+    public PatternAction(final JavaAnalyzer analyzer,
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
                          final PatternCache patternCache,

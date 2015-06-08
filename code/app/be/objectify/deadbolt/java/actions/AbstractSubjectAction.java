@@ -17,7 +17,7 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.libs.F;
@@ -33,7 +33,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
 {
     private final F.Predicate<Optional<Subject>> predicate;
 
-    AbstractSubjectAction(final JavaDeadboltAnalyzer analyzer,
+    AbstractSubjectAction(final JavaAnalyzer analyzer,
                           final SubjectCache subjectCache,
                           final HandlerCache handlerCache,
                           final F.Predicate<Optional<Subject>> predicate)

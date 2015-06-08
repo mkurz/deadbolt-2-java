@@ -16,7 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.libs.F;
@@ -37,7 +37,7 @@ import java.util.List;
 public class RestrictAction extends AbstractRestrictiveAction<Restrict>
 {
     @Inject
-    public RestrictAction(final JavaDeadboltAnalyzer analyzer,
+    public RestrictAction(final JavaAnalyzer analyzer,
                           final SubjectCache subjectCache,
                           final HandlerCache handlerCache)
     {
@@ -46,7 +46,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
               handlerCache);
     }
 
-    public RestrictAction(final JavaDeadboltAnalyzer analyzer,
+    public RestrictAction(final JavaAnalyzer analyzer,
                           final SubjectCache subjectCache,
                           final HandlerCache handlerCache,
                           final Restrict configuration,

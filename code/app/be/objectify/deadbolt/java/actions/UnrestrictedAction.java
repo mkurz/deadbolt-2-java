@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.libs.F;
@@ -32,7 +32,7 @@ import javax.inject.Inject;
 public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
 {
     @Inject
-    public UnrestrictedAction(final JavaDeadboltAnalyzer analyzer,
+    public UnrestrictedAction(final JavaAnalyzer analyzer,
                               final SubjectCache subjectCache,
                               final HandlerCache handlerCache)
     {

@@ -22,8 +22,8 @@ public class JavaAnalyzerTest
                .thenReturn(null);
 
         new JavaAnalyzer().checkCustomPattern(deadboltHandler,
-                                                      context,
-                                                      "foo");
+                                              context,
+                                              "foo");
     }
 
     @Test
@@ -32,9 +32,9 @@ public class JavaAnalyzerTest
         DynamicResourceHandler dynamicResourceHandler = new AbstractDynamicResourceHandler()
         {
             @Override
-            public F.Promise<Boolean> checkPermission(String permissionValue,
-                                           DeadboltHandler deadboltHandler,
-                                           Http.Context ctx)
+            public F.Promise<Boolean> checkPermission(final String permissionValue,
+                                                      final DeadboltHandler deadboltHandler,
+                                                      final Http.Context ctx)
             {
                 return F.Promise.pure(false);
             }
@@ -46,8 +46,8 @@ public class JavaAnalyzerTest
                .thenReturn(F.Promise.promise(() -> Optional.of(dynamicResourceHandler)));
 
         final F.Promise<Boolean> result = new JavaAnalyzer().checkCustomPattern(deadboltHandler,
-                                                                                        context,
-                                                                                        "foo");
+                                                                                context,
+                                                                                "foo");
         Assert.assertFalse(result.get(1000));
     }
 
@@ -57,9 +57,9 @@ public class JavaAnalyzerTest
         DynamicResourceHandler dynamicResourceHandler = new AbstractDynamicResourceHandler()
         {
             @Override
-            public F.Promise<Boolean> checkPermission(String permissionValue,
-                                           DeadboltHandler deadboltHandler,
-                                           Http.Context ctx)
+            public F.Promise<Boolean> checkPermission(final String permissionValue,
+                                                      final DeadboltHandler deadboltHandler,
+                                                      final Http.Context ctx)
             {
                 return F.Promise.pure(true);
             }
@@ -71,8 +71,8 @@ public class JavaAnalyzerTest
                .thenReturn(F.Promise.promise(() -> Optional.of(dynamicResourceHandler)));
 
         final F.Promise<Boolean> result = new JavaAnalyzer().checkCustomPattern(deadboltHandler,
-                                                                                        context,
-                                                                                        "foo");
+                                                                                context,
+                                                                                "foo");
         Assert.assertTrue(result.get(1000));
     }
 }

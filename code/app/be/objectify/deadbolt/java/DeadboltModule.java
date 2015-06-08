@@ -26,7 +26,7 @@ public class DeadboltModule extends Module
         return seq(bind(SubjectCache.class).to(DefaultSubjectCache.class).in(Singleton.class),
                    bind(PatternCache.class).to(DefaultPatternCache.class).in(Singleton.class),
                    bind(HandlerCache.class).to(DefaultHandlerCache.class).in(Singleton.class),
-                   bind(JavaDeadboltAnalyzer.class).to(DefaultJavaDeadboltAnalyzer.class).in(Singleton.class),
-                   bind(DeadboltViewSupport.class).toSelf());
+                   bind(JavaAnalyzer.class).toSelf().in(Singleton.class),
+                   bind(ViewSupport.class).toSelf());
     }
 }

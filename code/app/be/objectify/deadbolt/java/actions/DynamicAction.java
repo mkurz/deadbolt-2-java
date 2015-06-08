@@ -16,7 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
+import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.libs.F;
@@ -35,7 +35,7 @@ import javax.inject.Inject;
 public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
 {
     @Inject
-    public DynamicAction(final JavaDeadboltAnalyzer analyzer,
+    public DynamicAction(final JavaAnalyzer analyzer,
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache)
     {
@@ -44,7 +44,7 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
               handlerCache);
     }
 
-    public DynamicAction(final JavaDeadboltAnalyzer analyzer,
+    public DynamicAction(final JavaAnalyzer analyzer,
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
                          final Dynamic configuration,

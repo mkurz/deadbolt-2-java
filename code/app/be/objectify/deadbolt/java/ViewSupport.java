@@ -47,7 +47,7 @@ public class ViewSupport
 
     public final Supplier<Long> defaultTimeout;
 
-    private final JavaDeadboltAnalyzer analyzer;
+    private final JavaAnalyzer analyzer;
 
     private final SubjectCache subjectCache;
 
@@ -64,7 +64,7 @@ public class ViewSupport
 
     @Inject
     public ViewSupport(final Configuration configuration,
-                       final JavaDeadboltAnalyzer analyzer,
+                       final JavaAnalyzer analyzer,
                        final SubjectCache subjectCache,
                        final HandlerCache handlerCache,
                        final PatternCache patternCache)

@@ -28,7 +28,7 @@ public class SubjectNotPresentOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Subject>> getSubject(Http.Context context)
+            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
             {
                 return F.Promise.promise(() -> Optional.of(new Subject()
                 {

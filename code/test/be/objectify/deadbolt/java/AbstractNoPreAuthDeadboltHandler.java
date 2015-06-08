@@ -13,7 +13,7 @@ import java.util.Optional;
 public abstract class AbstractNoPreAuthDeadboltHandler extends AbstractDeadboltHandler
 {
     @Override
-    public F.Promise<Optional<Result>> beforeAuthCheck(Http.Context context)
+    public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context)
     {
         return F.Promise.pure(Optional.empty());
     }

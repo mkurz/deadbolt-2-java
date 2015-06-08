@@ -25,14 +25,15 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
                 return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
                     public F.Promise<Boolean> isAllowed(final String name,
                                                         final String meta,
-                                                        final DeadboltHandler deadboltHandler, Http.Context ctx)
+                                                        final DeadboltHandler deadboltHandler,
+                                                        final Http.Context ctx)
                     {
                         return F.Promise.pure(true);
                     }
@@ -54,14 +55,15 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
                 return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
                     public F.Promise<Boolean> isAllowed(final String name,
                                                         final String meta,
-                                                        final DeadboltHandler deadboltHandler, Http.Context ctx)
+                                                        final DeadboltHandler deadboltHandler,
+                                                        final Http.Context ctx)
                     {
                         return F.Promise.pure("foo".equals(name));
                     }
@@ -83,14 +85,15 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
                 return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public F.Promise<Boolean> isAllowed(String name,
-                                                        String meta,
-                                                        DeadboltHandler deadboltHandler, Http.Context ctx)
+                    public F.Promise<Boolean> isAllowed(final String name,
+                                                        final String meta,
+                                                        final DeadboltHandler deadboltHandler,
+                                                        final Http.Context ctx)
                     {
                         return F.Promise.pure("bar".equals(meta));
                     }
@@ -112,12 +115,15 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
                 return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public F.Promise<Boolean> isAllowed(String name, String meta, DeadboltHandler deadboltHandler, Http.Context ctx)
+                    public F.Promise<Boolean> isAllowed(final String name,
+                                                        final String meta,
+                                                        final DeadboltHandler deadboltHandler,
+                                                        final Http.Context ctx)
                     {
                         return F.Promise.pure(false);
                     }

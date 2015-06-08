@@ -24,7 +24,7 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Result>> beforeAuthCheck(Http.Context context)
+            public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context)
             {
                 return F.Promise.promise(Optional::empty);
             }
@@ -46,7 +46,7 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Result>> beforeAuthCheck(Http.Context context)
+            public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context)
             {
                 return F.Promise.promise(Optional::empty);
             }
@@ -70,7 +70,7 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Result>> beforeAuthCheck(Http.Context context)
+            public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context)
             {
                 return F.Promise.promise(Optional::empty);
             }

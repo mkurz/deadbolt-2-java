@@ -1,6 +1,8 @@
-@(name: String, meta: String = null, handler: be.objectify.deadbolt.java.DeadboltHandler = be.objectify.deadbolt.java.ViewAccessPoint.HANDLER_CACHE.get(), timeout: java.util.function.Supplier[Long] = be.objectify.deadbolt.java.ViewAccessPoint.VIEW_SUPPORT.defaultTimeout)(body: => Html)(alternativeBody: => Html)
+@import be.objectify.deadbolt.java.DeadboltHandler
+@import be.objectify.deadbolt.java.ViewAccessPoint.{HANDLER_CACHE, VIEW_SUPPORT}
+@(name: String, meta: String = null, handler: DeadboltHandler = HANDLER_CACHE.get(), timeout: java.util.function.Supplier[Long] = VIEW_SUPPORT.defaultTimeout)(body: => Html)(alternativeBody: => Html)
 
-@if(be.objectify.deadbolt.java.ViewAccessPoint.VIEW_SUPPORT.viewDynamic(name, meta, handler, timeout.get())) {
+@if(VIEW_SUPPORT.viewDynamic(name, meta, handler, timeout.get())) {
 @body
 } else {
 @alternativeBody

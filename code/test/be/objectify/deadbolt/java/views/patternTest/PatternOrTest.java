@@ -248,7 +248,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
                 return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
@@ -278,7 +278,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
                 return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
