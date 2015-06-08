@@ -1,7 +1,8 @@
 package be.objectify.deadbolt.java.cache;
 
-import play.cache.Cache;
+import play.cache.CacheApi;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.regex.Pattern;
 
@@ -11,11 +12,18 @@ import java.util.regex.Pattern;
 @Singleton
 public class DefaultPatternCache implements PatternCache
 {
+    private final CacheApi cache;
+
+    @Inject
+    public DefaultPatternCache(final CacheApi cache)
+    {
+        this.cache = cache;
+    }
+
     @Override
     public Pattern apply(final String patternValue)
     {
-        return Cache.getOrElse("Deadbolt." + patternValue,
-                               () -> Pattern.compile(patternValue),
-                               0);
+        return cache.getOrElse("Deadbolt." + patternValue,
+                               () -> Pattern.compile(patternValue));
     }
 }
