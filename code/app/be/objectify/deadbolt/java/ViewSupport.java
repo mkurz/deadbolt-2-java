@@ -27,6 +27,7 @@ import play.libs.F;
 import play.mvc.Http;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
@@ -55,24 +56,23 @@ public class ViewSupport
 
     private final PatternCache patternCache;
 
-    private BiFunction<Long, F.PromiseTimeoutException, Boolean> timeoutHandler = (timeoutInMillis, e) -> {
-        LOGGER.error("Timeout when attempting to complete future within [{}]ms.  Denying access to resource.",
-                     timeoutInMillis,
-                     e);
-        return false;
-    };
+    private final TemplateFailureListener failureListener;
+
+    private final BiFunction<Long, F.PromiseTimeoutException, Boolean> timeoutHandler;
 
     @Inject
     public ViewSupport(final Configuration configuration,
                        final JavaAnalyzer analyzer,
                        final SubjectCache subjectCache,
                        final HandlerCache handlerCache,
-                       final PatternCache patternCache)
+                       final PatternCache patternCache,
+                       final TemplateFailureListenerProvider failureListener)
     {
         this.analyzer = analyzer;
         this.subjectCache = subjectCache;
         this.handlerCache = handlerCache;
         this.patternCache = patternCache;
+        this.failureListener = failureListener.get();
 
 
         final Long timeout = configuration.getLong(ConfigKeys.DEFAULT_VIEW_TIMEOUT,
@@ -81,6 +81,14 @@ public class ViewSupport
                     timeout);
         this.defaultTimeout = () -> timeout;
 
+        timeoutHandler = (timeoutInMillis, e) -> {
+            LOGGER.error("Timeout when attempting to complete future within [{}]ms.  Denying access to resource.",
+                         timeoutInMillis,
+                         e);
+            this.failureListener.failure("Error when checking view constraint: " + e.getMessage(),
+                                         timeoutInMillis);
+            return false;
+        };
     }
 
 

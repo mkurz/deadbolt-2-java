@@ -27,6 +27,7 @@ public class DeadboltModule extends Module
                    bind(PatternCache.class).to(DefaultPatternCache.class).in(Singleton.class),
                    bind(HandlerCache.class).to(DefaultHandlerCache.class).in(Singleton.class),
                    bind(JavaAnalyzer.class).toSelf().in(Singleton.class),
-                   bind(ViewSupport.class).toSelf());
+                   bind(ViewSupport.class).toSelf().in(Singleton.class),
+                   bind(TemplateFailureListenerProvider.class).toSelf().in(Singleton.class));
     }
 }
