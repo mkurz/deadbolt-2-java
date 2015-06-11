@@ -12,7 +12,7 @@ organization := "be.objectify"
 
 libraryDependencies ++= Seq(
   cache,
-  "be.objectify" %% "deadbolt-core" % "2.4.0-SNAPSHOT",
+  "be.objectify" %% "deadbolt-core" % "2.4.0",
   "org.mockito" % "mockito-all" % "1.10.19" % "test"
 )
 
