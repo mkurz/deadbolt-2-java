@@ -3,10 +3,11 @@ package be.objectify.deadbolt.java.views.patternTest;
 import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
-import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
 import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
+import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.DynamicResourceHandler;
+import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
@@ -16,6 +17,7 @@ import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 /**
@@ -284,5 +286,12 @@ public class PatternTest extends AbstractFakeApplicationTest
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
         Assert.assertTrue(content.contains("This is after the constraint."));
+    }
+
+    public HandlerCache handlers()
+    {
+        // using new instances of handlers in the test
+        return new DefaultHandlerCache(null,
+                                       new HashMap<>());
     }
 }

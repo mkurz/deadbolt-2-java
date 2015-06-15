@@ -1,10 +1,11 @@
 package be.objectify.deadbolt.java.test.controllers.dynamic;
 
 import be.objectify.deadbolt.java.test.DataLoader;
-import com.google.common.collect.ImmutableMap;
 import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
@@ -25,9 +26,7 @@ public class DynamicMethodConstraintsTest
     public void protectedByControllerLevelDynamic_noSubjectIsPresent()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build())),
+                           fakeApplication()),
                 () -> {
                     RestAssured.given()
                                .cookie("user", "greet")
@@ -42,9 +41,7 @@ public class DynamicMethodConstraintsTest
     public void protectedByControllerLevelDynamic_subjectHasUnauthorisedUserName()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -61,9 +58,7 @@ public class DynamicMethodConstraintsTest
     public void protectedByControllerLevelDynamic_subjectHasAuthorisedUserName()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -80,9 +75,7 @@ public class DynamicMethodConstraintsTest
     public void testUserMustHaveTheSameNameAsMyWife_noSubjectIsPresent_controllerExplicitlyUnrestricted()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build())),
+                           fakeApplication()),
                 () -> {
                     RestAssured.given()
                                .cookie("user", "greet")
@@ -97,9 +90,7 @@ public class DynamicMethodConstraintsTest
     public void testUserMustHaveTheSameNameAsMyWife_subjectHasUnauthorisedUserName_controllerExplicitlyUnrestricted()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -115,9 +106,7 @@ public class DynamicMethodConstraintsTest
     public void testUserMustHaveTheSameNameAsMyWife_subjectHasAuthorisedUserName_controllerExplicitlyUnrestricted()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()

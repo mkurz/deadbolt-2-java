@@ -6,8 +6,6 @@ package be.objectify.deadbolt.java;
 public class ConfigKeys
 {
     public static final String DEFAULT_HANDLER_KEY = "defaultHandler";
-    public static final String DEADBOLT_HANDLER_KEY = "deadbolt.java.handler";
-    public static final String NAMED_HANDLERS = "deadbolt.java.handlers";
     public static final String CACHE_DEADBOLT_USER = "deadbolt.java.cache-user";
     public static final String DEFAULT_VIEW_TIMEOUT = "deadbolt.java.view-timeout";
 

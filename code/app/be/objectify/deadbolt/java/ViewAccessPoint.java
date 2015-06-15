@@ -12,11 +12,11 @@ import play.inject.Injector;
 public class ViewAccessPoint
 {
     public final static ViewSupport VIEW_SUPPORT;
-    public final static HandlerCache HANDLER_CACHE;
+    public final static HandlerCache HANDLERS;
 
     static {
         final Injector injector = Play.application().injector();
         VIEW_SUPPORT = injector.instanceOf(ViewSupport.class);
-        HANDLER_CACHE = injector.instanceOf(HandlerCache.class);
+        HANDLERS = injector.instanceOf(HandlerCache.class);
     }
 }

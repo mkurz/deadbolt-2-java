@@ -1,7 +1,7 @@
 @import be.objectify.deadbolt.core.PatternType
 @import be.objectify.deadbolt.java.DeadboltHandler
-@import be.objectify.deadbolt.java.ViewAccessPoint.{HANDLER_CACHE, VIEW_SUPPORT}
-@(value: String, patternType: PatternType = PatternType.EQUALITY, handler: DeadboltHandler = HANDLER_CACHE.get(), timeout: java.util.function.Supplier[Long] = VIEW_SUPPORT.defaultTimeout)(body: => Html)
+@import be.objectify.deadbolt.java.ViewAccessPoint.{HANDLERS, VIEW_SUPPORT}
+@(value: String, patternType: PatternType = PatternType.EQUALITY, handler: DeadboltHandler = HANDLERS.get(), timeout: java.util.function.Supplier[Long] = VIEW_SUPPORT.defaultTimeout)(body: => Html)
 
 @if(VIEW_SUPPORT.viewPattern(value, patternType, handler, timeout.get())) {
 @body

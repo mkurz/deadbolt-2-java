@@ -1,7 +1,7 @@
 @import scala.collection.JavaConversions._
 @import be.objectify.deadbolt.java.DeadboltHandler
-@import be.objectify.deadbolt.java.ViewAccessPoint.{HANDLER_CACHE, VIEW_SUPPORT}
-@(roles: List[Array[String]], handler: DeadboltHandler = HANDLER_CACHE.get(), timeout: java.util.function.Supplier[Long] = VIEW_SUPPORT.defaultTimeout)(body: => Html)(alternativeBody: => Html)
+@import be.objectify.deadbolt.java.ViewAccessPoint.{HANDLERS, VIEW_SUPPORT}
+@(roles: List[Array[String]], handler: DeadboltHandler = HANDLERS.get(), timeout: java.util.function.Supplier[Long] = VIEW_SUPPORT.defaultTimeout)(body: => Html)(alternativeBody: => Html)
 
 @if(VIEW_SUPPORT.viewRestrict(roles, handler, timeout.get())) {
 @body

@@ -1,10 +1,11 @@
 package be.objectify.deadbolt.java.test.controllers.pattern;
 
 import be.objectify.deadbolt.java.test.DataLoader;
-import com.google.common.collect.ImmutableMap;
 import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
@@ -25,9 +26,7 @@ public class RegexMethodConstraintsTest
     public void testProtectedByMethodLevelRegex_noSubjectIsPresent()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build())),
+                           fakeApplication()),
                 () -> {
                     RestAssured.given()
                                .cookie("user", "greet")
@@ -42,9 +41,7 @@ public class RegexMethodConstraintsTest
     public void testProtectedByMethodLevelRegex_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -60,9 +57,7 @@ public class RegexMethodConstraintsTest
     public void testProtectedByMethodLevelRegex_subjectHasPermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -78,9 +73,7 @@ public class RegexMethodConstraintsTest
     public void testProtectedByMethodLevelRegex_hierarchicalMatch_noSubjectIsPresent()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build())),
+                           fakeApplication()),
                 () -> {
                     RestAssured.given()
                                .cookie("user", "greet")
@@ -95,9 +88,7 @@ public class RegexMethodConstraintsTest
     public void testProtectedByMethodLevelRegex_hierarchicalMatch_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -113,9 +104,7 @@ public class RegexMethodConstraintsTest
     public void testProtectedByMethodLevelRegex_hierarchicalMatch_subjectHasPermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -131,9 +120,7 @@ public class RegexMethodConstraintsTest
     public void testProtectedByMethodLevelRegex_hierarchicalMatch_aDifferentSubjectHasPermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()

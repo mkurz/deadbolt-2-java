@@ -1,6 +1,5 @@
 package be.objectify.deadbolt.java;
 
-import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;

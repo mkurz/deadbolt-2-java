@@ -1,9 +1,7 @@
 package be.objectify.deadbolt.java;
 
-import be.objectify.deadbolt.java.cache.DefaultHandlerCache;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
-import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.api.Configuration;
@@ -25,7 +23,6 @@ public class DeadboltModule extends Module
     {
         return seq(bind(SubjectCache.class).to(DefaultSubjectCache.class).in(Singleton.class),
                    bind(PatternCache.class).to(DefaultPatternCache.class).in(Singleton.class),
-                   bind(HandlerCache.class).to(DefaultHandlerCache.class).in(Singleton.class),
                    bind(JavaAnalyzer.class).toSelf().in(Singleton.class),
                    bind(ViewSupport.class).toSelf().in(Singleton.class),
                    bind(TemplateFailureListenerProvider.class).toSelf().in(Singleton.class));

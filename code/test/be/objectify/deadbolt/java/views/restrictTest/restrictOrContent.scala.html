@@ -1,7 +1,5 @@
 @(roles: List[Array[String]], deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
 
-@import scala.collection.JavaConversions._
-
 This is before the constraint.
 
 @be.objectify.deadbolt.java.views.html.restrictOr(roles = roles, handler = deadboltHandler) {

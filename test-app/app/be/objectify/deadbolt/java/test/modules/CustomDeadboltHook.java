@@ -1,7 +1,10 @@
 package be.objectify.deadbolt.java.test.modules;
 
 import be.objectify.deadbolt.java.TemplateFailureListener;
+import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.test.security.MyCustomTemplateFailureListener;
+import be.objectify.deadbolt.java.test.security.MyDeadboltHandler;
+import be.objectify.deadbolt.java.test.security.MyHandlerCache;
 import play.api.Configuration;
 import play.api.Environment;
 import play.api.inject.Binding;
@@ -19,6 +22,7 @@ public class CustomDeadboltHook extends Module
     public Seq<Binding<?>> bindings(final Environment environment,
                                     final Configuration configuration)
     {
-        return seq(bind(TemplateFailureListener.class).to(MyCustomTemplateFailureListener.class).in(Singleton.class));
+        return seq(bind(TemplateFailureListener.class).to(MyCustomTemplateFailureListener.class).in(Singleton.class),
+                   bind(HandlerCache.class).toInstance(new MyHandlerCache(new MyDeadboltHandler())));
     }
 }

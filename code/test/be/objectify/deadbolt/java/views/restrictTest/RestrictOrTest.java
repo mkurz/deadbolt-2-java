@@ -1,9 +1,10 @@
 package be.objectify.deadbolt.java.views.restrictTest;
 
 import be.objectify.deadbolt.core.models.Subject;
-import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
 import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
+import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.testsupport.TestRole;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
@@ -15,6 +16,8 @@ import play.twirl.api.Content;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -22,6 +25,8 @@ import java.util.Optional;
  */
 public class RestrictOrTest extends AbstractFakeApplicationTest
 {
+    private final HandlerCache handlers = handlers();
+
     @Test
     public void testSingleRole_present()
     {
@@ -630,5 +635,23 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         Assert.assertFalse(content.contains("This is protected by the constraint."));
         Assert.assertTrue(content.contains("This is default content in case the constraint denies access to the protected content."));
         Assert.assertTrue(content.contains("This is after the constraint."));
+    }
+
+    public HandlerCache handlers()
+    {
+        final Map<String, DeadboltHandler> handlers = new HashMap<>();
+
+        handlers.put("foo", handler(() -> new TestSubject.Builder().role(new TestRole("foo"))
+                                                                   .build()));
+        handlers.put("bar", handler(() -> new TestSubject.Builder().role(new TestRole("bar"))
+                                                                   .build()));
+        handlers.put("fooBar", handler(() -> new TestSubject.Builder().role(new TestRole("foo"))
+                                                                      .role(new TestRole("bar"))
+                                                                      .build()));
+        handlers.put("noRoles", handler(() -> new TestSubject.Builder().build()));
+        handlers.put("noSubject", handler(() -> null));
+
+        return new DefaultHandlerCache(null,
+                                       handlers);
     }
 }

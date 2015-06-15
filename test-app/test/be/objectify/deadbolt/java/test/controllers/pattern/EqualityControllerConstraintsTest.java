@@ -1,10 +1,11 @@
 package be.objectify.deadbolt.java.test.controllers.pattern;
 
 import be.objectify.deadbolt.java.test.DataLoader;
-import com.google.common.collect.ImmutableMap;
 import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
@@ -25,9 +26,7 @@ public class EqualityControllerConstraintsTest
     public void testProtectedByControllerLevelEquality_noSubjectIsPresent()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build())),
+                           fakeApplication()),
                 () -> {
                     RestAssured.given()
                                .cookie("user", "greet")
@@ -42,9 +41,7 @@ public class EqualityControllerConstraintsTest
     public void testProtectedByControllerLevelEquality_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -61,9 +58,7 @@ public class EqualityControllerConstraintsTest
     public void testProtectedByControllerLevelEquality_subjectHasPermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -79,9 +74,7 @@ public class EqualityControllerConstraintsTest
     public void testUnrestricted_noSubjectIsPresent()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build())),
+                           fakeApplication()),
                 () -> {
                     RestAssured.given()
                                .cookie("user", "greet")
@@ -96,9 +89,7 @@ public class EqualityControllerConstraintsTest
     public void testUnrestricted_subjectHasPermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -115,9 +106,7 @@ public class EqualityControllerConstraintsTest
     public void testUnrestricted_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()

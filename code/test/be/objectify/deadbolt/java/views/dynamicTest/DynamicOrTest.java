@@ -1,10 +1,11 @@
 package be.objectify.deadbolt.java.views.dynamicTest;
 
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
-import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
 import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
+import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.DynamicResourceHandler;
+import be.objectify.deadbolt.java.cache.HandlerCache;
 import org.junit.Assert;
 import org.junit.Test;
 import play.libs.F;
@@ -12,6 +13,7 @@ import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 /**
@@ -141,5 +143,12 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
         Assert.assertFalse(content.contains("This is protected by the constraint."));
         Assert.assertTrue(content.contains("This is default content in case the constraint denies access to the protected content."));
         Assert.assertTrue(content.contains("This is after the constraint."));
+    }
+
+    public HandlerCache handlers()
+    {
+        // using new instances of handlers in the test
+        return new DefaultHandlerCache(null,
+                                       new HashMap<>());
     }
 }

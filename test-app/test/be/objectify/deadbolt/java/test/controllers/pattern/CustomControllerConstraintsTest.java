@@ -6,6 +6,8 @@ import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
+
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
@@ -60,9 +62,7 @@ public class CustomControllerConstraintsTest
     public void testProtectedByControllerLevelCustom_zombieKiller()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -78,9 +78,7 @@ public class CustomControllerConstraintsTest
     public void testProtectedByControllerLevelCustom_somethingElseZombieRelated()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -96,9 +94,7 @@ public class CustomControllerConstraintsTest
     public void testUnrestricted_noSubjectIsPresent()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build())),
+                           fakeApplication()),
                 () -> {
                     RestAssured.given()
                                .cookie("user", "greet")
@@ -113,9 +109,7 @@ public class CustomControllerConstraintsTest
     public void testUnrestricted_subjectHasPermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()
@@ -132,9 +126,7 @@ public class CustomControllerConstraintsTest
     public void testUnrestricted_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
+                           fakeApplication(Collections.emptyMap(),
                                            new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
                 () -> {
                     RestAssured.given()

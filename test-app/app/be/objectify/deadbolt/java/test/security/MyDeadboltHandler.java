@@ -3,6 +3,7 @@ package be.objectify.deadbolt.java.test.security;
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
+import be.objectify.deadbolt.java.test.models.User;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -29,10 +30,8 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     @Override
     public F.Promise<Optional<Subject>> getSubject(Http.Context context)
     {
-        // Example using play-authenticate
-//        final AuthUserIdentity identity = PlayAuthenticate.getUser(context);
-//                return User.<Subject>findByAuthUserIdentity(identity);
-        return super.getSubject(context);
+        final Http.Cookie userCookie = context.request().cookie("user");
+        return F.Promise.promise(() -> Optional.ofNullable(User.findByUserName(userCookie.value())));
     }
 
     @Override
