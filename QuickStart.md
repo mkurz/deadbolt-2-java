@@ -1,5 +1,5 @@
-DeadBolt 2 Scala - Quick start
-==============================
+DeadBolt 2 Java - Quick start
+=============================
 
 Add the dependency to your build
 
