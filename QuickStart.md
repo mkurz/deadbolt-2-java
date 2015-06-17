@@ -1,5 +1,5 @@
-DeadBolt 2 Scala - Quick start
-==============================
+DeadBolt 2 Java - Quick start
+=============================
 
 Add the dependency to your build
 
@@ -39,7 +39,7 @@ Implement the `be.objectify.deadbolt.java.HandlerCache` interface.  This is used
 1. A default handler.  You can always use a specific handler in a template or controller, but if nothing is specified a well-known instance will be used.
 2. Named handlers.  
 
-An example implementation follows, based on the sample app.  You can, of course, define these any way you want to.
+An example implementation follows, based on the [sample app](https://github.com/schaloner/deadbolt-2-java-examples).  You can, of course, define these any way you want to.
 
     @Singleton
     public class MyHandlerCache implements HandlerCache
