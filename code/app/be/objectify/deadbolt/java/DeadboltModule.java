@@ -21,10 +21,60 @@ public class DeadboltModule extends Module
     public Seq<Binding<?>> bindings(final Environment environment,
                                     final Configuration configuration)
     {
-        return seq(bind(SubjectCache.class).to(DefaultSubjectCache.class).in(Singleton.class),
-                   bind(PatternCache.class).to(DefaultPatternCache.class).in(Singleton.class),
-                   bind(JavaAnalyzer.class).toSelf().in(Singleton.class),
-                   bind(ViewSupport.class).toSelf().in(Singleton.class),
-                   bind(TemplateFailureListenerProvider.class).toSelf().in(Singleton.class));
+        return seq(subjectCache(),
+                   patternCache(),
+                   analyzer(),
+                   viewSupport(),
+                   templateFailureListenerProvider());
+    }
+
+    /**
+     * Create a binding for {@link TemplateFailureListenerProvider}.
+     *
+     * @return the binding
+     */
+    public Binding<TemplateFailureListenerProvider> templateFailureListenerProvider()
+    {
+        return bind(TemplateFailureListenerProvider.class).toSelf().in(Singleton.class);
+    }
+
+    /**
+     * Create a binding for {@link ViewSupport}.
+     *
+     * @return the binding
+     */
+    public Binding<ViewSupport> viewSupport()
+    {
+        return bind(ViewSupport.class).toSelf().in(Singleton.class);
+    }
+
+    /**
+     * Create a binding for {@link JavaAnalyzer}.
+     *
+     * @return the binding
+     */
+    public Binding<JavaAnalyzer> analyzer()
+    {
+        return bind(JavaAnalyzer.class).toSelf().in(Singleton.class);
+    }
+
+    /**
+     * Create a binding for {@link PatternCache}.
+     *
+     * @return the binding
+     */
+    public Binding<PatternCache> patternCache()
+    {
+        return bind(PatternCache.class).to(DefaultPatternCache.class).in(Singleton.class);
+    }
+
+    /**
+     * Create a binding for {@link SubjectCache}.
+     *
+     * @return the binding
+     */
+    public Binding<SubjectCache> subjectCache()
+    {
+        return bind(SubjectCache.class).to(DefaultSubjectCache.class).in(Singleton.class);
     }
 }
