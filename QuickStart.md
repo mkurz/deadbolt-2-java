@@ -7,7 +7,7 @@ Add the dependency to your build
 
 If you don't already have it, you'll need to add the snapshot repository
 
-    resolvers += Resolver.sonatypeRepo("snapshots")
+    resolvers += Resolver.sonatypeRepo("snapshots")
 
 Add the Deadbolt module to your Play application
 
