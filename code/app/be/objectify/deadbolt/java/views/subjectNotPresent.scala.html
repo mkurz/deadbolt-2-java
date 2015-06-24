@@ -1,7 +1,8 @@
 @import be.objectify.deadbolt.java.DeadboltHandler
-@import be.objectify.deadbolt.java.ViewAccessPoint.{HANDLERS, VIEW_SUPPORT}
-@(handler: DeadboltHandler = HANDLERS.get(), timeout: java.util.function.Supplier[Long] = VIEW_SUPPORT.defaultTimeout)(body: => Html)
+@import be.objectify.deadbolt.java.ViewAccessPoint.Implicits._
+@import play.api.Play.current
+@(handler: DeadboltHandler = handlerCache.get(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)
 
-@if(VIEW_SUPPORT.viewSubjectNotPresent(handler, timeout.get())) {
+@if(viewSupport.viewSubjectNotPresent(handler, timeout.get())) {
 @body
 }

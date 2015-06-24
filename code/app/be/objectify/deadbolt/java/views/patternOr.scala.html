@@ -1,9 +1,10 @@
 @import be.objectify.deadbolt.core.PatternType
 @import be.objectify.deadbolt.java.DeadboltHandler
-@import be.objectify.deadbolt.java.ViewAccessPoint.{HANDLERS, VIEW_SUPPORT}
-@(value: String, patternType: PatternType = PatternType.EQUALITY, handler: DeadboltHandler = HANDLERS.get(), timeout: java.util.function.Supplier[Long] = VIEW_SUPPORT.defaultTimeout)(body: => Html)(alternativeBody: => Html)
+@import be.objectify.deadbolt.java.ViewAccessPoint.Implicits._
+@import play.api.Play.current
+@(value: String, patternType: PatternType = PatternType.EQUALITY, handler: DeadboltHandler = handlerCache.get(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)(alternativeBody: => Html)
 
-@if(VIEW_SUPPORT.viewPattern(value, patternType, handler, timeout.get())) {
+@if(viewSupport.viewPattern(value, patternType, handler, timeout.get())) {
 @body
 } else {
 @alternativeBody
