@@ -3,11 +3,7 @@ DeadBolt 2 Java - Quick start
 
 Add the dependency to your build
 
-    `"be.objectify" %% "deadbolt-java" % "2.4.0-SNAPSHOT"`
-
-If you don't already have it, you'll need to add the snapshot repository
-
-    resolvers += Resolver.sonatypeRepo("snapshots")
+    `"be.objectify" %% "deadbolt-java" % "2.4.0"`
 
 Add the Deadbolt module to your Play application
 
