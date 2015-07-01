@@ -58,8 +58,8 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
                             }
                             else
                             {
-                                LOGGER.info(String.format("Executing deferred action [%s]",
-                                                          deferredAction.getClass().getName()));
+                                LOGGER.debug("Executing deferred action [{}]",
+                                             deferredAction.getClass().getName());
                                 result = deferredAction.call(ctx);
                             }
                             return result;
