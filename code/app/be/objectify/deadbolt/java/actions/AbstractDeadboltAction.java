@@ -74,8 +74,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      */
     protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(final String handlerKey) throws Throwable
     {
-        LOGGER.info("Getting Deadbolt handler with key [{}]",
-                    handlerKey);
+        LOGGER.debug("Getting Deadbolt handler with key [{}]",
+                     handlerKey);
         return handlerCache.apply(handlerKey);
     }
 
