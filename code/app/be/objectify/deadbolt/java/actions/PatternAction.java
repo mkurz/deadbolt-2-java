@@ -20,6 +20,7 @@ import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import play.Configuration;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
@@ -39,11 +40,13 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     public PatternAction(final JavaAnalyzer analyzer,
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
-                         final PatternCache patternCache)
+                         final PatternCache patternCache,
+                         final Configuration config)
     {
         super(analyzer,
               subjectCache,
-              handlerCache);
+              handlerCache,
+              config);
         this.patternCache = patternCache;
     }
 
@@ -51,13 +54,15 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
                          final PatternCache patternCache,
+                         final Configuration config,
                          final Pattern configuration,
                          final Action<?> delegate)
     {
         this(analyzer,
              subjectCache,
              handlerCache,
-             patternCache);
+             patternCache,
+             config);
         this.configuration = configuration;
         this.delegate = delegate;
     }

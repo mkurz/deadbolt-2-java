@@ -20,6 +20,7 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import play.Configuration;
 import play.libs.F;
 import play.mvc.Http;
 
@@ -38,12 +39,14 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
     @Inject
     public SubjectNotPresentAction(final JavaAnalyzer analyzer,
                                    final SubjectCache subjectCache,
-                                   final HandlerCache handlerCache)
+                                   final HandlerCache handlerCache,
+                                   final Configuration config)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
-              subjectOption -> !subjectOption.isPresent());
+              subjectOption -> !subjectOption.isPresent(),
+              config);
     }
 
     @Override
