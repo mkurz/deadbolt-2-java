@@ -15,13 +15,17 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import play.Configuration;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -35,11 +39,13 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
     @Inject
     public BeforeAccessAction(final JavaAnalyzer analyzer,
                               final SubjectCache subjectCache,
-                              final HandlerCache handlerCache)
+                              final HandlerCache handlerCache,
+                              final Configuration config)
     {
         super(analyzer,
               subjectCache,
-              handlerCache);
+              handlerCache,
+              config);
     }
 
     /**
@@ -48,7 +54,7 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
     @Override
     public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        final F.Promise<Result> result;
+        F.Promise<Result> result;
         if (isActionAuthorised(ctx) && !configuration.alwaysExecute())
         {
             result = delegate.call(ctx);
@@ -61,6 +67,9 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
                              deadboltHandler)
                     .flatMap(preAuthResult -> preAuthResult.map(F.Promise::pure)
                                                            .orElseGet(() -> sneakyCall(delegate, ctx)));
+            if(this.config.getBoolean(ConfigKeys.BLOCKING, false)) {
+                result = F.Promise.pure(result.get(this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT, 1000L), TimeUnit.MILLISECONDS));
+            }
         }
         return result;
     }

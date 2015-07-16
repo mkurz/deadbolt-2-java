@@ -16,15 +16,18 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import play.Configuration;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -36,11 +39,13 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
     AbstractSubjectAction(final JavaAnalyzer analyzer,
                           final SubjectCache subjectCache,
                           final HandlerCache handlerCache,
-                          final F.Predicate<Optional<Subject>> predicate)
+                          final F.Predicate<Optional<Subject>> predicate,
+                          final Configuration config)
     {
         super(analyzer,
               subjectCache,
-              handlerCache);
+              handlerCache,
+              config);
         this.predicate = predicate;
     }
 
@@ -50,7 +55,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
     @Override
     public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        final F.Promise<Result> result;
+        F.Promise<Result> result;
         final Config config = config();
         if (isActionUnauthorised(ctx))
         {
@@ -72,6 +77,9 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
                     .flatMap(preAuthResult -> new SubjectTest(ctx,
                                                               deadboltHandler,
                                                               config).apply(preAuthResult));
+            if(this.config.getBoolean(ConfigKeys.BLOCKING, false)) {
+                result = F.Promise.pure(result.get(this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT, 1000L), TimeUnit.MILLISECONDS));
+            }
         }
         return result;
     }

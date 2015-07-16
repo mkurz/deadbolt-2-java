@@ -23,6 +23,8 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import play.Configuration;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
@@ -53,14 +55,18 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     final SubjectCache subjectCache;
 
     final HandlerCache handlerCache;
+    
+    final Configuration config;
 
     protected AbstractDeadboltAction(final JavaAnalyzer analyzer,
                                      final SubjectCache subjectCache,
-                                     final HandlerCache handlerCache)
+                                     final HandlerCache handlerCache,
+                                     final Configuration config)
     {
         this.analyzer = analyzer;
         this.subjectCache = subjectCache;
         this.handlerCache = handlerCache;
+        this.config = config;
     }
 
     /**
@@ -74,8 +80,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      */
     protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(final String handlerKey) throws Throwable
     {
-        LOGGER.info("Getting Deadbolt handler with key [{}]",
-                    handlerKey);
+        LOGGER.debug("Getting Deadbolt handler with key [{}]",
+                     handlerKey);
         return handlerCache.apply(handlerKey);
     }
 

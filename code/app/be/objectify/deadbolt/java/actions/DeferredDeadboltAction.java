@@ -15,14 +15,19 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import play.Configuration;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -39,17 +44,19 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     @Inject
     public DeferredDeadboltAction(final JavaAnalyzer analyzer,
                                   final SubjectCache subjectCache,
-                                  final HandlerCache handlerCache)
+                                  final HandlerCache handlerCache,
+                                  final Configuration config)
     {
         super(analyzer,
               subjectCache,
-              handlerCache);
+              handlerCache,
+              config);
     }
 
     @Override
     public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        return F.Promise.promise(() -> getDeferredAction(ctx))
+        F.Promise<Result> promise = F.Promise.promise(() -> getDeferredAction(ctx))
                         .flatMap(deferredAction -> {
                             final F.Promise<Result> result;
                             if (deferredAction == null)
@@ -58,11 +65,15 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
                             }
                             else
                             {
-                                LOGGER.info(String.format("Executing deferred action [%s]",
-                                                          deferredAction.getClass().getName()));
+                                LOGGER.debug("Executing deferred action [{}]",
+                                             deferredAction.getClass().getName());
                                 result = deferredAction.call(ctx);
                             }
                             return result;
                         });
+        if(this.config.getBoolean(ConfigKeys.BLOCKING, false)) {
+            promise = F.Promise.pure(promise.get(this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT, 1000L), TimeUnit.MILLISECONDS));
+        }
+        return promise;
     }
 }
