@@ -15,12 +15,16 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import play.Configuration;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -34,11 +38,13 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     @Inject
     public UnrestrictedAction(final JavaAnalyzer analyzer,
                               final SubjectCache subjectCache,
-                              final HandlerCache handlerCache)
+                              final HandlerCache handlerCache,
+                              final Configuration config)
     {
         super(analyzer,
               subjectCache,
-              handlerCache);
+              handlerCache,
+              config);
     }
 
     /**
@@ -47,7 +53,7 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     @Override
     public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        return F.Promise.promise(() -> isActionUnauthorised(ctx))
+        F.Promise<Result> promise = F.Promise.promise(() -> isActionUnauthorised(ctx))
                         .flatMap(unauthorised -> {
                             final F.Promise<Result> result;
                             if (unauthorised)
@@ -63,5 +69,10 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
                             }
                             return result;
                         });
+        
+        if(this.config.getBoolean(ConfigKeys.BLOCKING, false)) {
+            promise = F.Promise.pure(promise.get(this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT, 1000L), TimeUnit.MILLISECONDS));
+        }
+        return promise;
     }
 }
