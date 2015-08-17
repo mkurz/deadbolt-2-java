@@ -270,3 +270,21 @@ Each constraint has a variant which allows you to define fallback content.  This
     	Custom test failed
     }
 
+###JPA
+
+If you're using JPA, there's a good chance you're going to run into issues when entity managers are used across different threads.  To address this, you can put Deadbolt into blocking mode - this ensures all DB calls made in the Deadbolt layer are made from the same thread; this has performance implications, but it's unavoidable with JPA.
+
+To switch to blocking mode, set `deadbolt.java.blocking` to `true` in your configuration.
+
+The default timeout is 1000 milliseconds - to change this, use `deadbolt.java.blocking-timeout` in your configuration.
+
+This example configuration puts Deadbolt in blocking mode, with a timeout of 2500 milliseconds:
+
+    deadbolt {
+        java {
+            blocking=true
+            blocking-timeout=2500
+        }
+    }
+
+

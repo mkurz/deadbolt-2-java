@@ -156,8 +156,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                               final String content,
                                               final Http.Context ctx)
     {
-        LOGGER.warn(String.format("Deadbolt: Access failure on [%s]",
-                                  ctx.request().uri()));
+        LOGGER.warn("Deadbolt: Access failure on [{}]",
+                    ctx.request().uri());
 
         F.Promise<Result> result;
         try
@@ -190,8 +190,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                 .map(option -> {
                     if (!option.isPresent())
                     {
-                        LOGGER.error(String.format("Access to [%s] requires a subject, but no subject is present.",
-                                                   ctx.request().uri()));
+                        LOGGER.info("Access to [{}] requires a subject, but no subject is present.",
+                                    ctx.request().uri());
                     }
                     return option;
                 });
@@ -254,8 +254,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         if (action != null)
         {
-            LOGGER.info(String.format("Deferring action [%s]",
-                                      this.getClass().getName()));
+            LOGGER.info("Deferring action [{}]",
+                        this.getClass().getName());
             ctx.args.put(ACTION_DEFERRED,
                          action);
         }

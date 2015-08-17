@@ -11,6 +11,7 @@ script:
 - cd ../code
 after_success:
 - ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt +publish; };'
+sudo: false
 env:
   global:
   - secure: lWiAEXvfiZWpdhly/x9OHewK2xwLHFH32m5KbeYqGnNxpzJLrR0nSXUDMJabKQZ8msbqh7MUBSgCsWKhI0cqYO/rq22kAZGzKj3sHShe0Eg8uNGb4lMbU8PqWzYfXSfMf2pmnrrNpWLlCkHXr7WKwr+7QGS97D2w/7pOoIb19q8=
