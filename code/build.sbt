@@ -1,6 +1,6 @@
 name := "deadbolt-java"
 
-version := "2.4.0.1-SNAPSHOT"
+version := "2.4.1"
 
 lazy val root = (project in file(".")).enablePlugins(play.PlayJava)
 
@@ -12,7 +12,7 @@ organization := "be.objectify"
 
 libraryDependencies ++= Seq(
   cache,
-  "be.objectify" %% "deadbolt-core" % "2.4.1",
+  "be.objectify" %% "deadbolt-core" % "2.4.2",
   "org.mockito" % "mockito-all" % "1.10.19" % "test"
 )
 
