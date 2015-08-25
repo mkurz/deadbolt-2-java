@@ -1,7 +1,8 @@
 deadbolt-2-java
 ===============
 
-[![Build Status](https://travis-ci.org/schaloner/deadbolt-2-java.svg?branch=master)](https://travis-ci.org/schaloner/deadbolt-2-java)
+[![Build Status](https://travis-ci.org/schaloner/deadbolt-2-java.svg?branch=master)](https://travis-ci.org/schaloner/deadbolt-2-java) [![Join the chat at https://gitter.im/schaloner/deadbolt-2](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/schaloner/deadbolt-2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 Idiomatic Java API for Deadbolt 2, an authorisation module for Play 2.
 
