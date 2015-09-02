@@ -50,3 +50,20 @@ GET        /pattern/custom/m/checkCustom                                        
 
 GET        /pattern/custom/c/checkCustom                                                 be.objectify.deadbolt.java.test.controllers.pattern.CustomForController.protectedByControllerLevelCustom()
 GET        /pattern/custom/c/checkCustom/open                                            be.objectify.deadbolt.java.test.controllers.pattern.CustomForController.unrestricted()
+
+GET        /pattern/invert/equality/m/checkEquality                                      be.objectify.deadbolt.java.test.controllers.pattern.InvertedEqualityForMethod.zombieKillersOnly()
+
+GET        /pattern/invert/equality/c/checkEquality                                      be.objectify.deadbolt.java.test.controllers.pattern.InvertedEqualityForController.protectedByControllerLevelEquality()
+GET        /pattern/invert/equality/c/checkEquality/open                                 be.objectify.deadbolt.java.test.controllers.pattern.InvertedEqualityForController.unrestricted()
+
+GET        /pattern/invert/regex/m/checkExactMatch                                       be.objectify.deadbolt.java.test.controllers.pattern.InvertedRegexForMethod.zombieKillersOnly()
+GET        /pattern/invert/regex/m/checkHierarchicalMatch                                be.objectify.deadbolt.java.test.controllers.pattern.InvertedRegexForMethod.anyKillersOfTheUndeadWelcome()
+
+GET        /pattern/invert/regex/c/checkMatch                                            be.objectify.deadbolt.java.test.controllers.pattern.InvertedRegexForController.protectedByControllerLevelRegex()
+GET        /pattern/invert/regex/c/checkMatch/open                                       be.objectify.deadbolt.java.test.controllers.pattern.InvertedRegexForController.unrestricted()
+
+GET        /pattern/invert/custom/m/checkCustom                                          be.objectify.deadbolt.java.test.controllers.pattern.InvertedCustomForMethod.accessDependsOnTheCustomTest()
+
+GET        /pattern/invert/custom/c/checkCustom                                          be.objectify.deadbolt.java.test.controllers.pattern.InvertedCustomForController.protectedByControllerLevelCustom()
+GET        /pattern/invert/custom/c/checkCustom/open                                     be.objectify.deadbolt.java.test.controllers.pattern.InvertedCustomForController.unrestricted()
+
