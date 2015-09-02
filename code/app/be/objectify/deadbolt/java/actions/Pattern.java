@@ -72,4 +72,11 @@ public @interface Pattern
      * @return true iff the associated action should be deferred until class-level annotations are applied.
      */
     boolean deferred() default false;
+
+    /**
+     * If true, the constraint will be inverted.  This means a pattern match will deny access to a resource. Defaults to false.
+     *
+     * @return true if the constraint should be inverted.
+     */
+    boolean invert() default false;
 }

@@ -144,7 +144,7 @@ AND is defined as an `@Group` OR is an array of `@Group`, and NOT is a rolename 
 
 This uses the `Subject`s `Permission`s to perform a variety of checks.  
 
-    @Pattern("admin.printer)
+    @Pattern("admin.printer")
     public F.Promise<Result> someMethodA() {
         // subject must have a permission with the exact value "admin.printer"
     }
@@ -157,6 +157,13 @@ This uses the `Subject`s `Permission`s to perform a variety of checks.
     @Pattern(value = "something arbitrary", patternType = PatternType.CUSTOM)
     public F.Promise<Result> someMethodC() {
         // the checkPermssion method of the current handler's DynamicResourceHandler will be used.  This is a user-defined test
+    }
+
+If you want to invert the result, i.e. deny access if there's a match, set the `invert` attribute to `true`.
+
+    @Pattern(value = "admin.printer", invert = true)
+    public F.Promise<Result> someMethodA() {
+        // subject with a permission with the exact value "admin.printer" will by denied
     }
 
 

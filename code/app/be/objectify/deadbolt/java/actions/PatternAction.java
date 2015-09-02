@@ -77,15 +77,18 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         {
             case EQUALITY:
                 result = equality(ctx,
-                                  deadboltHandler);
+                                  deadboltHandler,
+                                  configuration.invert());
                 break;
             case REGEX:
                 result = regex(ctx,
-                               deadboltHandler);
+                               deadboltHandler,
+                               configuration.invert());
                 break;
             case CUSTOM:
                 result = custom(ctx,
-                                deadboltHandler);
+                                deadboltHandler,
+                                configuration.invert());
                 break;
             default:
                 throw new RuntimeException("Unknown pattern type: " + configuration.patternType());
@@ -95,7 +98,8 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     }
 
     private F.Promise<Result> custom(final Http.Context ctx,
-                                     final DeadboltHandler deadboltHandler)
+                                     final DeadboltHandler deadboltHandler,
+                                     final boolean invert)
     {
         return deadboltHandler.getDynamicResourceHandler(ctx)
                               .map(option -> option.orElseThrow(() -> new RuntimeException("A custom permission type is specified but no dynamic resource handler is provided")))
@@ -104,7 +108,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                                                                           ctx))
                               .flatMap(allowed -> {
                                   final F.Promise<Result> innerResult;
-                                  if (allowed)
+                                  if (invert ? !allowed : allowed)
                                   {
                                       markActionAsAuthorised(ctx);
                                       innerResult = delegate.call(ctx);
@@ -126,7 +130,8 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     }
 
     private F.Promise<Result> equality(final Http.Context ctx,
-                                       final DeadboltHandler deadboltHandler)
+                                       final DeadboltHandler deadboltHandler,
+                                       final boolean invert)
     {
         return F.Promise.promise(this::getValue)
                         .zip(getSubject(ctx, deadboltHandler))
@@ -134,7 +139,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                                                     Optional.ofNullable(tuple._1)))
                         .flatMap(equal -> {
                             final F.Promise<Result> result;
-                            if (equal)
+                            if (invert ? !equal : equal)
                             {
                                 markActionAsAuthorised(ctx);
                                 result = delegate.call(ctx);
@@ -156,10 +161,12 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
      *
      * @param ctx             the HTTP context
      * @param deadboltHandler the Deadbolt handler
+     * @param invert          if true, invert the application of the constraint
      * @return the necessary result
      */
     private F.Promise<Result> regex(final Http.Context ctx,
-                                    final DeadboltHandler deadboltHandler)
+                                    final DeadboltHandler deadboltHandler,
+                                    final boolean invert)
     {
         return F.Promise.promise(this::getValue)
                         .map(patternCache::apply)
@@ -168,7 +175,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                                                  Optional.ofNullable(tuple._1)))
                         .flatMap(applicable -> {
                             final F.Promise<Result> result;
-                            if (applicable)
+                            if (invert ? !applicable : applicable)
                             {
                                 markActionAsAuthorised(ctx);
                                 result = delegate.call(ctx);
