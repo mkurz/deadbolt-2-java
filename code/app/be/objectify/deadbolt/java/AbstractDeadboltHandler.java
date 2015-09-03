@@ -35,7 +35,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
      */
     public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
     {
-        return F.Promise.promise(Optional::empty);
+        return F.Promise.pure(Optional.empty());
     }
 
     /**
@@ -44,7 +44,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     public F.Promise<Result> onAuthFailure(final Http.Context context,
                                            final String content)
     {
-        return F.Promise.promise(() -> unauthorized(views.html.defaultpages.unauthorized.render()));
+        return F.Promise.pure(unauthorized(views.html.defaultpages.unauthorized.render()));
     }
 
     /**
@@ -52,6 +52,6 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
      */
     public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
     {
-        return F.Promise.promise(Optional::empty);
+        return F.Promise.pure(Optional.empty());
     }
 }

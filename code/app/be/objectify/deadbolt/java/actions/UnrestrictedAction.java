@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
@@ -23,6 +23,7 @@ import play.Configuration;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.ExecutionContext;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,12 +40,14 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     public UnrestrictedAction(final JavaAnalyzer analyzer,
                               final SubjectCache subjectCache,
                               final HandlerCache handlerCache,
-                              final Configuration config)
+                              final Configuration config,
+                              final ExecutionContextProvider ecProvider)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
-              config);
+              config,
+              ecProvider);
     }
 
     /**
@@ -53,26 +56,27 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     @Override
     public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        F.Promise<Result> promise = F.Promise.promise(() -> isActionUnauthorised(ctx))
-                        .flatMap(unauthorised -> {
-                            final F.Promise<Result> result;
-                            if (unauthorised)
-                            {
-                                result = onAuthFailure(getDeadboltHandler(configuration.handlerKey()),
-                                                       configuration.content(),
-                                                       ctx);
-                            }
-                            else
-                            {
-                                markActionAsAuthorised(ctx);
-                                result = delegate.call(ctx);
-                            }
-                            return result;
-                        });
-        
-        if(this.config.getBoolean(ConfigKeys.BLOCKING, false)) {
-            promise = F.Promise.pure(promise.get(this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT, 1000L), TimeUnit.MILLISECONDS));
-        }
-        return promise;
+        final ExecutionContext executionContext = executionContextProvider.get();
+        final F.Promise<Result> promise = F.Promise.promise(() -> isActionUnauthorised(ctx),
+                                                            executionContext)
+                                                   .flatMap(unauthorised -> {
+                                                       final F.Promise<Result> result;
+                                                       if (unauthorised)
+                                                       {
+                                                           result = onAuthFailure(getDeadboltHandler(configuration.handlerKey()),
+                                                                                  configuration.content(),
+                                                                                  ctx);
+                                                       }
+                                                       else
+                                                       {
+                                                           markActionAsAuthorised(ctx);
+                                                           result = delegate.call(ctx);
+                                                       }
+                                                       return result;
+                                                   }, executionContext);
+
+        return blocking ? F.Promise.pure(promise.get(blockingTimeout,
+                                                     TimeUnit.MILLISECONDS))
+                        : promise;
     }
 }

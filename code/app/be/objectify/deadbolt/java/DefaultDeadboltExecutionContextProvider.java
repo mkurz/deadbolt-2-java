@@ -13,32 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.cache;
+package be.objectify.deadbolt.java;
 
-import play.cache.CacheApi;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.regex.Pattern;
+import play.libs.HttpExecution;
+import scala.concurrent.ExecutionContext;
 
 /**
+ * The default implementation of {@link DeadboltExecutionContextProvider} uses Play's internal exeuction context support.
+ *
  * @author Steve Chaloner (steve@objectify.be)
  */
-@Singleton
-public class DefaultPatternCache implements PatternCache
+public class DefaultDeadboltExecutionContextProvider implements DeadboltExecutionContextProvider
 {
-    private final CacheApi cache;
-
-    @Inject
-    public DefaultPatternCache(final CacheApi cache)
-    {
-        this.cache = cache;
-    }
-
     @Override
-    public Pattern apply(final String patternValue)
+    public ExecutionContext get()
     {
-        return cache.getOrElse("Deadbolt." + patternValue,
-                               () -> Pattern.compile(patternValue));
+        return HttpExecution.defaultContext();
     }
 }

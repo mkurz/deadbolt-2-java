@@ -17,8 +17,8 @@ package be.objectify.deadbolt.java.actions;
 
 import java.util.concurrent.TimeUnit;
 
-import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
@@ -37,12 +37,14 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
     public AbstractRestrictiveAction(final JavaAnalyzer analyzer,
                                      final SubjectCache subjectCache,
                                      final HandlerCache handlerCache,
-                                     final Configuration config)
+                                     final Configuration config,
+                                     final ExecutionContextProvider ecProvider)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
-              config);
+              config,
+              ecProvider);
     }
 
     @Override
@@ -62,8 +64,10 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
                     .flatMap(option -> option.map(F.Promise::pure)
                                              .orElseGet(() -> applyRestriction(ctx,
                                                                                deadboltHandler)));
-            if(this.config.getBoolean(ConfigKeys.BLOCKING, false)) {
-                result = F.Promise.pure(result.get(this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT, 1000L), TimeUnit.MILLISECONDS));
+            if(blocking)
+            {
+                result = F.Promise.pure(result.get(blockingTimeout,
+                                                   TimeUnit.MILLISECONDS));
             }
         }
         return result;

@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
@@ -26,6 +26,7 @@ import play.Configuration;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.ExecutionContext;
 
 import java.util.concurrent.TimeUnit;
 
@@ -45,18 +46,22 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     public DeferredDeadboltAction(final JavaAnalyzer analyzer,
                                   final SubjectCache subjectCache,
                                   final HandlerCache handlerCache,
-                                  final Configuration config)
+                                  final Configuration config,
+                                  final ExecutionContextProvider ecProvider)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
-              config);
+              config,
+              ecProvider);
     }
 
     @Override
     public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
     {
-        F.Promise<Result> promise = F.Promise.promise(() -> getDeferredAction(ctx))
+        final ExecutionContext executionContext = executionContextProvider.get();
+        F.Promise<Result> promise = F.Promise.promise(() -> getDeferredAction(ctx),
+                                                      executionContext)
                         .flatMap(deferredAction -> {
                             final F.Promise<Result> result;
                             if (deferredAction == null)
@@ -70,9 +75,11 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
                                 result = deferredAction.call(ctx);
                             }
                             return result;
-                        });
-        if(this.config.getBoolean(ConfigKeys.BLOCKING, false)) {
-            promise = F.Promise.pure(promise.get(this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT, 1000L), TimeUnit.MILLISECONDS));
+                        }, executionContext);
+        if (blocking)
+        {
+            promise = F.Promise.pure(promise.get(blockingTimeout,
+                                                 TimeUnit.MILLISECONDS));
         }
         return promise;
     }

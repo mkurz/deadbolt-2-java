@@ -9,11 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Application;
 import play.Configuration;
+import play.GlobalSettings;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class DataLoader extends Global
+public class DataLoader extends GlobalSettings
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
 

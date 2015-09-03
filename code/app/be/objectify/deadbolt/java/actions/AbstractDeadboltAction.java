@@ -16,7 +16,10 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
@@ -58,15 +61,28 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     
     final Configuration config;
 
+    final DeadboltExecutionContextProvider executionContextProvider;
+
+    public final boolean blocking;
+    public final long blockingTimeout;
+
     protected AbstractDeadboltAction(final JavaAnalyzer analyzer,
                                      final SubjectCache subjectCache,
                                      final HandlerCache handlerCache,
-                                     final Configuration config)
+                                     final Configuration config,
+                                     final ExecutionContextProvider ecProvider)
     {
         this.analyzer = analyzer;
         this.subjectCache = subjectCache;
         this.handlerCache = handlerCache;
         this.config = config;
+
+        this.executionContextProvider = ecProvider.get();
+
+        this.blocking = config.getBoolean(ConfigKeys.BLOCKING,
+                                          false);
+        this.blockingTimeout = this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT,
+                                                   1000L);
     }
 
     /**
@@ -169,7 +185,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         {
             LOGGER.warn("Deadbolt: Exception when invoking onAuthFailure",
                         e);
-            result = F.Promise.promise(Results::internalServerError);
+            result = F.Promise.pure(Results.internalServerError());
         }
         return result;
     }

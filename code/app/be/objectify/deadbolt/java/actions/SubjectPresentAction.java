@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
@@ -35,13 +36,15 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
     public SubjectPresentAction(final JavaAnalyzer analyzer,
                                 final SubjectCache subjectCache,
                                 final HandlerCache handlerCache,
-                                final Configuration config)
+                                final Configuration config,
+                                final ExecutionContextProvider ecProvider)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
               Optional::isPresent,
-              config);
+              config,
+              ecProvider);
     }
 
     @Override

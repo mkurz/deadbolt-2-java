@@ -19,34 +19,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Play;
 
-import javax.inject.Provider;
-import javax.inject.Singleton;
+import java.util.function.Supplier;
 
 /**
- * Looks for custom implementations of {@link TemplateFailureListener} in the injector.  Provides a no-op version
- * if nothing else can be found.
- *
  * @author Steve Chaloner (steve@objectify.be)
  */
-@Singleton
-public class TemplateFailureListenerProvider implements Provider<TemplateFailureListener>
+public class ExecutionContextProvider implements Supplier<DeadboltExecutionContextProvider>
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateFailureListenerProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionContextProvider.class);
 
     @Override
-    public TemplateFailureListener get()
+    public DeadboltExecutionContextProvider get()
     {
-        TemplateFailureListener listener;
+        DeadboltExecutionContextProvider ecProvider;
         try
         {
-            listener = Play.application().injector().instanceOf(TemplateFailureListener.class);
-            LOGGER.info("Custom TemplateFailureListener found: [{}]", listener.getClass());
+            ecProvider = Play.application().injector().instanceOf(DeadboltExecutionContextProvider.class);
+            LOGGER.info("Custom execution context provider found");
         }
         catch (Exception e)
         {
-            LOGGER.info("No custom TemplateFailureListener found, falling back to no-op implementation");
-            listener = new NoOpTemplateFailureListener();
+            LOGGER.info("No custom execution context found.");
+            ecProvider = new DefaultDeadboltExecutionContextProvider();
         }
-        return listener;
+        return ecProvider;
     }
 }

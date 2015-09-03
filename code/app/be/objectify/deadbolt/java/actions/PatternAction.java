@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
@@ -25,6 +26,7 @@ import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.ExecutionContext;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -41,12 +43,14 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
                          final PatternCache patternCache,
-                         final Configuration config)
+                         final Configuration config,
+                         final ExecutionContextProvider ecProvider)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
-              config);
+              config,
+              ecProvider);
         this.patternCache = patternCache;
     }
 
@@ -56,13 +60,15 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                          final PatternCache patternCache,
                          final Configuration config,
                          final Pattern configuration,
-                         final Action<?> delegate)
+                         final Action<?> delegate,
+                         final ExecutionContextProvider ecProvider)
     {
         this(analyzer,
              subjectCache,
              handlerCache,
              patternCache,
-             config);
+             config,
+             ecProvider);
         this.configuration = configuration;
         this.delegate = delegate;
     }
@@ -133,10 +139,13 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                        final DeadboltHandler deadboltHandler,
                                        final boolean invert)
     {
-        return F.Promise.promise(this::getValue)
+        final ExecutionContext executionContext = executionContextProvider.get();
+        return F.Promise.promise(this::getValue,
+                                 executionContext)
                         .zip(getSubject(ctx, deadboltHandler))
                         .map(tuple -> analyzer.checkPatternEquality(tuple._2,
-                                                                    Optional.ofNullable(tuple._1)))
+                                                                    Optional.ofNullable(tuple._1)),
+                             executionContext)
                         .flatMap(equal -> {
                             final F.Promise<Result> result;
                             if (invert ? !equal : equal)
@@ -153,7 +162,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                             }
 
                             return result;
-                        });
+                        }, executionContext);
     }
 
     /**
@@ -168,11 +177,15 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                     final DeadboltHandler deadboltHandler,
                                     final boolean invert)
     {
-        return F.Promise.promise(this::getValue)
-                        .map(patternCache::apply)
+        final ExecutionContext executionContext = executionContextProvider.get();
+        return F.Promise.promise(this::getValue,
+                                 executionContext)
+                        .map(patternCache::apply,
+                             executionContext)
                         .zip(getSubject(ctx, deadboltHandler))
                         .map(tuple -> analyzer.checkRegexPattern(tuple._2,
-                                                                 Optional.ofNullable(tuple._1)))
+                                                                 Optional.ofNullable(tuple._1)),
+                             executionContext)
                         .flatMap(applicable -> {
                             final F.Promise<Result> result;
                             if (invert ? !applicable : applicable)
@@ -188,7 +201,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                                        ctx);
                             }
                             return result;
-                        });
+                        }, executionContext);
     }
 
     @Override
