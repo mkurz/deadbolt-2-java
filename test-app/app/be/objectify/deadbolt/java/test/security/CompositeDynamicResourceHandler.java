@@ -59,20 +59,10 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
         // this can be completely arbitrary, but to keep things simple for testing we're
         // just checking for zombies...just like I do every night before I go to bed
         return deadboltHandler.getSubject(ctx)
-                .map(option -> {
-                    boolean allow = false;
-                    if (option.isPresent())
-                    {
-                        final List<? extends Permission> permissions = option.get()
-                                                                             .getPermissions();
-                        for (Iterator<? extends Permission> iterator = permissions.iterator(); !allow && iterator.hasNext(); )
-                        {
-                            final Permission permission = iterator.next();
-                            final String value = permission.getValue();
-                            allow = value != null && value.contains("zombie");
-                        }
-                    }
-                    return allow;
-                });
+                              .map(option -> option.map(subject -> subject.getPermissions()
+                                                                          .stream()
+                                                                          .filter(perm -> perm.getValue().contains("zombie"))
+                                                                          .count() > 0)
+                                                   .orElseGet(() -> false));
     }
 }
