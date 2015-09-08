@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
@@ -107,6 +108,8 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                      final DeadboltHandler deadboltHandler,
                                      final boolean invert)
     {
+        ctx.args.put(ConfigKeys.PATTERN_INVERT,
+                     invert);
         return deadboltHandler.getDynamicResourceHandler(ctx)
                               .map(option -> option.orElseThrow(() -> new RuntimeException("A custom permission type is specified but no dynamic resource handler is provided")))
                               .flatMap(resourceHandler -> resourceHandler.checkPermission(getValue(),
@@ -142,9 +145,11 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         final ExecutionContext executionContext = executionContextProvider.get();
         return F.Promise.promise(this::getValue,
                                  executionContext)
-                        .zip(getSubject(ctx, deadboltHandler))
-                        .map(tuple -> analyzer.checkPatternEquality(tuple._2,
-                                                                    Optional.ofNullable(tuple._1)),
+                        .zip(getSubject(ctx,
+                                        deadboltHandler))
+                        .map(tuple -> tuple._2.isPresent() ? analyzer.checkPatternEquality(tuple._2,
+                                                                                           Optional.ofNullable(tuple._1))
+                                                           : invert, // this is a little clumsy - it means no subject + invert is still denied
                              executionContext)
                         .flatMap(equal -> {
                             final F.Promise<Result> result;
@@ -182,26 +187,29 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                  executionContext)
                         .map(patternCache::apply,
                              executionContext)
-                        .zip(getSubject(ctx, deadboltHandler))
-                        .map(tuple -> analyzer.checkRegexPattern(tuple._2,
-                                                                 Optional.ofNullable(tuple._1)),
+                        .zip(getSubject(ctx,
+                                        deadboltHandler))
+                        .map(tuple -> tuple._2.isPresent() ? analyzer.checkRegexPattern(tuple._2,
+                                                                                        Optional.ofNullable(tuple._1))
+                                                           : invert, // this is a little clumsy - it means no subject + invert is still denied
                              executionContext)
                         .flatMap(applicable -> {
-                            final F.Promise<Result> result;
-                            if (invert ? !applicable : applicable)
-                            {
-                                markActionAsAuthorised(ctx);
-                                result = delegate.call(ctx);
-                            }
-                            else
-                            {
-                                markActionAsUnauthorised(ctx);
-                                result = onAuthFailure(deadboltHandler,
-                                                       configuration.content(),
-                                                       ctx);
-                            }
-                            return result;
-                        }, executionContext);
+                                     final F.Promise<Result> result;
+                                     if (invert ? !applicable : applicable)
+                                     {
+                                         markActionAsAuthorised(ctx);
+                                         result = delegate.call(ctx);
+                                     }
+                                     else
+                                     {
+                                         markActionAsUnauthorised(ctx);
+                                         result = onAuthFailure(deadboltHandler,
+                                                                configuration.content(),
+                                                                ctx);
+                                     }
+                                     return result;
+                                 },
+                                 executionContext);
     }
 
     @Override
