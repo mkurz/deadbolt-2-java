@@ -31,7 +31,7 @@ public class InvertedEqualityMethodConstraintsTest
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
-                               .statusCode(200)
+                               .statusCode(401)
                                .when()
                                .get("/pattern/invert/equality/m/checkEquality");
                 });
