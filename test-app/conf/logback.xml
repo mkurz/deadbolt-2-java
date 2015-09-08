@@ -2,9 +2,29 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
         </encoder>
     </appender>
+
+    <logger name="com.avaje">
+        <level value="error" />
+    </logger>
+
+    <logger name="org.dbunit">
+        <level value="error" />
+    </logger>
+
+    <logger name="play.api">
+        <level value="error" />
+    </logger>
+
+    <logger name="com.zaxxer">
+        <level value="error" />
+    </logger>
+
+    <logger name="application">
+        <level value="warn" />
+    </logger>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>
