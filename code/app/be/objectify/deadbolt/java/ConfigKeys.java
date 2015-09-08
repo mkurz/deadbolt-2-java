@@ -11,6 +11,8 @@ public class ConfigKeys
     public static final String BLOCKING = "deadbolt.java.blocking";
     public static final String DEFAULT_BLOCKING_TIMEOUT = "deadbolt.java.blocking-timeout";
 
+    public static final String PATTERN_INVERT = "deadbolt.pattern.invert";
+
     private ConfigKeys()
     {
         // no-op
