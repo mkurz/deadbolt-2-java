@@ -1,6 +1,6 @@
 package be.objectify.deadbolt.java.test.security;
 
-import be.objectify.deadbolt.core.models.Permission;
+import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import org.slf4j.Logger;
@@ -9,8 +9,6 @@ import play.libs.F;
 import play.mvc.Http;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,6 +61,7 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
                                                                           .stream()
                                                                           .filter(perm -> perm.getValue().contains("zombie"))
                                                                           .count() > 0)
-                                                   .orElseGet(() -> false));
+                                                   .orElseGet(() -> (Boolean) ctx.args.getOrDefault(ConfigKeys.PATTERN_INVERT,
+                                                                                                    false)));
     }
 }
