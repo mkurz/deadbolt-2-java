@@ -3,7 +3,7 @@ DeadBolt 2 Java - Quick start
 
 Add the dependency to your build
 
-    `"be.objectify" %% "deadbolt-java" % "2.4.2"`
+    `"be.objectify" %% "deadbolt-java" % "2.4.2.1"`
 
 Add the Deadbolt module to your Play application
 
