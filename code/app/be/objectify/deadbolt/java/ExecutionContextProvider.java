@@ -35,11 +35,11 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
         try
         {
             ecProvider = Play.application().injector().instanceOf(DeadboltExecutionContextProvider.class);
-            LOGGER.info("Custom execution context provider found");
+            LOGGER.debug("Custom execution context provider found");
         }
         catch (Exception e)
         {
-            LOGGER.info("No custom execution context found.");
+            LOGGER.debug("No custom execution context found.");
             ecProvider = new DefaultDeadboltExecutionContextProvider();
         }
         return ecProvider;
