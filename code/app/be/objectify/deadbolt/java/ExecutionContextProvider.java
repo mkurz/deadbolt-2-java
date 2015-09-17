@@ -17,8 +17,10 @@ package be.objectify.deadbolt.java;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.Configuration;
 import play.Play;
 
+import javax.inject.Inject;
 import java.util.function.Supplier;
 
 /**
@@ -30,18 +32,34 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
 
     private final DeadboltExecutionContextProvider defaultProvider = new DefaultDeadboltExecutionContextProvider();
 
+    private final boolean customEcEnabled;
+
+    @Inject
+    public ExecutionContextProvider(final Configuration config)
+    {
+        this.customEcEnabled = config.getBoolean(ConfigKeys.CUSTOM_EC_DEFAULT._1,
+                                                 ConfigKeys.CUSTOM_EC_DEFAULT._2);
+    }
+
     @Override
     public DeadboltExecutionContextProvider get()
     {
         DeadboltExecutionContextProvider ecProvider;
-        try
+        if (customEcEnabled)
         {
-            ecProvider = Play.application().injector().instanceOf(DeadboltExecutionContextProvider.class);
-            LOGGER.debug("Custom execution context provider found");
+            try
+            {
+                ecProvider = Play.application().injector().instanceOf(DeadboltExecutionContextProvider.class);
+                LOGGER.debug("Custom execution context provider found");
+            }
+            catch (Exception e)
+            {
+                LOGGER.debug("No custom execution context found.");
+                ecProvider = defaultProvider;
+            }
         }
-        catch (Exception e)
+        else
         {
-            LOGGER.debug("No custom execution context found.");
             ecProvider = defaultProvider;
         }
         return ecProvider;
