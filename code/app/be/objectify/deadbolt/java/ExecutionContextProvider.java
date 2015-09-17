@@ -28,6 +28,8 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionContextProvider.class);
 
+    private final DeadboltExecutionContextProvider defaultProvider = new DefaultDeadboltExecutionContextProvider();
+
     @Override
     public DeadboltExecutionContextProvider get()
     {
@@ -40,7 +42,7 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
         catch (Exception e)
         {
             LOGGER.debug("No custom execution context found.");
-            ecProvider = new DefaultDeadboltExecutionContextProvider();
+            ecProvider = defaultProvider;
         }
         return ecProvider;
     }

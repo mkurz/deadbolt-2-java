@@ -42,13 +42,13 @@ public class DefaultSubjectCache implements SubjectCache
     @Inject
     public DefaultSubjectCache(final Configuration configuration)
     {
-        this.cacheUserPerRequestEnabled = configuration.getBoolean(ConfigKeys.CACHE_DEADBOLT_USER,
-                                                                   false);
-        this.blocking = configuration.getBoolean(ConfigKeys.BLOCKING,
-                                                 false);
+        this.cacheUserPerRequestEnabled = configuration.getBoolean(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
+                                                                   ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._2);
+        this.blocking = configuration.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1,
+                                                 ConfigKeys.BLOCKING_DEFAULT._2);
 
-        this.blockingTimeout = configuration.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT,
-                                                     1000L);
+        this.blockingTimeout = configuration.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
+                                                     ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class DefaultSubjectCache implements SubjectCache
         F.Promise<Optional<Subject>> promise;
         if (cacheUserPerRequestEnabled)
         {
-            final Optional<Subject> cachedUser = Optional.ofNullable((Subject) context.args.get(ConfigKeys.CACHE_DEADBOLT_USER));
+            final Optional<Subject> cachedUser = Optional.ofNullable((Subject) context.args.get(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1));
             if (cachedUser.isPresent())
             {
                 promise = F.Promise.pure(cachedUser);
@@ -67,7 +67,7 @@ public class DefaultSubjectCache implements SubjectCache
             {
                 promise = deadboltHandler.getSubject(context)
                                    .map(subjectOption -> {
-                                       subjectOption.ifPresent(subject -> context.args.put(ConfigKeys.CACHE_DEADBOLT_USER,
+                                       subjectOption.ifPresent(subject -> context.args.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
                                                                                            subject));
                                        return subjectOption;
                                    });

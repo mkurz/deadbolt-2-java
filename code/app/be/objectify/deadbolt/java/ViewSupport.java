@@ -75,8 +75,8 @@ public class ViewSupport
         this.failureListener = failureListener.get();
 
 
-        final Long timeout = configuration.getLong(ConfigKeys.DEFAULT_VIEW_TIMEOUT,
-                                                   1000L);
+        final Long timeout = configuration.getLong(ConfigKeys.DEFAULT_VIEW_TIMEOUT_DEFAULT._1,
+                                                   ConfigKeys.DEFAULT_VIEW_TIMEOUT_DEFAULT._2);
         LOGGER.info("Default timeout period for blocking views is [{}]ms",
                     timeout);
         this.defaultTimeout = () -> timeout;

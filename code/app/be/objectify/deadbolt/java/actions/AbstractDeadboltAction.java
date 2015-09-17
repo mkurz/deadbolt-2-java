@@ -79,10 +79,10 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
         this.executionContextProvider = ecProvider.get();
 
-        this.blocking = config.getBoolean(ConfigKeys.BLOCKING,
-                                          false);
-        this.blockingTimeout = this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT,
-                                                   1000L);
+        this.blocking = config.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1,
+                                          ConfigKeys.BLOCKING_DEFAULT._2);
+        this.blockingTimeout = this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
+                                                   ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
     }
 
     /**
