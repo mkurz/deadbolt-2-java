@@ -44,7 +44,7 @@ public class TemplateFailureListenerProvider implements Provider<TemplateFailure
         }
         catch (Exception e)
         {
-            LOGGER.info("No custom TemplateFailureListener found, falling back to no-op implementation");
+            LOGGER.info("No custom TemplateFailureListener found, falling back to no-op implementation.  Don't worry, this is a feature and not a bug.");
             listener = new NoOpTemplateFailureListener();
         }
         return listener;
