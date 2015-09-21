@@ -196,6 +196,8 @@ Each constraint has a variant which allows you to define fallback content.  This
 
 **SubjectPresent**
 
+    @import be.objectify.deadbolt.java.views.html.{subjectPresent, subjectPresentOr}
+    
     @subjectPresent() {
         This content will be present if handler#getSubject results in a Some 
     }
@@ -208,6 +210,8 @@ Each constraint has a variant which allows you to define fallback content.  This
 
 **SubjectNotPresent**
 
+    @import be.objectify.deadbolt.java.views.html.{subjectNotPresent, subjectNotPresentOr}
+    
     @subjectNotPresent() {
         This content will be present if handler#getSubject results in a None 
     }
@@ -222,8 +226,9 @@ Each constraint has a variant which allows you to define fallback content.  This
 
 `la` and `as` are convenience functions for creating a `List[Array]` and an `Array[String]`
 
+    @import be.objectify.deadbolt.java.views.html.{restrict, restrictOr}
     @import be.objectify.deadbolt.core.utils.TemplateUtils.{la, as}
-
+    
     @restrict(roles = la(as("foo", "bar"))) {
         Subject requires the foo role for this to be visible
     }
@@ -247,6 +252,8 @@ Each constraint has a variant which allows you to define fallback content.  This
 
  The default pattern type is `PatternType.EQUALITY`.
 
+    @import be.objectify.deadbolt.java.views.html.{pattern, patternOr}
+    
     @pattern(value = "admin.printer") {
         Subject must have a permission with the exact value "admin.printer" for this to be visible
     }
@@ -267,6 +274,8 @@ Each constraint has a variant which allows you to define fallback content.  This
 
 **Dynamic**
 
+    @import be.objectify.deadbolt.java.views.html.{dynamic, dynamicOr}
+    
     @dynamic(name = "someName") {
         DynamicResourceHandler#isAllowed must result in true for this to be visible
     }
