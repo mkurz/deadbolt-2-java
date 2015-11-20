@@ -21,7 +21,6 @@ import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -29,6 +28,7 @@ import play.mvc.Result;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Implements the {@link Restrict} functionality, i.e. within an {@link Group} roles are ANDed, and between
@@ -70,12 +70,12 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     }
 
     @Override
-    public F.Promise<Result> applyRestriction(final Http.Context ctx,
-                                              final DeadboltHandler deadboltHandler)
+    public CompletionStage<Result> applyRestriction(final Http.Context ctx,
+                                                    final DeadboltHandler deadboltHandler)
     {
         return getSubject(ctx,
                           deadboltHandler)
-                .map(subjectOption -> {
+                .thenApply(subjectOption -> {
                     boolean roleOk = false;
                     if (subjectOption.isPresent())
                     {
@@ -89,8 +89,8 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                     }
                     return roleOk;
                 })
-                .flatMap(allowed -> {
-                    final F.Promise<Result> result;
+                .thenCompose(allowed -> {
+                    final CompletionStage<Result> result;
                     if (allowed)
                     {
                         markActionAsAuthorised(ctx);

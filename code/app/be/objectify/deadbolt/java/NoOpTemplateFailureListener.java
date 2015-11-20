@@ -26,7 +26,8 @@ import javax.inject.Singleton;
 public class NoOpTemplateFailureListener implements TemplateFailureListener
 {
     @Override
-    public void failure(String message, long timeout)
+    public void failure(final String message,
+                        final long timeout)
     {
         // no-op
     }

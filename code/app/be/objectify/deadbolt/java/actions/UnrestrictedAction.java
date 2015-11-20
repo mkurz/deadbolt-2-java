@@ -19,13 +19,15 @@ import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContext;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
@@ -36,6 +38,8 @@ import javax.inject.Inject;
  */
 public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UnrestrictedAction.class);
+
     @Inject
     public UnrestrictedAction(final JavaAnalyzer analyzer,
                               final SubjectCache subjectCache,
@@ -54,29 +58,33 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
      * {@inheritDoc}
      */
     @Override
-    public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
+    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
         final ExecutionContext executionContext = executionContextProvider.get();
-        final F.Promise<Result> promise = F.Promise.promise(() -> isActionUnauthorised(ctx),
-                                                            executionContext)
-                                                   .flatMap(unauthorised -> {
-                                                       final F.Promise<Result> result;
-                                                       if (unauthorised)
-                                                       {
-                                                           result = onAuthFailure(getDeadboltHandler(configuration.handlerKey()),
-                                                                                  configuration.content(),
-                                                                                  ctx);
-                                                       }
-                                                       else
-                                                       {
-                                                           markActionAsAuthorised(ctx);
-                                                           result = delegate.call(ctx);
-                                                       }
-                                                       return result;
-                                                   }, executionContext);
-
-        return blocking ? F.Promise.pure(promise.get(blockingTimeout,
-                                                     TimeUnit.MILLISECONDS))
-                        : promise;
+        return CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx))
+                                .thenCompose(unauthorised -> {
+                                    try
+                                    {
+                                        final CompletionStage<Result> result;
+                                        if (unauthorised)
+                                        {
+                                            result = onAuthFailure(getDeadboltHandler(configuration.handlerKey()),
+                                                                   configuration.content(),
+                                                                   ctx);
+                                        }
+                                        else
+                                        {
+                                            markActionAsAuthorised(ctx);
+                                            result = delegate.call(ctx);
+                                        }
+                                        return result;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        LOGGER.error("Something bad happened",
+                                                     e);
+                                        throw new RuntimeException(e);
+                                    }
+                                });
     }
 }

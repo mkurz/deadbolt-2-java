@@ -4,11 +4,14 @@ import be.objectify.deadbolt.core.models.Subject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,69 +22,72 @@ import java.util.concurrent.TimeUnit;
 public class AbstractDeadboltHandlerTest
 {
     @Test
-    public void testGetSubject()
+    public void testGetSubject() throws Exception
     {
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
             {
-                return F.Promise.promise(Optional::empty);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         };
 
         final Http.Context context = Mockito.mock(Http.Context.class);
 
-        final F.Promise<Optional<Subject>> promise = deadboltHandler.getSubject(context);
+        final CompletionStage<Optional<Subject>> promise = deadboltHandler.getSubject(context);
         Assert.assertNotNull(promise);
 
-        final Optional<Subject> option = promise.get(1000);
+        final Optional<Subject> option = promise.toCompletableFuture().get(1000,
+                                                                           TimeUnit.MILLISECONDS);
         Assert.assertNotNull(option);
         Assert.assertFalse(option.isPresent());
     }
 
     @Test
-    public void testOnAuthFailure()
+    public void testOnAuthFailure() throws Exception
     {
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
             {
-                return F.Promise.promise(Optional::empty);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         };
 
         final Http.Context context = Mockito.mock(Http.Context.class);
 
-        final F.Promise<Result> promise = deadboltHandler.onAuthFailure(context,
+        final CompletionStage<Result> promise = deadboltHandler.onAuthFailure(context,
                                                                        "foo");
         Assert.assertNotNull(promise);
 
-        final Result result = promise.get(100, TimeUnit.MILLISECONDS);
+        final Result result = promise.toCompletableFuture().get(100,
+                                                                TimeUnit.MILLISECONDS);
         Assert.assertNotNull(result);
         Assert.assertEquals(401,
                             result.status());
     }
 
     @Test
-    public void testGetDynamicResourceHandler()
+    public void testGetDynamicResourceHandler() throws Exception
     {
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
             {
-                return F.Promise.promise(Optional::empty);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         };
 
         final Http.Context context = Mockito.mock(Http.Context.class);
 
-        final F.Promise<Optional<DynamicResourceHandler>> promise = deadboltHandler.getDynamicResourceHandler(context);
+        final CompletionStage<Optional<DynamicResourceHandler>> promise = deadboltHandler.getDynamicResourceHandler(context);
         Assert.assertNotNull(promise);
 
-        final Optional<DynamicResourceHandler> option = promise.get(1000);
+        final Optional<DynamicResourceHandler> option = promise.toCompletableFuture().get(1000,
+                                                                                          TimeUnit.MILLISECONDS);
         Assert.assertNotNull(option);
         Assert.assertFalse(option.isPresent());
     }

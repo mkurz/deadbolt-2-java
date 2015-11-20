@@ -15,7 +15,8 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
@@ -23,7 +24,6 @@ import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -48,9 +48,9 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
     }
 
     @Override
-    public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
+    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        F.Promise<Result> result;
+        final CompletionStage<Result> result;
         if (isActionAuthorised(ctx))
         {
             result = delegate.call(ctx);
@@ -61,14 +61,9 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .flatMap(option -> option.map(F.Promise::pure)
-                                             .orElseGet(() -> applyRestriction(ctx,
-                                                                               deadboltHandler)));
-            if(blocking)
-            {
-                result = F.Promise.pure(result.get(blockingTimeout,
-                                                   TimeUnit.MILLISECONDS));
-            }
+                    .thenCompose(option -> option.map(value -> (CompletionStage<Result>)CompletableFuture.completedFuture(value))
+                                                 .orElseGet(() -> applyRestriction(ctx,
+                                                                                   deadboltHandler)));
         }
         return result;
     }
@@ -80,6 +75,6 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
      */
     public abstract String getHandlerKey();
 
-    public abstract F.Promise<Result> applyRestriction(Http.Context ctx,
-                                                       DeadboltHandler deadboltHandler);
+    public abstract CompletionStage<Result> applyRestriction(Http.Context ctx,
+                                                             DeadboltHandler deadboltHandler);
 }

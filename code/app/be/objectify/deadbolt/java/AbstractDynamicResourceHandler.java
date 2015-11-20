@@ -15,8 +15,10 @@
  */
 package be.objectify.deadbolt.java;
 
-import play.libs.F;
 import play.mvc.Http;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Stubbed implementation of {@link DynamicResourceHandler} for cases when you only need one of the two methods.
@@ -28,21 +30,21 @@ public abstract class AbstractDynamicResourceHandler implements DynamicResourceH
     /**
      * {@inheritDoc}
      */
-    public F.Promise<Boolean> isAllowed(final String name,
-                                        final String meta,
-                                        final DeadboltHandler deadboltHandler,
-                                        final Http.Context ctx)
+    public CompletionStage<Boolean> isAllowed(final String name,
+                                              final String meta,
+                                              final DeadboltHandler deadboltHandler,
+                                              final Http.Context ctx)
     {
-        return F.Promise.pure(false);
+        return CompletableFuture.completedFuture(false);
     }
 
     /**
      * {@inheritDoc}
      */
-    public F.Promise<Boolean> checkPermission(final String permissionValue,
+    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                               final DeadboltHandler deadboltHandler,
                                               final Http.Context ctx)
     {
-        return F.Promise.pure(false);
+        return CompletableFuture.completedFuture(false);
     }
 }

@@ -1,10 +1,11 @@
 package be.objectify.deadbolt.java;
 
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -12,8 +13,8 @@ import java.util.Optional;
 public abstract class AbstractNoPreAuthDeadboltHandler extends AbstractDeadboltHandler
 {
     @Override
-    public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context)
+    public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
     {
-        return F.Promise.pure(Optional.empty());
+        return CompletableFuture.completedFuture(Optional.empty());
     }
 }

@@ -3,21 +3,23 @@ package be.objectify.deadbolt.java.test.controllers.restrict;
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
 import be.objectify.deadbolt.java.actions.Unrestricted;
-import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Restrict({@Group("foo"), @Group("bar")})
 public class RestrictedToFooOrBar extends Controller
 {
-    public static F.Promise<Result> index()
+    public CompletionStage<Result> index()
     {
-        return F.Promise.promise(() -> ok("Content accessible"));
+        return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
     }
 
     @Unrestricted
-    public static F.Promise<Result> unrestricted()
+    public CompletionStage<Result> unrestricted()
     {
-        return F.Promise.promise(() -> ok("Content accessible"));
+        return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
     }
 }

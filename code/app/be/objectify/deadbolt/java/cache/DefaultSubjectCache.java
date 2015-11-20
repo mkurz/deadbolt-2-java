@@ -19,13 +19,13 @@ import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Http;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -35,55 +35,40 @@ public class DefaultSubjectCache implements SubjectCache
 {
     private final boolean cacheUserPerRequestEnabled;
 
-    private final boolean blocking;
-
-    private final long blockingTimeout;
-
     @Inject
     public DefaultSubjectCache(final Configuration configuration)
     {
         this.cacheUserPerRequestEnabled = configuration.getBoolean(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
                                                                    ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._2);
-        this.blocking = configuration.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1,
-                                                 ConfigKeys.BLOCKING_DEFAULT._2);
-
-        this.blockingTimeout = configuration.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
-                                                     ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
     }
 
     @Override
-    public F.Promise<Optional<Subject>> apply(final DeadboltHandler deadboltHandler,
-                                              final Http.Context context)
+    public CompletionStage<Optional<Subject>> apply(final DeadboltHandler deadboltHandler,
+                                                    final Http.Context context)
     {
-        F.Promise<Optional<Subject>> promise;
+        final CompletionStage<Optional<Subject>> promise;
         if (cacheUserPerRequestEnabled)
         {
             final Optional<Subject> cachedUser = Optional.ofNullable((Subject) context.args.get(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1));
             if (cachedUser.isPresent())
             {
-                promise = F.Promise.pure(cachedUser);
+                promise = CompletableFuture.completedFuture(cachedUser);
             }
             else
             {
                 promise = deadboltHandler.getSubject(context)
-                                   .map(subjectOption -> {
-                                       subjectOption.ifPresent(subject -> context.args.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
-                                                                                           subject));
-                                       return subjectOption;
-                                   });
+                                         .thenApply(subjectOption -> {
+                                             subjectOption.ifPresent(subject -> context.args.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
+                                                                                                 subject));
+                                             return subjectOption;
+                                         });
             }
         }
         else
         {
             promise = deadboltHandler.getSubject(context);
         }
-        
-        if (this.blocking)
-        {
-            promise = F.Promise.pure(promise.get(this.blockingTimeout,
-                                                 TimeUnit.MILLISECONDS));
-        }
-        
+
         return promise;
     }
 }

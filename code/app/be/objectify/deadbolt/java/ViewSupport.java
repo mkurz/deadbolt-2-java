@@ -23,7 +23,6 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Http;
 
 import javax.inject.Inject;
@@ -32,6 +31,7 @@ import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -58,7 +58,7 @@ public class ViewSupport
 
     private final TemplateFailureListener failureListener;
 
-    private final BiFunction<Long, F.PromiseTimeoutException, Boolean> timeoutHandler;
+    private final BiFunction<Long, TimeoutException, Boolean> timeoutHandler;
 
     @Inject
     public ViewSupport(final Configuration configuration,
@@ -119,12 +119,13 @@ public class ViewSupport
             allowed = subjectCache.apply(handler == null ? handlerCache.get()
                                                          : handler,
                                          Http.Context.current())
-                                  .map(testRoles::apply)
+                                  .thenApply(testRoles::apply)
+                                  .toCompletableFuture()
                                   .get(timeoutInMillis,
                                        TimeUnit.MILLISECONDS);
 
         }
-        catch (F.PromiseTimeoutException e)
+        catch (TimeoutException e)
         {
             allowed = timeoutHandler.apply(timeoutInMillis,
                                            e);
@@ -151,15 +152,16 @@ public class ViewSupport
         try
         {
             allowed = deadboltHandler.getDynamicResourceHandler(Http.Context.current())
-                                     .map(drhOption -> drhOption.orElseThrow(() -> new RuntimeException("A dynamic resource is specified but no dynamic resource handler is provided")))
-                                     .flatMap(drh -> drh.isAllowed(name,
-                                                                   meta,
-                                                                   deadboltHandler,
-                                                                   context))
+                                     .thenApply(drhOption -> drhOption.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
+                                     .thenCompose(drh -> drh.isAllowed(name,
+                                                                       meta,
+                                                                       deadboltHandler,
+                                                                       context))
+                                     .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
         }
-        catch (F.PromiseTimeoutException e)
+        catch (TimeoutException e)
         {
             allowed = timeoutHandler.apply(timeoutInMillis,
                                            e);
@@ -180,11 +182,12 @@ public class ViewSupport
         {
             allowed = subjectCache.apply(handler,
                                          Http.Context.current())
+                                  .toCompletableFuture()
                                   .get(timeoutInMillis,
                                        TimeUnit.MILLISECONDS)
                                   .isPresent();
         }
-        catch (F.PromiseTimeoutException e)
+        catch (TimeoutException e)
         {
             allowed = timeoutHandler.apply(timeoutInMillis,
                                            e);
@@ -205,11 +208,12 @@ public class ViewSupport
         {
             allowed = !subjectCache.apply(handler,
                                           Http.Context.current())
+                                   .toCompletableFuture()
                                    .get(timeoutInMillis,
                                         TimeUnit.MILLISECONDS)
                                    .isPresent();
         }
-        catch (F.PromiseTimeoutException e)
+        catch (TimeoutException e)
         {
             allowed = timeoutHandler.apply(timeoutInMillis,
                                            e);
@@ -233,15 +237,17 @@ public class ViewSupport
             {
                 case EQUALITY:
                     allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
-                                          .map(subjectOption -> analyzer.checkPatternEquality(subjectOption,
-                                                                                              Optional.ofNullable(value)))
+                                          .thenApply(subjectOption -> analyzer.checkPatternEquality(subjectOption,
+                                                                                                    Optional.ofNullable(value)))
+                                          .toCompletableFuture()
                                           .get(timeoutInMillis,
                                                TimeUnit.MILLISECONDS);
                     break;
                 case REGEX:
                     allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
-                                          .map(subjectOption -> analyzer.checkRegexPattern(subjectOption,
+                                          .thenApply(subjectOption -> analyzer.checkRegexPattern(subjectOption,
                                                                                            Optional.ofNullable(patternCache.apply(value))))
+                                          .toCompletableFuture()
                                           .get(timeoutInMillis,
                                                TimeUnit.MILLISECONDS);
                     break;
@@ -249,7 +255,9 @@ public class ViewSupport
                     allowed = analyzer.checkCustomPattern(deadboltHandler,
                                                           context,
                                                           value)
-                                      .get(timeoutInMillis, TimeUnit.MILLISECONDS);
+                                      .toCompletableFuture()
+                                      .get(timeoutInMillis,
+                                           TimeUnit.MILLISECONDS);
                     break;
                 default:
                     allowed = false;
@@ -257,7 +265,7 @@ public class ViewSupport
                                  patternType);
             }
         }
-        catch (F.PromiseTimeoutException e)
+        catch (TimeoutException e)
         {
             allowed = timeoutHandler.apply(timeoutInMillis,
                                            e);

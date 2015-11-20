@@ -16,17 +16,18 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.ExceptionThrowingDynamicResourceHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+import java.util.concurrent.CompletionStage;
 
 /**
  * A dynamic restriction is user-defined, and so completely arbitrary.  Hence, no checks on subjects, etc, occur
@@ -68,17 +69,17 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     }
 
     @Override
-    public F.Promise<Result> applyRestriction(final Http.Context ctx,
-                                              final DeadboltHandler deadboltHandler)
+    public CompletionStage<Result> applyRestriction(final Http.Context ctx,
+                                                    final DeadboltHandler deadboltHandler)
     {
         return deadboltHandler.getDynamicResourceHandler(ctx)
-                              .map(option -> option.orElseThrow(() -> new RuntimeException("A dynamic resource is specified but no dynamic resource handler is provided")))
-                              .flatMap(drh -> drh.isAllowed(getValue(),
-                                                            getMeta(),
-                                                            deadboltHandler,
-                                                            ctx))
-                              .flatMap(allowed -> {
-                                  final F.Promise<Result> result;
+                              .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
+                              .thenCompose(drh -> drh.isAllowed(getValue(),
+                                                                getMeta(),
+                                                                deadboltHandler,
+                                                                ctx))
+                              .thenCompose(allowed -> {
+                                  final CompletionStage<Result> result;
                                   if (allowed)
                                   {
                                       markActionAsAuthorised(ctx);

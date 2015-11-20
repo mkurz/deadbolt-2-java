@@ -2,19 +2,19 @@ language: scala
 jdk:
 - oraclejdk8
 scala:
-- 2.11.6
+- 2.11.7
 script:
 - cd code
-- sbt --warn ++$TRAVIS_SCALA_VERSION +publishLocal
+- sbt --warn ++$TRAVIS_SCALA_VERSION publishLocal
 - cd ../test-app
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.0 +test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.1 +test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.2 +test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.3 +test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.4 +test
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.0 test
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.1 test
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.2 test
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.3 test
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.4.4 test
 - cd ../code
 after_success:
-- ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt warn +publish; };'
+- ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt warn publish; };'
 sudo: false
 env:
   global:

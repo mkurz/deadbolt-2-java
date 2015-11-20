@@ -16,31 +16,32 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
-import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
 public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T>
 {
-    private final F.Predicate<Optional<Subject>> predicate;
+    private final Predicate<Optional<Subject>> predicate;
 
     AbstractSubjectAction(final JavaAnalyzer analyzer,
                           final SubjectCache subjectCache,
                           final HandlerCache handlerCache,
-                          final F.Predicate<Optional<Subject>> predicate,
+                          final Predicate<Optional<Subject>> predicate,
                           final Configuration config,
                           final ExecutionContextProvider ecProvider)
     {
@@ -56,9 +57,9 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
      * {@inheritDoc}
      */
     @Override
-    public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
+    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        F.Promise<Result> result;
+        CompletionStage<Result> result;
         final Config config = config();
         if (isActionUnauthorised(ctx))
         {
@@ -77,21 +78,16 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
             result = preAuth(config.forceBeforeAuthCheck,
                              ctx,
                              deadboltHandler)
-                    .flatMap(preAuthResult -> new SubjectTest(ctx,
-                                                              deadboltHandler,
-                                                              config).apply(preAuthResult));
-            if (blocking)
-            {
-                result = F.Promise.pure(result.get(blockingTimeout,
-                                                   TimeUnit.MILLISECONDS));
-            }
+                    .thenCompose(preAuthResult -> new SubjectTest(ctx,
+                                                                  deadboltHandler,
+                                                                  config).apply(preAuthResult));
         }
         return result;
     }
 
     abstract Config config();
 
-    private final class SubjectTest implements F.Function<Optional<Result>, F.Promise<Result>>
+    private final class SubjectTest implements Function<Optional<Result>, CompletionStage<Result>>
     {
         private final Http.Context ctx;
         private final DeadboltHandler deadboltHandler;
@@ -107,27 +103,29 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
         }
 
         @Override
-        public F.Promise<Result> apply(final Optional<Result> preAuthResult) throws Throwable
+        public CompletionStage<Result> apply(final Optional<Result> preAuthResult)
         {
-            return preAuthResult.map(F.Promise::pure)
-                                .orElseGet(() -> getSubject(ctx,
-                                                            deadboltHandler)
-                                        .flatMap(subject -> {
-                                            final F.Promise<Result> innerResult;
-                                            if (predicate.test(subject))
-                                            {
-                                                markActionAsAuthorised(ctx);
-                                                innerResult = delegate.call(ctx);
-                                            }
-                                            else
-                                            {
-                                                markActionAsUnauthorised(ctx);
-                                                innerResult = onAuthFailure(deadboltHandler,
-                                                                            config.content,
-                                                                            ctx);
-                                            }
-                                            return innerResult;
-                                        }));
+            return preAuthResult.map(r -> (CompletionStage<Result>)CompletableFuture.completedFuture(r))
+                                .orElseGet(() -> {
+                                    return getSubject(ctx,
+                                                      deadboltHandler)
+                                            .thenCompose(subject -> {
+                                                final CompletionStage<Result> innerResult;
+                                                if (predicate.test(subject))
+                                                {
+                                                    markActionAsAuthorised(ctx);
+                                                    innerResult = delegate.call(ctx);
+                                                }
+                                                else
+                                                {
+                                                    markActionAsUnauthorised(ctx);
+                                                    innerResult = onAuthFailure(deadboltHandler,
+                                                                                config.content,
+                                                                                ctx);
+                                                }
+                                                return innerResult;
+                                            });
+                                });
         }
     }
 

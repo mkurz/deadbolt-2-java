@@ -15,8 +15,9 @@
  */
 package be.objectify.deadbolt.java;
 
-import play.libs.F;
 import play.mvc.Http;
+
+import java.util.concurrent.CompletionStage;
 
 /**
  * Implementations of this interface are used to process dynamic restrictions (both from the view and the controller). A
@@ -64,10 +65,10 @@ public interface DynamicResourceHandler
      * @param ctx             the context of the current request
      * @return true if access to the resource is allowed, otherwise false
      */
-    F.Promise<Boolean> isAllowed(String name,
-                                 String meta,
-                                 DeadboltHandler deadboltHandler,
-                                 Http.Context ctx);
+    CompletionStage<Boolean> isAllowed(String name,
+                                       String meta,
+                                       DeadboltHandler deadboltHandler,
+                                       Http.Context ctx);
 
     /**
      * Invoked when a custom pattern needs checking..
@@ -77,7 +78,7 @@ public interface DynamicResourceHandler
      * @param ctx the context of the current request
      * @return true if access based on the permission is  allowed, otherwise false
      */
-    F.Promise<Boolean> checkPermission(String permissionValue,
-                                       DeadboltHandler deadboltHandler,
-                                       Http.Context ctx);
+    CompletionStage<Boolean> checkPermission(String permissionValue,
+                                             DeadboltHandler deadboltHandler,
+                                             Http.Context ctx);
 }

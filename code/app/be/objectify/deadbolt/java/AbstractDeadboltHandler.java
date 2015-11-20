@@ -16,12 +16,14 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.models.Subject;
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import views.html.defaultpages.unauthorized;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Abstract implementation of {@link DeadboltHandler} that gives a standard unauthorised result when access fails.
@@ -33,25 +35,26 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
+    public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
     {
-        return F.Promise.pure(Optional.empty());
+        return CompletableFuture.completedFuture(Optional.empty());
     }
 
     /**
      * {@inheritDoc}
      */
-    public F.Promise<Result> onAuthFailure(final Http.Context context,
+    public CompletionStage<Result> onAuthFailure(final Http.Context context,
                                            final String content)
     {
-        return F.Promise.pure(unauthorized(views.html.defaultpages.unauthorized.render()));
+        return CompletableFuture.supplyAsync(unauthorized::render)
+                                .thenApply(Results::unauthorized);
     }
 
     /**
      * {@inheritDoc}
      */
-    public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+    public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
     {
-        return F.Promise.pure(Optional.empty());
+        return CompletableFuture.completedFuture(Optional.empty());
     }
 }

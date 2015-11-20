@@ -17,13 +17,13 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.ExceptionThrowingDynamicResourceHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -31,6 +31,8 @@ import scala.concurrent.ExecutionContext;
 
 import javax.inject.Inject;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -75,10 +77,10 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     }
 
     @Override
-    public F.Promise<Result> applyRestriction(final Http.Context ctx,
-                                              final DeadboltHandler deadboltHandler)
+    public CompletionStage<Result> applyRestriction(final Http.Context ctx,
+                                                    final DeadboltHandler deadboltHandler)
     {
-        F.Promise<Result> result;
+        final CompletionStage<Result> result;
 
         switch (configuration.patternType())
         {
@@ -104,19 +106,19 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return result;
     }
 
-    private F.Promise<Result> custom(final Http.Context ctx,
-                                     final DeadboltHandler deadboltHandler,
-                                     final boolean invert)
+    private CompletionStage<Result> custom(final Http.Context ctx,
+                                           final DeadboltHandler deadboltHandler,
+                                           final boolean invert)
     {
         ctx.args.put(ConfigKeys.PATTERN_INVERT,
                      invert);
         return deadboltHandler.getDynamicResourceHandler(ctx)
-                              .map(option -> option.orElseThrow(() -> new RuntimeException("A custom permission type is specified but no dynamic resource handler is provided")))
-                              .flatMap(resourceHandler -> resourceHandler.checkPermission(getValue(),
-                                                                                          deadboltHandler,
-                                                                                          ctx))
-                              .flatMap(allowed -> {
-                                  final F.Promise<Result> innerResult;
+                              .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
+                              .thenCompose(resourceHandler -> resourceHandler.checkPermission(getValue(),
+                                                                                              deadboltHandler,
+                                                                                              ctx))
+                              .thenCompose(allowed -> {
+                                  final CompletionStage<Result> innerResult;
                                   if (invert ? !allowed : allowed)
                                   {
                                       markActionAsAuthorised(ctx);
@@ -138,36 +140,34 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return configuration.value();
     }
 
-    private F.Promise<Result> equality(final Http.Context ctx,
-                                       final DeadboltHandler deadboltHandler,
-                                       final boolean invert)
+    private CompletionStage<Result> equality(final Http.Context ctx,
+                                             final DeadboltHandler deadboltHandler,
+                                             final boolean invert)
     {
         final ExecutionContext executionContext = executionContextProvider.get();
-        return F.Promise.promise(this::getValue,
-                                 executionContext)
-                        .zip(getSubject(ctx,
-                                        deadboltHandler))
-                        .map(tuple -> tuple._2.isPresent() ? analyzer.checkPatternEquality(tuple._2,
-                                                                                           Optional.ofNullable(tuple._1))
-                                                           : invert, // this is a little clumsy - it means no subject + invert is still denied
-                             executionContext)
-                        .flatMap(equal -> {
-                            final F.Promise<Result> result;
-                            if (invert ? !equal : equal)
-                            {
-                                markActionAsAuthorised(ctx);
-                                result = delegate.call(ctx);
-                            }
-                            else
-                            {
-                                markActionAsUnauthorised(ctx);
-                                result = onAuthFailure(deadboltHandler,
-                                                       configuration.content(),
-                                                       ctx);
-                            }
+        return CompletableFuture.supplyAsync(this::getValue)
+                                .thenCombine(getSubject(ctx,
+                                                        deadboltHandler),
+                                             (patternValue, subject) -> subject.isPresent() ? analyzer.checkPatternEquality(subject,
+                                                                                                                            Optional.ofNullable(patternValue))
+                                                                                            : invert) // this is a little clumsy - it means no subject + invert is still denied
+                                .thenCompose(equal -> {
+                                    final CompletionStage<Result> result;
+                                    if (invert ? !equal : equal)
+                                    {
+                                        markActionAsAuthorised(ctx);
+                                        result = delegate.call(ctx);
+                                    }
+                                    else
+                                    {
+                                        markActionAsUnauthorised(ctx);
+                                        result = onAuthFailure(deadboltHandler,
+                                                               configuration.content(),
+                                                               ctx);
+                                    }
 
-                            return result;
-                        }, executionContext);
+                                    return result;
+                                });
     }
 
     /**
@@ -178,38 +178,34 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
      * @param invert          if true, invert the application of the constraint
      * @return the necessary result
      */
-    private F.Promise<Result> regex(final Http.Context ctx,
+    private CompletionStage<Result> regex(final Http.Context ctx,
                                     final DeadboltHandler deadboltHandler,
                                     final boolean invert)
     {
         final ExecutionContext executionContext = executionContextProvider.get();
-        return F.Promise.promise(this::getValue,
-                                 executionContext)
-                        .map(patternCache::apply,
-                             executionContext)
-                        .zip(getSubject(ctx,
-                                        deadboltHandler))
-                        .map(tuple -> tuple._2.isPresent() ? analyzer.checkRegexPattern(tuple._2,
-                                                                                        Optional.ofNullable(tuple._1))
-                                                           : invert, // this is a little clumsy - it means no subject + invert is still denied
-                             executionContext)
-                        .flatMap(applicable -> {
-                                     final F.Promise<Result> result;
-                                     if (invert ? !applicable : applicable)
-                                     {
-                                         markActionAsAuthorised(ctx);
-                                         result = delegate.call(ctx);
-                                     }
-                                     else
-                                     {
-                                         markActionAsUnauthorised(ctx);
-                                         result = onAuthFailure(deadboltHandler,
-                                                                configuration.content(),
-                                                                ctx);
-                                     }
-                                     return result;
-                                 },
-                                 executionContext);
+        return CompletableFuture.supplyAsync(this::getValue)
+                                .thenApply(patternCache::apply)
+                                .thenCombine(getSubject(ctx,
+                                                        deadboltHandler),
+                                             (patternValue, subject) -> subject.isPresent() ? analyzer.checkRegexPattern(subject,
+                                                                                                                         Optional.ofNullable(patternValue))
+                                                                                            : invert) // this is a little clumsy - it means no subject + invert is still denied
+                                .thenCompose(applicable -> {
+                                    final CompletionStage<Result> result;
+                                    if (invert ? !applicable : applicable)
+                                    {
+                                        markActionAsAuthorised(ctx);
+                                        result = delegate.call(ctx);
+                                    }
+                                    else
+                                    {
+                                        markActionAsUnauthorised(ctx);
+                                        result = onAuthFailure(deadboltHandler,
+                                                               configuration.content(),
+                                                               ctx);
+                                    }
+                                    return result;
+                                });
     }
 
     @Override

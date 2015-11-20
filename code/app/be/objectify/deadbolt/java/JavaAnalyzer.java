@@ -16,10 +16,10 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.DeadboltAnalyzer;
-import play.libs.F;
 import play.mvc.Http;
 
 import javax.inject.Singleton;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -35,14 +35,14 @@ public class JavaAnalyzer extends DeadboltAnalyzer
      * @param value the pattern value
      * @return true iff the custom check succeeds
      */
-    public F.Promise<Boolean> checkCustomPattern(final DeadboltHandler handler,
-                                                 final Http.Context context,
-                                                 final String value)
+    public CompletionStage<Boolean> checkCustomPattern(final DeadboltHandler handler,
+                                                       final Http.Context context,
+                                                       final String value)
     {
         return handler.getDynamicResourceHandler(context)
-                      .map(option -> option.orElseThrow(() -> new RuntimeException("A custom permission type is specified but no dynamic resource handler is provided")))
-                      .flatMap(drh -> drh.checkPermission(value,
-                                                          handler,
-                                                          context));
+                      .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
+                      .thenCompose(drh -> drh.checkPermission(value,
+                                                              handler,
+                                                              context));
     }
 }

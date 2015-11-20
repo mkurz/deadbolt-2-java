@@ -22,11 +22,11 @@ import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Http;
 
 import javax.inject.Inject;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Implements the {@link SubjectNotPresent} functionality, i.e. the
@@ -68,8 +68,8 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
      * @return the Subject, if any
      */
     @Override
-    protected F.Promise<Optional<Subject>> getSubject(final Http.Context ctx,
-                                                      final DeadboltHandler deadboltHandler)
+    protected CompletionStage<Optional<Subject>> getSubject(final Http.Context ctx,
+                                                            final DeadboltHandler deadboltHandler)
     {
         // Bypass the additional - and in this case, incorrect - logging of the overridden method
         return subjectCache.apply(deadboltHandler,

@@ -2,9 +2,11 @@ package be.objectify.deadbolt.java.test.controllers.pattern;
 
 import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.java.actions.Pattern;
-import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -12,8 +14,8 @@ import play.mvc.Result;
 public class InvertedEqualityForMethod extends Controller
 {
     @Pattern(value = "killer.undead.zombie", patternType = PatternType.EQUALITY, invert = true)
-    public static F.Promise<Result> zombieKillersOnly()
+    public CompletionStage<Result> zombieKillersOnly()
     {
-        return F.Promise.promise(() -> ok("Content accessible"));
+        return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
     }
 }

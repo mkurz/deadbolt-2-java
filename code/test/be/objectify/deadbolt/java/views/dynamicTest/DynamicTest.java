@@ -8,13 +8,14 @@ import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import org.junit.Assert;
 import org.junit.Test;
-import play.libs.F;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -27,17 +28,17 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public F.Promise<Boolean> isAllowed(final String name,
-                                                        final String meta,
-                                                        final DeadboltHandler deadboltHandler,
-                                                        final Http.Context ctx)
+                    public CompletionStage<Boolean> isAllowed(final String name,
+                                                              final String meta,
+                                                              final DeadboltHandler deadboltHandler,
+                                                              final Http.Context ctx)
                     {
-                        return F.Promise.pure(true);
+                        return CompletableFuture.completedFuture(true);
                     }
                 }));
             }
@@ -57,17 +58,17 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public F.Promise<Boolean> isAllowed(final String name,
-                                                        final String meta,
-                                                        final DeadboltHandler deadboltHandler,
-                                                        final Http.Context ctx)
+                    public CompletionStage<Boolean> isAllowed(final String name,
+                                                              final String meta,
+                                                              final DeadboltHandler deadboltHandler,
+                                                              final Http.Context ctx)
                     {
-                        return F.Promise.pure("foo".equals(name));
+                        return CompletableFuture.completedFuture("foo".equals(name));
                     }
                 }));
             }
@@ -87,17 +88,17 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public F.Promise<Boolean> isAllowed(final String name,
-                                                        final String meta,
-                                                        final DeadboltHandler deadboltHandler,
-                                                        final Http.Context ctx)
+                    public CompletionStage<Boolean> isAllowed(final String name,
+                                                              final String meta,
+                                                              final DeadboltHandler deadboltHandler,
+                                                              final Http.Context ctx)
                     {
-                        return F.Promise.pure("bar".equals(meta));
+                        return CompletableFuture.completedFuture("bar".equals(meta));
                     }
                 }));
             }
@@ -117,17 +118,17 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public F.Promise<Boolean> isAllowed(final String name,
-                                                        final String meta,
-                                                        final DeadboltHandler deadboltHandler,
-                                                        final Http.Context ctx)
+                    public CompletionStage<Boolean> isAllowed(final String name,
+                                                              final String meta,
+                                                              final DeadboltHandler deadboltHandler,
+                                                              final Http.Context ctx)
                     {
-                        return F.Promise.pure(false);
+                        return CompletableFuture.completedFuture(false);
                     }
                 }));
             }

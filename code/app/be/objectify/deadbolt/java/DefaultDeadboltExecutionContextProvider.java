@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java;
 
-import play.libs.HttpExecution;
+import play.libs.concurrent.HttpExecution;
 import scala.concurrent.ExecutionContext;
 
 /**

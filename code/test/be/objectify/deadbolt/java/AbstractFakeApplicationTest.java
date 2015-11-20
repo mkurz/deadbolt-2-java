@@ -11,7 +11,6 @@ import play.Mode;
 import play.api.mvc.RequestHeader;
 import play.cache.CacheApi;
 import play.inject.guice.GuiceApplicationBuilder;
-import play.libs.F;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.test.WithApplication;
@@ -20,6 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
 import static play.inject.Bindings.bind;
@@ -69,9 +70,9 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
         return new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.ofNullable(getSubject.get()));
+                return CompletableFuture.supplyAsync(() -> Optional.ofNullable(getSubject.get()));
             }
         };
     }

@@ -2,9 +2,11 @@ package be.objectify.deadbolt.java.test.controllers.pattern;
 
 import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.java.actions.Pattern;
-import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -12,14 +14,14 @@ import play.mvc.Result;
 public class RegexForMethod extends Controller
 {
     @Pattern(value = "killer.undead.zombie", patternType = PatternType.REGEX)
-    public static F.Promise<Result> zombieKillersOnly()
+    public CompletionStage<Result> zombieKillersOnly()
     {
-        return F.Promise.promise(() -> ok("Content accessible"));
+        return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
     }
 
     @Pattern(value = "killer.undead.*", patternType = PatternType.REGEX)
-    public static F.Promise<Result> anyKillersOfTheUndeadWelcome()
+    public CompletionStage<Result> anyKillersOfTheUndeadWelcome()
     {
-        return F.Promise.promise(() -> ok("Content accessible"));
+        return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
     }
 }

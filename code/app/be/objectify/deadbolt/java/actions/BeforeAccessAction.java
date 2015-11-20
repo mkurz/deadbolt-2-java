@@ -15,18 +15,17 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
@@ -55,9 +54,9 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
      * {@inheritDoc}
      */
     @Override
-    public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
+    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        F.Promise<Result> result;
+        final CompletionStage<Result> result;
         if (isActionAuthorised(ctx) && !configuration.alwaysExecute())
         {
             result = delegate.call(ctx);
@@ -68,12 +67,8 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .flatMap(preAuthResult -> preAuthResult.map(F.Promise::pure)
-                                                           .orElseGet(() -> sneakyCall(delegate, ctx)));
-            if (blocking) {
-                result = F.Promise.pure(result.get(blockingTimeout,
-                                                   TimeUnit.MILLISECONDS));
-            }
+                    .thenCompose(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>)CompletableFuture.completedFuture(r))
+                                                               .orElseGet(() -> sneakyCall(delegate, ctx)));
         }
         return result;
     }

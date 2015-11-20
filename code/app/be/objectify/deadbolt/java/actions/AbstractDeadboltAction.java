@@ -16,7 +16,6 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
-import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
@@ -28,13 +27,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Provides some convenience methods for concrete Deadbolt actions, such as getting the correct {@link DeadboltHandler},
@@ -63,9 +63,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     final DeadboltExecutionContextProvider executionContextProvider;
 
-    public final boolean blocking;
-    public final long blockingTimeout;
-
     protected AbstractDeadboltAction(final JavaAnalyzer analyzer,
                                      final SubjectCache subjectCache,
                                      final HandlerCache handlerCache,
@@ -78,11 +75,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         this.config = config;
 
         this.executionContextProvider = ecProvider.get();
-
-        this.blocking = config.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1,
-                                          ConfigKeys.BLOCKING_DEFAULT._2);
-        this.blockingTimeout = this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
-                                                   ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
     }
 
     /**
@@ -94,7 +86,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param <C>                  the actual class of the DeadboltHandler
      * @return an option for the DeadboltHandler.
      */
-    protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(final String handlerKey) throws Throwable
+    protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(final String handlerKey) throws Exception
     {
         LOGGER.debug("Getting Deadbolt handler with key [{}]",
                      handlerKey);
@@ -103,28 +95,37 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     /** {@inheritDoc} */
     @Override
-    public F.Promise<Result> call(final Http.Context ctx) throws Throwable
+    public CompletionStage<Result> call(final Http.Context ctx)
     {
-        F.Promise<Result> result;
+        CompletionStage<Result> result;
 
         Class annClass = configuration.getClass();
-        if (isDeferred(ctx))
+        try
         {
-            result = getDeferredAction(ctx).call(ctx);
+            if (isDeferred(ctx))
+            {
+                result = getDeferredAction(ctx).call(ctx);
+            }
+            else if (!ctx.args.containsKey(IGNORE_DEFERRED_FLAG)
+                    && ReflectionUtils.hasMethod(annClass, "deferred") &&
+                    (Boolean)annClass.getMethod("deferred").invoke(configuration))
+            {
+                defer(ctx,
+                      this);
+                result = delegate.call(ctx);
+            }
+            else
+            {
+                result = execute(ctx);
+            }
+            return result;
         }
-        else if (!ctx.args.containsKey(IGNORE_DEFERRED_FLAG)
-                && ReflectionUtils.hasMethod(annClass, "deferred") &&
-                (Boolean)annClass.getMethod("deferred").invoke(configuration))
+        catch (Exception e)
         {
-            defer(ctx,
-                  this);
-            result = delegate.call(ctx);
+            LOGGER.info("Something bad happened while checking authorization",
+                        e);
+            throw new RuntimeException(e);
         }
-        else
-        {
-            result = execute(ctx);
-        }
-        return result;
     }
 
     /**
@@ -132,9 +133,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param ctx the request context
      * @return the result
-     * @throws Throwable if something bad happens
+     * @throws Exception if something bad happens
      */
-    public abstract F.Promise<Result> execute(final Http.Context ctx) throws Throwable;
+    public abstract CompletionStage<Result> execute(final Http.Context ctx) throws Exception;
 
     /**
      * @param subject
@@ -168,14 +169,14 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param ctx             th request context
      * @return the result of {@link DeadboltHandler#onAuthFailure}
      */
-    protected F.Promise<Result> onAuthFailure(final DeadboltHandler deadboltHandler,
-                                              final String content,
-                                              final Http.Context ctx)
+    protected CompletionStage<Result> onAuthFailure(final DeadboltHandler deadboltHandler,
+                                                    final String content,
+                                                    final Http.Context ctx)
     {
         LOGGER.warn("Deadbolt: Access failure on [{}]",
                     ctx.request().uri());
 
-        F.Promise<Result> result;
+        CompletionStage<Result> result;
         try
         {
             result = deadboltHandler.onAuthFailure(ctx,
@@ -185,7 +186,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         {
             LOGGER.warn("Deadbolt: Exception when invoking onAuthFailure",
                         e);
-            result = F.Promise.pure(Results.internalServerError());
+            result = CompletableFuture.completedFuture(Results.internalServerError());
         }
         return result;
     }
@@ -198,19 +199,19 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param deadboltHandler the Deadbolt handler
      * @return the Subject, if any
      */
-    protected F.Promise<Optional<Subject>> getSubject(final Http.Context ctx,
-                                                      final DeadboltHandler deadboltHandler)
+    protected CompletionStage<Optional<Subject>> getSubject(final Http.Context ctx,
+                                                            final DeadboltHandler deadboltHandler)
     {
         return subjectCache.apply(deadboltHandler,
                                   ctx)
-                .map(option -> {
-                    if (!option.isPresent())
-                    {
-                        LOGGER.info("Access to [{}] requires a subject, but no subject is present.",
-                                    ctx.request().uri());
-                    }
-                    return option;
-                });
+                           .thenApply(option -> {
+                               if (!option.isPresent())
+                               {
+                                   LOGGER.info("Access to [{}] requires a subject, but no subject is present.",
+                                               ctx.request().uri());
+                               }
+                               return option;
+                           });
     }
 
     /**
@@ -218,7 +219,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param ctx the request context
      */
-    protected void markActionAsAuthorised(Http.Context ctx)
+    protected void markActionAsAuthorised(final Http.Context ctx)
     {
         ctx.args.put(ACTION_AUTHORISED,
                      true);
@@ -229,7 +230,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param ctx the request context
      */
-    protected void markActionAsUnauthorised(Http.Context ctx)
+    protected void markActionAsUnauthorised(final Http.Context ctx)
     {
         ctx.args.put(ACTION_UNAUTHORISED,
                      true);
@@ -241,9 +242,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param ctx the request context
      * @return true if a more-specific annotation has authorised access, otherwise false
      */
-    protected boolean isActionAuthorised(Http.Context ctx)
+    protected boolean isActionAuthorised(final Http.Context ctx)
     {
-        Object o = ctx.args.get(ACTION_AUTHORISED);
+        final Object o = ctx.args.get(ACTION_AUTHORISED);
         return o != null && (Boolean) o;
     }
 
@@ -253,9 +254,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param ctx the request context
      * @return true if a more-specific annotation has blocked access, otherwise false
      */
-    protected boolean isActionUnauthorised(Http.Context ctx)
+    protected boolean isActionUnauthorised(final Http.Context ctx)
     {
-        Object o = ctx.args.get(ACTION_UNAUTHORISED);
+        final Object o = ctx.args.get(ACTION_UNAUTHORISED);
         return o != null && (Boolean) o;
     }
 
@@ -265,8 +266,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param ctx the request context
      * @param action the action to defer
      */
-    protected void defer(Http.Context ctx,
-                         AbstractDeadboltAction action)
+    protected void defer(final Http.Context ctx,
+                         final AbstractDeadboltAction action)
     {
         if (action != null)
         {
@@ -283,7 +284,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param ctx the request context
      * @return true iff there is a deferred action in the context
      */
-    public boolean isDeferred(Http.Context ctx)
+    public boolean isDeferred(final Http.Context ctx)
     {
         return ctx.args.containsKey(ACTION_DEFERRED);
     }
@@ -297,7 +298,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     public AbstractDeadboltAction getDeferredAction(final Http.Context ctx)
     {
         AbstractDeadboltAction action = null;
-        Object o = ctx.args.get(ACTION_DEFERRED);
+        final Object o = ctx.args.get(ACTION_DEFERRED);
         if (o != null)
         {
             action = (AbstractDeadboltAction)o;
@@ -309,16 +310,16 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         return action;
     }
 
-    public F.Promise<Optional<Result>> preAuth(final boolean forcePreAuthCheck,
-                                               final Http.Context ctx,
-                                               final DeadboltHandler deadboltHandler)
+    public CompletionStage<Optional<Result>> preAuth(final boolean forcePreAuthCheck,
+                                                     final Http.Context ctx,
+                                                     final DeadboltHandler deadboltHandler)
     {
         return forcePreAuthCheck ? deadboltHandler.beforeAuthCheck(ctx)
-                                 : F.Promise.pure(Optional.empty());
+                                 : CompletableFuture.completedFuture(Optional.empty());
     }
 
-    public static F.Promise<Result> sneakyCall(final Action<?> action,
-                                               final Http.Context context)
+    public static CompletionStage<Result> sneakyCall(final Action<?> action,
+                                                     final Http.Context context)
     {
         try
         {
@@ -334,7 +335,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         if (t == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("Can't use sneakyThrow without a throwable");
         }
         sneakyThrow0(t);
         return null;

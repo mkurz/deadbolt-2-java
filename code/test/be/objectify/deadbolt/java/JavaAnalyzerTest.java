@@ -3,10 +3,12 @@ package be.objectify.deadbolt.java;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import play.libs.F;
 import play.mvc.Http;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -27,52 +29,54 @@ public class JavaAnalyzerTest
     }
 
     @Test
-    public void testCheckCustomPattern_patternDoesNotPass()
+    public void testCheckCustomPattern_patternDoesNotPass() throws Exception
     {
         DynamicResourceHandler dynamicResourceHandler = new AbstractDynamicResourceHandler()
         {
             @Override
-            public F.Promise<Boolean> checkPermission(final String permissionValue,
-                                                      final DeadboltHandler deadboltHandler,
-                                                      final Http.Context ctx)
+            public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                            final DeadboltHandler deadboltHandler,
+                                                            final Http.Context ctx)
             {
-                return F.Promise.pure(false);
+                return CompletableFuture.completedFuture(false);
             }
         };
 
         final DeadboltHandler deadboltHandler = Mockito.mock(DeadboltHandler.class);
         final Http.Context context = Mockito.mock(Http.Context.class);
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
-               .thenReturn(F.Promise.promise(() -> Optional.of(dynamicResourceHandler)));
+               .thenReturn(CompletableFuture.supplyAsync(() -> Optional.of(dynamicResourceHandler)));
 
-        final F.Promise<Boolean> result = new JavaAnalyzer().checkCustomPattern(deadboltHandler,
-                                                                                context,
-                                                                                "foo");
-        Assert.assertFalse(result.get(1000));
+        final CompletionStage<Boolean> result = new JavaAnalyzer().checkCustomPattern(deadboltHandler,
+                                                                                      context,
+                                                                                      "foo");
+        Assert.assertFalse(result.toCompletableFuture().get(1000,
+                                                            TimeUnit.MILLISECONDS));
     }
 
     @Test
-    public void testCheckCustomPattern_patternPasses()
+    public void testCheckCustomPattern_patternPasses() throws Exception
     {
         DynamicResourceHandler dynamicResourceHandler = new AbstractDynamicResourceHandler()
         {
             @Override
-            public F.Promise<Boolean> checkPermission(final String permissionValue,
-                                                      final DeadboltHandler deadboltHandler,
-                                                      final Http.Context ctx)
+            public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                            final DeadboltHandler deadboltHandler,
+                                                            final Http.Context ctx)
             {
-                return F.Promise.pure(true);
+                return CompletableFuture.completedFuture(true);
             }
         };
 
         final DeadboltHandler deadboltHandler = Mockito.mock(DeadboltHandler.class);
         final Http.Context context = Mockito.mock(Http.Context.class);
         Mockito.when(deadboltHandler.getDynamicResourceHandler(context))
-               .thenReturn(F.Promise.promise(() -> Optional.of(dynamicResourceHandler)));
+               .thenReturn(CompletableFuture.supplyAsync(() -> Optional.of(dynamicResourceHandler)));
 
-        final F.Promise<Boolean> result = new JavaAnalyzer().checkCustomPattern(deadboltHandler,
-                                                                                context,
-                                                                                "foo");
-        Assert.assertTrue(result.get(1000));
+        final CompletionStage<Boolean> result = new JavaAnalyzer().checkCustomPattern(deadboltHandler,
+                                                                                      context,
+                                                                                      "foo");
+        Assert.assertTrue(result.toCompletableFuture().get(1000,
+                                                           TimeUnit.MILLISECONDS));
     }
 }

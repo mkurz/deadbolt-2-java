@@ -12,13 +12,14 @@ import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
-import play.libs.F;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -31,10 +32,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
-                                                                                    .build()));
+                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
+                                                                                                .build()));
             }
 
         };
@@ -54,10 +55,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
-                                                                                    .build()));
+                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
+                                                                                                .build()));
             }
 
         };
@@ -77,9 +78,9 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
 
         };
@@ -114,10 +115,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
-                                                                                    .build()));
+                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
+                                                                                                .build()));
             }
 
         };
@@ -137,10 +138,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
-                                                                                    .build()));
+                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
+                                                                                                .build()));
             }
 
         };
@@ -160,10 +161,10 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
-                                                                                    .build()));
+                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
+                                                                                                .build()));
             }
 
         };
@@ -183,9 +184,9 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
 
         };
@@ -220,16 +221,16 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public F.Promise<Boolean> checkPermission(final String permissionValue,
-                                                              final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                                    final DeadboltHandler deadboltHandler,
+                                                                    final Http.Context ctx)
                     {
-                        return F.Promise.pure("killer.undead.zombie".equals(permissionValue));
+                        return CompletableFuture.completedFuture("killer.undead.zombie".equals(permissionValue));
                     }
                 }));
             }
@@ -250,16 +251,16 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public F.Promise<Boolean> checkPermission(final String permissionValue,
-                                                              final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                                    final DeadboltHandler deadboltHandler,
+                                                                    final Http.Context ctx)
                     {
-                        return F.Promise.pure(true);
+                        return CompletableFuture.completedFuture(true);
                     }
                 }));
             }
@@ -280,16 +281,16 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return F.Promise.promise(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
-                    public F.Promise<Boolean> checkPermission(final String permissionValue,
-                                                              final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                                    final DeadboltHandler deadboltHandler,
+                                                                    final Http.Context ctx)
                     {
-                        return F.Promise.pure(false);
+                        return CompletableFuture.completedFuture(false);
                     }
                 }));
             }

@@ -16,11 +16,11 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.models.Subject;
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 /**
  * DeadboltHandler implementations are the main hook into the Deadbolt system.  Here, you can apply authentication
@@ -40,7 +40,7 @@ public interface DeadboltHandler {
      *         the user is authenticated (or whatever your test condition is), this will be null otherwise the restriction
      *         won't be applied.
      */
-    F.Promise<Optional<Result>> beforeAuthCheck(Http.Context context);
+    CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context);
 
     /**
      * Gets the current {@link be.objectify.deadbolt.core.models.Subject}, e.g. the current user.
@@ -48,7 +48,7 @@ public interface DeadboltHandler {
      * @param context the HTTP context
      * @return the current subject
      */
-    F.Promise<Optional<Subject>> getSubject(Http.Context context);
+    CompletionStage<Optional<Subject>> getSubject(Http.Context context);
 
     /**
      * Invoked when an access failure is detected on <i>controllerClassName</i>.
@@ -58,7 +58,7 @@ public interface DeadboltHandler {
      *                type, e.g. JSON
      * @return the action result
      */
-    F.Promise<Result> onAuthFailure(Http.Context context,
+    CompletionStage<Result> onAuthFailure(Http.Context context,
                                     String content);
 
     /**
@@ -67,5 +67,5 @@ public interface DeadboltHandler {
      * @param context the HTTP context
      * @return the handler for restricted resources. May be null.
      */
-    F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context);
+    CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context);
 }

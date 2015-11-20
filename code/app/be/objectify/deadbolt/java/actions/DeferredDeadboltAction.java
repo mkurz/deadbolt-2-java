@@ -23,12 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import play.Configuration;
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContext;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
 
@@ -57,30 +57,23 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     }
 
     @Override
-    public F.Promise<Result> execute(final Http.Context ctx) throws Throwable
+    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
         final ExecutionContext executionContext = executionContextProvider.get();
-        F.Promise<Result> promise = F.Promise.promise(() -> getDeferredAction(ctx),
-                                                      executionContext)
-                        .flatMap(deferredAction -> {
-                            final F.Promise<Result> result;
-                            if (deferredAction == null)
-                            {
-                                result = delegate.call(ctx);
-                            }
-                            else
-                            {
-                                LOGGER.debug("Executing deferred action [{}]",
-                                             deferredAction.getClass().getName());
-                                result = deferredAction.call(ctx);
-                            }
-                            return result;
-                        }, executionContext);
-        if (blocking)
-        {
-            promise = F.Promise.pure(promise.get(blockingTimeout,
-                                                 TimeUnit.MILLISECONDS));
-        }
-        return promise;
+        return CompletableFuture.supplyAsync(() -> getDeferredAction(ctx))
+                                .thenCompose(deferredAction -> {
+                                    final CompletionStage<Result> result;
+                                    if (deferredAction == null)
+                                    {
+                                        result = delegate.call(ctx);
+                                    }
+                                    else
+                                    {
+                                        LOGGER.debug("Executing deferred action [{}]",
+                                                     deferredAction.getClass().getName());
+                                        result = deferredAction.call(ctx);
+                                    }
+                                    return result;
+                                });
     }
 }

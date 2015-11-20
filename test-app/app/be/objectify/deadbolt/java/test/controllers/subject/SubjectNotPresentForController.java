@@ -2,9 +2,11 @@ package be.objectify.deadbolt.java.test.controllers.subject;
 
 import be.objectify.deadbolt.java.actions.SubjectNotPresent;
 import be.objectify.deadbolt.java.actions.Unrestricted;
-import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -12,14 +14,14 @@ import play.mvc.Result;
 @SubjectNotPresent
 public class SubjectNotPresentForController extends Controller
 {
-    public static F.Promise<Result> subjectMustNotBePresent()
+    public CompletionStage<Result> subjectMustNotBePresent()
     {
-        return F.Promise.promise(() -> ok("Content accessible"));
+        return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
     }
 
     @Unrestricted
-    public static F.Promise<Result> unrestricted()
+    public CompletionStage<Result> unrestricted()
     {
-        return F.Promise.promise(() -> ok("Content accessible"));
+        return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
     }
 }

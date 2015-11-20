@@ -2,9 +2,11 @@ package be.objectify.deadbolt.java.test.controllers.dynamic;
 
 import be.objectify.deadbolt.java.actions.Dynamic;
 import be.objectify.deadbolt.java.actions.Unrestricted;
-import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -13,8 +15,8 @@ import play.mvc.Result;
 public class ExplicitlyUnrestrictedControllerWithDynamicForMethod extends Controller
 {
     @Dynamic("niceName")
-    public static F.Promise<Result> userMustHaveTheSameNameAsMyWife()
+    public CompletionStage<Result> userMustHaveTheSameNameAsMyWife()
     {
-        return F.Promise.promise(() -> ok("Content accessible"));
+        return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
     }
 }
