@@ -37,6 +37,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Documented
 @Inherited
+@Deferrable
 public @interface SubjectPresent
 {
     /**

@@ -22,10 +22,8 @@ import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
-import be.objectify.deadbolt.java.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import play.Configuration;
 import play.mvc.Action;
 import play.mvc.Http;
@@ -107,8 +105,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                 result = getDeferredAction(ctx).call(ctx);
             }
             else if (!ctx.args.containsKey(IGNORE_DEFERRED_FLAG)
-                    && ReflectionUtils.hasMethod(annClass, "deferred") &&
-                    (Boolean)annClass.getMethod("deferred").invoke(configuration))
+                    && annClass.isAnnotationPresent(Deferrable.class)
+                    && (Boolean)annClass.getMethod("deferred").invoke(configuration))
             {
                 defer(ctx,
                       this);
