@@ -10,9 +10,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Marks a constraint as being deferrable, i.e. method-level constraints are not applied until controller-level annotations are applied.
+ * 
  * @author Steve Chaloner (steve@objectify.be)
  */
-@With(BeforeAccessAction.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
