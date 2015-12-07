@@ -61,30 +61,31 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
         final ExecutionContext executionContext = executionContextProvider.get();
-        return CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx))
-                                .thenCompose(unauthorised -> {
-                                    try
-                                    {
-                                        final CompletionStage<Result> result;
-                                        if (unauthorised)
-                                        {
-                                            result = onAuthFailure(getDeadboltHandler(configuration.handlerKey()),
-                                                                   configuration.content(),
-                                                                   ctx);
-                                        }
-                                        else
-                                        {
-                                            markActionAsAuthorised(ctx);
-                                            result = delegate.call(ctx);
-                                        }
-                                        return result;
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        LOGGER.error("Something bad happened",
-                                                     e);
-                                        throw new RuntimeException(e);
-                                    }
-                                });
+        final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx))
+                                                                          .thenCompose(unauthorised -> {
+                                                                              try
+                                                                              {
+                                                                                  final CompletionStage<Result> result;
+                                                                                  if (unauthorised)
+                                                                                  {
+                                                                                      result = onAuthFailure(getDeadboltHandler(configuration.handlerKey()),
+                                                                                                             configuration.content(),
+                                                                                                             ctx);
+                                                                                  }
+                                                                                  else
+                                                                                  {
+                                                                                      markActionAsAuthorised(ctx);
+                                                                                      result = delegate.call(ctx);
+                                                                                  }
+                                                                                  return result;
+                                                                              }
+                                                                              catch (Exception e)
+                                                                              {
+                                                                                  LOGGER.error("Something bad happened",
+                                                                                               e);
+                                                                                  throw new RuntimeException(e);
+                                                                              }
+                                                                          });
+        return maybeBlock(eventualResult);
     }
 }

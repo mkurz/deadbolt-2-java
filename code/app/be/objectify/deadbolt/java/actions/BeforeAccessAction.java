@@ -70,6 +70,6 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
                     .thenCompose(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>)CompletableFuture.completedFuture(r))
                                                                .orElseGet(() -> sneakyCall(delegate, ctx)));
         }
-        return result;
+        return maybeBlock(result);
     }
 }

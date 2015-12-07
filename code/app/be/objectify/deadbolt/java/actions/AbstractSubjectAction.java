@@ -59,7 +59,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        CompletionStage<Result> result;
+        final CompletionStage<Result> result;
         final Config config = config();
         if (isActionUnauthorised(ctx))
         {
@@ -82,7 +82,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
                                                                   deadboltHandler,
                                                                   config).apply(preAuthResult));
         }
-        return result;
+        return maybeBlock(result);
     }
 
     abstract Config config();

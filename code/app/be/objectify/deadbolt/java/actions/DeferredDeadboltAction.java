@@ -60,20 +60,21 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
         final ExecutionContext executionContext = executionContextProvider.get();
-        return CompletableFuture.supplyAsync(() -> getDeferredAction(ctx))
-                                .thenCompose(deferredAction -> {
-                                    final CompletionStage<Result> result;
-                                    if (deferredAction == null)
-                                    {
-                                        result = delegate.call(ctx);
-                                    }
-                                    else
-                                    {
-                                        LOGGER.debug("Executing deferred action [{}]",
-                                                     deferredAction.getClass().getName());
-                                        result = deferredAction.call(ctx);
-                                    }
-                                    return result;
-                                });
+        final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> getDeferredAction(ctx))
+                                                                          .thenCompose(deferredAction -> {
+                                                                              final CompletionStage<Result> result;
+                                                                              if (deferredAction == null)
+                                                                              {
+                                                                                  result = delegate.call(ctx);
+                                                                              }
+                                                                              else
+                                                                              {
+                                                                                  LOGGER.debug("Executing deferred action [{}]",
+                                                                                               deferredAction.getClass().getName());
+                                                                                  result = deferredAction.call(ctx);
+                                                                              }
+                                                                              return result;
+                                                                          });
+        return maybeBlock(eventualResult);
     }
 }

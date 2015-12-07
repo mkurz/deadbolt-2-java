@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
@@ -33,6 +34,9 @@ import play.mvc.Results;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Provides some convenience methods for concrete Deadbolt actions, such as getting the correct {@link DeadboltHandler},
@@ -61,6 +65,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     final DeadboltExecutionContextProvider executionContextProvider;
 
+    public final boolean blocking;
+    public final long blockingTimeout;
+
     protected AbstractDeadboltAction(final JavaAnalyzer analyzer,
                                      final SubjectCache subjectCache,
                                      final HandlerCache handlerCache,
@@ -73,6 +80,11 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         this.config = config;
 
         this.executionContextProvider = ecProvider.get();
+
+        this.blocking = config.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1,
+                                          ConfigKeys.BLOCKING_DEFAULT._2);
+        this.blockingTimeout = this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
+                                                   ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
     }
 
     /**
@@ -327,6 +339,15 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         {
             throw sneakyThrow(t);
         }
+    }
+
+    CompletionStage<Result> maybeBlock(CompletionStage<Result> eventualResult) throws InterruptedException,
+                                                                                      ExecutionException,
+                                                                                      TimeoutException
+    {
+        return blocking ? CompletableFuture.completedFuture(eventualResult.toCompletableFuture().get(blockingTimeout,
+                                                                                                     TimeUnit.MILLISECONDS))
+                        : eventualResult;
     }
 
     private static RuntimeException sneakyThrow(final Throwable t)
