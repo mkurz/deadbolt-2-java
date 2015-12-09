@@ -30,8 +30,6 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Implements the {@link Restrict} functionality, i.e. within an {@link Group} roles are ANDed, and between
@@ -76,8 +74,8 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler deadboltHandler)
     {
-        final CompletionStage<Result> eventualResult = getSubject(ctx,
-                                                                         deadboltHandler)
+        return getSubject(ctx,
+                          deadboltHandler)
                 .thenApplyAsync(subjectOption -> {
                     boolean roleOk = false;
                     if (subjectOption.isPresent())
@@ -108,16 +106,6 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                     }
                     return result;
                 }, HttpExecution.defaultContext());
-
-        try
-        {
-            return maybeBlock(eventualResult);
-        }
-        catch (InterruptedException | ExecutionException | TimeoutException e)
-        {
-            throw new RuntimeException("Failed to apply restrict constraint",
-                                       e);
-        }
     }
 
     public List<String[]> getRoleGroups()

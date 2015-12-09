@@ -35,8 +35,6 @@ import javax.inject.Inject;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -106,16 +104,8 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
             default:
                 throw new RuntimeException("Unknown pattern type: " + configuration.patternType());
         }
-
-        try
-        {
-            return maybeBlock(result);
-        }
-        catch (InterruptedException | ExecutionException | TimeoutException e)
-        {
-            throw new RuntimeException("Failed to apply pattern constraint",
-                                       e);
-        }
+        
+        return result;
     }
 
     private CompletionStage<Result> custom(final Http.Context ctx,
