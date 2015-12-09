@@ -24,10 +24,12 @@ import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContext;
+import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -155,13 +157,15 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                              final boolean invert)
     {
         final ExecutionContext executionContext = executionContextProvider.get();
-        return CompletableFuture.supplyAsync(this::getValue)
-                                .thenCombine(getSubject(ctx,
+        final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
+        return CompletableFuture.supplyAsync(this::getValue, executor)
+                                .thenCombineAsync(getSubject(ctx,
                                                         deadboltHandler),
                                              (patternValue, subject) -> subject.isPresent() ? analyzer.checkPatternEquality(subject,
                                                                                                                             Optional.ofNullable(patternValue))
-                                                                                            : invert) // this is a little clumsy - it means no subject + invert is still denied
-                                .thenCompose(equal -> {
+                                                                                            : invert, // this is a little clumsy - it means no subject + invert is still denied
+                                                                                            executor)
+                                .thenComposeAsync(equal -> {
                                     final CompletionStage<Result> result;
                                     if (invert ? !equal : equal)
                                     {
@@ -177,7 +181,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                     }
 
                                     return result;
-                                });
+                                }, executor);
     }
 
     /**
@@ -193,14 +197,16 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                     final boolean invert)
     {
         final ExecutionContext executionContext = executionContextProvider.get();
-        return CompletableFuture.supplyAsync(this::getValue)
-                                .thenApply(patternCache::apply)
-                                .thenCombine(getSubject(ctx,
+        final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
+        return CompletableFuture.supplyAsync(this::getValue, executor)
+                                .thenApplyAsync(patternCache::apply, executor)
+                                .thenCombineAsync(getSubject(ctx,
                                                         deadboltHandler),
                                              (patternValue, subject) -> subject.isPresent() ? analyzer.checkRegexPattern(subject,
                                                                                                                          Optional.ofNullable(patternValue))
-                                                                                            : invert) // this is a little clumsy - it means no subject + invert is still denied
-                                .thenCompose(applicable -> {
+                                                                                            : invert, // this is a little clumsy - it means no subject + invert is still denied
+                                                                                            executor)
+                                .thenComposeAsync(applicable -> {
                                     final CompletionStage<Result> result;
                                     if (invert ? !applicable : applicable)
                                     {
@@ -215,7 +221,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                                                ctx);
                                     }
                                     return result;
-                                });
+                                }, executor);
     }
 
     @Override
