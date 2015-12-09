@@ -26,6 +26,7 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -214,14 +215,14 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         return subjectCache.apply(deadboltHandler,
                                   ctx)
-                           .thenApply(option -> {
+                           .thenApplyAsync(option -> {
                                if (!option.isPresent())
                                {
                                    LOGGER.info("Access to [{}] requires a subject, but no subject is present.",
                                                ctx.request().uri());
                                }
                                return option;
-                           });
+                           }, HttpExecution.defaultContext());
     }
 
     /**

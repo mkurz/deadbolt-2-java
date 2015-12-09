@@ -123,11 +123,11 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         ctx.args.put(ConfigKeys.PATTERN_INVERT,
                      invert);
         return deadboltHandler.getDynamicResourceHandler(ctx)
-                              .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
-                              .thenCompose(resourceHandler -> resourceHandler.checkPermission(getValue(),
+                              .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE), HttpExecution.defaultContext())
+                              .thenComposeAsync(resourceHandler -> resourceHandler.checkPermission(getValue(),
                                                                                               deadboltHandler,
-                                                                                              ctx))
-                              .thenCompose(allowed -> {
+                                                                                              ctx), HttpExecution.defaultContext())
+                              .thenComposeAsync(allowed -> {
                                   final CompletionStage<Result> innerResult;
                                   if (invert ? !allowed : allowed)
                                   {
@@ -142,7 +142,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                                                   ctx);
                                   }
                                   return innerResult;
-                              });
+                              }, HttpExecution.defaultContext());
     }
 
     public String getValue()
