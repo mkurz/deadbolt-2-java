@@ -22,9 +22,11 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContext;
+import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -61,8 +63,9 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
         final ExecutionContext executionContext = executionContextProvider.get();
-        final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx))
-                                                                          .thenCompose(unauthorised -> {
+        final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
+        final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx), executor)
+                                                                          .thenComposeAsync(unauthorised -> {
                                                                               try
                                                                               {
                                                                                   final CompletionStage<Result> result;
@@ -85,7 +88,7 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
                                                                                                e);
                                                                                   throw new RuntimeException(e);
                                                                               }
-                                                                          });
+                                                                          }, executor);
         return maybeBlock(eventualResult);
     }
 }
