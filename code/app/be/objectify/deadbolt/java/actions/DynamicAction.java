@@ -29,8 +29,6 @@ import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * A dynamic restriction is user-defined, and so completely arbitrary.  Hence, no checks on subjects, etc, occur
@@ -75,38 +73,28 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler deadboltHandler)
     {
-        final CompletionStage<Result> eventualResult = deadboltHandler.getDynamicResourceHandler(ctx)
-                                                                      .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE), HttpExecution.defaultContext())
-                                                                      .thenComposeAsync(drh -> drh.isAllowed(getValue(),
-                                                                                                        getMeta(),
-                                                                                                        deadboltHandler,
-                                                                                                        ctx), HttpExecution.defaultContext())
-                                                                      .thenComposeAsync(allowed -> {
-                                                                          final CompletionStage<Result> result;
-                                                                          if (allowed)
-                                                                          {
-                                                                              markActionAsAuthorised(ctx);
-                                                                              result = delegate.call(ctx);
-                                                                          }
-                                                                          else
-                                                                          {
-                                                                              markActionAsUnauthorised(ctx);
-                                                                              result = onAuthFailure(deadboltHandler,
-                                                                                                     configuration.content(),
-                                                                                                     ctx);
-                                                                          }
-                                                                          return result;
-                                                                      }, HttpExecution.defaultContext());
-
-        try
-        {
-            return maybeBlock(eventualResult);
-        }
-        catch (InterruptedException | ExecutionException | TimeoutException e)
-        {
-            throw new RuntimeException("Failed to apply dynamic constraint",
-                                       e);
-        }
+        return deadboltHandler.getDynamicResourceHandler(ctx)
+                              .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE), HttpExecution.defaultContext())
+                              .thenComposeAsync(drh -> drh.isAllowed(getValue(),
+                                                                getMeta(),
+                                                                deadboltHandler,
+                                                                ctx), HttpExecution.defaultContext())
+                              .thenComposeAsync(allowed -> {
+                                  final CompletionStage<Result> result;
+                                  if (allowed)
+                                  {
+                                      markActionAsAuthorised(ctx);
+                                      result = delegate.call(ctx);
+                                  }
+                                  else
+                                  {
+                                      markActionAsUnauthorised(ctx);
+                                      result = onAuthFailure(deadboltHandler,
+                                                             configuration.content(),
+                                                             ctx);
+                                  }
+                                  return result;
+                              }, HttpExecution.defaultContext());
     }
 
     public String getMeta()

@@ -67,7 +67,7 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
                                                  .orElseGet(() -> applyRestriction(ctx,
                                                                                    deadboltHandler)), HttpExecution.defaultContext());
         }
-        return result;
+        return maybeBlock(result);
     }
 
     /**
