@@ -22,6 +22,7 @@ import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -78,9 +79,9 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
             result = preAuth(config.forceBeforeAuthCheck,
                              ctx,
                              deadboltHandler)
-                    .thenCompose(preAuthResult -> new SubjectTest(ctx,
+                    .thenComposeAsync(preAuthResult -> new SubjectTest(ctx,
                                                                   deadboltHandler,
-                                                                  config).apply(preAuthResult));
+                                                                  config).apply(preAuthResult), HttpExecution.defaultContext());
         }
         return maybeBlock(result);
     }
@@ -109,7 +110,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
                                 .orElseGet(() -> {
                                     return getSubject(ctx,
                                                       deadboltHandler)
-                                            .thenCompose(subject -> {
+                                            .thenComposeAsync(subject -> {
                                                 final CompletionStage<Result> innerResult;
                                                 if (predicate.test(subject))
                                                 {
@@ -124,7 +125,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
                                                                                 ctx);
                                                 }
                                                 return innerResult;
-                                            });
+                                            }, HttpExecution.defaultContext());
                                 });
         }
     }

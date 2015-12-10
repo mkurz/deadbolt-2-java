@@ -19,6 +19,7 @@ import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import play.Configuration;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 
 import javax.inject.Inject;
@@ -57,11 +58,11 @@ public class DefaultSubjectCache implements SubjectCache
             else
             {
                 promise = deadboltHandler.getSubject(context)
-                                         .thenApply(subjectOption -> {
+                                         .thenApplyAsync(subjectOption -> {
                                              subjectOption.ifPresent(subject -> context.args.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
                                                                                                  subject));
                                              return subjectOption;
-                                         });
+                                         }, HttpExecution.defaultContext());
             }
         }
         else

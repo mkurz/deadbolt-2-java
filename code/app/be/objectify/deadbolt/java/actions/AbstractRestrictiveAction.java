@@ -24,6 +24,8 @@ import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
+import play.core.j.HttpExecutionContext;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -61,9 +63,9 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .thenCompose(option -> option.map(value -> (CompletionStage<Result>)CompletableFuture.completedFuture(value))
+                    .thenComposeAsync(option -> option.map(value -> (CompletionStage<Result>)CompletableFuture.completedFuture(value))
                                                  .orElseGet(() -> applyRestriction(ctx,
-                                                                                   deadboltHandler)));
+                                                                                   deadboltHandler)), HttpExecution.defaultContext());
         }
         return result;
     }

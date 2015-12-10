@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.DeadboltAnalyzer;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 
 import javax.inject.Singleton;
@@ -40,9 +41,9 @@ public class JavaAnalyzer extends DeadboltAnalyzer
                                                        final String value)
     {
         return handler.getDynamicResourceHandler(context)
-                      .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
-                      .thenCompose(drh -> drh.checkPermission(value,
+                      .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE), HttpExecution.defaultContext())
+                      .thenComposeAsync(drh -> drh.checkPermission(value,
                                                               handler,
-                                                              context));
+                                                              context), HttpExecution.defaultContext());
     }
 }

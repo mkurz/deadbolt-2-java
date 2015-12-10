@@ -21,6 +21,7 @@ import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -77,7 +78,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     {
         final CompletionStage<Result> eventualResult = getSubject(ctx,
                                                                          deadboltHandler)
-                .thenApply(subjectOption -> {
+                .thenApplyAsync(subjectOption -> {
                     boolean roleOk = false;
                     if (subjectOption.isPresent())
                     {
@@ -90,8 +91,8 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                         }
                     }
                     return roleOk;
-                })
-                .thenCompose(allowed -> {
+                }, HttpExecution.defaultContext())
+                .thenComposeAsync(allowed -> {
                     final CompletionStage<Result> result;
                     if (allowed)
                     {
@@ -106,7 +107,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                                                ctx);
                     }
                     return result;
-                });
+                }, HttpExecution.defaultContext());
 
         try
         {

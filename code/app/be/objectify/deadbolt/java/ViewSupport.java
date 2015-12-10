@@ -23,6 +23,7 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 
 import javax.inject.Inject;
@@ -119,7 +120,7 @@ public class ViewSupport
             allowed = subjectCache.apply(handler == null ? handlerCache.get()
                                                          : handler,
                                          Http.Context.current())
-                                  .thenApply(testRoles::apply)
+                                  .thenApplyAsync(testRoles::apply, HttpExecution.defaultContext())
                                   .toCompletableFuture()
                                   .get(timeoutInMillis,
                                        TimeUnit.MILLISECONDS);
@@ -152,11 +153,11 @@ public class ViewSupport
         try
         {
             allowed = deadboltHandler.getDynamicResourceHandler(Http.Context.current())
-                                     .thenApply(drhOption -> drhOption.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
-                                     .thenCompose(drh -> drh.isAllowed(name,
+                                     .thenApplyAsync(drhOption -> drhOption.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE), HttpExecution.defaultContext())
+                                     .thenComposeAsync(drh -> drh.isAllowed(name,
                                                                        meta,
                                                                        deadboltHandler,
-                                                                       context))
+                                                                       context), HttpExecution.defaultContext())
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
@@ -237,16 +238,16 @@ public class ViewSupport
             {
                 case EQUALITY:
                     allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
-                                          .thenApply(subjectOption -> analyzer.checkPatternEquality(subjectOption,
-                                                                                                    Optional.ofNullable(value)))
+                                          .thenApplyAsync(subjectOption -> analyzer.checkPatternEquality(subjectOption,
+                                                                                                    Optional.ofNullable(value)), HttpExecution.defaultContext())
                                           .toCompletableFuture()
                                           .get(timeoutInMillis,
                                                TimeUnit.MILLISECONDS);
                     break;
                 case REGEX:
                     allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
-                                          .thenApply(subjectOption -> analyzer.checkRegexPattern(subjectOption,
-                                                                                           Optional.ofNullable(patternCache.apply(value))))
+                                          .thenApplyAsync(subjectOption -> analyzer.checkRegexPattern(subjectOption,
+                                                                                           Optional.ofNullable(patternCache.apply(value))), HttpExecution.defaultContext())
                                           .toCompletableFuture()
                                           .get(timeoutInMillis,
                                                TimeUnit.MILLISECONDS);

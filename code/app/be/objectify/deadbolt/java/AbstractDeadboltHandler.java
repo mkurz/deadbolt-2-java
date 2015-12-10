@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.models.Subject;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
@@ -46,8 +47,8 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     public CompletionStage<Result> onAuthFailure(final Http.Context context,
                                            final String content)
     {
-        return CompletableFuture.supplyAsync(unauthorized::render)
-                                .thenApply(Results::unauthorized);
+        return CompletableFuture.supplyAsync(unauthorized::render, HttpExecution.defaultContext())
+                                .thenApplyAsync(Results::unauthorized, HttpExecution.defaultContext());
     }
 
     /**

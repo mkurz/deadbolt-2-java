@@ -22,6 +22,7 @@ import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -75,12 +76,12 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
                                                     final DeadboltHandler deadboltHandler)
     {
         final CompletionStage<Result> eventualResult = deadboltHandler.getDynamicResourceHandler(ctx)
-                                                                      .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
-                                                                      .thenCompose(drh -> drh.isAllowed(getValue(),
+                                                                      .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE), HttpExecution.defaultContext())
+                                                                      .thenComposeAsync(drh -> drh.isAllowed(getValue(),
                                                                                                         getMeta(),
                                                                                                         deadboltHandler,
-                                                                                                        ctx))
-                                                                      .thenCompose(allowed -> {
+                                                                                                        ctx), HttpExecution.defaultContext())
+                                                                      .thenComposeAsync(allowed -> {
                                                                           final CompletionStage<Result> result;
                                                                           if (allowed)
                                                                           {
@@ -95,7 +96,7 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
                                                                                                      ctx);
                                                                           }
                                                                           return result;
-                                                                      });
+                                                                      }, HttpExecution.defaultContext());
 
         try
         {

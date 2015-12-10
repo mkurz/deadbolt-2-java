@@ -21,6 +21,7 @@ import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
+import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -67,8 +68,8 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .thenCompose(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>)CompletableFuture.completedFuture(r))
-                                                               .orElseGet(() -> sneakyCall(delegate, ctx)));
+                    .thenComposeAsync(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>)CompletableFuture.completedFuture(r))
+                                                               .orElseGet(() -> sneakyCall(delegate, ctx)), HttpExecution.defaultContext());
         }
         return maybeBlock(result);
     }
