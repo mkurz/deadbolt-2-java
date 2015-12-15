@@ -68,4 +68,14 @@ public interface DeadboltHandler {
      * @return the handler for restricted resources. May be null.
      */
     F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context);
+    
+    /**
+     * Gets the canonical name of the handler.  Defaults to the class name.
+     * 
+     * @return whatever the implementor considers the canonical name of the handler to be
+     */
+    default String handlerName()
+    {
+        return getClass().getName();
+    }
 }
