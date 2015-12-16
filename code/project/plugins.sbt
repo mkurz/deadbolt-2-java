@@ -3,3 +3,5 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % Option(System.getProperty("play.version")).getOrElse("2.5.0-M1"))
+
+addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.0.3")
