@@ -12,7 +12,7 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
-  "be.objectify" %% "deadbolt-java" % "2.4.4-SNAPSHOT",
+  "be.objectify" %% "deadbolt-java" % "2.4.4",
   "com.jayway.restassured" % "rest-assured" % "2.4.0" % "test",
   "org.dbunit" % "dbunit" % "2.5.0" % "test"
 )
