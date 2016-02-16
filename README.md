@@ -19,7 +19,7 @@ Here's a short, fast guide to getting started with the Java version.
 
 Add the dependency to your build
 
-    `"be.objectify" %% "deadbolt-java" % "2.4.3"`
+    `"be.objectify" %% "deadbolt-java" % "2.4.4"`
 
 Add the Deadbolt module to your Play application
 
