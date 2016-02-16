@@ -15,9 +15,9 @@
  */
 package be.objectify.deadbolt.java.cache;
 
-import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.models.Subject;
 import play.Configuration;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;

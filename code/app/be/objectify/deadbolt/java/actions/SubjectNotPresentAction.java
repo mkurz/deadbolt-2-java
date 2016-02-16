@@ -15,12 +15,12 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import be.objectify.deadbolt.java.models.Subject;
 import play.Configuration;
 import play.mvc.Http;
 
@@ -30,7 +30,7 @@ import java.util.concurrent.CompletionStage;
 
 /**
  * Implements the {@link SubjectNotPresent} functionality, i.e. the
- * {@link be.objectify.deadbolt.core.models.Subject} provided by the {@link be.objectify.deadbolt.java.DeadboltHandler}
+ * {@link be.objectify.deadbolt.java.models.Subject} provided by the {@link DeadboltHandler}
  * must be null to have access to the resource.
  *
  * @author Steve Chaloner (steve@objectify.be)
@@ -38,7 +38,7 @@ import java.util.concurrent.CompletionStage;
 public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPresent>
 {
     @Inject
-    public SubjectNotPresentAction(final JavaAnalyzer analyzer,
+    public SubjectNotPresentAction(final DeadboltAnalyzer analyzer,
                                    final SubjectCache subjectCache,
                                    final HandlerCache handlerCache,
                                    final Configuration config,
@@ -61,7 +61,7 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
     }
 
     /**
-     * Gets the {@link be.objectify.deadbolt.core.models.Subject} from the {@link DeadboltHandler}.
+     * Gets the {@link be.objectify.deadbolt.java.models.Subject} from the {@link DeadboltHandler}.
      *
      * @param ctx             the request context
      * @param deadboltHandler the Deadbolt handler

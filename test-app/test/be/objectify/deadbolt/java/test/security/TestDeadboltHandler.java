@@ -1,6 +1,6 @@
 package be.objectify.deadbolt.java.test.security;
 
-import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.test.models.User;
 import play.mvc.Http;
 

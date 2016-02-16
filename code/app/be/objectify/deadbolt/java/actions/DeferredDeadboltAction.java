@@ -15,8 +15,8 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     private static final Logger LOGGER = LoggerFactory.getLogger(DeferredDeadboltAction.class);
 
     @Inject
-    public DeferredDeadboltAction(final JavaAnalyzer analyzer,
+    public DeferredDeadboltAction(final DeadboltAnalyzer analyzer,
                                   final SubjectCache subjectCache,
                                   final HandlerCache handlerCache,
                                   final Configuration config,

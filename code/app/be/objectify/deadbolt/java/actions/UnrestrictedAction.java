@@ -15,8 +15,8 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     private static final Logger LOGGER = LoggerFactory.getLogger(UnrestrictedAction.class);
 
     @Inject
-    public UnrestrictedAction(final JavaAnalyzer analyzer,
+    public UnrestrictedAction(final DeadboltAnalyzer analyzer,
                               final SubjectCache subjectCache,
                               final HandlerCache handlerCache,
                               final Configuration config,

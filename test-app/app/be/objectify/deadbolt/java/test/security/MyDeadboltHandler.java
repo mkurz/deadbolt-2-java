@@ -1,6 +1,6 @@
 package be.objectify.deadbolt.java.test.security;
 
-import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.test.models.User;

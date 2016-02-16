@@ -15,8 +15,8 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.models.PatternType;
 import play.mvc.With;
 
 import java.lang.annotation.Documented;

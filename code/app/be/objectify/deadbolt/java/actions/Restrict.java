@@ -27,11 +27,11 @@ import java.lang.annotation.Target;
 
 /**
  * Within an {@link Group} roles are ANDed, and between {@link Group} the role groups are ORed.  For example,
- * @Restrict({@Group("foo"), @Group("hurdy", "gurdy)}) means the {@link be.objectify.deadbolt.core.models.Subject} must have either the
+ * @Restrict({@Group("foo"), @Group("hurdy", "gurdy)}) means the {@link be.objectify.deadbolt.java.models.Subject} must have either the
  * foo role OR both the hurdy AND gurdy roles.
  * <p/>
  * Role names that start with ! are negated, so @Restrict({@Group("foo", "bar"), @Group("hurdy", "!gurdy")}) requires
- * the {@link be.objectify.deadbolt.core.models.Subject} to have either the foo role AND the bar roles, or the hurdy AND NOT the gurdy
+ * the {@link be.objectify.deadbolt.java.models.Subject} to have either the foo role AND the bar roles, or the hurdy AND NOT the gurdy
  * roles.
 
  * @author Steve Chaloner (steve@objectify.be)

@@ -18,13 +18,12 @@ package be.objectify.deadbolt.java.actions;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.core.j.HttpExecutionContext;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -36,7 +35,7 @@ import play.mvc.Result;
  */
 public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltAction<T>
 {
-    public AbstractRestrictiveAction(final JavaAnalyzer analyzer,
+    public AbstractRestrictiveAction(final DeadboltAnalyzer analyzer,
                                      final SubjectCache subjectCache,
                                      final HandlerCache handlerCache,
                                      final Configuration config,

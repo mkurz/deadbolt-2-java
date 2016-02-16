@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java;
 
-import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.models.Subject;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -43,7 +43,7 @@ public interface DeadboltHandler {
     CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context);
 
     /**
-     * Gets the current {@link be.objectify.deadbolt.core.models.Subject}, e.g. the current user.
+     * Gets the current {@link Subject}, e.g. the current user.
      *
      * @param context the HTTP context
      * @return the current subject

@@ -1,6 +1,6 @@
 package be.objectify.deadbolt.java;
 
-import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.testsupport.FakeCache;
 import org.mockito.Mockito;

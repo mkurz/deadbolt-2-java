@@ -15,14 +15,14 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import be.objectify.deadbolt.java.models.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
@@ -56,7 +56,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     private static final String ACTION_DEFERRED = "deadbolt.action-deferred";
     private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
 
-    final JavaAnalyzer analyzer;
+    final DeadboltAnalyzer analyzer;
 
     final SubjectCache subjectCache;
 
@@ -69,7 +69,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     public final boolean blocking;
     public final long blockingTimeout;
 
-    protected AbstractDeadboltAction(final JavaAnalyzer analyzer,
+    protected AbstractDeadboltAction(final DeadboltAnalyzer analyzer,
                                      final SubjectCache subjectCache,
                                      final HandlerCache handlerCache,
                                      final Configuration config,
@@ -149,26 +149,26 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     public abstract CompletionStage<Result> execute(final Http.Context ctx) throws Exception;
 
     /**
-     * @param subject
+     * @param maybeSubject
      * @param roleNames
      * @return
      */
-    protected boolean checkRole(Optional<Subject> subject,
+    protected boolean checkRole(Optional<Subject> maybeSubject,
                                 String[] roleNames)
     {
-        return analyzer.checkRole(subject,
+        return analyzer.checkRole(maybeSubject,
                                   roleNames);
     }
 
     /**
-     * @param subject
+     * @param maybeSubject
      * @param roleNames
      * @return
      */
-    protected boolean hasAllRoles(Optional<Subject> subject,
+    protected boolean hasAllRoles(Optional<Subject> maybeSubject,
                                   String[] roleNames)
     {
-        return analyzer.hasAllRoles(subject,
+        return analyzer.hasAllRoles(maybeSubject,
                                     roleNames);
     }
 
@@ -203,7 +203,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     }
 
     /**
-     * Gets the {@link be.objectify.deadbolt.core.models.Subject} from the {@link DeadboltHandler}, and logs an error if it's not present. Note that
+     * Gets the {@link be.objectify.deadbolt.java.models.Subject} from the {@link DeadboltHandler}, and logs an error if it's not present. Note that
      * at least one actions ({@link Unrestricted} does not not require a Subject to be present.
      *
      * @param ctx             the request context

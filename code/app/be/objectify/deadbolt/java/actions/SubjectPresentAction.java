@@ -15,8 +15,8 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import java.util.Optional;
 
 /**
- * Implements the {@link SubjectPresent} functionality, i.e. a {@link be.objectify.deadbolt.core.models.Subject} must be provided by the
+ * Implements the {@link SubjectPresent} functionality, i.e. a {@link be.objectify.deadbolt.java.models.Subject} must be provided by the
  * {@link be.objectify.deadbolt.java.DeadboltHandler} to have access to the resource, but no role checks are performed.
  *
  * @author Steve Chaloner (steve@objectify.be)
@@ -33,7 +33,7 @@ import java.util.Optional;
 public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
 {
     @Inject
-    public SubjectPresentAction(final JavaAnalyzer analyzer,
+    public SubjectPresentAction(final DeadboltAnalyzer analyzer,
                                 final SubjectCache subjectCache,
                                 final HandlerCache handlerCache,
                                 final Configuration config,

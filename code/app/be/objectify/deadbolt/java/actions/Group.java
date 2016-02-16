@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
  * An AND-ed group of names which form an individual part of Deadbolt {@link Restrict}.
  * <p/>
  * The names with the group are AND-ed together, e.g. @Group({"foo", "bar"}) requires the
- * {@link be.objectify.deadbolt.core.models.Subject} to have both the foo and bar roles.
+ * {@link be.objectify.deadbolt.java.models.Subject} to have both the foo and bar roles.
  *
  * @author Steve Chaloner (steve@objectify.be)
  */

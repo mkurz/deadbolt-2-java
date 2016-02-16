@@ -1,6 +1,6 @@
 package be.objectify.deadbolt.java.test.models;
 
-import be.objectify.deadbolt.core.models.Role;
+import be.objectify.deadbolt.java.models.Role;
 import com.avaje.ebean.Model;
 
 import javax.persistence.Column;

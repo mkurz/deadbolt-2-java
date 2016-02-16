@@ -1,6 +1,6 @@
 package be.objectify.deadbolt.java.testsupport;
 
-import be.objectify.deadbolt.core.models.Permission;
+import be.objectify.deadbolt.java.models.Permission;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)

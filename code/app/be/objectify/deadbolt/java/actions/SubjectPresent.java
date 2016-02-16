@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A {@link be.objectify.deadbolt.core.models.Subject} must be provided by the {@link DeadboltHandler} to have access to the resource,
+ * A {@link be.objectify.deadbolt.java.models.Subject} must be provided by the {@link DeadboltHandler} to have access to the resource,
  * but no role checks are performed.
  *
  * @author Steve Chaloner (steve@objectify.be)

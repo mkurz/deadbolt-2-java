@@ -1,6 +1,6 @@
 package be.objectify.deadbolt.java.test.controllers.pattern;
 
-import be.objectify.deadbolt.core.PatternType;
+import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.actions.Pattern;
 import be.objectify.deadbolt.java.actions.Unrestricted;
 import play.mvc.Controller;

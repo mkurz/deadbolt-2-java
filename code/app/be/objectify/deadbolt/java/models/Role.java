@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Steve Chaloner
+ * Copyright 2012 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.cache;
-
-import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.models.Subject;
-import play.mvc.Http;
-
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-import java.util.function.BiFunction;
+package be.objectify.deadbolt.java.models;
 
 /**
+ * A role that can be held by a {@link Subject}.  Checks should done on the name of the role, not using object equality
+ * on the Role itself.
+ *
+ * @see be.objectify.deadbolt.java.models.Subject#getRoles()
  * @author Steve Chaloner (steve@objectify.be)
  */
-public interface SubjectCache extends BiFunction<DeadboltHandler, Http.Context, CompletionStage<Optional<Subject>>>
+public interface Role
 {
+    /**
+     * Get the name of the role.
+     *
+     * @return the non-null name of the role
+     */
+    String getName();
 }

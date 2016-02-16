@@ -60,13 +60,13 @@ public class DeadboltModule extends Module
     }
 
     /**
-     * Create a binding for {@link JavaAnalyzer}.
+     * Create a binding for {@link DeadboltAnalyzer}.
      *
      * @return the binding
      */
-    public Binding<JavaAnalyzer> analyzer()
+    public Binding<DeadboltAnalyzer> analyzer()
     {
-        return bind(JavaAnalyzer.class).toSelf().in(Singleton.class);
+        return bind(DeadboltAnalyzer.class).toSelf().in(Singleton.class);
     }
 
     /**

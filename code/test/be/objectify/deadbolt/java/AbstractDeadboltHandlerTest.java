@@ -1,6 +1,6 @@
 package be.objectify.deadbolt.java;
 
-import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.models.Subject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;

@@ -15,9 +15,9 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
@@ -38,7 +38,7 @@ import javax.inject.Inject;
 public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
 {
     @Inject
-    public BeforeAccessAction(final JavaAnalyzer analyzer,
+    public BeforeAccessAction(final DeadboltAnalyzer analyzer,
                               final SubjectCache subjectCache,
                               final HandlerCache handlerCache,
                               final Configuration config,

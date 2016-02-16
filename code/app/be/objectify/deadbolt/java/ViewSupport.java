@@ -15,11 +15,11 @@
  */
 package be.objectify.deadbolt.java;
 
-import be.objectify.deadbolt.core.PatternType;
-import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import be.objectify.deadbolt.java.models.PatternType;
+import be.objectify.deadbolt.java.models.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
@@ -27,7 +27,6 @@ import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +48,7 @@ public class ViewSupport
 
     public final Supplier<Long> defaultTimeout;
 
-    private final JavaAnalyzer analyzer;
+    private final DeadboltAnalyzer analyzer;
 
     private final SubjectCache subjectCache;
 
@@ -63,7 +62,7 @@ public class ViewSupport
 
     @Inject
     public ViewSupport(final Configuration configuration,
-                       final JavaAnalyzer analyzer,
+                       final DeadboltAnalyzer analyzer,
                        final SubjectCache subjectCache,
                        final HandlerCache handlerCache,
                        final PatternCache patternCache,
@@ -155,9 +154,9 @@ public class ViewSupport
             allowed = deadboltHandler.getDynamicResourceHandler(Http.Context.current())
                                      .thenApplyAsync(drhOption -> drhOption.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE), HttpExecution.defaultContext())
                                      .thenComposeAsync(drh -> drh.isAllowed(name,
-                                                                       meta,
-                                                                       deadboltHandler,
-                                                                       context), HttpExecution.defaultContext())
+                                                                            meta,
+                                                                            deadboltHandler,
+                                                                            context), HttpExecution.defaultContext())
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
@@ -237,28 +236,33 @@ public class ViewSupport
             switch (patternType)
             {
                 case EQUALITY:
-                    allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
+                    allowed = subjectCache.apply(deadboltHandler, context)
                                           .thenApplyAsync(subjectOption -> analyzer.checkPatternEquality(subjectOption,
-                                                                                                    Optional.ofNullable(value)), HttpExecution.defaultContext())
+                                                                                                         Optional.ofNullable(value)),
+                                                          HttpExecution.defaultContext())
                                           .toCompletableFuture()
                                           .get(timeoutInMillis,
                                                TimeUnit.MILLISECONDS);
                     break;
                 case REGEX:
-                    allowed = subjectCache.apply(deadboltHandler, Http.Context.current())
+                    allowed = subjectCache.apply(deadboltHandler, context)
                                           .thenApplyAsync(subjectOption -> analyzer.checkRegexPattern(subjectOption,
-                                                                                           Optional.ofNullable(patternCache.apply(value))), HttpExecution.defaultContext())
+                                                                                                      Optional.ofNullable(patternCache.apply(value))),
+                                                          HttpExecution.defaultContext())
                                           .toCompletableFuture()
                                           .get(timeoutInMillis,
                                                TimeUnit.MILLISECONDS);
                     break;
                 case CUSTOM:
-                    allowed = analyzer.checkCustomPattern(deadboltHandler,
-                                                          context,
-                                                          value)
-                                      .toCompletableFuture()
-                                      .get(timeoutInMillis,
-                                           TimeUnit.MILLISECONDS);
+                    allowed = deadboltHandler.getDynamicResourceHandler(context)
+                                             .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
+                                                             HttpExecution.defaultContext())
+                                             .thenComposeAsync(drh -> drh.checkPermission(value,
+                                                                                          handler,
+                                                                                          context), HttpExecution.defaultContext())
+                                             .toCompletableFuture()
+                                             .get(timeoutInMillis,
+                                                  TimeUnit.MILLISECONDS);
                     break;
                 default:
                     allowed = false;

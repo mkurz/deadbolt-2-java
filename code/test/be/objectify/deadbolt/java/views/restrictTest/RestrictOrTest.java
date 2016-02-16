@@ -1,6 +1,6 @@
 package be.objectify.deadbolt.java.views.restrictTest;
 
-import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
 import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
 import be.objectify.deadbolt.java.DeadboltHandler;
@@ -26,7 +26,7 @@ import java.util.concurrent.CompletionStage;
  */
 public class RestrictOrTest extends AbstractFakeApplicationTest
 {
-    private final HandlerCache handlers = handlers();
+//    private final HandlerCache handlers = handlers();
 
     @Test
     public void testSingleRole_present()

@@ -15,10 +15,10 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExceptionThrowingDynamicResourceHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.JavaAnalyzer;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
@@ -39,7 +39,7 @@ import java.util.concurrent.CompletionStage;
 public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
 {
     @Inject
-    public DynamicAction(final JavaAnalyzer analyzer,
+    public DynamicAction(final DeadboltAnalyzer analyzer,
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
                          final Configuration config,
@@ -52,7 +52,7 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
               ecProvider);
     }
 
-    public DynamicAction(final JavaAnalyzer analyzer,
+    public DynamicAction(final DeadboltAnalyzer analyzer,
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
                          final Configuration config,

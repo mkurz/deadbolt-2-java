@@ -1,7 +1,7 @@
 package be.objectify.deadbolt.java.views.patternTest;
 
-import be.objectify.deadbolt.core.PatternType;
-import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.models.PatternType;
+import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
 import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;

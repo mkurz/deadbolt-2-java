@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The {@link be.objectify.deadbolt.core.models.Subject} provided by the {@link be.objectify.deadbolt.java.DeadboltHandler} must
+ * The {@link be.objectify.deadbolt.java.models.Subject} provided by the {@link be.objectify.deadbolt.java.DeadboltHandler} must
  * be null to have access to the resource,
  *
  * @author Steve Chaloner (steve@objectify.be)
