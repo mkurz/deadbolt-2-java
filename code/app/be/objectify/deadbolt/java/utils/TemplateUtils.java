@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Steve Chaloner
+ * Copyright 2012-2016 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class TemplateUtils
      * @param permissions the permissions
      * @return the permissions as an array of strings
      */
-    public static String[] roles(final Permission... permissions)
+    public static String[] permissions(final Permission... permissions)
     {
         final List<String> values = new ArrayList<String>(permissions.length);
         for (Permission permission : permissions)
