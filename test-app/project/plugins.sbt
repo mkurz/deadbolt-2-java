@@ -1,5 +1,5 @@
 // The Play plugin
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % System.getProperty("playTestVersion", "2.5.0-RC1"))
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % System.getProperty("playTestVersion", "2.5.0-RC2"))
 
 // Web plugins
 addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "3.0.0-M1")
