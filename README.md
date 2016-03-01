@@ -15,4 +15,4 @@ If you want to explore Deadbolt further, you might want to take a look at the bo
 ![Deadbolt 2 - Powerful authorization for your Play application](http://www.objectify.be/wordpress/wp-content/uploads/2015/09/large.jpg)
 
 ## Scala API
-The Scala version of Deadbolt can by found at [https://github.com/schaloner/deadbolt-2-scala](https://github.com/schaloner/deadbolt-2-java).
+The Scala version of Deadbolt can by found at [https://github.com/schaloner/deadbolt-2-scala](https://github.com/schaloner/deadbolt-2-scala).
