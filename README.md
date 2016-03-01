@@ -6,12 +6,13 @@ Deadbolt 2 is an authorization library for Play 2, and features APIs for both Ja
 
 This repository contains the Java API for Deadbolt.
 
-All modules related to Deadbolt 2, including the user guide, are grouped together in the [Deadbolt 2](https://github.com/schaloner/deadbolt-2) Github super-module.  Installation information, including Deadbolt/Play compatibility, can also be found here.
-
-# Documentation
+## Documentation
 You can find documentation and examples for Deadbolt at [https://deadbolt-java.readme.io/v2.4.4](https://deadbolt-java.readme.io/v2.4.4).
 
 ## Get the book!
 If you want to explore Deadbolt further, you might want to take a look at the book I'm currently writing on it.  You can find it at [https://leanpub.com/deadbolt-2](https://leanpub.com/deadbolt-2).
 
 ![Deadbolt 2 - Powerful authorization for your Play application](http://www.objectify.be/wordpress/wp-content/uploads/2015/09/large.jpg)
+
+## Scala API
+The Scala version of Deadbolt can by found at [https://github.com/schaloner/deadbolt-2-scala](https://github.com/schaloner/deadbolt-2-java).
