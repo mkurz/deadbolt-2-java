@@ -67,3 +67,9 @@ GET        /pattern/invert/custom/m/checkCustom                                 
 GET        /pattern/invert/custom/c/checkCustom                                          be.objectify.deadbolt.java.test.controllers.pattern.InvertedCustomForController.protectedByControllerLevelCustom()
 GET        /pattern/invert/custom/c/checkCustom/open                                     be.objectify.deadbolt.java.test.controllers.pattern.InvertedCustomForController.unrestricted()
 
+# Composite constraints
+GET        /composite/m/niceName                                                         be.objectify.deadbolt.java.test.controllers.dynamic.DynamicForMethod.userMustHaveTheSameNameAsMyWife()
+GET        /composite/m/niceNameInUnrestrictedController                                 be.objectify.deadbolt.java.test.controllers.dynamic.ExplicitlyUnrestrictedControllerWithDynamicForMethod.userMustHaveTheSameNameAsMyWife()
+
+GET        /composite/c                                                                  be.objectify.deadbolt.java.test.controllers.composite.CompositeForController.protectedByControllerLevelComposite()
+GET        /composite/c/open                                                             be.objectify.deadbolt.java.test.controllers.composite.CompositeForController.unrestricted()

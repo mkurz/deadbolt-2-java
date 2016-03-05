@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.test.controllers.dynamic;
+package be.objectify.deadbolt.java.test.controllers.composite;
 
-import be.objectify.deadbolt.java.actions.Dynamic;
+import be.objectify.deadbolt.java.actions.Composite;
 import be.objectify.deadbolt.java.actions.Unrestricted;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -26,12 +26,18 @@ import java.util.concurrent.CompletionStage;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-@Unrestricted
-public class ExplicitlyUnrestrictedControllerWithDynamicForMethod extends Controller
+@Composite("curatorOrSubjectNotPresent")
+public class CompositeForController extends Controller
 {
-    @Dynamic("niceName")
-    public CompletionStage<Result> userMustHaveTheSameNameAsMyWife()
+    public CompletionStage<Result> protectedByControllerLevelComposite()
     {
         return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
     }
+
+    @Unrestricted
+    public CompletionStage<Result> unrestricted()
+    {
+        return CompletableFuture.supplyAsync(() -> ok("Content accessible"));
+    }
+
 }
