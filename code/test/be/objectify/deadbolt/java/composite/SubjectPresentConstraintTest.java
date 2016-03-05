@@ -13,25 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.models;
+package be.objectify.deadbolt.java.composite;
 
-/**
- * @author Steve Chaloner (steve@objectify.be)
- */
-public enum PatternType
+public class SubjectPresentConstraintTest extends AbstractSubjectPresentConstraintTest
 {
-    /**
-     * Checks the pattern against the permissions of the user.  Exact, case-sensitive matches only!
-     */
-    EQUALITY,
-
-    /**
-     * A standard regular expression that will be evaluated against the permissions of the Subject
-     */
-    REGEX,
-
-    /**
-     * Perform some custom matching on the pattern.
-     */
-    CUSTOM
+    public SubjectPresentConstraint constraint()
+    {
+        return new SubjectPresentConstraint();
+    }
 }

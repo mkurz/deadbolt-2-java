@@ -1,9 +1,12 @@
 package be.objectify.deadbolt.java;
 
+import be.objectify.deadbolt.java.cache.CompositeCache;
+import be.objectify.deadbolt.java.cache.DefaultCompositeCache;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import be.objectify.deadbolt.java.composite.ConstraintBuilders;
 import play.api.Configuration;
 import play.api.Environment;
 import play.api.inject.Binding;
@@ -26,7 +29,9 @@ public class DeadboltModule extends Module
                    analyzer(),
                    viewSupport(),
                    templateFailureListenerProvider(),
-                   executionContextProvider());
+                   executionContextProvider(),
+                   compositeCache(),
+                   constraintBuilders());
     }
 
     /**
@@ -70,6 +75,16 @@ public class DeadboltModule extends Module
     }
 
     /**
+     * Create a binding for {@link ConstraintBuilders}.
+     *
+     * @return the binding
+     */
+    public Binding<ConstraintBuilders> constraintBuilders()
+    {
+        return bind(ConstraintBuilders.class).toSelf().in(Singleton.class);
+    }
+
+    /**
      * Create a binding for {@link PatternCache}.
      *
      * @return the binding
@@ -77,6 +92,16 @@ public class DeadboltModule extends Module
     public Binding<PatternCache> patternCache()
     {
         return bind(PatternCache.class).to(DefaultPatternCache.class).in(Singleton.class);
+    }
+
+    /**
+     * Create a binding for {@link CompositeCache}.
+     *
+     * @return the binding
+     */
+    public Binding<CompositeCache> compositeCache()
+    {
+        return bind(CompositeCache.class).to(DefaultCompositeCache.class).in(Singleton.class);
     }
 
     /**

@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.models;
+package be.objectify.deadbolt.java.composite;
 
-/**
- * @author Steve Chaloner (steve@objectify.be)
- */
-public enum PatternType
+import be.objectify.deadbolt.java.DeadboltAnalyzer;
+import be.objectify.deadbolt.java.cache.DefaultPatternCache;
+import be.objectify.deadbolt.java.testsupport.FakeCache;
+
+public class SubjectNotPresentConstraintBuilderTest extends AbstractSubjectNotPresentConstraintTest
 {
-    /**
-     * Checks the pattern against the permissions of the user.  Exact, case-sensitive matches only!
-     */
-    EQUALITY,
-
-    /**
-     * A standard regular expression that will be evaluated against the permissions of the Subject
-     */
-    REGEX,
-
-    /**
-     * Perform some custom matching on the pattern.
-     */
-    CUSTOM
+    @Override
+    protected SubjectNotPresentConstraint constraint()
+    {
+        return new ConstraintBuilders(new DeadboltAnalyzer(),
+                                      new DefaultPatternCache(new FakeCache())).subjectNotPresent();
+    }
 }

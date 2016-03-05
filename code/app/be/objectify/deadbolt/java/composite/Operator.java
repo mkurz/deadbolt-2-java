@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.models;
+package be.objectify.deadbolt.java.composite;
+
+import java.util.function.BiFunction;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public enum PatternType
-{
-    /**
-     * Checks the pattern against the permissions of the user.  Exact, case-sensitive matches only!
-     */
-    EQUALITY,
-
-    /**
-     * A standard regular expression that will be evaluated against the permissions of the Subject
-     */
-    REGEX,
-
-    /**
-     * Perform some custom matching on the pattern.
-     */
-    CUSTOM
+public enum Operator implements BiFunction<Constraint, Constraint, Constraint> {
+    AND {
+        @Override
+        public Constraint apply(final Constraint c1,
+                                final Constraint c2) {
+            return c1.and(c2);
+        }
+    },
+    OR {
+        @Override
+        public Constraint apply(final Constraint c1,
+                                final Constraint c2) {
+            return c1.or(c2);
+        }
+    };
 }
