@@ -1,4 +1,4 @@
-package be.objectify.deadbolt.java.test.controllers.dynamic;
+package be.objectify.deadbolt.java.test.controllers.composite;
 
 import be.objectify.deadbolt.java.test.DataLoader;
 import com.jayway.restassured.RestAssured;
@@ -11,7 +11,7 @@ import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
-public class DynamicMethodConstraintsTest
+public class CompositeMethodConstraintsTest
 {
 
     private static final int PORT = 3333;
@@ -23,7 +23,7 @@ public class DynamicMethodConstraintsTest
     }
 
     @Test
-    public void protectedByMethodLevelDynamic_noSubjectIsPresent()
+    public void protectedByControllerLeveComposite_noSubjectIsPresent()
     {
         running(testServer(PORT,
                            fakeApplication()),
@@ -31,14 +31,14 @@ public class DynamicMethodConstraintsTest
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
-                               .statusCode(401)
+                               .statusCode(200)
                                .when()
-                               .get("/dynamic/m/niceName");
+                               .get("/composite/m/foo");
                 });
     }
 
     @Test
-    public void protectedByMethodLevelDynamic_subjectHasPermission()
+    public void protectedByControllerLeveComposite_subjectHasPermission()
     {
         running(testServer(PORT,
                            fakeApplication(Collections.emptyMap(),
@@ -47,15 +47,14 @@ public class DynamicMethodConstraintsTest
                     RestAssured.given()
                                .cookie("user", "steve")
                                .expect()
-                               .statusCode(401)
+                               .statusCode(200)
                                .when()
-                               .get("/dynamic/m/niceName");
+                               .get("/composite/m/foo");
                 });
     }
 
-
     @Test
-    public void protectedByMethodLevelDynamic_subjectDoesNotHavePermission()
+    public void protectedByControllerLeveComposite_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
                            fakeApplication(Collections.emptyMap(),
@@ -64,14 +63,13 @@ public class DynamicMethodConstraintsTest
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
-                               .statusCode(200)
+                               .statusCode(401)
                                .when()
-                               .get("/dynamic/m/niceName");
+                               .get("/composite/m/foo");
                 });
     }
-
     @Test
-    public void protectedByMethodLevelDynamic_noSubjectIsPresent_controllerExplicitlyUnrestricted()
+    public void protectedByControllerLeveComposite_noSubjectIsPresent_controllerExplicitlyUnrestricted()
     {
         running(testServer(PORT,
                            fakeApplication()),
@@ -79,14 +77,14 @@ public class DynamicMethodConstraintsTest
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
-                               .statusCode(401)
+                               .statusCode(200)
                                .when()
-                               .get("/dynamic/m/niceNameInUnrestrictedController");
+                               .get("/composite/m/fooInUnrestrictedController");
                 });
     }
 
     @Test
-    public void protectedByMethodLevelDynamic_subjectHasPermission_controllerExplicitlyUnrestricted()
+    public void protectedByControllerLeveComposite_subjectHasPermission_controllerExplicitlyUnrestricted()
     {
         running(testServer(PORT,
                            fakeApplication(Collections.emptyMap(),
@@ -95,14 +93,14 @@ public class DynamicMethodConstraintsTest
                     RestAssured.given()
                                .cookie("user", "steve")
                                .expect()
-                               .statusCode(401)
+                               .statusCode(200)
                                .when()
-                               .get("/dynamic/m/niceNameInUnrestrictedController");
+                               .get("/composite/m/fooInUnrestrictedController");
                 });
     }
 
     @Test
-    public void protectedByMethodLevelDynamic_subjectDoesNotHavePermission_controllerExplicitlyUnrestricted()
+    public void protectedByControllerLeveComposite_subjectDoesNotHavePermission_controllerExplicitlyUnrestricted()
     {
         running(testServer(PORT,
                            fakeApplication(Collections.emptyMap(),
@@ -111,9 +109,9 @@ public class DynamicMethodConstraintsTest
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
-                               .statusCode(200)
+                               .statusCode(401)
                                .when()
-                               .get("/dynamic/m/niceNameInUnrestrictedController");
+                               .get("/composite/m/fooInUnrestrictedController");
                 });
     }
 }
