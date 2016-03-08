@@ -35,11 +35,11 @@ public class AbstractDeadboltHandlerTest
 
         final Http.Context context = Mockito.mock(Http.Context.class);
 
-        final CompletionStage<Optional<Subject>> promise = deadboltHandler.getSubject(context);
+        final CompletionStage<Optional<? extends Subject>> promise = deadboltHandler.getSubject(context);
         Assert.assertNotNull(promise);
 
-        final Optional<Subject> option = promise.toCompletableFuture().get(1000,
-                                                                           TimeUnit.MILLISECONDS);
+        final Optional<? extends Subject> option = promise.toCompletableFuture().get(1000,
+                                                                                     TimeUnit.MILLISECONDS);
         Assert.assertNotNull(option);
         Assert.assertFalse(option.isPresent());
     }

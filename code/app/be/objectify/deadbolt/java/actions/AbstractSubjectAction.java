@@ -37,12 +37,12 @@ import java.util.function.Predicate;
  */
 public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T>
 {
-    private final Predicate<Optional<Subject>> predicate;
+    private final Predicate<Optional<? extends Subject>> predicate;
 
     AbstractSubjectAction(final DeadboltAnalyzer analyzer,
                           final SubjectCache subjectCache,
                           final HandlerCache handlerCache,
-                          final Predicate<Optional<Subject>> predicate,
+                          final Predicate<Optional<? extends Subject>> predicate,
                           final Configuration config,
                           final ExecutionContextProvider ecProvider)
     {

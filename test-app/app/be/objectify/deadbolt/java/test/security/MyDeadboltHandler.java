@@ -29,20 +29,20 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     }
 
     @Override
-    public CompletionStage<Optional<Subject>> getSubject(Http.Context context)
+    public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
     {
         final Http.Cookie userCookie = context.request().cookie("user");
         return CompletableFuture.supplyAsync(() -> Optional.ofNullable(User.findByUserName(userCookie.value())));
     }
 
     @Override
-    public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context)
+    public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
 
     @Override
-    public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+    public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
     {
         return CompletableFuture.supplyAsync(() -> Optional.of(dynamicHandler));
     }

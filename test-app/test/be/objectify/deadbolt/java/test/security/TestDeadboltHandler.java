@@ -16,7 +16,7 @@ import java.util.concurrent.CompletionStage;
 public class TestDeadboltHandler extends MyDeadboltHandler
 {
     @Override
-    public CompletionStage<Optional<Subject>> getSubject(Http.Context context)
+    public CompletionStage<Optional<? extends Subject>> getSubject(Http.Context context)
     {
         final Http.Cookie userCookie = context.request().cookie("user");
         return CompletableFuture.supplyAsync(() -> Optional.ofNullable(User.findByUserName(userCookie.value())));

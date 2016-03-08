@@ -34,7 +34,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
@@ -55,7 +55,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
@@ -76,7 +76,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
@@ -96,7 +96,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
@@ -116,7 +116,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
@@ -138,7 +138,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
@@ -160,7 +160,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
@@ -183,7 +183,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
@@ -204,7 +204,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
@@ -224,7 +224,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
@@ -245,7 +245,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
@@ -266,7 +266,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
@@ -288,7 +288,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
@@ -308,7 +308,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
@@ -328,7 +328,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
@@ -349,7 +349,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
@@ -370,7 +370,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
@@ -392,7 +392,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
@@ -412,7 +412,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
@@ -432,7 +432,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
@@ -454,7 +454,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
@@ -476,7 +476,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
@@ -499,7 +499,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
@@ -520,7 +520,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
@@ -540,7 +540,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
@@ -561,7 +561,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
@@ -582,7 +582,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
@@ -604,7 +604,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
@@ -624,7 +624,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }

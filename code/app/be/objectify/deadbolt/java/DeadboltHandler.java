@@ -48,7 +48,7 @@ public interface DeadboltHandler {
      * @param context the HTTP context
      * @return the current subject
      */
-    CompletionStage<Optional<Subject>> getSubject(Http.Context context);
+    CompletionStage<Optional<? extends Subject>> getSubject(Http.Context context);
 
     /**
      * Invoked when an access failure is detected on <i>controllerClassName</i>.

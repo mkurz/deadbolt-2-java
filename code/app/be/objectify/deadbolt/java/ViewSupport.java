@@ -102,7 +102,7 @@ public class ViewSupport
                                 final DeadboltHandler handler,
                                 final long timeoutInMillis) throws Throwable
     {
-        final Function<Optional<Subject>, Boolean> testRoles = subject -> {
+        final Function<Optional<? extends Subject>, Boolean> testRoles = subject -> {
             boolean roleOk = false;
             for (int i = 0; !roleOk && i < roles.size(); i++)
             {

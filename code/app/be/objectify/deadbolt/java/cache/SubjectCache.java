@@ -26,6 +26,6 @@ import java.util.function.BiFunction;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public interface SubjectCache extends BiFunction<DeadboltHandler, Http.Context, CompletionStage<Optional<Subject>>>
+public interface SubjectCache extends BiFunction<DeadboltHandler, Http.Context, CompletionStage<Optional<? extends Subject>>>
 {
 }

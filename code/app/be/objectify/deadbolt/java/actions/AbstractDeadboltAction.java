@@ -153,7 +153,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param roleNames
      * @return
      */
-    protected boolean checkRole(Optional<Subject> maybeSubject,
+    protected boolean checkRole(Optional<? extends Subject> maybeSubject,
                                 String[] roleNames)
     {
         return analyzer.checkRole(maybeSubject,
@@ -165,7 +165,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param roleNames
      * @return
      */
-    protected boolean hasAllRoles(Optional<Subject> maybeSubject,
+    protected boolean hasAllRoles(Optional<? extends Subject> maybeSubject,
                                   String[] roleNames)
     {
         return analyzer.hasAllRoles(maybeSubject,
@@ -210,8 +210,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param deadboltHandler the Deadbolt handler
      * @return the Subject, if any
      */
-    protected CompletionStage<Optional<Subject>> getSubject(final Http.Context ctx,
-                                                            final DeadboltHandler deadboltHandler)
+    protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
+                                                                      final DeadboltHandler deadboltHandler)
     {
         return subjectCache.apply(deadboltHandler,
                                   ctx)

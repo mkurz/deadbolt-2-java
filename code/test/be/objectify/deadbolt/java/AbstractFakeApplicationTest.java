@@ -70,7 +70,7 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
         return new AbstractNoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.ofNullable(getSubject.get()));
             }

@@ -36,7 +36,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+    public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }

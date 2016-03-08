@@ -68,8 +68,8 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
      * @return the Subject, if any
      */
     @Override
-    protected CompletionStage<Optional<Subject>> getSubject(final Http.Context ctx,
-                                                            final DeadboltHandler deadboltHandler)
+    protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
+                                                                      final DeadboltHandler deadboltHandler)
     {
         // Bypass the additional - and in this case, incorrect - logging of the overridden method
         return subjectCache.apply(deadboltHandler,

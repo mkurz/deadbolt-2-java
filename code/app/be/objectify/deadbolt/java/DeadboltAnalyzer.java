@@ -41,7 +41,7 @@ public class DeadboltAnalyzer
      * @param roleNames  the role names.  Any role name starting with ! will be negated.
      * @return true if the subject meets the restrictions (so access will be allowed), otherwise false
      */
-    public boolean checkRole(final Optional<Subject> subjectOption,
+    public boolean checkRole(final Optional<? extends Subject> subjectOption,
                              final String[] roleNames)
     {
         // this is legacy code, and can be refactored out at some point
@@ -56,7 +56,7 @@ public class DeadboltAnalyzer
      * @param subjectOption an option for the subject
      * @return a non-null list containing all role names
      */
-    public List<String> getRoleNames(final Optional<Subject> subjectOption)
+    public List<String> getRoleNames(final Optional<? extends Subject> subjectOption)
     {
         final List<String> roleNames = new ArrayList<String>();
         subjectOption.ifPresent(subject -> {
@@ -83,7 +83,7 @@ public class DeadboltAnalyzer
      * @param roleName the name of the role
      * @return true iff the subject has the role represented by the role name
      */
-    public boolean hasRole(final Optional<Subject> subjectOption,
+    public boolean hasRole(final Optional<? extends Subject> subjectOption,
                            final String roleName)
     {
         return getRoleNames(subjectOption).contains(roleName);
@@ -97,7 +97,7 @@ public class DeadboltAnalyzer
      * @param roleNames the names of the required roles
      * @return true iff the subject has all the roles
      */
-    public boolean hasAllRoles(final Optional<Subject> subjectOption,
+    public boolean hasAllRoles(final Optional<? extends Subject> subjectOption,
                                final String[] roleNames)
     {
         final List<String> heldRoles = getRoleNames(subjectOption);
@@ -129,7 +129,7 @@ public class DeadboltAnalyzer
      * @param patternOption an option for the pattern
      * @return true iff the pattern matches at least one of the subject's permissions
      */
-    public boolean checkRegexPattern(final Optional<Subject> subjectOption,
+    public boolean checkRegexPattern(final Optional<? extends Subject> subjectOption,
                                      final Optional<Pattern> patternOption)
     {
         final boolean[] roleOk = {false};
@@ -155,7 +155,7 @@ public class DeadboltAnalyzer
      * @param patternValueOption an option for the pattern value
      * @return true iff the pattern is equal to at least one of the subject's permissions
      */
-    public boolean checkPatternEquality(final Optional<Subject> subjectOption,
+    public boolean checkPatternEquality(final Optional<? extends Subject> subjectOption,
                                         final Optional<String> patternValueOption)
     {
         final boolean[] roleOk = {false};

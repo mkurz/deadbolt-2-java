@@ -44,13 +44,13 @@ public class DefaultSubjectCache implements SubjectCache
     }
 
     @Override
-    public CompletionStage<Optional<Subject>> apply(final DeadboltHandler deadboltHandler,
-                                                    final Http.Context context)
+    public CompletionStage<Optional<? extends Subject>> apply(final DeadboltHandler deadboltHandler,
+                                                              final Http.Context context)
     {
-        final CompletionStage<Optional<Subject>> promise;
+        final CompletionStage<Optional<? extends Subject>> promise;
         if (cacheUserPerRequestEnabled)
         {
-            final Optional<Subject> cachedUser = Optional.ofNullable((Subject) context.args.get(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1));
+            final Optional<? extends Subject> cachedUser = Optional.ofNullable((Subject) context.args.get(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1));
             if (cachedUser.isPresent())
             {
                 promise = CompletableFuture.completedFuture(cachedUser);

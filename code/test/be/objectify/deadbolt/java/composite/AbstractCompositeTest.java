@@ -52,7 +52,7 @@ public abstract class AbstractCompositeTest
             }
 
             @Override
-            public CompletionStage<Optional<Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.completedFuture(Optional.ofNullable(subject.get()));
             }
