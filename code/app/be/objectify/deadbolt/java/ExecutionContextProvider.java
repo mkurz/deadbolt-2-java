@@ -17,51 +17,54 @@ package be.objectify.deadbolt.java;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.Application;
 import play.Configuration;
-import play.Play;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.function.Supplier;
 
 /**
- * @author Steve Chaloner (steve@objectify.be)
+ * @author Steve Ch aloner (steve@objectify.be)
  */
+@Singleton
 public class ExecutionContextProvider implements Supplier<DeadboltExecutionContextProvider>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionContextProvider.class);
 
     private final DeadboltExecutionContextProvider defaultProvider = new DefaultDeadboltExecutionContextProvider();
 
-    private final boolean customEcEnabled;
+    private final DeadboltExecutionContextProvider ecProvider;
 
     @Inject
-    public ExecutionContextProvider(final Configuration config)
+    public ExecutionContextProvider(final Configuration config,
+                                    final Application application)
     {
-        this.customEcEnabled = config.getBoolean(ConfigKeys.CUSTOM_EC_DEFAULT._1,
-                                                 ConfigKeys.CUSTOM_EC_DEFAULT._2);
-    }
-
-    @Override
-    public DeadboltExecutionContextProvider get()
-    {
-        DeadboltExecutionContextProvider ecProvider;
+        boolean customEcEnabled = config.getBoolean(ConfigKeys.CUSTOM_EC_DEFAULT._1,
+                                                    ConfigKeys.CUSTOM_EC_DEFAULT._2);
+        DeadboltExecutionContextProvider ecp = defaultProvider;
         if (customEcEnabled)
         {
             try
             {
-                ecProvider = Play.application().injector().instanceOf(DeadboltExecutionContextProvider.class);
+                ecp = application.injector().instanceOf(DeadboltExecutionContextProvider.class);
                 LOGGER.debug("Custom execution context provider found");
             }
             catch (Exception e)
             {
                 LOGGER.debug("No custom execution context found.");
-                ecProvider = defaultProvider;
             }
+            this.ecProvider = ecp;
         }
         else
         {
             ecProvider = defaultProvider;
         }
+    }
+
+    @Override
+    public DeadboltExecutionContextProvider get()
+    {
         return ecProvider;
     }
 }
