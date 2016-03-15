@@ -1,10 +1,10 @@
 package be.objectify.deadbolt.java.test.security;
 
+import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
-import be.objectify.deadbolt.java.AbstractDeadboltHandler;
-import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.test.models.User;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -17,28 +17,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
+ * Example handler just to show how to handle DI of multiple implementations of DeadboltHandler.
+ *
  * @author Steve Chaloner (steve@objectify.be)
  */
-@MainHandler
-public class MyDeadboltHandler extends AbstractDeadboltHandler
+@SomeOtherHandler
+public class SomeOtherDeadboltHandler extends AbstractDeadboltHandler
 {
-    private final DynamicResourceHandler dynamicHandler;
-
     @Inject
-    public MyDeadboltHandler(final ExecutionContextProvider ecProvider)
+    public SomeOtherDeadboltHandler(final ExecutionContextProvider ecProvider)
     {
         super(ecProvider);
-        Map<String, DynamicResourceHandler> delegates = new HashMap<>();
-        delegates.put("niceName",
-                      new NiceNameDynamicResourceHandler());
-        this.dynamicHandler = new CompositeDynamicResourceHandler(delegates);
     }
 
     @Override
     public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
     {
-        final Http.Cookie userCookie = context.request().cookie("user");
-        return CompletableFuture.supplyAsync(() -> Optional.ofNullable(User.findByUserName(userCookie.value())));
+        return CompletableFuture.completedFuture(Optional.empty());
     }
 
     @Override
@@ -50,12 +45,6 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     @Override
     public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
     {
-        return CompletableFuture.supplyAsync(() -> Optional.of(dynamicHandler));
-    }
-
-    @Override
-    public String handlerName()
-    {
-        return ConfigKeys.DEFAULT_HANDLER_KEY;
+        return CompletableFuture.completedFuture(Optional.empty());
     }
 }

@@ -62,8 +62,7 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final ExecutionContext executionContext = executionContextProvider.get();
-        final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
+        final ExecutionContextExecutor executor = executor();
         final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx), executor)
                                                                           .thenComposeAsync(unauthorised -> {
                                                                               try

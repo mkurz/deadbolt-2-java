@@ -65,9 +65,17 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
 
     protected abstract HandlerCache handlers();
 
+    protected ExecutionContextProvider ecProvider()
+    {
+        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
+        Mockito.when(ecProvider.get())
+               .thenReturn(new DefaultDeadboltExecutionContextProvider());
+        return ecProvider;
+    }
+
     protected DeadboltHandler handler(final Supplier<Subject> getSubject)
     {
-        return new AbstractNoPreAuthDeadboltHandler()
+        return new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)

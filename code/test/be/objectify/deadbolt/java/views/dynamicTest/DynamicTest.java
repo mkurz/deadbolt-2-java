@@ -25,7 +25,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
     @Test
     public void testValid()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -55,7 +55,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
     @Test
     public void testName()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -85,7 +85,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
     @Test
     public void testMeta()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -115,7 +115,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
     @Test
     public void testInvalid()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)

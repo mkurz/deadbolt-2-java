@@ -16,11 +16,15 @@
 package be.objectify.deadbolt.java.cache;
 
 import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
 import play.Configuration;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
+import scala.concurrent.ExecutionContext;
+import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,12 +39,15 @@ import java.util.concurrent.CompletionStage;
 public class DefaultSubjectCache implements SubjectCache
 {
     private final boolean cacheUserPerRequestEnabled;
+    private final DeadboltExecutionContextProvider executionContextProvider;
 
     @Inject
-    public DefaultSubjectCache(final Configuration configuration)
+    public DefaultSubjectCache(final Configuration configuration,
+                               final ExecutionContextProvider ecProvider)
     {
         this.cacheUserPerRequestEnabled = configuration.getBoolean(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
                                                                    ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._2);
+        this.executionContextProvider = ecProvider.get();
     }
 
     @Override
@@ -57,12 +64,14 @@ public class DefaultSubjectCache implements SubjectCache
             }
             else
             {
+                final ExecutionContext executionContext = executionContextProvider.get();
+                final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
                 promise = deadboltHandler.getSubject(context)
                                          .thenApplyAsync(subjectOption -> {
                                              subjectOption.ifPresent(subject -> context.args.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
                                                                                                  subject));
                                              return subjectOption;
-                                         }, HttpExecution.defaultContext());
+                                         }, executor);
             }
         }
         else

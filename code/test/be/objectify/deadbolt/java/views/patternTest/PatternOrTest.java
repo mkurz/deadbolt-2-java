@@ -29,7 +29,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testEquality_hasEqualPermission()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -52,7 +52,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testEquality_doesNotHaveEqualPermission()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -75,7 +75,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testEquality_doesNotHavePermissions()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -99,7 +99,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     {
         final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternOrContent.render("killer.undead.zombie",
                                                                                                        PatternType.EQUALITY,
-                                                                                                       new AbstractNoPreAuthDeadboltHandler()
+                                                                                                       new AbstractNoPreAuthDeadboltHandler(ecProvider())
                                                                                                        {
                                                                                                        });
         final String content = Helpers.contentAsString(html);
@@ -112,7 +112,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_hasMatch()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -135,7 +135,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_hasTopLevelMatch()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -158,7 +158,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_doesNotHaveMatch()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -181,7 +181,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_doesNotHavePermissions()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -205,7 +205,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     {
         final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternOrContent.render("killer.undead.zombie",
                                                                                                        PatternType.REGEX,
-                                                                                                       new AbstractNoPreAuthDeadboltHandler()
+                                                                                                       new AbstractNoPreAuthDeadboltHandler(ecProvider())
                                                                                                        {
                                                                                                        });
         final String content = Helpers.contentAsString(html);
@@ -218,7 +218,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testCustom_value()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -248,7 +248,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testCustom_hasPermission()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -278,7 +278,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     @Test
     public void testCustom_hasNotPermission()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)

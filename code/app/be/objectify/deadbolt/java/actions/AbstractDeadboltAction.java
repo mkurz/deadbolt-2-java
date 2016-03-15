@@ -31,6 +31,8 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import scala.concurrent.ExecutionContext;
+import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -213,6 +215,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
                                                                       final DeadboltHandler deadboltHandler)
     {
+        final ExecutionContextExecutor executor = executor();
         return subjectCache.apply(deadboltHandler,
                                   ctx)
                            .thenApplyAsync(option -> {
@@ -222,7 +225,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                                ctx.request().uri());
                                }
                                return option;
-                           }, HttpExecution.defaultContext());
+                           }, executor);
     }
 
     /**
@@ -327,6 +330,12 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         return forcePreAuthCheck ? deadboltHandler.beforeAuthCheck(ctx)
                                  : CompletableFuture.completedFuture(Optional.empty());
+    }
+
+    protected ExecutionContextExecutor executor()
+    {
+        final ExecutionContext executionContext = executionContextProvider.get();
+        return HttpExecution.fromThread(executionContext);
     }
 
     public static CompletionStage<Result> sneakyCall(final Action<?> action,

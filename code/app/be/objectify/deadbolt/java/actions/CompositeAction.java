@@ -25,6 +25,7 @@ import play.Configuration;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.concurrent.CompletionStage;
@@ -56,10 +57,11 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler handler)
     {
+        final ExecutionContextExecutor executor = executor();
         return compositeCache.apply(getValue())
                              .map(constraint -> constraint.test(ctx,
                                                                 handler,
-                                                                HttpExecution.defaultContext())
+                                                                executor)
                                      .thenComposeAsync(allowed -> {
                                          final CompletionStage<Result> result;
                                          if (allowed)
@@ -75,8 +77,7 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                                                                     ctx);
                                          }
                                          return result;
-                                     },
-                                                       HttpExecution.defaultContext()))
+                                     }, executor))
                              .orElseGet(() -> {
                                  markActionAsUnauthorised(ctx);
                                  return onAuthFailure(handler,

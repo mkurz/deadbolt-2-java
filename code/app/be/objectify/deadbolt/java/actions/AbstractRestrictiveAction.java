@@ -27,6 +27,7 @@ import play.Configuration;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.ExecutionContextExecutor;
 
 /**
  * Convenience class for checking if an action has already been authorised before applying the restrictions.
@@ -59,12 +60,14 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
         else
         {
             final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
+            final ExecutionContextExecutor executor = executor();
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
                     .thenComposeAsync(option -> option.map(value -> (CompletionStage<Result>)CompletableFuture.completedFuture(value))
-                                                 .orElseGet(() -> applyRestriction(ctx,
-                                                                                   deadboltHandler)), HttpExecution.defaultContext());
+                                                      .orElseGet(() -> applyRestriction(ctx,
+                                                                                        deadboltHandler)),
+                                      executor);
         }
         return maybeBlock(result);
     }

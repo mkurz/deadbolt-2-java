@@ -25,6 +25,7 @@ import play.Configuration;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -75,13 +76,14 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
         else
         {
             final DeadboltHandler deadboltHandler = getDeadboltHandler(config.handlerKey);
-
+            final ExecutionContextExecutor executor = executor();
             result = preAuth(config.forceBeforeAuthCheck,
                              ctx,
                              deadboltHandler)
                     .thenComposeAsync(preAuthResult -> new SubjectTest(ctx,
                                                                   deadboltHandler,
-                                                                  config).apply(preAuthResult), HttpExecution.defaultContext());
+                                                                  config).apply(preAuthResult),
+                                      executor);
         }
         return maybeBlock(result);
     }
@@ -106,6 +108,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
         @Override
         public CompletionStage<Result> apply(final Optional<Result> preAuthResult)
         {
+            final ExecutionContextExecutor executor = executor();
             return preAuthResult.map(r -> (CompletionStage<Result>)CompletableFuture.completedFuture(r))
                                 .orElseGet(() -> {
                                     return getSubject(ctx,
@@ -125,7 +128,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
                                                                                 ctx);
                                                 }
                                                 return innerResult;
-                                            }, HttpExecution.defaultContext());
+                                            }, executor);
                                 });
         }
     }

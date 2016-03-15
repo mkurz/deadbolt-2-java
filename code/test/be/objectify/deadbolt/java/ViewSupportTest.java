@@ -3,8 +3,6 @@ package be.objectify.deadbolt.java;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.models.Permission;
-import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,13 +10,12 @@ import org.mockito.Mockito;
 import play.Configuration;
 import play.mvc.Http;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -122,31 +119,16 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
 
     private ViewSupport viewSupport()
     {
+        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+
         return new ViewSupport(Mockito.mock(Configuration.class),
                                new DeadboltAnalyzer(),
-                               (handler, context) -> CompletableFuture.completedFuture(Optional.of(new Subject()
-                               {
-                                   @Override
-                                   public List<? extends Role> getRoles()
-                                   {
-                                       return Collections.emptyList();
-                                   }
-
-                                   @Override
-                                   public List<? extends Permission> getPermissions()
-                                   {
-                                       return Collections.emptyList();
-                                   }
-
-                                   @Override
-                                   public String getIdentifier()
-                                   {
-                                       return "test subject";
-                                   }
-                               })),
+                               (handler, context) -> CompletableFuture.completedFuture(Optional.<Subject>empty()),
                                handlerCache,
                                Mockito.mock(PatternCache.class),
-                               new TemplateFailureListenerProvider());
+                               new TemplateFailureListenerProvider(),
+                               ecProvider);
     }
 
     @Override

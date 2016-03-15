@@ -24,6 +24,7 @@ import play.Configuration;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -65,11 +66,13 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
         else
         {
             final DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey());
+            final ExecutionContextExecutor executor = executor();
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
                     .thenComposeAsync(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>)CompletableFuture.completedFuture(r))
-                                                               .orElseGet(() -> sneakyCall(delegate, ctx)), HttpExecution.defaultContext());
+                                                                    .orElseGet(() -> sneakyCall(delegate, ctx)),
+                                      executor);
         }
         return maybeBlock(result);
     }

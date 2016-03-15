@@ -26,6 +26,7 @@ import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.concurrent.CompletionStage;
@@ -73,12 +74,15 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler deadboltHandler)
     {
+        final ExecutionContextExecutor executor = executor();
         return deadboltHandler.getDynamicResourceHandler(ctx)
-                              .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE), HttpExecution.defaultContext())
+                              .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
+                                              executor)
                               .thenComposeAsync(drh -> drh.isAllowed(getValue(),
                                                                 getMeta(),
                                                                 deadboltHandler,
-                                                                ctx), HttpExecution.defaultContext())
+                                                                ctx),
+                                                executor)
                               .thenComposeAsync(allowed -> {
                                   final CompletionStage<Result> result;
                                   if (allowed)
@@ -94,7 +98,7 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
                                                              ctx);
                                   }
                                   return result;
-                              }, HttpExecution.defaultContext());
+                              }, executor);
     }
 
     public String getMeta()

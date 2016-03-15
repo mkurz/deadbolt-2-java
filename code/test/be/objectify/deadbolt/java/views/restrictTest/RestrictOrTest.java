@@ -31,7 +31,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testSingleRole_present()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -52,7 +52,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testSingleRole_notPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -73,7 +73,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testSingleRole_noRolesPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -93,7 +93,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testSingleRole_noSubject()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -113,7 +113,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_fooPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -135,7 +135,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_barPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -157,7 +157,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_bothPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -180,7 +180,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_neitherPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -201,7 +201,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_noSubject()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -221,7 +221,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_fooPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -242,7 +242,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_barPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -263,7 +263,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_bothPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -285,7 +285,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_neitherPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -305,7 +305,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_noSubject()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -325,7 +325,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_subjectHasRole()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -346,7 +346,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_subjectDoesNotHaveRole()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -367,7 +367,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_subjectHasMultipleRole()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -389,7 +389,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_noRolesPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -409,7 +409,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_noSubject()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -429,7 +429,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_fooPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -451,7 +451,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_barPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -473,7 +473,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_bothPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -496,7 +496,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_neitherPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -517,7 +517,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_noSubject()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -537,7 +537,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_fooPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -558,7 +558,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_barPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -579,7 +579,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_bothPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -601,7 +601,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_neitherPresent()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -621,7 +621,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_noSubject()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler()
+        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)

@@ -1,5 +1,6 @@
 package be.objectify.deadbolt.java.test.security;
 
+import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.test.models.User;
 import play.mvc.Http;
@@ -15,6 +16,11 @@ import java.util.concurrent.CompletionStage;
  */
 public class TestDeadboltHandler extends MyDeadboltHandler
 {
+    public TestDeadboltHandler(ExecutionContextProvider ecProvider)
+    {
+        super(ecProvider);
+    }
+
     @Override
     public CompletionStage<Optional<? extends Subject>> getSubject(Http.Context context)
     {

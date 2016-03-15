@@ -25,6 +25,7 @@ import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler deadboltHandler)
     {
+        final ExecutionContextExecutor executor = executor();
         return getSubject(ctx,
                           deadboltHandler)
                 .thenApplyAsync(subjectOption -> {
@@ -89,7 +91,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                         }
                     }
                     return roleOk;
-                }, HttpExecution.defaultContext())
+                }, executor)
                 .thenComposeAsync(allowed -> {
                     final CompletionStage<Result> result;
                     if (allowed)
@@ -105,7 +107,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                                                ctx);
                     }
                     return result;
-                }, HttpExecution.defaultContext());
+                }, executor);
     }
 
     public List<String[]> getRoleGroups()

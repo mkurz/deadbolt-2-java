@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
+import scala.concurrent.ExecutionContext;
+import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -58,6 +60,8 @@ public class ViewSupport
 
     private final TemplateFailureListener failureListener;
 
+    final DeadboltExecutionContextProvider executionContextProvider;
+
     private final BiFunction<Long, TimeoutException, Boolean> timeoutHandler;
 
     @Inject
@@ -66,13 +70,15 @@ public class ViewSupport
                        final SubjectCache subjectCache,
                        final HandlerCache handlerCache,
                        final PatternCache patternCache,
-                       final TemplateFailureListenerProvider failureListener)
+                       final TemplateFailureListenerProvider failureListener,
+                       final ExecutionContextProvider ecProvider)
     {
         this.analyzer = analyzer;
         this.subjectCache = subjectCache;
         this.handlerCache = handlerCache;
         this.patternCache = patternCache;
         this.failureListener = failureListener.get();
+        this.executionContextProvider = ecProvider.get();
 
 
         final Long timeout = configuration.getLong(ConfigKeys.DEFAULT_VIEW_TIMEOUT_DEFAULT._1,
@@ -116,10 +122,12 @@ public class ViewSupport
         boolean allowed;
         try
         {
+            final ExecutionContextExecutor executor = executor();
             allowed = subjectCache.apply(handler == null ? handlerCache.get()
                                                          : handler,
                                          Http.Context.current())
-                                  .thenApplyAsync(testRoles::apply, HttpExecution.defaultContext())
+                                  .thenApplyAsync(testRoles::apply,
+                                                  executor)
                                   .toCompletableFuture()
                                   .get(timeoutInMillis,
                                        TimeUnit.MILLISECONDS);
@@ -151,12 +159,15 @@ public class ViewSupport
         boolean allowed;
         try
         {
+            final ExecutionContextExecutor executor = executor();
             allowed = deadboltHandler.getDynamicResourceHandler(Http.Context.current())
-                                     .thenApplyAsync(drhOption -> drhOption.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE), HttpExecution.defaultContext())
+                                     .thenApplyAsync(drhOption -> drhOption.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
+                                                     executor)
                                      .thenComposeAsync(drh -> drh.isAllowed(name,
                                                                             meta,
                                                                             deadboltHandler,
-                                                                            context), HttpExecution.defaultContext())
+                                                                            context),
+                                                       executor)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
@@ -233,13 +244,14 @@ public class ViewSupport
         boolean allowed;
         try
         {
+            final ExecutionContextExecutor executor = executor();
             switch (patternType)
             {
                 case EQUALITY:
                     allowed = subjectCache.apply(deadboltHandler, context)
                                           .thenApplyAsync(subjectOption -> analyzer.checkPatternEquality(subjectOption,
                                                                                                          Optional.ofNullable(value)),
-                                                          HttpExecution.defaultContext())
+                                                          executor)
                                           .toCompletableFuture()
                                           .get(timeoutInMillis,
                                                TimeUnit.MILLISECONDS);
@@ -248,7 +260,7 @@ public class ViewSupport
                     allowed = subjectCache.apply(deadboltHandler, context)
                                           .thenApplyAsync(subjectOption -> analyzer.checkRegexPattern(subjectOption,
                                                                                                       Optional.ofNullable(patternCache.apply(value))),
-                                                          HttpExecution.defaultContext())
+                                                          executor)
                                           .toCompletableFuture()
                                           .get(timeoutInMillis,
                                                TimeUnit.MILLISECONDS);
@@ -256,10 +268,11 @@ public class ViewSupport
                 case CUSTOM:
                     allowed = deadboltHandler.getDynamicResourceHandler(context)
                                              .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
-                                                             HttpExecution.defaultContext())
+                                                             executor)
                                              .thenComposeAsync(drh -> drh.checkPermission(value,
                                                                                           handler,
-                                                                                          context), HttpExecution.defaultContext())
+                                                                                          context),
+                                                               executor)
                                              .toCompletableFuture()
                                              .get(timeoutInMillis,
                                                   TimeUnit.MILLISECONDS);
@@ -278,4 +291,11 @@ public class ViewSupport
 
         return allowed;
     }
+
+    private ExecutionContextExecutor executor()
+    {
+        final ExecutionContext executionContext = executionContextProvider.get();
+        return HttpExecution.fromThread(executionContext);
+    }
+
 }

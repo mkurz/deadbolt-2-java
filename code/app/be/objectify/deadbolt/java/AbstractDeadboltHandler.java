@@ -20,6 +20,8 @@ import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import scala.concurrent.ExecutionContext;
+import scala.concurrent.ExecutionContextExecutor;
 import views.html.defaultpages.unauthorized;
 
 import java.util.Optional;
@@ -33,6 +35,13 @@ import java.util.concurrent.CompletionStage;
  */
 public abstract class AbstractDeadboltHandler extends Results implements DeadboltHandler
 {
+    private final DeadboltExecutionContextProvider executionContextProvider;
+
+    public AbstractDeadboltHandler(final ExecutionContextProvider ecProvider)
+    {
+        this.executionContextProvider = ecProvider.get();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -45,10 +54,14 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
      * {@inheritDoc}
      */
     public CompletionStage<Result> onAuthFailure(final Http.Context context,
-                                           final String content)
+                                                 final String content)
     {
-        return CompletableFuture.supplyAsync(unauthorized::render, HttpExecution.defaultContext())
-                                .thenApplyAsync(Results::unauthorized, HttpExecution.defaultContext());
+        final ExecutionContext executionContext = executionContextProvider.get();
+        final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
+        return CompletableFuture.supplyAsync(unauthorized::render,
+                                             executor)
+                                .thenApplyAsync(Results::unauthorized,
+                                                executor);
     }
 
     /**
