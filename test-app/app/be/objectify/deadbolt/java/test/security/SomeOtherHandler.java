@@ -12,7 +12,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.PARAMETER})
-// if you're not using Guice, see that DI's approach to binding multiple implementations
 @BindingAnnotation
 public @interface SomeOtherHandler
 {

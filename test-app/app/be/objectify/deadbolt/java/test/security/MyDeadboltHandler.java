@@ -19,7 +19,7 @@ import java.util.concurrent.CompletionStage;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-@MainHandler
+@HandlerQualifiers.MainHandler
 public class MyDeadboltHandler extends AbstractDeadboltHandler
 {
     private final DynamicResourceHandler dynamicHandler;

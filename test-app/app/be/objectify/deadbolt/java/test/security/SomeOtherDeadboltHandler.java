@@ -21,7 +21,7 @@ import java.util.concurrent.CompletionStage;
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
-@SomeOtherHandler
+@HandlerQualifiers.SomeOtherHandler
 public class SomeOtherDeadboltHandler extends AbstractDeadboltHandler
 {
     @Inject

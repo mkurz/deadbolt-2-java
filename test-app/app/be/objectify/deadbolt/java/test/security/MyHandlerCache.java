@@ -17,8 +17,8 @@ public class MyHandlerCache implements HandlerCache
     private final Map<String, DeadboltHandler> handlers = new HashMap<>();
 
     @Inject
-    public MyHandlerCache(@MainHandler final DeadboltHandler handler,
-                          @SomeOtherHandler final DeadboltHandler otherHandler)
+    public MyHandlerCache(@HandlerQualifiers.MainHandler final DeadboltHandler handler,
+                          @HandlerQualifiers.SomeOtherHandler final DeadboltHandler otherHandler)
     {
         this.handler = handler;
         this.handlers.put(handler.handlerName(),
