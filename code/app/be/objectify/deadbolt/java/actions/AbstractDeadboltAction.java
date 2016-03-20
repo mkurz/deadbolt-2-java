@@ -16,13 +16,10 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConfigKeys;
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.SubjectCache;
-import be.objectify.deadbolt.java.models.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
@@ -58,10 +55,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     private static final String ACTION_DEFERRED = "deadbolt.action-deferred";
     private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
 
-    final DeadboltAnalyzer analyzer;
-
-    final SubjectCache subjectCache;
-
     final HandlerCache handlerCache;
     
     final Configuration config;
@@ -71,14 +64,10 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     public final boolean blocking;
     public final long blockingTimeout;
 
-    protected AbstractDeadboltAction(final DeadboltAnalyzer analyzer,
-                                     final SubjectCache subjectCache,
-                                     final HandlerCache handlerCache,
+    protected AbstractDeadboltAction(final HandlerCache handlerCache,
                                      final Configuration config,
                                      final ExecutionContextProvider ecProvider)
     {
-        this.analyzer = analyzer;
-        this.subjectCache = subjectCache;
         this.handlerCache = handlerCache;
         this.config = config;
 
@@ -178,30 +167,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
             result = CompletableFuture.completedFuture(Results.internalServerError());
         }
         return result;
-    }
-
-    /**
-     * Gets the {@link be.objectify.deadbolt.java.models.Subject} from the {@link DeadboltHandler}, and logs an error if it's not present. Note that
-     * at least one actions ({@link Unrestricted} does not not require a Subject to be present.
-     *
-     * @param ctx             the request context
-     * @param deadboltHandler the Deadbolt handler
-     * @return the Subject, if any
-     */
-    protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
-                                                                      final DeadboltHandler deadboltHandler)
-    {
-        final ExecutionContextExecutor executor = executor();
-        return subjectCache.apply(deadboltHandler,
-                                  ctx)
-                           .thenApplyAsync(option -> {
-                               if (!option.isPresent())
-                               {
-                                   LOGGER.info("Access to [{}] requires a subject, but no subject is present.",
-                                               ctx.request().uri());
-                               }
-                               return option;
-                           }, executor);
     }
 
     /**

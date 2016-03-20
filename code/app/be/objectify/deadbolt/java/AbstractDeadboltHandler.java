@@ -35,7 +35,7 @@ import java.util.concurrent.CompletionStage;
  */
 public abstract class AbstractDeadboltHandler extends Results implements DeadboltHandler
 {
-    private final DeadboltExecutionContextProvider executionContextProvider;
+    protected final DeadboltExecutionContextProvider executionContextProvider;
 
     public AbstractDeadboltHandler(final ExecutionContextProvider ecProvider)
     {

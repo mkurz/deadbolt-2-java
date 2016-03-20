@@ -15,10 +15,8 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -37,15 +35,11 @@ import java.util.concurrent.CompletionStage;
 public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
 {
     @Inject
-    public UnrestrictedAction(final DeadboltAnalyzer analyzer,
-                              final SubjectCache subjectCache,
-                              final HandlerCache handlerCache,
+    public UnrestrictedAction(final HandlerCache handlerCache,
                               final Configuration config,
                               final ExecutionContextProvider ecProvider)
     {
-        super(analyzer,
-              subjectCache,
-              handlerCache,
+        super(handlerCache,
               config,
               ecProvider);
     }
@@ -60,8 +54,10 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
         final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx),
                                                                                        executor)
                                                                           .thenComposeAsync(unauthorised -> unauthorised ? unauthorizeAndFail(ctx,
-                                                                                                                                              getDeadboltHandler(configuration.handlerKey()),
-                                                                                                                                              Optional.ofNullable(configuration.content()))
+                                                                                                                                              getDeadboltHandler(configuration
+                                                                                                                                                                         .handlerKey()),
+                                                                                                                                              Optional.ofNullable(configuration
+                                                                                                                                                                          .content()))
                                                                                                                          : authorizeAndExecute(ctx)
                                                                                   , executor);
         return maybeBlock(eventualResult);

@@ -15,22 +15,18 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
 
+import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
 
 /**
  * Executes a deferred method-level annotation.  Ideally, the associated annotation would be placed
@@ -43,15 +39,11 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     private static final Logger LOGGER = LoggerFactory.getLogger(DeferredDeadboltAction.class);
 
     @Inject
-    public DeferredDeadboltAction(final DeadboltAnalyzer analyzer,
-                                  final SubjectCache subjectCache,
-                                  final HandlerCache handlerCache,
+    public DeferredDeadboltAction(final HandlerCache handlerCache,
                                   final Configuration config,
                                   final ExecutionContextProvider ecProvider)
     {
-        super(analyzer,
-              subjectCache,
-              handlerCache,
+        super(handlerCache,
               config,
               ecProvider);
     }

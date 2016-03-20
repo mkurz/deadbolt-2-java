@@ -39,17 +39,13 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     private final CompositeCache compositeCache;
 
     @Inject
-    public CompositeAction(final DeadboltAnalyzer analyzer,
-                           final SubjectCache subjectCache,
-                           final HandlerCache handlerCache,
+    public CompositeAction(final HandlerCache handlerCache,
                            final Configuration config,
                            final ExecutionContextProvider ecProvider,
                            final CompositeCache compositeCache,
                            final ConstraintLogic constraintLogic)
     {
-        super(analyzer,
-              subjectCache,
-              handlerCache,
+        super(handlerCache,
               config,
               ecProvider,
               constraintLogic);

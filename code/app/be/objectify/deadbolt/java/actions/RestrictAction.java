@@ -41,33 +41,25 @@ import java.util.concurrent.CompletionStage;
 public class RestrictAction extends AbstractRestrictiveAction<Restrict>
 {
     @Inject
-    public RestrictAction(final DeadboltAnalyzer analyzer,
-                          final SubjectCache subjectCache,
-                          final HandlerCache handlerCache,
+    public RestrictAction(final HandlerCache handlerCache,
                           final Configuration config,
                           final ExecutionContextProvider ecProvider,
                           final ConstraintLogic constraintLogic)
     {
-        super(analyzer,
-              subjectCache,
-              handlerCache,
+        super(handlerCache,
               config,
               ecProvider,
               constraintLogic);
     }
 
-    public RestrictAction(final DeadboltAnalyzer analyzer,
-                          final SubjectCache subjectCache,
-                          final HandlerCache handlerCache,
+    public RestrictAction(final HandlerCache handlerCache,
                           final Configuration config,
                           final Restrict configuration,
                           final Action<?> delegate,
                           final ExecutionContextProvider ecProvider,
                           final ConstraintLogic constraintLogic)
     {
-        this(analyzer,
-             subjectCache,
-             handlerCache,
+        this(handlerCache,
              config,
              ecProvider,
              constraintLogic);

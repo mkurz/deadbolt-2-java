@@ -15,20 +15,17 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
 
+import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
 
 /**
  * Invokes beforeAuthCheck on the global or a specific {@link be.objectify.deadbolt.java.DeadboltHandler}.
@@ -38,15 +35,11 @@ import javax.inject.Inject;
 public class  BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
 {
     @Inject
-    public BeforeAccessAction(final DeadboltAnalyzer analyzer,
-                              final SubjectCache subjectCache,
-                              final HandlerCache handlerCache,
+    public BeforeAccessAction(final HandlerCache handlerCache,
                               final Configuration config,
                               final ExecutionContextProvider ecProvider)
     {
-        super(analyzer,
-              subjectCache,
-              handlerCache,
+        super(handlerCache,
               config,
               ecProvider);
     }
