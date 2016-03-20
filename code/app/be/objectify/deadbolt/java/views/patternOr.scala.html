@@ -2,9 +2,9 @@
 @import be.objectify.deadbolt.java.DeadboltHandler
 @import be.objectify.deadbolt.java.ViewAccessPoint.Implicits._
 @import play.api.Play.current
-@(value: String, patternType: PatternType = PatternType.EQUALITY, handler: DeadboltHandler = handlerCache.get(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)(alternativeBody: => Html)
+@(value: String, patternType: PatternType = PatternType.EQUALITY, meta: Optional[String] = Optional.empty(), invert: java.lang.Boolean = false, handler: DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)(alternativeBody: => Html)
 
-@if(viewSupport.viewPattern(value, patternType, handler, timeout.get())) {
+@if(viewSupport.viewPattern(value, patternType, meta, invert, handler, content, timeout.get())) {
 @body
 } else {
 @alternativeBody

@@ -48,7 +48,7 @@ public @interface Dynamic
 
     /**
      * Additional information when deciding on access to the resource.  It's a free formatted string, so you can pass
-     * simple data or more complex string such as foo=bar,hurdy=gurdy which can be parsed into a map>
+     * simple data or more complex string such as foo=bar,hurdy=gurdy which can be parsed into a map.
      *
      * @return the meta information
      */

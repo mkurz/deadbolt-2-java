@@ -75,12 +75,24 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
 
     protected DeadboltHandler handler(final Supplier<Subject> getSubject)
     {
-        return new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        return new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.ofNullable(getSubject.get()));
+            }
+        };
+    }
+
+    protected DeadboltHandler withDrh(final Supplier<DynamicResourceHandler> drh)
+    {
+        return new NoPreAuthDeadboltHandler(ecProvider())
+        {
+            @Override
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+            {
+                return CompletableFuture.supplyAsync(() -> Optional.ofNullable(drh.get()));
             }
         };
     }

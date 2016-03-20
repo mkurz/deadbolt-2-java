@@ -17,6 +17,7 @@ package be.objectify.deadbolt.java;
 
 import play.mvc.Http;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -31,7 +32,7 @@ public abstract class AbstractDynamicResourceHandler implements DynamicResourceH
      * {@inheritDoc}
      */
     public CompletionStage<Boolean> isAllowed(final String name,
-                                              final String meta,
+                                              final Optional<String> meta,
                                               final DeadboltHandler deadboltHandler,
                                               final Http.Context ctx)
     {
@@ -42,8 +43,9 @@ public abstract class AbstractDynamicResourceHandler implements DynamicResourceH
      * {@inheritDoc}
      */
     public CompletionStage<Boolean> checkPermission(final String permissionValue,
-                                              final DeadboltHandler deadboltHandler,
-                                              final Http.Context ctx)
+                                                    final Optional<String> meta,
+                                                    final DeadboltHandler deadboltHandler,
+                                                    final Http.Context ctx)
     {
         return CompletableFuture.completedFuture(false);
     }

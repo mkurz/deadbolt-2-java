@@ -24,6 +24,7 @@ import org.junit.Test;
 import play.libs.F;
 import play.mvc.Http;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executors;
@@ -34,7 +35,8 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
     @Test
     public void testEquality_subjectHasPermission() throws Exception
     {
-        final Constraint constraint = constraint(PatternType.EQUALITY);
+        final Constraint constraint = constraint(PatternType.EQUALITY,
+                                                 withSubject(() -> subject(new TestPermission("foo"))));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestPermission("foo"))),
                                                                 Executors.newSingleThreadExecutor());
@@ -44,7 +46,8 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
     @Test
     public void testEquality_subjectDoesNotHavePermission() throws Exception
     {
-        final Constraint constraint = constraint(PatternType.EQUALITY);
+        final Constraint constraint = constraint(PatternType.EQUALITY,
+                                                 withSubject(() -> subject(new TestPermission("bar"))));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestPermission("bar"))),
                                                                 Executors.newSingleThreadExecutor());
@@ -54,7 +57,8 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
     @Test
     public void testRegex_subjectHasPermission() throws Exception
     {
-        final Constraint constraint = constraint(PatternType.REGEX);
+        final Constraint constraint = constraint(PatternType.REGEX,
+                                                 withSubject(() -> subject(new TestPermission("1"))));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestPermission("1"))),
                                                                 Executors.newSingleThreadExecutor());
@@ -64,7 +68,8 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
     @Test
     public void testRegex_subjectDoesNotHavePermission() throws Exception
     {
-        final Constraint constraint = constraint(PatternType.REGEX);
+        final Constraint constraint = constraint(PatternType.REGEX,
+                                                 withSubject(() -> subject(new TestPermission("3"))));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestPermission("3"))),
                                                                 Executors.newSingleThreadExecutor());
@@ -74,18 +79,21 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
     @Test
     public void testCustom_pass() throws Exception
     {
-        final Constraint constraint = constraint(PatternType.CUSTOM);
+        final DeadboltHandler handler = withDrh(new AbstractDynamicResourceHandler()
+        {
+            @Override
+            public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                            final Optional<String> meta,
+                                                            final DeadboltHandler deadboltHandler,
+                                                            final Http.Context ctx)
+            {
+                return CompletableFuture.completedFuture(true);
+            }
+        });
+        final Constraint constraint = constraint(PatternType.CUSTOM,
+                                                 handler);
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withDrh(new AbstractDynamicResourceHandler()
-                                                                {
-                                                                    @Override
-                                                                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
-                                                                                                                    final DeadboltHandler deadboltHandler,
-                                                                                                                    final Http.Context ctx)
-                                                                    {
-                                                                        return CompletableFuture.completedFuture(true);
-                                                                    }
-                                                                }),
+                                                                handler,
                                                                 Executors.newSingleThreadExecutor());
         Assert.assertTrue(toBoolean(result));
     }
@@ -93,28 +101,33 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
     @Test
     public void testCustom_fail() throws Exception
     {
-        final Constraint constraint = constraint(PatternType.CUSTOM);
+        final DeadboltHandler handler = withDrh(new AbstractDynamicResourceHandler()
+        {
+            @Override
+            public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                            final Optional<String> meta,
+                                                            final DeadboltHandler deadboltHandler,
+                                                            final Http.Context ctx)
+            {
+                return CompletableFuture.completedFuture(false);
+            }
+        });
+        final Constraint constraint = constraint(PatternType.CUSTOM,
+                                                 handler);
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withDrh(new AbstractDynamicResourceHandler()
-                                                                {
-                                                                    @Override
-                                                                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
-                                                                                                                    final DeadboltHandler deadboltHandler,
-                                                                                                                    final Http.Context ctx)
-                                                                    {
-                                                                        return CompletableFuture.completedFuture(false);
-                                                                    }
-                                                                }),
+                                                                handler,
                                                                 Executors.newSingleThreadExecutor());
         Assert.assertFalse(toBoolean(result));
     }
 
-    protected abstract PatternConstraint constraint(PatternType patternType);
+    protected abstract PatternConstraint constraint(PatternType patternType,
+                                                    final DeadboltHandler handler);
 
     @Override
     protected F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy()
     {
-        return new F.Tuple<>(constraint(PatternType.EQUALITY),
+        return new F.Tuple<>(constraint(PatternType.EQUALITY,
+                                        withSubject(() -> subject(new TestPermission("foo")))),
                              c -> c.test(context,
                                          withSubject(() -> subject(new TestPermission("foo"))),
                                          Executors.newSingleThreadExecutor()));

@@ -15,12 +15,14 @@
  */
 package be.objectify.deadbolt.java.composite;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import play.mvc.Http;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
@@ -31,30 +33,30 @@ import java.util.stream.Collectors;
 public class RestrictConstraint implements Constraint
 {
     private final List<String[]> roleGroups = new LinkedList<>();
-    private final DeadboltAnalyzer analyzer;
+    private final ConstraintLogic constraintLogic;
+    private final Optional<String> content;
 
     public RestrictConstraint(final List<String[]> roleGroups,
-                              final DeadboltAnalyzer analyzer) {
+                              final Optional<String> content,
+                              final ConstraintLogic constraintLogic)
+    {
+        this.content = content;
         roleGroups.stream()
                   .filter(group -> group != null)
                   .collect(Collectors.toCollection(() -> this.roleGroups));
-        this.analyzer = analyzer;
+        this.constraintLogic = constraintLogic;
     }
 
     @Override
     public CompletionStage<Boolean> test(final Http.Context context,
                                          final DeadboltHandler handler,
-                                         final Executor executor) {
-        return handler.getSubject(context)
-                      .thenApplyAsync(maybeSubject -> {
-                          boolean roleOk = false;
-                          for (int i = 0; !roleOk && i < roleGroups.size(); i++)
-                          {
-                              roleOk = analyzer.checkRole(maybeSubject,
-                                                          roleGroups.get(i));
-                          }
-                          return roleOk;
-                      },
-                                      executor);
+                                         final Executor executor)
+    {
+        return constraintLogic.restrict(context,
+                                        handler,
+                                        content,
+                                        () -> roleGroups,
+                                        ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                        (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE));
     }
 }

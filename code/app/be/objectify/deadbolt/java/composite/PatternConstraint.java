@@ -15,12 +15,9 @@
  */
 package be.objectify.deadbolt.java.composite;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.models.PatternType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 
 import java.util.Optional;
@@ -33,22 +30,26 @@ import java.util.concurrent.Executor;
  */
 public class PatternConstraint implements Constraint
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PatternConstraint.class);
-
     private final String value;
     private final PatternType patternType;
-    private final DeadboltAnalyzer analyzer;
-    private final PatternCache patternCache;
+    private final Optional<String> meta;
+    private final boolean invert;
+    private final Optional<String> content;
+    private final ConstraintLogic constraintLogic;
 
     public PatternConstraint(final String value,
                              final PatternType patternType,
-                             final DeadboltAnalyzer analyzer,
-                             final PatternCache patternCache)
+                             final Optional<String> meta,
+                             final boolean invert,
+                             final Optional<String> content,
+                             final ConstraintLogic constraintLogic)
     {
         this.value = value;
         this.patternType = patternType;
-        this.analyzer = analyzer;
-        this.patternCache = patternCache;
+        this.meta = meta;
+        this.invert = invert;
+        this.content = content;
+        this.constraintLogic = constraintLogic;
     }
 
     @Override
@@ -56,32 +57,14 @@ public class PatternConstraint implements Constraint
                                          final DeadboltHandler handler,
                                          final Executor executor)
     {
-        final CompletionStage<Boolean> result;
-        switch (patternType) {
-            case EQUALITY:
-                result = handler.getSubject(context)
-                                .thenApplyAsync(maybeSubject -> analyzer.checkPatternEquality(maybeSubject,
-                                                                                              Optional.ofNullable(value)));
-                break;
-            case REGEX:
-                result = handler.getSubject(context)
-                                .thenApplyAsync(maybeSubject -> analyzer.checkRegexPattern(maybeSubject,
-                                                                                           Optional.ofNullable(patternCache.apply(value))));
-                break;
-            case CUSTOM:
-                result = handler.getDynamicResourceHandler(context)
-                                .thenComposeAsync(maybeDrh -> maybeDrh.map(drh -> drh.checkPermission(value,
-                                                                                                    handler,
-                                                                                                    context))
-                                                                      .orElseGet(() -> {
-                                                                          LOGGER.error("No dynamic resource handler found when checking custom pattern [{}]", value);
-                                                                          return CompletableFuture.completedFuture(false);
-                                                                      }),
-                                                  executor);
-                break;
-            default:
-                result = CompletableFuture.completedFuture(false);
-        }
-        return result;
+        return constraintLogic.pattern(context,
+                                       handler,
+                                       content,
+                                       value,
+                                       patternType,
+                                       meta,
+                                       invert,
+                                       ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                       (ctx, dh, ctn) -> CompletableFuture.completedFuture(Boolean.FALSE));
     }
 }

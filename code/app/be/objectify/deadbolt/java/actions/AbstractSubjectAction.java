@@ -15,14 +15,13 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
-import be.objectify.deadbolt.java.models.Subject;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
@@ -30,59 +29,61 @@ import scala.concurrent.ExecutionContextExecutor;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T>
+public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
 {
-    private final Predicate<Optional<? extends Subject>> predicate;
+    private final ConstraintLogic constraintLogic;
 
     AbstractSubjectAction(final DeadboltAnalyzer analyzer,
                           final SubjectCache subjectCache,
                           final HandlerCache handlerCache,
-                          final Predicate<Optional<? extends Subject>> predicate,
                           final Configuration config,
-                          final ExecutionContextProvider ecProvider)
+                          final ExecutionContextProvider ecProvider,
+                          final ConstraintLogic constraintLogic)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
               config,
               ecProvider);
-        this.predicate = predicate;
+        this.constraintLogic = constraintLogic;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
+    public CompletionStage<Result> execute(final Http.Context content) throws Exception
     {
         final CompletionStage<Result> result;
         final Config config = config();
-        if (isActionUnauthorised(ctx))
+        if (isActionUnauthorised(content))
         {
             result = onAuthFailure(getDeadboltHandler(config.handlerKey),
                                    config.content,
-                                   ctx);
+                                   content);
         }
-        else if (isActionAuthorised(ctx))
+        else if (isActionAuthorised(content))
         {
-            result = delegate.call(ctx);
+            result = delegate.call(content);
         }
         else
         {
             final DeadboltHandler deadboltHandler = getDeadboltHandler(config.handlerKey);
             final ExecutionContextExecutor executor = executor();
             result = preAuth(config.forceBeforeAuthCheck,
-                             ctx,
+                             content,
                              deadboltHandler)
-                    .thenComposeAsync(preAuthResult -> new SubjectTest(ctx,
-                                                                  deadboltHandler,
-                                                                  config).apply(preAuthResult),
+                    .thenComposeAsync(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
+                                                                  .orElseGet(() -> constraintLogic.subjectPresent(content,
+                                                                                                                  deadboltHandler,
+                                                                                                                  config.content,
+                                                                                                                  this::present,
+                                                                                                                  this::notPresent)
+                                                                                                  .toCompletableFuture()),
                                       executor);
         }
         return maybeBlock(result);
@@ -90,54 +91,19 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
 
     abstract Config config();
 
-    private final class SubjectTest implements Function<Optional<Result>, CompletionStage<Result>>
-    {
-        private final Http.Context ctx;
-        private final DeadboltHandler deadboltHandler;
-        private final Config config;
+    abstract CompletionStage<Result> present(Http.Context context,
+                                             DeadboltHandler handler,
+                                             Optional<String> content);
 
-        private SubjectTest(final Http.Context ctx,
-                            final DeadboltHandler deadboltHandler,
-                            final Config config)
-        {
-            this.ctx = ctx;
-            this.deadboltHandler = deadboltHandler;
-            this.config = config;
-        }
-
-        @Override
-        public CompletionStage<Result> apply(final Optional<Result> preAuthResult)
-        {
-            final ExecutionContextExecutor executor = executor();
-            return preAuthResult.map(r -> (CompletionStage<Result>)CompletableFuture.completedFuture(r))
-                                .orElseGet(() -> {
-                                    return getSubject(ctx,
-                                                      deadboltHandler)
-                                            .thenComposeAsync(subject -> {
-                                                final CompletionStage<Result> innerResult;
-                                                if (predicate.test(subject))
-                                                {
-                                                    markActionAsAuthorised(ctx);
-                                                    innerResult = delegate.call(ctx);
-                                                }
-                                                else
-                                                {
-                                                    markActionAsUnauthorised(ctx);
-                                                    innerResult = onAuthFailure(deadboltHandler,
-                                                                                config.content,
-                                                                                ctx);
-                                                }
-                                                return innerResult;
-                                            }, executor);
-                                });
-        }
-    }
+    abstract CompletionStage<Result> notPresent(Http.Context context,
+                                                DeadboltHandler handler,
+                                                Optional<String> content);
 
     class Config
     {
         public final boolean forceBeforeAuthCheck;
         public final String handlerKey;
-        public final String content;
+        public final Optional<String> content;
 
         Config(final boolean forceBeforeAuthCheck,
                final String handlerKey,
@@ -145,7 +111,7 @@ public abstract class AbstractSubjectAction<T>  extends AbstractDeadboltAction<T
         {
             this.forceBeforeAuthCheck = forceBeforeAuthCheck;
             this.handlerKey = handlerKey;
-            this.content = content;
+            this.content = Optional.ofNullable(content);
         }
     }
 }

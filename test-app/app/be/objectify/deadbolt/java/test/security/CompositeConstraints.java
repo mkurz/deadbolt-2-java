@@ -21,8 +21,8 @@ public class CompositeConstraints
     {
         compositeCache.register("curatorOrSubjectNotPresent",
                                 new ConstraintTree(Operator.OR,
-                                                   builders.subjectNotPresent(),
+                                                   builders.subjectNotPresent().build(),
                                                    builders.pattern("curator.museum.*",
-                                                                    PatternType.REGEX)));
+                                                                    PatternType.REGEX).build()));
     }
 }

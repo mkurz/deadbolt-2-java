@@ -37,7 +37,7 @@ public class TemplateUtils
      */
     public static String[] roles(final Role... roles)
     {
-        final List<String> names = new ArrayList<String>(roles.length);
+        final List<String> names = new ArrayList<>(roles.length);
         for (Role role : roles)
         {
             names.add(role.getName());
@@ -53,7 +53,7 @@ public class TemplateUtils
      */
     public static String[] permissions(final Permission... permissions)
     {
-        final List<String> values = new ArrayList<String>(permissions.length);
+        final List<String> values = new ArrayList<>(permissions.length);
         for (Permission permission : permissions)
         {
             values.add(permission.getValue());

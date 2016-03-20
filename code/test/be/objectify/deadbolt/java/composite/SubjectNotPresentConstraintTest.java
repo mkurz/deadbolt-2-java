@@ -15,11 +15,16 @@
  */
 package be.objectify.deadbolt.java.composite;
 
-public class SubjectNotPresentConstraintTest extends AbstractSubjectNotPresentConstraintTest
+import be.objectify.deadbolt.java.DeadboltHandler;
+
+import java.util.Optional;
+
+public class SubjectNotPresentConstraintTest extends AbstractSubjectNotPresentConstraintTest implements ConstraintLogicMixin
 {
     @Override
-    protected SubjectNotPresentConstraint constraint()
+    protected SubjectNotPresentConstraint constraint(final DeadboltHandler handler)
     {
-        return new SubjectNotPresentConstraint();
+        return new SubjectNotPresentConstraint(Optional.empty(),
+                                               logic(handler));
     }
 }

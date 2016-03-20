@@ -1,5 +1,6 @@
 package be.objectify.deadbolt.java.composite;
 
+import be.objectify.deadbolt.java.DeadboltHandler;
 import org.junit.Assert;
 import org.junit.Test;
 import play.libs.F;
@@ -16,7 +17,7 @@ public abstract class AbstractSubjectNotPresentConstraintTest extends AbstractCo
     @Test
     public void testSubjectPresent() throws Exception
     {
-        final Constraint constraint = constraint();
+        final Constraint constraint = constraint(withSubject(this::subject));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(this::subject),
                                                                 Executors.newSingleThreadExecutor());
@@ -26,7 +27,7 @@ public abstract class AbstractSubjectNotPresentConstraintTest extends AbstractCo
     @Test
     public void testSubjectNotPresent() throws Exception
     {
-        final Constraint constraint = constraint();
+        final Constraint constraint = constraint(withSubject(() -> null));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> null),
                                                                 Executors.newSingleThreadExecutor());
@@ -36,11 +37,11 @@ public abstract class AbstractSubjectNotPresentConstraintTest extends AbstractCo
     @Override
     protected F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy()
     {
-        return new F.Tuple<>(constraint(),
+        return new F.Tuple<>(constraint(withSubject(() -> null)),
                              c -> c.test(context,
                                          withSubject(() -> null),
                                          Executors.newSingleThreadExecutor()));
     }
 
-    protected abstract SubjectNotPresentConstraint constraint();
+    protected abstract SubjectNotPresentConstraint constraint(final DeadboltHandler handler);
 }

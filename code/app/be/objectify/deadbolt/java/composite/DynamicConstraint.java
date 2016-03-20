@@ -15,11 +15,11 @@
  */
 package be.objectify.deadbolt.java.composite;
 
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
@@ -29,16 +29,20 @@ import java.util.concurrent.Executor;
  */
 public class DynamicConstraint implements Constraint
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicConstraint.class);
-
     private final String name;
-    private final String meta;
+    private final Optional<String> meta;
+    private final Optional<String> content;
+    private final ConstraintLogic constraintLogic;
 
     public DynamicConstraint(final String name,
-                             final String meta)
+                             final Optional<String> meta,
+                             final Optional<String> content,
+                             final ConstraintLogic constraintLogic)
     {
         this.name = name;
         this.meta = meta;
+        this.content = content;
+        this.constraintLogic = constraintLogic;
     }
 
     @Override
@@ -46,15 +50,12 @@ public class DynamicConstraint implements Constraint
                                          final DeadboltHandler handler,
                                          final Executor executor)
     {
-        return handler.getDynamicResourceHandler(context)
-                      .thenComposeAsync(maybeDrh -> maybeDrh.map(drh -> drh.isAllowed(name,
-                                                                                      meta,
-                                                                                      handler,
-                                                                                      context))
-                                                            .orElseGet(() -> {
-                                                                LOGGER.error("No dynamic resource handler found for [{}]", name);
-                                                                return CompletableFuture.completedFuture(false);
-                                                            }),
-                                        executor);
+        return constraintLogic.dynamic(context,
+                                       handler,
+                                       content,
+                                       name,
+                                       meta,
+                                       ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                       (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE));
     }
 }

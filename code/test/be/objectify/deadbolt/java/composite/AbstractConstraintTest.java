@@ -18,11 +18,13 @@ package be.objectify.deadbolt.java.composite;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import play.libs.F;
 import play.mvc.Http;
 
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
@@ -35,6 +37,12 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
 {
     protected final Http.Context context = Mockito.mock(Http.Context.class);
     protected final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
+
+    @Before
+    public void setUp()
+    {
+        context.args = new HashMap<>();
+    }
 
     @After
     public void tearDown()

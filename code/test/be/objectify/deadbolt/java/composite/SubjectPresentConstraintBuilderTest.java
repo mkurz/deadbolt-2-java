@@ -1,18 +1,16 @@
 package be.objectify.deadbolt.java.composite;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
-import be.objectify.deadbolt.java.cache.DefaultPatternCache;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
+import be.objectify.deadbolt.java.DeadboltHandler;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class SubjectPresentConstraintBuilderTest extends AbstractSubjectPresentConstraintTest
+public class SubjectPresentConstraintBuilderTest extends AbstractSubjectPresentConstraintTest implements ConstraintLogicMixin
 {
     @Override
-    public SubjectPresentConstraint constraint()
+    public SubjectPresentConstraint constraint(final DeadboltHandler handler)
     {
-        return new ConstraintBuilders(new DeadboltAnalyzer(),
-                                      new DefaultPatternCache(new FakeCache())).subjectPresent();
+        return new ConstraintBuilders(logic(handler)).subjectPresent()
+                                                     .build();
     }
 }

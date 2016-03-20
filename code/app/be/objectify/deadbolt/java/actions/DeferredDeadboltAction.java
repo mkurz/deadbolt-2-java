@@ -23,10 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContext;
 import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.concurrent.CompletableFuture;

@@ -15,12 +15,18 @@
  */
 package be.objectify.deadbolt.java.composite;
 
-public class DynamicConstraintTest extends AbstractDynamicConstraintTest
+import be.objectify.deadbolt.java.DeadboltHandler;
+
+import java.util.Optional;
+
+public class DynamicConstraintTest extends AbstractDynamicConstraintTest implements ConstraintLogicMixin
 {
     @Override
-    protected DynamicConstraint constraint()
+    protected DynamicConstraint constraint(final DeadboltHandler handler)
     {
         return new DynamicConstraint("foo",
-                                     "bar");
+                                     Optional.of("bar"),
+                                     Optional.empty(),
+                                     logic(handler));
     }
 }

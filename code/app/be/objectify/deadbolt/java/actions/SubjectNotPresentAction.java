@@ -15,14 +15,15 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
-import be.objectify.deadbolt.java.models.Subject;
 import play.Configuration;
 import play.mvc.Http;
+import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -42,16 +43,20 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
                                    final SubjectCache subjectCache,
                                    final HandlerCache handlerCache,
                                    final Configuration config,
-                                   final ExecutionContextProvider ecProvider)
+                                   final ExecutionContextProvider ecProvider,
+                                   final ConstraintLogic constraintLogic)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
-              subjectOption -> !subjectOption.isPresent(),
               config,
-              ecProvider);
+              ecProvider,
+              constraintLogic);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Config config()
     {
@@ -61,18 +66,26 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
     }
 
     /**
-     * Gets the {@link be.objectify.deadbolt.java.models.Subject} from the {@link DeadboltHandler}.
-     *
-     * @param ctx             the request context
-     * @param deadboltHandler the Deadbolt handler
-     * @return the Subject, if any
+     * {@inheritDoc}
      */
     @Override
-    protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
-                                                                      final DeadboltHandler deadboltHandler)
+    CompletionStage<Result> present(final Http.Context context,
+                                    final DeadboltHandler handler,
+                                    final Optional<String> content)
     {
-        // Bypass the additional - and in this case, incorrect - logging of the overridden method
-        return subjectCache.apply(deadboltHandler,
-                                   ctx);
+        return unauthorizeAndFail(context,
+                                  handler,
+                                  content);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    CompletionStage<Result> notPresent(final Http.Context context,
+                                       final DeadboltHandler handler,
+                                       final Optional<String> content)
+    {
+        return authorizeAndExecute(context);
     }
 }

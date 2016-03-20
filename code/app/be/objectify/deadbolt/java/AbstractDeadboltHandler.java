@@ -54,7 +54,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
      * {@inheritDoc}
      */
     public CompletionStage<Result> onAuthFailure(final Http.Context context,
-                                                 final String content)
+                                                 final Optional<String> content)
     {
         final ExecutionContext executionContext = executionContextProvider.get();
         final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);

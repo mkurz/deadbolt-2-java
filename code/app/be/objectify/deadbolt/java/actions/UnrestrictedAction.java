@@ -19,19 +19,15 @@ import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContext;
 import scala.concurrent.ExecutionContextExecutor;
 
+import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
-import javax.inject.Inject;
 
 /**
  * Implements the {@link Unrestricted} functionality, i.e. there are no restrictions on the resource.
@@ -40,8 +36,6 @@ import javax.inject.Inject;
  */
 public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UnrestrictedAction.class);
-
     @Inject
     public UnrestrictedAction(final DeadboltAnalyzer analyzer,
                               final SubjectCache subjectCache,
@@ -63,31 +57,13 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
         final ExecutionContextExecutor executor = executor();
-        final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx), executor)
-                                                                          .thenComposeAsync(unauthorised -> {
-                                                                              try
-                                                                              {
-                                                                                  final CompletionStage<Result> result;
-                                                                                  if (unauthorised)
-                                                                                  {
-                                                                                      result = onAuthFailure(getDeadboltHandler(configuration.handlerKey()),
-                                                                                                             configuration.content(),
-                                                                                                             ctx);
-                                                                                  }
-                                                                                  else
-                                                                                  {
-                                                                                      markActionAsAuthorised(ctx);
-                                                                                      result = delegate.call(ctx);
-                                                                                  }
-                                                                                  return result;
-                                                                              }
-                                                                              catch (Exception e)
-                                                                              {
-                                                                                  LOGGER.error("Something bad happened",
-                                                                                               e);
-                                                                                  throw new RuntimeException(e);
-                                                                              }
-                                                                          }, executor);
+        final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx),
+                                                                                       executor)
+                                                                          .thenComposeAsync(unauthorised -> unauthorised ? unauthorizeAndFail(ctx,
+                                                                                                                                              getDeadboltHandler(configuration.handlerKey()),
+                                                                                                                                              Optional.ofNullable(configuration.content()))
+                                                                                                                         : authorizeAndExecute(ctx)
+                                                                                  , executor);
         return maybeBlock(eventualResult);
     }
 }

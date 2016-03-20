@@ -15,25 +15,19 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExceptionThrowingDynamicResourceHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -41,39 +35,37 @@ import java.util.concurrent.CompletionStage;
  */
 public class PatternAction extends AbstractRestrictiveAction<Pattern>
 {
-    private final PatternCache patternCache;
-
     @Inject
     public PatternAction(final DeadboltAnalyzer analyzer,
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
-                         final PatternCache patternCache,
                          final Configuration config,
-                         final ExecutionContextProvider ecProvider)
+                         final ExecutionContextProvider ecProvider,
+                         final ConstraintLogic constraintLogic)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
               config,
-              ecProvider);
-        this.patternCache = patternCache;
+              ecProvider,
+              constraintLogic);
     }
 
     public PatternAction(final DeadboltAnalyzer analyzer,
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
-                         final PatternCache patternCache,
                          final Configuration config,
                          final Pattern configuration,
                          final Action<?> delegate,
-                         final ExecutionContextProvider ecProvider)
+                         final ExecutionContextProvider ecProvider,
+                         final ConstraintLogic constraintLogic)
     {
         this(analyzer,
              subjectCache,
              handlerCache,
-             patternCache,
              config,
-             ecProvider);
+             ecProvider,
+             constraintLogic);
         this.configuration = configuration;
         this.delegate = delegate;
     }
@@ -82,62 +74,15 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler deadboltHandler)
     {
-        final CompletionStage<Result> result;
-
-        switch (configuration.patternType())
-        {
-            case EQUALITY:
-                result = equality(ctx,
-                                  deadboltHandler,
-                                  configuration.invert());
-                break;
-            case REGEX:
-                result = regex(ctx,
-                               deadboltHandler,
-                               configuration.invert());
-                break;
-            case CUSTOM:
-                result = custom(ctx,
-                                deadboltHandler,
-                                configuration.invert());
-                break;
-            default:
-                throw new RuntimeException("Unknown pattern type: " + configuration.patternType());
-        }
-        
-        return result;
-    }
-
-    private CompletionStage<Result> custom(final Http.Context ctx,
-                                           final DeadboltHandler deadboltHandler,
-                                           final boolean invert)
-    {
-        ctx.args.put(ConfigKeys.PATTERN_INVERT,
-                     invert);
-        final ExecutionContextExecutor executor = executor();
-        return deadboltHandler.getDynamicResourceHandler(ctx)
-                              .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
-                                              executor)
-                              .thenComposeAsync(resourceHandler -> resourceHandler.checkPermission(getValue(),
-                                                                                              deadboltHandler,
-                                                                                              ctx),
-                                                executor)
-                              .thenComposeAsync(allowed -> {
-                                  final CompletionStage<Result> innerResult;
-                                  if (invert ? !allowed : allowed)
-                                  {
-                                      markActionAsAuthorised(ctx);
-                                      innerResult = delegate.call(ctx);
-                                  }
-                                  else
-                                  {
-                                      markActionAsUnauthorised(ctx);
-                                      innerResult = onAuthFailure(deadboltHandler,
-                                                                  configuration.content(),
-                                                                  ctx);
-                                  }
-                                  return innerResult;
-                              }, executor);
+        return constraintLogic.pattern(ctx,
+                                       deadboltHandler,
+                                       Optional.ofNullable(configuration.content()),
+                                       getValue(),
+                                       configuration.patternType(),
+                                       getMeta(),
+                                       configuration.invert(),
+                                       this::authorizeAndExecute,
+                                       this::unauthorizeAndFail);
     }
 
     public String getValue()
@@ -145,75 +90,9 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return configuration.value();
     }
 
-    private CompletionStage<Result> equality(final Http.Context ctx,
-                                             final DeadboltHandler deadboltHandler,
-                                             final boolean invert)
+    public Optional<String> getMeta()
     {
-        final ExecutionContextExecutor executor = executor();
-        return CompletableFuture.supplyAsync(this::getValue, executor)
-                                .thenCombineAsync(getSubject(ctx,
-                                                        deadboltHandler),
-                                             (patternValue, subject) -> subject.isPresent() ? analyzer.checkPatternEquality(subject,
-                                                                                                                            Optional.ofNullable(patternValue))
-                                                                                            : invert, // this is a little clumsy - it means no subject + invert is still denied
-                                                                                            executor)
-                                .thenComposeAsync(equal -> {
-                                    final CompletionStage<Result> result;
-                                    if (invert ? !equal : equal)
-                                    {
-                                        markActionAsAuthorised(ctx);
-                                        result = delegate.call(ctx);
-                                    }
-                                    else
-                                    {
-                                        markActionAsUnauthorised(ctx);
-                                        result = onAuthFailure(deadboltHandler,
-                                                               configuration.content(),
-                                                               ctx);
-                                    }
-
-                                    return result;
-                                }, executor);
-    }
-
-    /**
-     * Checks access to the resource based on the regex
-     *
-     * @param ctx             the HTTP context
-     * @param deadboltHandler the Deadbolt handler
-     * @param invert          if true, invert the application of the constraint
-     * @return the necessary result
-     */
-    private CompletionStage<Result> regex(final Http.Context ctx,
-                                    final DeadboltHandler deadboltHandler,
-                                    final boolean invert)
-    {
-        final ExecutionContextExecutor executor = executor();
-        return CompletableFuture.supplyAsync(this::getValue, executor)
-                                .thenApplyAsync(patternCache::apply, executor)
-                                .thenCombineAsync(getSubject(ctx,
-                                                             deadboltHandler),
-                                                  (patternValue, subject) ->
-                                                          subject.isPresent() ? analyzer.checkRegexPattern(subject,
-                                                                                                           Optional.ofNullable(patternValue))
-                                                                              : invert, // this is a little clumsy - it means no subject + invert is still denied
-                                                  executor)
-                                .thenComposeAsync(applicable -> {
-                                    final CompletionStage<Result> result;
-                                    if (invert ? !applicable : applicable)
-                                    {
-                                        markActionAsAuthorised(ctx);
-                                        result = delegate.call(ctx);
-                                    }
-                                    else
-                                    {
-                                        markActionAsUnauthorised(ctx);
-                                        result = onAuthFailure(deadboltHandler,
-                                                               configuration.content(),
-                                                               ctx);
-                                    }
-                                    return result;
-                                }, executor);
+        return Optional.ofNullable(configuration.meta());
     }
 
     @Override

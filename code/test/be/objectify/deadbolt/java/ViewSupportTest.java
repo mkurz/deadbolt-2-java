@@ -2,6 +2,7 @@ package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
+import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.models.Subject;
 import org.junit.Assert;
@@ -15,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Supplier;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -33,6 +33,7 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                              private final String foo = "true";
                              @Override
                              public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                                             final Optional<String> meta,
                                                                              final DeadboltHandler deadboltHandler,
                                                                              final Http.Context ctx)
                              {
@@ -45,6 +46,7 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                              private final String bar = "false";
                              @Override
                              public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                                             final Optional<String> meta,
                                                                              final DeadboltHandler deadboltHandler,
                                                                              final Http.Context ctx)
                              {
@@ -57,10 +59,12 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
         {
             @Override
             public CompletionStage<Boolean> checkPermission(final String permissionValue,
+                                                            final Optional<String> meta,
                                                             final DeadboltHandler deadboltHandler,
                                                             final Http.Context ctx)
             {
                 return specificDrhs.get(permissionValue).checkPermission(permissionValue,
+                                                                         meta,
                                                                          deadboltHandler,
                                                                          ctx);
             }
@@ -87,7 +91,10 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
         {
             viewSupport().viewPattern("foo",
                                       PatternType.CUSTOM,
+                                      Optional.empty(),
+                                      false,
                                       handlerCache.apply("noDrh"),
+                                      Optional.empty(),
                                       1000L);
         }
         catch (Exception e)
@@ -102,7 +109,10 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
     {
         final boolean result = viewSupport().viewPattern("deny",
                                                          PatternType.CUSTOM,
+                                                         Optional.empty(),
+                                                         false,
                                                          handlerCache.get(),
+                                                         Optional.empty(),
                                                          1000L);
         Assert.assertFalse(result);
     }
@@ -112,7 +122,10 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
     {
         final boolean result = viewSupport().viewPattern("allow",
                                                          PatternType.CUSTOM,
+                                                         Optional.empty(),
+                                                         false,
                                                          handlerCache.get(),
+                                                         Optional.empty(),
                                                          1000L);
         Assert.assertTrue(result);
     }
@@ -121,14 +134,15 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
         Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        final ConstraintLogic constraintLogic = new ConstraintLogic(new DeadboltAnalyzer(),
+                                                                    (deadboltHandler, context) -> CompletableFuture.completedFuture(Optional.empty()),
+                                                                    Mockito.mock(PatternCache.class),
+                                                                    ecProvider);
 
         return new ViewSupport(Mockito.mock(Configuration.class),
-                               new DeadboltAnalyzer(),
-                               (handler, context) -> CompletableFuture.completedFuture(Optional.<Subject>empty()),
                                handlerCache,
-                               Mockito.mock(PatternCache.class),
-                               new TemplateFailureListenerProvider(),
-                               ecProvider);
+                               new TemplateFailureListenerProvider(this::provideApplication),
+                               constraintLogic);
     }
 
     @Override

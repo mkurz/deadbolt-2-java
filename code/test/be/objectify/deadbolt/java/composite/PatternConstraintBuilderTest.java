@@ -1,34 +1,35 @@
 package be.objectify.deadbolt.java.composite;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
-import be.objectify.deadbolt.java.cache.DefaultPatternCache;
+import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class PatternConstraintBuilderTest extends AbstractPatternConstraintTest
+public class PatternConstraintBuilderTest extends AbstractPatternConstraintTest implements ConstraintLogicMixin
 {
     @Override
-    protected PatternConstraint constraint(final PatternType patternType)
+    protected PatternConstraint constraint(final PatternType patternType,
+                                           final DeadboltHandler handler)
     {
-        final ConstraintBuilders builders = new ConstraintBuilders(new DeadboltAnalyzer(),
-                                                                   new DefaultPatternCache(new FakeCache()));
+        final ConstraintBuilders builders = new ConstraintBuilders(logic(handler));
         final PatternConstraint constraint;
         switch (patternType)
         {
             case EQUALITY:
                 constraint = builders.pattern("foo",
-                                              PatternType.EQUALITY);
+                                              PatternType.EQUALITY)
+                                     .build();
                 break;
             case REGEX:
                 constraint = builders.pattern("[0-2]",
-                                              PatternType.REGEX);
+                                              PatternType.REGEX)
+                                     .build();
                 break;
             case CUSTOM:
                 constraint = builders.pattern("blah",
-                                              PatternType.CUSTOM);
+                                              PatternType.CUSTOM)
+                                     .build();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown pattern type");

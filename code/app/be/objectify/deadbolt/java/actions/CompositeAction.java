@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
@@ -22,12 +23,12 @@ import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -43,13 +44,15 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                            final HandlerCache handlerCache,
                            final Configuration config,
                            final ExecutionContextProvider ecProvider,
-                           final CompositeCache compositeCache)
+                           final CompositeCache compositeCache,
+                           final ConstraintLogic constraintLogic)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
               config,
-              ecProvider);
+              ecProvider,
+              constraintLogic);
         this.compositeCache = compositeCache;
     }
 
@@ -62,26 +65,15 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                              .map(constraint -> constraint.test(ctx,
                                                                 handler,
                                                                 executor)
-                                     .thenComposeAsync(allowed -> {
-                                         final CompletionStage<Result> result;
-                                         if (allowed)
-                                         {
-                                             markActionAsAuthorised(ctx);
-                                             result = delegate.call(ctx);
-                                         }
-                                         else
-                                         {
-                                             markActionAsUnauthorised(ctx);
-                                             result = onAuthFailure(handler,
-                                                                    configuration.content(),
-                                                                    ctx);
-                                         }
-                                         return result;
-                                     }, executor))
+                                                          .thenComposeAsync(allowed -> allowed ? authorizeAndExecute(ctx)
+                                                                                               : unauthorizeAndFail(ctx,
+                                                                                                                    handler,
+                                                                                                                    Optional.ofNullable(configuration.content())),
+                                                                            executor))
                              .orElseGet(() -> {
                                  markActionAsUnauthorised(ctx);
                                  return onAuthFailure(handler,
-                                                      configuration.content(),
+                                                      Optional.ofNullable(configuration.content()),
                                                       ctx);
                              });
     }

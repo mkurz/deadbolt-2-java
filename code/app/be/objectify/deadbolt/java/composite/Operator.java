@@ -34,5 +34,5 @@ public enum Operator implements BiFunction<Constraint, Constraint, Constraint> {
                                 final Constraint c2) {
             return c1.or(c2);
         }
-    };
+    }
 }

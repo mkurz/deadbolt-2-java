@@ -16,15 +16,16 @@
 package be.objectify.deadbolt.java.composite;
 
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
+import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.testsupport.FakeCache;
 
-public class SubjectNotPresentConstraintBuilderTest extends AbstractSubjectNotPresentConstraintTest
+public class SubjectNotPresentConstraintBuilderTest extends AbstractSubjectNotPresentConstraintTest implements ConstraintLogicMixin
 {
     @Override
-    protected SubjectNotPresentConstraint constraint()
+    protected SubjectNotPresentConstraint constraint(final DeadboltHandler handler)
     {
-        return new ConstraintBuilders(new DeadboltAnalyzer(),
-                                      new DefaultPatternCache(new FakeCache())).subjectNotPresent();
+        return new ConstraintBuilders(logic(handler)).subjectNotPresent()
+                                                     .build();
     }
 }

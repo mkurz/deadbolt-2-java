@@ -32,8 +32,6 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionContextProvider.class);
 
-    private final DeadboltExecutionContextProvider defaultProvider = new DefaultDeadboltExecutionContextProvider();
-
     private final DeadboltExecutionContextProvider ecProvider;
 
     @Inject
@@ -42,6 +40,7 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
     {
         boolean customEcEnabled = config.getBoolean(ConfigKeys.CUSTOM_EC_DEFAULT._1,
                                                     ConfigKeys.CUSTOM_EC_DEFAULT._2);
+        DeadboltExecutionContextProvider defaultProvider = new DefaultDeadboltExecutionContextProvider();
         DeadboltExecutionContextProvider ecp = defaultProvider;
         if (customEcEnabled)
         {

@@ -15,17 +15,17 @@
  */
 package be.objectify.deadbolt.java.composite;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
-import be.objectify.deadbolt.java.cache.DefaultPatternCache;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
+import be.objectify.deadbolt.java.DeadboltHandler;
 
-public class DynamicConstraintBuilderTest extends AbstractDynamicConstraintTest
+import java.util.Optional;
+
+public class DynamicConstraintBuilderTest extends AbstractDynamicConstraintTest implements ConstraintLogicMixin
 {
     @Override
-    protected DynamicConstraint constraint()
+    protected DynamicConstraint constraint(final DeadboltHandler handler)
     {
-        return new ConstraintBuilders(new DeadboltAnalyzer(),
-                                      new DefaultPatternCache(new FakeCache())).dynamic("foo",
-                                                                                        "bar");
+        return new ConstraintBuilders(logic(handler)).dynamic("foo")
+                                                     .meta(Optional.of("bar"))
+                                                     .build();
     }
 }

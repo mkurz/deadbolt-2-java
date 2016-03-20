@@ -1,7 +1,5 @@
 package be.objectify.deadbolt.java.actions;
 
-import play.mvc.With;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

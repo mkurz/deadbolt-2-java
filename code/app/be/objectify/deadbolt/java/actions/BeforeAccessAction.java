@@ -21,7 +21,6 @@ import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
@@ -36,7 +35,7 @@ import javax.inject.Inject;
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
+public class  BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
 {
     @Inject
     public BeforeAccessAction(final DeadboltAnalyzer analyzer,

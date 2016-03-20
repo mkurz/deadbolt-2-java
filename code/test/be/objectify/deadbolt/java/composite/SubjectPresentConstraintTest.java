@@ -15,10 +15,15 @@
  */
 package be.objectify.deadbolt.java.composite;
 
-public class SubjectPresentConstraintTest extends AbstractSubjectPresentConstraintTest
+import be.objectify.deadbolt.java.DeadboltHandler;
+
+import java.util.Optional;
+
+public class SubjectPresentConstraintTest extends AbstractSubjectPresentConstraintTest implements ConstraintLogicMixin
 {
-    public SubjectPresentConstraint constraint()
+    public SubjectPresentConstraint constraint(final DeadboltHandler handler)
     {
-        return new SubjectPresentConstraint();
+        return new SubjectPresentConstraint(Optional.empty(),
+                                            logic(handler));
     }
 }

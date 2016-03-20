@@ -17,6 +17,7 @@ package be.objectify.deadbolt.java;
 
 import play.mvc.Http;
 
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -66,7 +67,7 @@ public interface DynamicResourceHandler
      * @return true if access to the resource is allowed, otherwise false
      */
     CompletionStage<Boolean> isAllowed(String name,
-                                       String meta,
+                                       Optional<String> meta,
                                        DeadboltHandler deadboltHandler,
                                        Http.Context ctx);
 
@@ -74,11 +75,13 @@ public interface DynamicResourceHandler
      * Invoked when a custom pattern needs checking..
      *
      * @param permissionValue the permission value
+     * @param meta            additional information on the resource
      * @param deadboltHandler the current {@link DeadboltHandler}
      * @param ctx the context of the current request
      * @return true if access based on the permission is  allowed, otherwise false
      */
     CompletionStage<Boolean> checkPermission(String permissionValue,
+                                             Optional<String> meta,
                                              DeadboltHandler deadboltHandler,
                                              Http.Context ctx);
 }

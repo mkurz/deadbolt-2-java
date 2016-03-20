@@ -231,7 +231,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
                                                                                                        handlers.apply("noSubject"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
-        Assert.assertTrue(content.contains("This is protected by the constraint."));
+        Assert.assertFalse(content.contains("This is protected by the constraint."));
         Assert.assertTrue(content.contains("This is after the constraint."));
     }
 
@@ -290,7 +290,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
                                                                                                        handlers.apply("noSubject"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
-        Assert.assertTrue(content.contains("This is protected by the constraint."));
+        Assert.assertFalse(content.contains("This is protected by the constraint."));
         Assert.assertTrue(content.contains("This is after the constraint."));
     }
 

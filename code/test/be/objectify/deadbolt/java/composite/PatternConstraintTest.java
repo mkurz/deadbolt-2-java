@@ -1,17 +1,18 @@
 package be.objectify.deadbolt.java.composite;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
-import be.objectify.deadbolt.java.cache.DefaultPatternCache;
+import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
+
+import java.util.Optional;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class PatternConstraintTest extends AbstractPatternConstraintTest
+public class PatternConstraintTest extends AbstractPatternConstraintTest implements ConstraintLogicMixin
 {
     @Override
-    protected PatternConstraint constraint(final PatternType patternType)
+    protected PatternConstraint constraint(final PatternType patternType,
+                                           final DeadboltHandler handler)
     {
         final PatternConstraint constraint;
         switch (patternType)
@@ -19,20 +20,26 @@ public class PatternConstraintTest extends AbstractPatternConstraintTest
             case EQUALITY:
                 constraint = new PatternConstraint("foo",
                                                    PatternType.EQUALITY,
-                                                   new DeadboltAnalyzer(),
-                                                   new DefaultPatternCache(new FakeCache()));
+                                                   Optional.empty(),
+                                                   false,
+                                                   Optional.empty(),
+                                                   logic(handler));
                 break;
             case REGEX:
                 constraint = new PatternConstraint("[0-2]",
                                                    PatternType.REGEX,
-                                                   new DeadboltAnalyzer(),
-                                                   new DefaultPatternCache(new FakeCache()));
+                                                   Optional.empty(),
+                                                   false,
+                                                   Optional.empty(),
+                                                   logic(handler));
                 break;
             case CUSTOM:
                 constraint = new PatternConstraint("blah",
                                                    PatternType.CUSTOM,
-                                                   new DeadboltAnalyzer(),
-                                                   new DefaultPatternCache(new FakeCache()));
+                                                   Optional.empty(),
+                                                   false,
+                                                   Optional.empty(),
+                                                   logic(handler));
                 break;
             default:
                 throw new IllegalArgumentException("Unknown pattern type");

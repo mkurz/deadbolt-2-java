@@ -99,7 +99,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param <C>                  the actual class of the DeadboltHandler
      * @return an option for the DeadboltHandler.
      */
-    protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(final String handlerKey) throws Exception
+    protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(final String handlerKey)
     {
         LOGGER.debug("Getting Deadbolt handler with key [{}]",
                      handlerKey);
@@ -151,30 +151,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     public abstract CompletionStage<Result> execute(final Http.Context ctx) throws Exception;
 
     /**
-     * @param maybeSubject
-     * @param roleNames
-     * @return
-     */
-    protected boolean checkRole(Optional<? extends Subject> maybeSubject,
-                                String[] roleNames)
-    {
-        return analyzer.checkRole(maybeSubject,
-                                  roleNames);
-    }
-
-    /**
-     * @param maybeSubject
-     * @param roleNames
-     * @return
-     */
-    protected boolean hasAllRoles(Optional<? extends Subject> maybeSubject,
-                                  String[] roleNames)
-    {
-        return analyzer.hasAllRoles(maybeSubject,
-                                    roleNames);
-    }
-
-    /**
      * Wrapper for {@link DeadboltHandler#onAuthFailure} to ensure the access failure is logged.
      *
      * @param deadboltHandler the Deadbolt handler
@@ -183,7 +159,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @return the result of {@link DeadboltHandler#onAuthFailure}
      */
     protected CompletionStage<Result> onAuthFailure(final DeadboltHandler deadboltHandler,
-                                                    final String content,
+                                                    final Optional<String> content,
                                                     final Http.Context ctx)
     {
         LOGGER.warn("Deadbolt: Access failure on [{}]",
@@ -336,6 +312,38 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         final ExecutionContext executionContext = executionContextProvider.get();
         return HttpExecution.fromThread(executionContext);
+    }
+
+    /**
+     * Add a flag to the context to indicate the action has passed the constraint
+     * and call the delegate.
+     *
+     * @param context the context
+     * @return the result
+     */
+    protected CompletionStage<Result> authorizeAndExecute(final Http.Context context)
+    {
+        markActionAsAuthorised(context);
+        return delegate.call(context);
+    }
+
+    /**
+     * Add a flag to the context to indicate the action has been blocked by the
+     * constraint and call {@link DeadboltHandler#onAuthFailure(Http.Context, String)}.
+     *
+     * @param context the context
+     * @param handler the relevant handler
+     * @param content the content type
+     * @return the result
+     */
+    protected CompletionStage<Result> unauthorizeAndFail(final Http.Context context,
+                                                         final DeadboltHandler handler,
+                                                         final Optional<String> content)
+    {
+        markActionAsUnauthorised(context);
+        return onAuthFailure(handler,
+                             content,
+                             context);
     }
 
     public static CompletionStage<Result> sneakyCall(final Action<?> action,

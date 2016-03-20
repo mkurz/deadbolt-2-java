@@ -30,6 +30,7 @@ public class DeadboltModule extends Module
                    viewSupport(),
                    templateFailureListenerProvider(),
                    executionContextProvider(),
+                   constraintLogic(),
                    compositeCache(),
                    constraintBuilders());
     }
@@ -112,5 +113,15 @@ public class DeadboltModule extends Module
     public Binding<SubjectCache> subjectCache()
     {
         return bind(SubjectCache.class).to(DefaultSubjectCache.class).in(Singleton.class);
+    }
+
+    /**
+     * Create a binding for {@link ConstraintLogic}.
+     *
+     * @return the binding
+     */
+    public Binding<ConstraintLogic> constraintLogic()
+    {
+        return bind(ConstraintLogic.class).toSelf().in(Singleton.class);
     }
 }

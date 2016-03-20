@@ -16,26 +16,20 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.PatternCache;
-import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.models.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -50,35 +44,23 @@ public class ViewSupport
 
     public final Supplier<Long> defaultTimeout;
 
-    private final DeadboltAnalyzer analyzer;
-
-    private final SubjectCache subjectCache;
-
     private final HandlerCache handlerCache;
-
-    private final PatternCache patternCache;
 
     private final TemplateFailureListener failureListener;
 
-    final DeadboltExecutionContextProvider executionContextProvider;
-
     private final BiFunction<Long, TimeoutException, Boolean> timeoutHandler;
+
+    private final ConstraintLogic constraintLogic;
 
     @Inject
     public ViewSupport(final Configuration configuration,
-                       final DeadboltAnalyzer analyzer,
-                       final SubjectCache subjectCache,
                        final HandlerCache handlerCache,
-                       final PatternCache patternCache,
                        final TemplateFailureListenerProvider failureListener,
-                       final ExecutionContextProvider ecProvider)
+                       final ConstraintLogic constraintLogic)
     {
-        this.analyzer = analyzer;
-        this.subjectCache = subjectCache;
         this.handlerCache = handlerCache;
-        this.patternCache = patternCache;
         this.failureListener = failureListener.get();
-        this.executionContextProvider = ecProvider.get();
+        this.constraintLogic = constraintLogic;
 
 
         final Long timeout = configuration.getLong(ConfigKeys.DEFAULT_VIEW_TIMEOUT_DEFAULT._1,
@@ -106,31 +88,21 @@ public class ViewSupport
      */
     public boolean viewRestrict(final List<String[]> roles,
                                 final DeadboltHandler handler,
+                                final Optional<String> content,
                                 final long timeoutInMillis) throws Throwable
     {
-        final Function<Optional<? extends Subject>, Boolean> testRoles = subject -> {
-            boolean roleOk = false;
-            for (int i = 0; !roleOk && i < roles.size(); i++)
-            {
-                roleOk = analyzer.checkRole(subject,
-                                            roles.get(i));
-            }
-            return roleOk;
-
-        };
-
         boolean allowed;
         try
         {
-            final ExecutionContextExecutor executor = executor();
-            allowed = subjectCache.apply(handler == null ? handlerCache.get()
-                                                         : handler,
-                                         Http.Context.current())
-                                  .thenApplyAsync(testRoles::apply,
-                                                  executor)
-                                  .toCompletableFuture()
-                                  .get(timeoutInMillis,
-                                       TimeUnit.MILLISECONDS);
+            allowed = constraintLogic.restrict(Http.Context.current(),
+                                               handler(handler),
+                                               content,
+                                               () -> roles,
+                                               ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                               (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
+                                     .toCompletableFuture()
+                                     .get(timeoutInMillis,
+                                          TimeUnit.MILLISECONDS);
 
         }
         catch (TimeoutException e)
@@ -149,25 +121,21 @@ public class ViewSupport
      * @return true if the view can be accessed, otherwise false
      */
     public boolean viewDynamic(final String name,
-                               final String meta,
+                               final Optional<String> meta,
                                final DeadboltHandler handler,
+                               final Optional<String> content,
                                final long timeoutInMillis) throws Throwable
     {
-        final Http.Context context = Http.Context.current();
-        final DeadboltHandler deadboltHandler = handler == null ? handlerCache.get()
-                                                                : handler;
         boolean allowed;
         try
         {
-            final ExecutionContextExecutor executor = executor();
-            allowed = deadboltHandler.getDynamicResourceHandler(Http.Context.current())
-                                     .thenApplyAsync(drhOption -> drhOption.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
-                                                     executor)
-                                     .thenComposeAsync(drh -> drh.isAllowed(name,
-                                                                            meta,
-                                                                            deadboltHandler,
-                                                                            context),
-                                                       executor)
+            allowed = constraintLogic.dynamic(Http.Context.current(),
+                                              handler(handler),
+                                              content,
+                                              name,
+                                              meta,
+                                              ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
@@ -186,17 +154,21 @@ public class ViewSupport
      * @return true if the view can be accessed, otherwise false
      */
     public boolean viewSubjectPresent(final DeadboltHandler handler,
+                                      final Optional<String> content,
                                       final long timeoutInMillis) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = subjectCache.apply(handler,
-                                         Http.Context.current())
-                                  .toCompletableFuture()
-                                  .get(timeoutInMillis,
-                                       TimeUnit.MILLISECONDS)
-                                  .isPresent();
+            allowed = constraintLogic.subjectPresent(Http.Context.current(),
+                                                     handler == null ? handlerCache.get()
+                                                                     : handler,
+                                                     content,
+                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
+                                     .toCompletableFuture()
+                                     .get(timeoutInMillis,
+                                          TimeUnit.MILLISECONDS);
         }
         catch (TimeoutException e)
         {
@@ -212,17 +184,20 @@ public class ViewSupport
      * @return true if the view can be accessed, otherwise false
      */
     public boolean viewSubjectNotPresent(final DeadboltHandler handler,
+                                         final Optional<String> content,
                                          final long timeoutInMillis) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = !subjectCache.apply(handler,
-                                          Http.Context.current())
-                                   .toCompletableFuture()
-                                   .get(timeoutInMillis,
-                                        TimeUnit.MILLISECONDS)
-                                   .isPresent();
+            allowed = constraintLogic.subjectPresent(Http.Context.current(),
+                                                     handler(handler),
+                                                     content,
+                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE))
+                                     .toCompletableFuture()
+                                     .get(timeoutInMillis,
+                                          TimeUnit.MILLISECONDS);
         }
         catch (TimeoutException e)
         {
@@ -234,54 +209,27 @@ public class ViewSupport
 
     public boolean viewPattern(final String value,
                                final PatternType patternType,
+                               final Optional<String> meta,
+                               final boolean invert,
                                final DeadboltHandler handler,
+                               final Optional<String> content,
                                final long timeoutInMillis) throws Exception
     {
-        final Http.Context context = Http.Context.current();
-        final DeadboltHandler deadboltHandler = handler == null ? handlerCache.get()
-                                                                : handler;
-
         boolean allowed;
         try
         {
-            final ExecutionContextExecutor executor = executor();
-            switch (patternType)
-            {
-                case EQUALITY:
-                    allowed = subjectCache.apply(deadboltHandler, context)
-                                          .thenApplyAsync(subjectOption -> analyzer.checkPatternEquality(subjectOption,
-                                                                                                         Optional.ofNullable(value)),
-                                                          executor)
-                                          .toCompletableFuture()
-                                          .get(timeoutInMillis,
-                                               TimeUnit.MILLISECONDS);
-                    break;
-                case REGEX:
-                    allowed = subjectCache.apply(deadboltHandler, context)
-                                          .thenApplyAsync(subjectOption -> analyzer.checkRegexPattern(subjectOption,
-                                                                                                      Optional.ofNullable(patternCache.apply(value))),
-                                                          executor)
-                                          .toCompletableFuture()
-                                          .get(timeoutInMillis,
-                                               TimeUnit.MILLISECONDS);
-                    break;
-                case CUSTOM:
-                    allowed = deadboltHandler.getDynamicResourceHandler(context)
-                                             .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
-                                                             executor)
-                                             .thenComposeAsync(drh -> drh.checkPermission(value,
-                                                                                          handler,
-                                                                                          context),
-                                                               executor)
-                                             .toCompletableFuture()
-                                             .get(timeoutInMillis,
-                                                  TimeUnit.MILLISECONDS);
-                    break;
-                default:
-                    allowed = false;
-                    LOGGER.error("Unknown pattern type [{}]",
-                                 patternType);
-            }
+            allowed = constraintLogic.pattern(Http.Context.current(),
+                                              handler(handler),
+                                              content,
+                                              value,
+                                              patternType,
+                                              meta,
+                                              invert,
+                                              ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
+                                     .toCompletableFuture()
+                                     .get(timeoutInMillis,
+                                          TimeUnit.MILLISECONDS);
         }
         catch (TimeoutException e)
         {
@@ -292,10 +240,9 @@ public class ViewSupport
         return allowed;
     }
 
-    private ExecutionContextExecutor executor()
+    private DeadboltHandler handler(final DeadboltHandler handler)
     {
-        final ExecutionContext executionContext = executionContextProvider.get();
-        return HttpExecution.fromThread(executionContext);
+        return handler == null ? handlerCache.get()
+                               : handler;
     }
-
 }

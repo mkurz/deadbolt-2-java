@@ -15,21 +15,21 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -45,13 +45,15 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                           final SubjectCache subjectCache,
                           final HandlerCache handlerCache,
                           final Configuration config,
-                          final ExecutionContextProvider ecProvider)
+                          final ExecutionContextProvider ecProvider,
+                          final ConstraintLogic constraintLogic)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
               config,
-              ecProvider);
+              ecProvider,
+              constraintLogic);
     }
 
     public RestrictAction(final DeadboltAnalyzer analyzer,
@@ -60,13 +62,15 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                           final Configuration config,
                           final Restrict configuration,
                           final Action<?> delegate,
-                          final ExecutionContextProvider ecProvider)
+                          final ExecutionContextProvider ecProvider,
+                          final ConstraintLogic constraintLogic)
     {
         this(analyzer,
              subjectCache,
              handlerCache,
              config,
-             ecProvider);
+             ecProvider,
+             constraintLogic);
         this.configuration = configuration;
         this.delegate = delegate;
     }
@@ -75,39 +79,12 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler deadboltHandler)
     {
-        final ExecutionContextExecutor executor = executor();
-        return getSubject(ctx,
-                          deadboltHandler)
-                .thenApplyAsync(subjectOption -> {
-                    boolean roleOk = false;
-                    if (subjectOption.isPresent())
-                    {
-                        final List<String[]> roleGroups = getRoleGroups();
-
-                        for (int i = 0; !roleOk && i < roleGroups.size(); i++)
-                        {
-                            roleOk = checkRole(subjectOption,
-                                               roleGroups.get(i));
-                        }
-                    }
-                    return roleOk;
-                }, executor)
-                .thenComposeAsync(allowed -> {
-                    final CompletionStage<Result> result;
-                    if (allowed)
-                    {
-                        markActionAsAuthorised(ctx);
-                        result = delegate.call(ctx);
-                    }
-                    else
-                    {
-                        markActionAsUnauthorised(ctx);
-                        result = onAuthFailure(deadboltHandler,
-                                               configuration.content(),
-                                               ctx);
-                    }
-                    return result;
-                }, executor);
+        return constraintLogic.restrict(ctx,
+                                        deadboltHandler,
+                                        Optional.ofNullable(configuration.content()),
+                                        this::getRoleGroups,
+                                        this::authorizeAndExecute,
+                                        this::unauthorizeAndFail);
     }
 
     public List<String[]> getRoleGroups()

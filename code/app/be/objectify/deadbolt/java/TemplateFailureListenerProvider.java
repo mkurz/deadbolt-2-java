@@ -17,8 +17,9 @@ package be.objectify.deadbolt.java;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.Play;
+import play.Application;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
@@ -33,20 +34,31 @@ public class TemplateFailureListenerProvider implements Provider<TemplateFailure
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateFailureListenerProvider.class);
 
-    @Override
-    public TemplateFailureListener get()
+    private final TemplateFailureListener listener;
+
+    @Inject
+    public TemplateFailureListenerProvider(final Provider<Application> application)
     {
-        TemplateFailureListener listener;
+        TemplateFailureListener local = null;
         try
         {
-            listener = Play.application().injector().instanceOf(TemplateFailureListener.class);
-            LOGGER.info("Custom TemplateFailureListener found: [{}]", listener.getClass());
+            local = application.get().injector().instanceOf(TemplateFailureListener.class);
+            LOGGER.info("Custom TemplateFailureListener found: [{}]", local.getClass());
         }
         catch (Exception e)
         {
             LOGGER.info("No custom TemplateFailureListener found, falling back to no-op implementation.  Don't worry, this is a feature and not a bug.");
-            listener = new NoOpTemplateFailureListener();
+            local = new NoOpTemplateFailureListener();
         }
+        finally
+        {
+            this.listener = local;
+        }
+    }
+
+    @Override
+    public TemplateFailureListener get()
+    {
         return listener;
     }
 }

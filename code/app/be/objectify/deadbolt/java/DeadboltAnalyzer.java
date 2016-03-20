@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This carries out static (i.e. non-dynamic) checks.
@@ -58,18 +59,15 @@ public class DeadboltAnalyzer
      */
     public List<String> getRoleNames(final Optional<? extends Subject> subjectOption)
     {
-        final List<String> roleNames = new ArrayList<String>();
+        final List<String> roleNames = new ArrayList<>();
         subjectOption.ifPresent(subject -> {
             final List<? extends Role> roles = subject.getRoles();
             if (roles != null)
             {
-                for (Role role : roles)
-                {
-                    if (role != null)
-                    {
-                        roleNames.add(role.getName());
-                    }
-                }
+                roleNames.addAll(roles.stream()
+                                      .filter(role -> role != null)
+                                      .map(Role::getName)
+                                      .collect(Collectors.toList()));
             }
         });
 

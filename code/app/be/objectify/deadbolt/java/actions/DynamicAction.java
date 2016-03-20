@@ -15,20 +15,19 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExceptionThrowingDynamicResourceHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -44,13 +43,15 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
                          final SubjectCache subjectCache,
                          final HandlerCache handlerCache,
                          final Configuration config,
-                         final ExecutionContextProvider ecProvider)
+                         final ExecutionContextProvider ecProvider,
+                         final ConstraintLogic constraintLogic)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
               config,
-              ecProvider);
+              ecProvider,
+              constraintLogic);
     }
 
     public DynamicAction(final DeadboltAnalyzer analyzer,
@@ -59,13 +60,15 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
                          final Configuration config,
                          final Dynamic configuration,
                          final Action<?> delegate,
-                         final ExecutionContextProvider ecProvider)
+                         final ExecutionContextProvider ecProvider,
+                         final ConstraintLogic constraintLogic)
     {
         this(analyzer,
              subjectCache,
              handlerCache,
              config,
-             ecProvider);
+             ecProvider,
+             constraintLogic);
         this.configuration = configuration;
         this.delegate = delegate;
     }
@@ -74,36 +77,18 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler deadboltHandler)
     {
-        final ExecutionContextExecutor executor = executor();
-        return deadboltHandler.getDynamicResourceHandler(ctx)
-                              .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
-                                              executor)
-                              .thenComposeAsync(drh -> drh.isAllowed(getValue(),
-                                                                getMeta(),
-                                                                deadboltHandler,
-                                                                ctx),
-                                                executor)
-                              .thenComposeAsync(allowed -> {
-                                  final CompletionStage<Result> result;
-                                  if (allowed)
-                                  {
-                                      markActionAsAuthorised(ctx);
-                                      result = delegate.call(ctx);
-                                  }
-                                  else
-                                  {
-                                      markActionAsUnauthorised(ctx);
-                                      result = onAuthFailure(deadboltHandler,
-                                                             configuration.content(),
-                                                             ctx);
-                                  }
-                                  return result;
-                              }, executor);
+        return constraintLogic.dynamic(ctx,
+                                       deadboltHandler,
+                                       Optional.ofNullable(configuration.content()),
+                                       getValue(),
+                                       getMeta(),
+                                       this::authorizeAndExecute,
+                                       this::unauthorizeAndFail);
     }
 
-    public String getMeta()
+    public Optional<String> getMeta()
     {
-        return configuration.meta();
+        return Optional.ofNullable(configuration.meta());
     }
 
     public String getValue()

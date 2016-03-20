@@ -29,7 +29,8 @@ import java.util.concurrent.CompletionStage;
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
-public interface DeadboltHandler {
+public interface DeadboltHandler
+{
 
     /**
      * Invoked immediately before controller or view restrictions are checked. This forms the integration with any
@@ -37,8 +38,8 @@ public interface DeadboltHandler {
      *
      * @param context the HTTP context
      * @return the action result if an action other than the delegate must be taken, otherwise null. For a case where
-     *         the user is authenticated (or whatever your test condition is), this will be null otherwise the restriction
-     *         won't be applied.
+     * the user is authenticated (or whatever your test condition is), this will be null otherwise the restriction
+     * won't be applied.
      */
     CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context);
 
@@ -59,7 +60,7 @@ public interface DeadboltHandler {
      * @return the action result
      */
     CompletionStage<Result> onAuthFailure(Http.Context context,
-                                    String content);
+                                          Optional<String> content);
 
     /**
      * Gets the handler used for dealing with resources restricted to specific users/groups.
@@ -68,10 +69,10 @@ public interface DeadboltHandler {
      * @return the handler for restricted resources. May be null.
      */
     CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context);
-    
+
     /**
      * Gets the canonical name of the handler.  Defaults to the class name.
-     * 
+     *
      * @return whatever the implementor considers the canonical name of the handler to be
      */
     default String handlerName()

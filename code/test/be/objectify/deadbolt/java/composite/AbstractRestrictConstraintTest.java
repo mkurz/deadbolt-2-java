@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java.composite;
 
+import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.testsupport.TestRole;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +33,8 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     @Test
     public void testSingleRole_present() throws Exception
     {
-        final Constraint constraint = constraint(Collections.singletonList(new String[]{"foo"}));
+        final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"))),
+                                                 Collections.singletonList(new String[]{"foo"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("foo"))),
                                                                 Executors.newSingleThreadExecutor());
@@ -42,7 +44,8 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     @Test
     public void testSingleRole_notPresent() throws Exception
     {
-        final Constraint constraint = constraint(Collections.singletonList(new String[]{"foo"}));
+        final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("bar"))),
+                                                 Collections.singletonList(new String[]{"foo"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("bar"))),
                                                                 Executors.newSingleThreadExecutor());
@@ -52,7 +55,8 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     @Test
     public void testSingleRole_present_negated() throws Exception
     {
-        final Constraint constraint = constraint(Collections.singletonList(new String[]{"!foo"}));
+        final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"))),
+                                                 Collections.singletonList(new String[]{"!foo"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("foo"))),
                                                                 Executors.newSingleThreadExecutor());
@@ -62,7 +66,8 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     @Test
     public void testSingleRole_notPresent_negated() throws Exception
     {
-        final Constraint constraint = constraint(Collections.singletonList(new String[]{"!foo"}));
+        final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("bar"))),
+                                                 Collections.singletonList(new String[]{"!foo"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("bar"))),
                                                                 Executors.newSingleThreadExecutor());
@@ -72,7 +77,9 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     @Test
     public void testAnd_present() throws Exception
     {
-        final Constraint constraint = constraint(Collections.singletonList(new String[]{"foo", "bar"}));
+        final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"),
+                                                                           new TestRole("bar"))),
+                                                 Collections.singletonList(new String[]{"foo", "bar"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("foo"),
                                                                                           new TestRole("bar"))),
@@ -83,7 +90,9 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     @Test
     public void testAnd_notPresent() throws Exception
     {
-        final Constraint constraint = constraint(Collections.singletonList(new String[]{"foo", "bar"}));
+        final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"),
+                                                                           new TestRole("hurdy"))),
+                                                 Collections.singletonList(new String[]{"foo", "bar"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("foo"),
                                                                                           new TestRole("hurdy"))),
@@ -94,7 +103,9 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     @Test
     public void testOr_present() throws Exception
     {
-        final Constraint constraint = constraint(Arrays.asList(new String[]{"foo", "bar"},
+        final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"),
+                                                                           new TestRole("bar"))),
+                                                 Arrays.asList(new String[]{"foo", "bar"},
                                                                            new String[]{"hurdy", "gurdy"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("foo"),
@@ -106,8 +117,9 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     @Test
     public void testOr_notPresent() throws Exception
     {
-        final Constraint constraint = constraint(Arrays.asList(new String[]{"foo"},
-                                                                           new String[]{"bar"}));
+        final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("hurdy"))),
+                                                 Arrays.asList(new String[]{"foo"},
+                                                               new String[]{"bar"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("hurdy"))),
                                                                 Executors.newSingleThreadExecutor());
@@ -117,11 +129,13 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     @Override
     protected F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy()
     {
-        return new F.Tuple<>(constraint(Collections.singletonList(new String[]{"foo"})),
+        return new F.Tuple<>(constraint(withSubject(() -> subject(new TestRole("foo"))),
+                                        Collections.singletonList(new String[]{"foo"})),
                              c -> c.test(context,
                                          withSubject(() -> subject(new TestRole("foo"))),
                                          Executors.newSingleThreadExecutor()));
     }
 
-    protected abstract RestrictConstraint constraint(List<String[]> roleGroups);
+    protected abstract RestrictConstraint constraint(DeadboltHandler handler,
+                                                     List<String[]> roleGroups);
 }

@@ -1,13 +1,13 @@
 package be.objectify.deadbolt.java.views.patternTest;
 
-import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
-import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
+import be.objectify.deadbolt.java.NoPreAuthDeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.models.PatternType;
+import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
@@ -29,13 +29,13 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testEquality_hasEqualPermission()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
-                                                                                    .build()));
+                                                                                                .build()));
             }
 
         };
@@ -51,13 +51,13 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testEquality_doesNotHaveEqualPermission()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
-                                                                                    .build()));
+                                                                                                .build()));
             }
 
         };
@@ -73,7 +73,7 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testEquality_doesNotHavePermissions()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -96,7 +96,9 @@ public class PatternTest extends AbstractFakeApplicationTest
     {
         final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
                                                                                                      PatternType.EQUALITY,
-                                                                                                     new AbstractNoPreAuthDeadboltHandler(ecProvider()){});
+                                                                                                     new NoPreAuthDeadboltHandler(ecProvider())
+                                                                                                     {
+                                                                                                     });
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -106,13 +108,13 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_hasMatch()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
-                                                                                    .build()));
+                                                                                                .build()));
             }
 
         };
@@ -128,13 +130,13 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_hasTopLevelMatch()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
-                                                                                    .build()));
+                                                                                                .build()));
             }
 
         };
@@ -150,13 +152,13 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_doesNotHaveMatch()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
-                                                                                    .build()));
+                                                                                                .build()));
             }
 
         };
@@ -172,7 +174,7 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_doesNotHavePermissions()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -195,7 +197,9 @@ public class PatternTest extends AbstractFakeApplicationTest
     {
         final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
                                                                                                      PatternType.REGEX,
-                                                                                                     new AbstractNoPreAuthDeadboltHandler(ecProvider()){});
+                                                                                                     new NoPreAuthDeadboltHandler(ecProvider())
+                                                                                                     {
+                                                                                                     });
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -205,7 +209,7 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testCustom_value()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -214,8 +218,9 @@ public class PatternTest extends AbstractFakeApplicationTest
                 {
                     @Override
                     public CompletionStage<Boolean> checkPermission(final String permissionValue,
-                                                              final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                                                                    final Optional<String> meta,
+                                                                    final DeadboltHandler deadboltHandler,
+                                                                    final Http.Context ctx)
                     {
                         return CompletableFuture.completedFuture("killer.undead.zombie".equals(permissionValue));
                     }
@@ -234,7 +239,7 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testCustom_hasPermission()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -243,8 +248,9 @@ public class PatternTest extends AbstractFakeApplicationTest
                 {
                     @Override
                     public CompletionStage<Boolean> checkPermission(final String permissionValue,
-                                                              final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                                                                    final Optional<String> meta,
+                                                                    final DeadboltHandler deadboltHandler,
+                                                                    final Http.Context ctx)
                     {
                         return CompletableFuture.completedFuture(true);
                     }
@@ -263,7 +269,7 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testCustom_hasNotPermission()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -272,8 +278,9 @@ public class PatternTest extends AbstractFakeApplicationTest
                 {
                     @Override
                     public CompletionStage<Boolean> checkPermission(final String permissionValue,
-                                                              final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                                                                    final Optional<String> meta,
+                                                                    final DeadboltHandler deadboltHandler,
+                                                                    final Http.Context ctx)
                     {
                         return CompletableFuture.completedFuture(false);
                     }

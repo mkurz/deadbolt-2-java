@@ -15,14 +15,19 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
+import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
+import play.mvc.Http;
+import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Implements the {@link SubjectPresent} functionality, i.e. a {@link be.objectify.deadbolt.java.models.Subject} must be provided by the
@@ -37,14 +42,15 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
                                 final SubjectCache subjectCache,
                                 final HandlerCache handlerCache,
                                 final Configuration config,
-                                final ExecutionContextProvider ecProvider)
+                                final ExecutionContextProvider ecProvider,
+                                final ConstraintLogic constraintLogic)
     {
         super(analyzer,
               subjectCache,
               handlerCache,
-              Optional::isPresent,
               config,
-              ecProvider);
+              ecProvider,
+              constraintLogic);
     }
 
     @Override
@@ -53,5 +59,29 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
         return new Config(configuration.forceBeforeAuthCheck(),
                           configuration.handlerKey(),
                           configuration.content());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    CompletionStage<Result> present(final Http.Context context,
+                                    final DeadboltHandler handler,
+                                    final Optional<String> content)
+    {
+        return authorizeAndExecute(context);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    CompletionStage<Result> notPresent(final Http.Context context,
+                                       final DeadboltHandler handler,
+                                       final Optional<String> content)
+    {
+        return unauthorizeAndFail(context,
+                                  handler,
+                                  content);
     }
 }

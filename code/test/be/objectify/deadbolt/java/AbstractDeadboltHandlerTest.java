@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 /**
  * Tests the behaviour of {#link AbstractDeadboltHandler}.
@@ -62,7 +61,7 @@ public class AbstractDeadboltHandlerTest
         final Http.Context context = Mockito.mock(Http.Context.class);
 
         final CompletionStage<Result> promise = deadboltHandler.onAuthFailure(context,
-                                                                       "foo");
+                                                                              Optional.of("foo"));
         Assert.assertNotNull(promise);
 
         final Result result = promise.toCompletableFuture().get(100,

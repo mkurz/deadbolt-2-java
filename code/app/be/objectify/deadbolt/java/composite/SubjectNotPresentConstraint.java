@@ -15,9 +15,12 @@
  */
 package be.objectify.deadbolt.java.composite;
 
+import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import play.mvc.Http;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 
@@ -26,12 +29,25 @@ import java.util.concurrent.Executor;
  */
 public class SubjectNotPresentConstraint implements Constraint
 {
-    @Override
+    private final Optional<String> content;
+    private final ConstraintLogic constraintLogic;
+
+    public SubjectNotPresentConstraint(final Optional<String> content,
+                                       final ConstraintLogic constraintLogic)
+    {
+        this.content = content;
+        this.constraintLogic = constraintLogic;
+    }
+
     public CompletionStage<Boolean> test(final Http.Context context,
                                          final DeadboltHandler handler,
-                                         final Executor executor) {
-        return handler.getSubject(context)
-                      .thenApplyAsync(maybeSubject -> !maybeSubject.isPresent(),
-                                      executor);
+                                         final Executor executor)
+    {
+        return constraintLogic.subjectPresent(context,
+                                              handler,
+                                              content,
+                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE));
+
     }
 }

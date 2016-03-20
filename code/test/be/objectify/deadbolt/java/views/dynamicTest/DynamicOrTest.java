@@ -2,7 +2,7 @@ package be.objectify.deadbolt.java.views.dynamicTest;
 
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
-import be.objectify.deadbolt.java.AbstractNoPreAuthDeadboltHandler;
+import be.objectify.deadbolt.java.NoPreAuthDeadboltHandler;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
@@ -17,8 +17,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -28,7 +26,7 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
     @Test
     public void testValid()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -37,7 +35,7 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicOrContent.render("foo",
-                                                                                                       "bar",
+                                                                                                       Optional.of("bar"),
                                                                                                        deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -49,7 +47,7 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
     @Test
     public void testName()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -58,7 +56,7 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicOrContent.render("foo",
-                                                                                                       "bar",
+                                                                                                       Optional.of("bar"),
                                                                                                        deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -70,16 +68,16 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
     @Test
     public void testMeta()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> "bar".equals(meta))));
+                return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> meta.map("bar"::equals).orElse(false))));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicOrContent.render("foo",
-                                                                                                       "bar",
+                                                                                                       Optional.of("bar"),
                                                                                                        deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -91,7 +89,7 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
     @Test
     public void testInvalid()
     {
-        final DeadboltHandler deadboltHandler = new AbstractNoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
@@ -100,7 +98,7 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicOrContent.render("foo",
-                                                                                                       "bar",
+                                                                                                       Optional.of("bar"),
                                                                                                        deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -118,16 +116,16 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
 
     private class TestDynamicResourceHandler extends AbstractDynamicResourceHandler
     {
-        private final BiFunction<String, String, Boolean> test;
+        private final BiFunction<String, Optional<String>, Boolean> test;
 
-        private TestDynamicResourceHandler(final BiFunction<String, String, Boolean> test)
+        private TestDynamicResourceHandler(final BiFunction<String, Optional<String>, Boolean> test)
         {
             this.test = test;
         }
 
         @Override
         public CompletionStage<Boolean> isAllowed(final String name,
-                                                  final String meta,
+                                                  final Optional<String> meta,
                                                   final DeadboltHandler deadboltHandler,
                                                   final Http.Context ctx)
         {
