@@ -20,6 +20,7 @@ import be.objectify.deadbolt.java.models.Role;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -70,6 +71,17 @@ public class TemplateUtils
     public static String[] allOf(final String... args)
     {
         return args == null ? new String[0] : args;
+    }
+
+    /**
+     * Converts the arguments into a String array wrapped in a list.
+     *
+     * @param args the arguments
+     * @return the arguments as an array within a list
+     */
+    public static List<String[]> allOfGroup(final String... args)
+    {
+        return Collections.singletonList(args == null ? new String[0] : args);
     }
 
     /**
