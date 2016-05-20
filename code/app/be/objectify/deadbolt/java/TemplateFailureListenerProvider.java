@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Application;
+import play.inject.Injector;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -37,12 +38,12 @@ public class TemplateFailureListenerProvider implements Provider<TemplateFailure
     private final TemplateFailureListener listener;
 
     @Inject
-    public TemplateFailureListenerProvider(final Provider<Application> application)
+    public TemplateFailureListenerProvider(final Injector injector)
     {
         TemplateFailureListener local = null;
         try
         {
-            local = application.get().injector().instanceOf(TemplateFailureListener.class);
+            local = injector.instanceOf(TemplateFailureListener.class);
             LOGGER.info("Custom TemplateFailureListener found: [{}]", local.getClass());
         }
         catch (Exception e)

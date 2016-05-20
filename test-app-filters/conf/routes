@@ -1,0 +1,27 @@
+# Restrict constraints
+GET        /restrict/m/restrictedToFooAndBar                                             be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /restrict/m/restrictedToFooOrBar                                              be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /restrict/m/restrictedToFooAndNotBar                                          be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /restrict/m/restrictedToFooOrNotBar                                           be.objectify.deadbolt.java.test.controllers.Application.index()
+
+# SubjectPresent constraints
+GET        /subject/present/m/subjectMustBePresent                                       be.objectify.deadbolt.java.test.controllers.Application.index()
+
+# SubjectNotPresent constraints
+GET        /subject/not/present/m/subjectMustNotBePresent                                be.objectify.deadbolt.java.test.controllers.Application.index()
+
+# Dynamic constraints
+GET        /dynamic/m/niceName                                                           be.objectify.deadbolt.java.test.controllers.Application.index()
+
+# Pattern constraints
+GET        /pattern/equality/m/checkEquality                                             be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/regex/m/checkExactMatch                                              be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/regex/m/checkHierarchicalMatch                                       be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/custom/m/checkCustom                                                 be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/invert/equality/m/checkEquality                                      be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/invert/regex/m/checkExactMatch                                       be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/invert/regex/m/checkHierarchicalMatch                                be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/invert/custom/m/checkCustom                                          be.objectify.deadbolt.java.test.controllers.Application.index()
+
+# Composite constraints
+GET        /composite/m/foo                                                              be.objectify.deadbolt.java.test.controllers.Application.index()

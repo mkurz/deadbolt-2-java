@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Application;
 import play.Configuration;
+import play.inject.Injector;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,7 +37,7 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
 
     @Inject
     public ExecutionContextProvider(final Configuration config,
-                                    final Application application)
+                                    final Injector injector)
     {
         boolean customEcEnabled = config.getBoolean(ConfigKeys.CUSTOM_EC_DEFAULT._1,
                                                     ConfigKeys.CUSTOM_EC_DEFAULT._2);
@@ -46,7 +47,7 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
         {
             try
             {
-                ecp = application.injector().instanceOf(DeadboltExecutionContextProvider.class);
+                ecp = injector.instanceOf(DeadboltExecutionContextProvider.class);
                 LOGGER.debug("Custom execution context provider found");
             }
             catch (Exception e)

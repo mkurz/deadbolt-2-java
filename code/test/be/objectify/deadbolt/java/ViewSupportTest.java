@@ -141,7 +141,7 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
 
         return new ViewSupport(Mockito.mock(Configuration.class),
                                handlerCache,
-                               new TemplateFailureListenerProvider(this::provideApplication),
+                               new TemplateFailureListenerProvider(provideApplication().injector()),
                                constraintLogic);
     }
 
