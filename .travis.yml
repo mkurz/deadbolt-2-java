@@ -5,8 +5,14 @@ scala:
 - 2.11.7
 script:
 - cd code
+- sbt --warn ++$TRAVIS_SCALA_VERSION test
 - sbt --warn ++$TRAVIS_SCALA_VERSION publishLocal
 - cd ../test-app
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.0 test
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.1 test
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.2 test
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.3 test
+- cd ../test-app-filters
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.0 test
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.1 test
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.2 test
