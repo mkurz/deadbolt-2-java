@@ -45,6 +45,16 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
+    @Override
+    public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context)
+    {
+        return CompletableFuture.completedFuture(Optional.empty());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
     {
         return CompletableFuture.completedFuture(Optional.empty());
@@ -53,6 +63,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompletionStage<Result> onAuthFailure(final Http.Context context,
                                                  final Optional<String> content)
     {
@@ -67,6 +78,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
     {
         return CompletableFuture.completedFuture(Optional.empty());
