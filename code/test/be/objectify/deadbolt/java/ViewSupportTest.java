@@ -2,9 +2,8 @@ package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
-import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.models.Subject;
+import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -80,8 +79,8 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
 
         Map<String, DeadboltHandler> handlers = new HashMap<>();
         handlers.put("noDrh", noDrhHandler);
-        handlerCache = new DefaultHandlerCache(handler,
-                                               handlers);
+        handlerCache = new TestHandlerCache(handler,
+                                            handlers);
     }
 
     @Test

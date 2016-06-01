@@ -8,6 +8,7 @@ import be.objectify.deadbolt.java.NoPreAuthDeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.models.Subject;
+import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
@@ -299,7 +300,7 @@ public class PatternTest extends AbstractFakeApplicationTest
     public HandlerCache handlers()
     {
         // using new instances of handlers in the test
-        return new DefaultHandlerCache(null,
-                                       new HashMap<>());
+        return new TestHandlerCache(null,
+                                    new HashMap<>());
     }
 }

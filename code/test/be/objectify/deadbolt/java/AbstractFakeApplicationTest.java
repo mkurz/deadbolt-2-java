@@ -1,7 +1,7 @@
 package be.objectify.deadbolt.java;
 
-import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.testsupport.FakeCache;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -16,8 +16,6 @@ import play.test.Helpers;
 import play.test.WithApplication;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -100,53 +98,5 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
     public Http.Context context()
     {
         return Http.Context.current.get();
-    }
-
-    protected class DefaultHandlerCache implements HandlerCache
-    {
-        private final DeadboltHandler defaultHandler;
-        private final Map<String, DeadboltHandler> handlers = new HashMap<>();
-
-        public DefaultHandlerCache(final DeadboltHandler defaultHandler,
-                                   final Map<String, DeadboltHandler> handlers)
-        {
-            this.defaultHandler = defaultHandler;
-            this.handlers.putAll(handlers);
-        }
-
-        /**
-         * Get the handler mapped to the given key.
-         *
-         * @param handlerKey the unique key of the handler
-         * @return an option of the handler
-         */
-        @Override
-        public DeadboltHandler apply(final String handlerKey)
-        {
-            final DeadboltHandler handler;
-            if (handlers.containsKey(handlerKey))
-            {
-                handler = handlers.get(handlerKey);
-                LOGGER.debug("Retrieved handler [{}] for key [{}]",
-                             handler,
-                             handlerKey);
-            }
-            else
-            {
-                LOGGER.error("Handler key [{}] is not defined.  You need to look at this urgently.");
-                // don't do this in real life! Returning null is for forcing tests to fail if the key is wrong
-                handler = null;
-            }
-            return handler;
-        }
-
-        /**
-         * Get the default DeadboltHandler.
-         */
-        @Override
-        public DeadboltHandler get()
-        {
-            return defaultHandler;
-        }
     }
 }

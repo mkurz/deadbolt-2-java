@@ -15,10 +15,7 @@
  */
 package be.objectify.deadbolt.java.composite;
 
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.cache.DefaultPatternCache;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
 
 public class SubjectNotPresentConstraintBuilderTest extends AbstractSubjectNotPresentConstraintTest implements ConstraintLogicMixin
 {

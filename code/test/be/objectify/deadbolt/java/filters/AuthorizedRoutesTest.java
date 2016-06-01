@@ -1,23 +1,28 @@
 package be.objectify.deadbolt.java.filters;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class AuthorizedRoutesTest {
+public class AuthorizedRoutesTest
+{
 
     @Test
-    public void testMatchOnMethodAndPath_match() {
+    public void testMatchOnMethodAndPath_match()
+    {
         final FilterConstraints constraints = Mockito.mock(FilterConstraints.class);
-        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints) {
+        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints)
+        {
             @Override
-            public List<AuthorizedRoute> routes() {
+            public List<AuthorizedRoute> routes()
+            {
                 return Collections.singletonList(new AuthorizedRoute(Methods.GET,
                                                                      "/foo",
                                                                      Mockito.mock(FilterFunction.class)));
@@ -30,11 +35,14 @@ public class AuthorizedRoutesTest {
     }
 
     @Test
-    public void testMatchOnMethodAndPath_noMatchOnMethod() {
+    public void testMatchOnMethodAndPath_noMatchOnMethod()
+    {
         final FilterConstraints constraints = Mockito.mock(FilterConstraints.class);
-        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints) {
+        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints)
+        {
             @Override
-            public List<AuthorizedRoute> routes() {
+            public List<AuthorizedRoute> routes()
+            {
                 return Collections.singletonList(new AuthorizedRoute(Methods.GET,
                                                                      "/foo",
                                                                      Mockito.mock(FilterFunction.class)));
@@ -47,11 +55,14 @@ public class AuthorizedRoutesTest {
     }
 
     @Test
-    public void testMatchOnMethodAndPath_noMatchOnPath() {
+    public void testMatchOnMethodAndPath_noMatchOnPath()
+    {
         final FilterConstraints constraints = Mockito.mock(FilterConstraints.class);
-        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints) {
+        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints)
+        {
             @Override
-            public List<AuthorizedRoute> routes() {
+            public List<AuthorizedRoute> routes()
+            {
                 return Collections.singletonList(new AuthorizedRoute(Methods.GET,
                                                                      "/foo",
                                                                      Mockito.mock(FilterFunction.class)));
@@ -64,11 +75,14 @@ public class AuthorizedRoutesTest {
     }
 
     @Test
-    public void testMatchOnPath_match() {
+    public void testMatchOnPath_match()
+    {
         final FilterConstraints constraints = Mockito.mock(FilterConstraints.class);
-        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints) {
+        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints)
+        {
             @Override
-            public List<AuthorizedRoute> routes() {
+            public List<AuthorizedRoute> routes()
+            {
                 return Collections.singletonList(new AuthorizedRoute(Methods.ANY,
                                                                      "/foo",
                                                                      Mockito.mock(FilterFunction.class)));
@@ -81,11 +95,14 @@ public class AuthorizedRoutesTest {
     }
 
     @Test
-    public void testMatchOnPath_noMatchOnPath() {
+    public void testMatchOnPath_noMatchOnPath()
+    {
         final FilterConstraints constraints = Mockito.mock(FilterConstraints.class);
-        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints) {
+        final AuthorizedRoutes authRoutes = new AuthorizedRoutes(() -> constraints)
+        {
             @Override
-            public List<AuthorizedRoute> routes() {
+            public List<AuthorizedRoute> routes()
+            {
                 return Collections.singletonList(new AuthorizedRoute(Methods.ANY,
                                                                      "/foo",
                                                                      Mockito.mock(FilterFunction.class)));

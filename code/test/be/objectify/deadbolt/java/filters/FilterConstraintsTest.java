@@ -1,11 +1,5 @@
 package be.objectify.deadbolt.java.filters;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
@@ -36,10 +30,18 @@ import play.mvc.Result;
 import play.mvc.Results;
 import play.routing.Router;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class FilterConstraintsTest {
+public class FilterConstraintsTest
+{
 
     private final DeadboltAnalyzer analyzer = new DeadboltAnalyzer();
     private FilterConstraints filterConstraints;
@@ -50,7 +52,8 @@ public class FilterConstraintsTest {
     private ConstraintLogic constraintLogic;
 
     @Before
-    public void setUp() {
+    public void setUp()
+    {
 
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
         Mockito.when(ecProvider.get())
@@ -93,7 +96,8 @@ public class FilterConstraintsTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown()
+    {
         filterConstraints = null;
         requestHeader = null;
         subjectCache = null;
@@ -101,7 +105,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testSubjectPresent_pass() throws Exception {
+    public void testSubjectPresent_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
@@ -118,7 +123,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testSubjectPresent_withContent_pass() throws Exception {
+    public void testSubjectPresent_withContent_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
@@ -135,7 +141,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testSubjectPresent_fail() throws Exception {
+    public void testSubjectPresent_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
@@ -155,7 +162,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testSubjectPresent_withContent_fail() throws Exception {
+    public void testSubjectPresent_withContent_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
@@ -175,7 +183,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testSubjectNotPresent_pass() throws Exception {
+    public void testSubjectNotPresent_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
@@ -192,7 +201,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testSubjectNotPresent_withContent_pass() throws Exception {
+    public void testSubjectNotPresent_withContent_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
@@ -209,7 +219,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testSubjectNotPresent_fail() throws Exception {
+    public void testSubjectNotPresent_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
@@ -229,7 +240,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testSubjectNotPresent_withContent_fail() throws Exception {
+    public void testSubjectNotPresent_withContent_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
@@ -249,7 +261,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testRestrict_pass() throws Exception {
+    public void testRestrict_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().role(new TestRole("foo"))
                                                              .build();
@@ -268,7 +281,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testRestrict_withContent_pass() throws Exception {
+    public void testRestrict_withContent_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().role(new TestRole("foo"))
                                                              .build();
@@ -288,7 +302,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testRestrict_fail() throws Exception {
+    public void testRestrict_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().role(new TestRole("foo"))
                                                              .build();
@@ -310,7 +325,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testRestrict_withContent_fail() throws Exception {
+    public void testRestrict_withContent_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().role(new TestRole("foo"))
                                                              .build();
@@ -333,7 +349,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_pass() throws Exception {
+    public void testPattern_equality_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -353,7 +370,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_pass() throws Exception {
+    public void testPattern_regex_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
@@ -373,18 +391,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_pass() throws Exception {
+    public void testPattern_custom_pass() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(Boolean.TRUE);
                    }
                })));
@@ -402,7 +423,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_fail() throws Exception {
+    public void testPattern_equality_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -425,7 +447,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_fail() throws Exception {
+    public void testPattern_regex_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
@@ -448,18 +471,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_fail() throws Exception {
+    public void testPattern_custom_fail() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(Boolean.FALSE);
                    }
                })));
@@ -480,7 +506,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_withMeta_pass() throws Exception {
+    public void testPattern_equality_withMeta_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -501,7 +528,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_withMeta_pass() throws Exception {
+    public void testPattern_regex_withMeta_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
@@ -522,18 +550,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_withMeta_pass() throws Exception {
+    public void testPattern_custom_withMeta_pass() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -552,7 +583,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_withMeta_fail() throws Exception {
+    public void testPattern_equality_withMeta_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -576,7 +608,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_withMeta_fail() throws Exception {
+    public void testPattern_regex_withMeta_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
@@ -600,18 +633,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_withMeta_fail() throws Exception {
+    public void testPattern_custom_withMeta_fail() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -633,7 +669,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_invert_pass() throws Exception {
+    public void testPattern_equality_invert_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -657,7 +694,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_invert_pass() throws Exception {
+    public void testPattern_regex_invert_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
@@ -681,18 +719,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_invert_pass() throws Exception {
+    public void testPattern_custom_invert_pass() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(Boolean.TRUE);
                    }
                })));
@@ -714,7 +755,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_invert_fail() throws Exception {
+    public void testPattern_equality_invert_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -735,7 +777,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_invert_fail() throws Exception {
+    public void testPattern_regex_invert_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
@@ -756,18 +799,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_invert_fail() throws Exception {
+    public void testPattern_custom_invert_fail() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(Boolean.FALSE);
                    }
                })));
@@ -786,7 +832,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_allArgs_pass() throws Exception {
+    public void testPattern_equality_allArgs_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -809,7 +856,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_allArgs_pass() throws Exception {
+    public void testPattern_regex_allArgs_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
@@ -832,18 +880,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_allArgs_pass() throws Exception {
+    public void testPattern_custom_allArgs_pass() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -864,7 +915,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_allArgs_fail() throws Exception {
+    public void testPattern_equality_allArgs_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -890,7 +942,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_allArgs_fail() throws Exception {
+    public void testPattern_regex_allArgs_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
@@ -916,18 +969,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_allArgs_fail() throws Exception {
+    public void testPattern_custom_allArgs_fail() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -951,7 +1007,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_allArgs_invert_pass() throws Exception {
+    public void testPattern_equality_allArgs_invert_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -977,7 +1034,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_allArgs_invert_pass() throws Exception {
+    public void testPattern_regex_allArgs_invert_pass() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
@@ -1003,18 +1061,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_allArgs_invert_pass() throws Exception {
+    public void testPattern_custom_allArgs_invert_pass() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -1038,7 +1099,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_equality_allArgs_invert_fail() throws Exception {
+    public void testPattern_equality_allArgs_invert_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
@@ -1061,7 +1123,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_regex_allArgs_invert_fail() throws Exception {
+    public void testPattern_regex_allArgs_invert_fail() throws Exception
+    {
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
@@ -1084,18 +1147,21 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testPattern_custom_allArgs_invert_fail() throws Exception {
+    public void testPattern_custom_allArgs_invert_fail() throws Exception
+    {
         final boolean[] flag = {false};
         context.args = new HashMap<>();
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx) {
+                                                                   final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -1116,17 +1182,20 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testDynamic_pass() throws Exception {
+    public void testDynamic_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx) {
+                                                             final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(Boolean.TRUE);
                    }
                })));
@@ -1143,17 +1212,20 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testDynamic_withMeta_pass() throws Exception {
+    public void testDynamic_withMeta_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx) {
+                                                             final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -1171,17 +1243,20 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testDynamic_withMetaAndContent_pass() throws Exception {
+    public void testDynamic_withMetaAndContent_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx) {
+                                                             final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -1200,17 +1275,20 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testDynamic_fail() throws Exception {
+    public void testDynamic_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx) {
+                                                             final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(Boolean.FALSE);
                    }
                })));
@@ -1230,17 +1308,20 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testDynamic_withMeta_fail() throws Exception {
+    public void testDynamic_withMeta_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx) {
+                                                             final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -1261,17 +1342,20 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testDynamic_withMetaAndContent_fail() throws Exception {
+    public void testDynamic_withMetaAndContent_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.getDynamicResourceHandler(context))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler() {
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
+               {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx) {
+                                                             final Http.Context ctx)
+                   {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
@@ -1293,7 +1377,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testComposite_byName_pass() throws Exception {
+    public void testComposite_byName_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
@@ -1310,7 +1395,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testComposite_byName_withContent_pass() throws Exception {
+    public void testComposite_byName_withContent_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
@@ -1328,7 +1414,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testComposite_byName_fail() throws Exception {
+    public void testComposite_byName_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
@@ -1348,7 +1435,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testComposite_byName_withContent_fail() throws Exception {
+    public void testComposite_byName_withContent_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
@@ -1369,7 +1457,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testComposite_byConstraint_pass() throws Exception {
+    public void testComposite_byConstraint_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
@@ -1387,7 +1476,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testComposite_byConstraint_withContent_pass() throws Exception {
+    public void testComposite_byConstraint_withContent_pass() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
@@ -1406,7 +1496,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testComposite_byConstraint_fail() throws Exception {
+    public void testComposite_byConstraint_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
@@ -1427,7 +1518,8 @@ public class FilterConstraintsTest {
     }
 
     @Test
-    public void testComposite_byConstraint_withContent_fail() throws Exception {
+    public void testComposite_byConstraint_withContent_fail() throws Exception
+    {
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));

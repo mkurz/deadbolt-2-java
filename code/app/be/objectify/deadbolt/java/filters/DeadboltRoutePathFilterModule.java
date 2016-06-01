@@ -22,18 +22,17 @@ import play.api.inject.Module;
 import scala.collection.Seq;
 
 /**
- * Provides bindings for {@link DeadboltFilter} and {@link FilterConstraints}.
+ * Provides bindings for {@link DeadboltRoutePathFilter} and {@link FilterConstraints}.
  *
  * @author Steve Chaloner (steve@objectify.be)
  * @since 2.5.1
  */
-public class DeadboltFilterModule extends Module
+public class DeadboltRoutePathFilterModule extends Module
 {
     @Override
     public Seq<Binding<?>> bindings(final Environment environment,
                                     final Configuration configuration)
     {
-        return seq(bind(DeadboltFilter.class).toSelf(),
-                   bind(FilterConstraints.class).toSelf());
+        return seq(bind(DeadboltRoutePathFilter.class).toSelf());
     }
 }

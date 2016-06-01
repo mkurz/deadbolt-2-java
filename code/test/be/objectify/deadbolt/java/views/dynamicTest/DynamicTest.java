@@ -2,10 +2,11 @@ package be.objectify.deadbolt.java.views.dynamicTest;
 
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
-import be.objectify.deadbolt.java.NoPreAuthDeadboltHandler;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
+import be.objectify.deadbolt.java.NoPreAuthDeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import org.junit.Assert;
 import org.junit.Test;
 import play.mvc.Http;
@@ -145,7 +146,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
     public HandlerCache handlers()
     {
         // using new instances of handlers in the test
-        return new DefaultHandlerCache(null,
-                                       new HashMap<>());
+        return new TestHandlerCache(null,
+                                    new HashMap<>());
     }
 }

@@ -3,6 +3,7 @@ package be.objectify.deadbolt.java.views.subject;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class SubjectNotPresentTest extends AbstractFakeApplicationTest
         handlers.put("present", handler(() -> new TestSubject.Builder().build()));
         handlers.put("notPresent", handler(() -> null));
 
-        return new DefaultHandlerCache(null,
-                                       handlers);
+        return new TestHandlerCache(null,
+                                    handlers);
     }
 }

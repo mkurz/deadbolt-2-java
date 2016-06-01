@@ -1,7 +1,8 @@
 package be.objectify.deadbolt.java.testsupport;
 
-import java.util.ArrayList;
 import play.mvc.Http;
+
+import java.util.ArrayList;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)

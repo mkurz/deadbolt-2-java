@@ -3,6 +3,7 @@ package be.objectify.deadbolt.java.views.restrictTest;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import be.objectify.deadbolt.java.testsupport.TestRole;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
@@ -363,7 +364,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
         handlers.put("noRoles", handler(() -> new TestSubject.Builder().build()));
         handlers.put("noSubject", handler(() -> null));
 
-        return new DefaultHandlerCache(null,
-                                       handlers);
+        return new TestHandlerCache(null,
+                                    handlers);
     }
 }

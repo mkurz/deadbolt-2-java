@@ -22,6 +22,7 @@ import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.composite.ConstraintBuilders;
+import be.objectify.deadbolt.java.filters.FilterConstraints;
 import play.api.Configuration;
 import play.api.Environment;
 import play.api.inject.Binding;
@@ -47,7 +48,8 @@ public class DeadboltModule extends Module
                    executionContextProvider(),
                    constraintLogic(),
                    compositeCache(),
-                   constraintBuilders());
+                   constraintBuilders(),
+                   filterConstraints());
     }
 
     /**
@@ -138,5 +140,15 @@ public class DeadboltModule extends Module
     public Binding<ConstraintLogic> constraintLogic()
     {
         return bind(ConstraintLogic.class).toSelf().in(Singleton.class);
+    }
+
+    /**
+     * Create a binding for {@link FilterConstraints}.
+     *
+     * @return the binding
+     */
+    public Binding<FilterConstraints> filterConstraints()
+    {
+        return bind(FilterConstraints.class).toSelf().in(Singleton.class);
     }
 }

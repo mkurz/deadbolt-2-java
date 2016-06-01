@@ -1,13 +1,14 @@
 package be.objectify.deadbolt.java.views.patternTest;
 
-import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
 import be.objectify.deadbolt.java.AbstractFakeApplicationTest;
-import be.objectify.deadbolt.java.NoPreAuthDeadboltHandler;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
+import be.objectify.deadbolt.java.NoPreAuthDeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.models.PatternType;
+import be.objectify.deadbolt.java.models.Subject;
+import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
@@ -311,7 +312,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
     public HandlerCache handlers()
     {
         // using new instances of handlers in the test
-        return new DefaultHandlerCache(null,
-                                       new HashMap<>());
+        return new TestHandlerCache(null,
+                                    new HashMap<>());
     }
 }

@@ -4,6 +4,7 @@ import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.testsupport.FakeCache;
+import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import be.objectify.deadbolt.java.testsupport.TestRole;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
@@ -147,7 +148,7 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
     public HandlerCache handlers()
     {
         // using new instances of handlers in the test
-        return new DefaultHandlerCache(null,
-                                       new HashMap<>());
+        return new TestHandlerCache(null,
+                                    new HashMap<>());
     }
 }
