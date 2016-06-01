@@ -24,5 +24,14 @@ public class CompositeConstraints
                                                    builders.subjectNotPresent().build(),
                                                    builders.pattern("curator.museum.*",
                                                                     PatternType.REGEX).build()));
+
+        compositeCache.register("fooAndBar",
+                                builders.restrict(builders.anyOf(builders.allOf("foo", "bar"))).build());
+        compositeCache.register("fooOrBar",
+                                builders.restrict(builders.anyOf(builders.allOf("foo"), builders.allOf("bar"))).build());
+        compositeCache.register("fooAndNotBar",
+                                builders.restrict(builders.anyOf(builders.allOf("foo", "!bar"))).build());
+        compositeCache.register("fooOrNotBar",
+                                builders.restrict(builders.anyOf(builders.allOf("foo"), builders.allOf("!bar"))).build());
     }
 }

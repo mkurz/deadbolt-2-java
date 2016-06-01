@@ -9,7 +9,7 @@ import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
+public abstract class RestrictTest extends AbstractApplicationTest {
 
     private static final int PORT = 3333;
 
@@ -30,7 +30,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooAndBar");
+                               .get(String.format("/restrict/%s/restrictedToFooAndBar",
+                                                  pathComponent()));
                 });
     }
 
@@ -45,7 +46,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/restrict/m/restrictedToFooAndBar");
+                               .get(String.format("/restrict/%s/restrictedToFooAndBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -61,7 +63,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooAndBar");
+                               .get(String.format("/restrict/%s/restrictedToFooAndBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -77,7 +80,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooAndBar");
+                               .get(String.format("/restrict/%s/restrictedToFooAndBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -93,7 +97,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooOrBar");
+                               .get(String.format("/restrict/%s/restrictedToFooOrBar",
+                                                  pathComponent()));
                 });
     }
 
@@ -108,7 +113,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/restrict/m/restrictedToFooOrBar");
+                               .get(String.format("/restrict/%s/restrictedToFooOrBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -124,7 +130,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/restrict/m/restrictedToFooOrBar");
+                               .get(String.format("/restrict/%s/restrictedToFooOrBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -140,7 +147,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooOrBar");
+                               .get(String.format("/restrict/%s/restrictedToFooOrBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -156,7 +164,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooAndNotBar");
+                               .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
+                                                  pathComponent()));
                 });
     }
 
@@ -171,7 +180,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooAndNotBar");
+                               .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -187,7 +197,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooAndNotBar");
+                               .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -203,7 +214,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooAndNotBar");
+                               .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -219,7 +231,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooOrNotBar");
+                               .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
+                                                  pathComponent()));
                 });
     }
 
@@ -234,7 +247,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/restrict/m/restrictedToFooOrNotBar");
+                               .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -250,7 +264,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/restrict/m/restrictedToFooOrNotBar");
+                               .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
+                                                  pathComponent()));
                 });
 
     }
@@ -266,7 +281,8 @@ public class RestrictMethodConstraintsTest extends AbstractApplicationTest {
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/restrict/m/restrictedToFooOrNotBar");
+                               .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
+                                                  pathComponent()));
                 });
 
     }

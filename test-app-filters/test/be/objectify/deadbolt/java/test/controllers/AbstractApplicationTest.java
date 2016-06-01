@@ -4,7 +4,7 @@ import play.Application;
 import play.Mode;
 import play.inject.guice.GuiceApplicationBuilder;
 
-public class AbstractApplicationTest {
+public abstract class AbstractApplicationTest implements PathComponent {
 
     public Application app() {
         return new GuiceApplicationBuilder().bindings(new DataLoaderModule())

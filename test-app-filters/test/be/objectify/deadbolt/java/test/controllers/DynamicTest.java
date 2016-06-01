@@ -4,12 +4,14 @@ import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
+import java.util.Collections;
+import be.objectify.deadbolt.java.test.DataLoader;
 import be.objectify.deadbolt.java.test.controllers.AbstractApplicationTest;
 import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SubjectPresentMethodConstraintsTest extends AbstractApplicationTest
+public abstract class DynamicTest extends AbstractApplicationTest
 {
 
     private static final int PORT = 3333;
@@ -21,7 +23,7 @@ public class SubjectPresentMethodConstraintsTest extends AbstractApplicationTest
     }
 
     @Test
-    public void testSubjectMustBePresent_noSubjectIsPresent()
+    public void protectedByMethodLevelDynamic_noSubjectIsPresent()
     {
         running(testServer(PORT,
                            fakeApplication()),
@@ -31,12 +33,30 @@ public class SubjectPresentMethodConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/subject/present/m/subjectMustBePresent");
+                               .get(String.format("/dynamic/%s/niceName",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testSubjectMustBePresent_subjectIsPresent()
+    public void protectedByMethodLevelDynamic_subjectHasPermission()
+    {
+        running(testServer(PORT,
+                           app()),
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "steve")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get(String.format("/dynamic/%s/niceName",
+                                                  pathComponent()));
+                });
+    }
+
+
+    @Test
+    public void protectedByMethodLevelDynamic_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
                            app()),
@@ -46,7 +66,8 @@ public class SubjectPresentMethodConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/subject/present/m/subjectMustBePresent");
+                               .get(String.format("/dynamic/%s/niceName",
+                                                  pathComponent()));
                 });
     }
 }

@@ -11,7 +11,7 @@ import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CompositeConstraintsTest extends AbstractApplicationTest
+public abstract class CompositeConstraintsTest extends AbstractApplicationTest
 {
 
     private static final int PORT = 3333;
@@ -33,7 +33,8 @@ public class CompositeConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/composite/m/foo");
+                               .get(String.format("/composite/%s/foo",
+                                                  pathComponent()));
                 });
     }
 
@@ -48,7 +49,8 @@ public class CompositeConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/composite/m/foo");
+                               .get(String.format("/composite/%s/foo",
+                                                  pathComponent()));
                 });
     }
 
@@ -63,7 +65,8 @@ public class CompositeConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/composite/m/foo");
+                               .get(String.format("/composite/%s/foo",
+                                                  pathComponent()));
                 });
     }
 }

@@ -4,12 +4,14 @@ import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
+import java.util.Collections;
+import be.objectify.deadbolt.java.test.DataLoader;
 import be.objectify.deadbolt.java.test.controllers.AbstractApplicationTest;
 import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PatternCustomConstraintsTest extends AbstractApplicationTest
+public abstract class PatternEqualityTest extends AbstractApplicationTest
 {
 
     private static final int PORT = 3333;
@@ -21,7 +23,7 @@ public class PatternCustomConstraintsTest extends AbstractApplicationTest
     }
 
     @Test
-    public void testProtectedByMethodLevelCustom_noSubjectIsPresent()
+    public void testProtectedByMethodLevelEquality_noSubjectIsPresent()
     {
         running(testServer(PORT,
                            fakeApplication()),
@@ -31,12 +33,13 @@ public class PatternCustomConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/custom/m/checkCustom");
+                               .get(String.format("/pattern/equality/%s/checkEquality",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testProtectedByMethodLevelCustom_subjectDoesNotHavePermission()
+    public void testProtectedByMethodLevelEquality_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
                            app()),
@@ -46,12 +49,13 @@ public class PatternCustomConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/custom/m/checkCustom");
+                               .get(String.format("/pattern/equality/%s/checkEquality",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testProtectedByMethodLevelCustom_zombieKiller()
+    public void testProtectedByMethodLevelEquality_subjectHasPermission()
     {
         running(testServer(PORT,
                            app()),
@@ -61,27 +65,13 @@ public class PatternCustomConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/pattern/custom/m/checkCustom");
+                               .get(String.format("/pattern/equality/%s/checkEquality",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testProtectedByMethodLevelCustom_zombieMovieFan()
-    {
-        running(testServer(PORT,
-                           app()),
-                () -> {
-                    RestAssured.given()
-                               .cookie("user", "mani")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/custom/m/checkCustom");
-                });
-    }
-
-    @Test
-    public void testProtectedByMethodLevelCustom_noSubjectIsPresent_inverted()
+    public void testProtectedByMethodLevelEquality_noSubjectIsPresent_inverted()
     {
         running(testServer(PORT,
                            fakeApplication()),
@@ -91,12 +81,13 @@ public class PatternCustomConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/invert/custom/m/checkCustom");
+                               .get(String.format("/pattern/invert/equality/%s/checkEquality",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testProtectedByMethodLevelCustom_subjectDoesNotHavePermission_inverted()
+    public void testProtectedByMethodLevelEquality_subjectDoesNotHavePermission_inverted()
     {
         running(testServer(PORT,
                            app()),
@@ -106,12 +97,14 @@ public class PatternCustomConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/pattern/invert/custom/m/checkCustom");
+                               .get(String.format("/pattern/invert/equality/%s/checkEquality",
+                                                  pathComponent()));
                 });
     }
 
+
     @Test
-    public void testProtectedByMethodLevelCustom_zombieKiller_inverted()
+    public void testProtectedByMethodLevelEquality_subjectHasPermission_inverted()
     {
         running(testServer(PORT,
                            app()),
@@ -121,22 +114,8 @@ public class PatternCustomConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/invert/custom/m/checkCustom");
-                });
-    }
-
-    @Test
-    public void testProtectedByMethodLevelCustom_zombieMovieFan_inverted()
-    {
-        running(testServer(PORT,
-                           app()),
-                () -> {
-                    RestAssured.given()
-                               .cookie("user", "mani")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/invert/custom/m/checkCustom");
+                               .get(String.format("/pattern/invert/equality/%s/checkEquality",
+                                                  pathComponent()));
                 });
     }
 }

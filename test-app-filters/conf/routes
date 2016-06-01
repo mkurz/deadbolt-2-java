@@ -1,27 +1,67 @@
 # Restrict constraints
-GET        /restrict/m/restrictedToFooAndBar                                             be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /restrict/m/restrictedToFooOrBar                                              be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /restrict/m/restrictedToFooAndNotBar                                          be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /restrict/m/restrictedToFooOrNotBar                                           be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /restrict/rp/restrictedToFooAndBar                           be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /restrict/rp/restrictedToFooOrBar                            be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /restrict/rp/restrictedToFooAndNotBar                        be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /restrict/rp/restrictedToFooOrNotBar                         be.objectify.deadbolt.java.test.controllers.Application.index()
 
 # SubjectPresent constraints
-GET        /subject/present/m/subjectMustBePresent                                       be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /subject/present/rp/subjectMustBePresent                     be.objectify.deadbolt.java.test.controllers.Application.index()
 
 # SubjectNotPresent constraints
-GET        /subject/not/present/m/subjectMustNotBePresent                                be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /subject/not/present/rp/subjectMustNotBePresent              be.objectify.deadbolt.java.test.controllers.Application.index()
 
 # Dynamic constraints
-GET        /dynamic/m/niceName                                                           be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /dynamic/rp/niceName                                         be.objectify.deadbolt.java.test.controllers.Application.index()
 
 # Pattern constraints
-GET        /pattern/equality/m/checkEquality                                             be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /pattern/regex/m/checkExactMatch                                              be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /pattern/regex/m/checkHierarchicalMatch                                       be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /pattern/custom/m/checkCustom                                                 be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /pattern/invert/equality/m/checkEquality                                      be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /pattern/invert/regex/m/checkExactMatch                                       be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /pattern/invert/regex/m/checkHierarchicalMatch                                be.objectify.deadbolt.java.test.controllers.Application.index()
-GET        /pattern/invert/custom/m/checkCustom                                          be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/equality/rp/checkEquality                           be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/regex/rp/checkExactMatch                            be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/regex/rp/checkHierarchicalMatch                     be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/custom/rp/checkCustom                               be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/invert/equality/rp/checkEquality                    be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/invert/regex/rp/checkExactMatch                     be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/invert/regex/rp/checkHierarchicalMatch              be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /pattern/invert/custom/rp/checkCustom                        be.objectify.deadbolt.java.test.controllers.Application.index()
 
 # Composite constraints
-GET        /composite/m/foo                                                              be.objectify.deadbolt.java.test.controllers.Application.index()
+GET        /composite/rp/foo                                            be.objectify.deadbolt.java.test.controllers.Application.index()
+
+# ---------------------------------------------------
+
+#deadbolt:restrict:name[fooAndBar]
+GET        /restrict/c/restrictedToFooAndBar                           be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:restrict:name[fooOrBar]
+GET        /restrict/c/restrictedToFooOrBar                            be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:restrict:name[fooAndNotBar]
+GET        /restrict/c/restrictedToFooAndNotBar                        be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:restrict:name[fooOrNotBar]
+GET        /restrict/c/restrictedToFooOrNotBar                         be.objectify.deadbolt.java.test.controllers.Application.index()
+
+#deadbolt:subjectPresent
+GET        /subject/present/c/subjectMustBePresent                     be.objectify.deadbolt.java.test.controllers.Application.index()
+
+#deadbolt:subjectNotPresent
+GET        /subject/not/present/c/subjectMustNotBePresent              be.objectify.deadbolt.java.test.controllers.Application.index()
+
+#deadbolt:dynamic:name[niceName]
+GET        /dynamic/c/niceName                                         be.objectify.deadbolt.java.test.controllers.Application.index()
+
+#deadbolt:pattern:value[killer.undead.zombie]:type[EQUALITY]
+GET        /pattern/equality/c/checkEquality                           be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:pattern:value[killer.undead.zombie]:type[REGEX]
+GET        /pattern/regex/c/checkExactMatch                            be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:pattern:value[killer.undead.*]:type[REGEX]
+GET        /pattern/regex/c/checkHierarchicalMatch                     be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:pattern:value[i-do-not-like-ice-cream]:type[CUSTOM]
+GET        /pattern/custom/c/checkCustom                               be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:pattern:value[killer.undead.zombie]:type[EQUALITY]:invert[true]
+GET        /pattern/invert/equality/c/checkEquality                    be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:pattern:value[killer.undead.zombie]:type[REGEX]:invert[true]
+GET        /pattern/invert/regex/c/checkExactMatch                     be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:pattern:value[killer.undead.*]:type[REGEX]:invert[true]
+GET        /pattern/invert/regex/c/checkHierarchicalMatch              be.objectify.deadbolt.java.test.controllers.Application.index()
+#deadbolt:pattern:value[i-do-not-like-ice-cream]:type[CUSTOM]:invert[true]
+GET        /pattern/invert/custom/c/checkCustom                        be.objectify.deadbolt.java.test.controllers.Application.index()
+
+#deadbolt:composite:name[curatorOrSubjectNotPresent]
+GET        /composite/c/foo                                            be.objectify.deadbolt.java.test.controllers.Application.index()

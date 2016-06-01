@@ -4,14 +4,12 @@ import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
-import java.util.Collections;
-import be.objectify.deadbolt.java.test.DataLoader;
 import be.objectify.deadbolt.java.test.controllers.AbstractApplicationTest;
 import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PatternEqualityConstraintsTest extends AbstractApplicationTest
+public abstract class PatternCustomTest extends AbstractApplicationTest
 {
 
     private static final int PORT = 3333;
@@ -23,7 +21,7 @@ public class PatternEqualityConstraintsTest extends AbstractApplicationTest
     }
 
     @Test
-    public void testProtectedByMethodLevelEquality_noSubjectIsPresent()
+    public void testProtectedByMethodLevelCustom_noSubjectIsPresent()
     {
         running(testServer(PORT,
                            fakeApplication()),
@@ -33,12 +31,13 @@ public class PatternEqualityConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/equality/m/checkEquality");
+                               .get(String.format("/pattern/custom/%s/checkCustom",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testProtectedByMethodLevelEquality_subjectDoesNotHavePermission()
+    public void testProtectedByMethodLevelCustom_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
                            app()),
@@ -48,12 +47,13 @@ public class PatternEqualityConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/equality/m/checkEquality");
+                               .get(String.format("/pattern/custom/%s/checkCustom",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testProtectedByMethodLevelEquality_subjectHasPermission()
+    public void testProtectedByMethodLevelCustom_zombieKiller()
     {
         running(testServer(PORT,
                            app()),
@@ -63,12 +63,29 @@ public class PatternEqualityConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/pattern/equality/m/checkEquality");
+                               .get(String.format("/pattern/custom/%s/checkCustom",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testProtectedByMethodLevelEquality_noSubjectIsPresent_inverted()
+    public void testProtectedByMethodLevelCustom_zombieMovieFan()
+    {
+        running(testServer(PORT,
+                           app()),
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "mani")
+                               .expect()
+                               .statusCode(200)
+                               .when()
+                               .get(String.format("/pattern/custom/%s/checkCustom",
+                                                  pathComponent()));
+                });
+    }
+
+    @Test
+    public void testProtectedByMethodLevelCustom_noSubjectIsPresent_inverted()
     {
         running(testServer(PORT,
                            fakeApplication()),
@@ -78,12 +95,13 @@ public class PatternEqualityConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/invert/equality/m/checkEquality");
+                               .get(String.format("/pattern/invert/custom/%s/checkCustom",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testProtectedByMethodLevelEquality_subjectDoesNotHavePermission_inverted()
+    public void testProtectedByMethodLevelCustom_subjectDoesNotHavePermission_inverted()
     {
         running(testServer(PORT,
                            app()),
@@ -93,13 +111,13 @@ public class PatternEqualityConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/pattern/invert/equality/m/checkEquality");
+                               .get(String.format("/pattern/invert/custom/%s/checkCustom",
+                                                  pathComponent()));
                 });
     }
 
-
     @Test
-    public void testProtectedByMethodLevelEquality_subjectHasPermission_inverted()
+    public void testProtectedByMethodLevelCustom_zombieKiller_inverted()
     {
         running(testServer(PORT,
                            app()),
@@ -109,7 +127,24 @@ public class PatternEqualityConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/invert/equality/m/checkEquality");
+                               .get(String.format("/pattern/invert/custom/%s/checkCustom",
+                                                  pathComponent()));
+                });
+    }
+
+    @Test
+    public void testProtectedByMethodLevelCustom_zombieMovieFan_inverted()
+    {
+        running(testServer(PORT,
+                           app()),
+                () -> {
+                    RestAssured.given()
+                               .cookie("user", "mani")
+                               .expect()
+                               .statusCode(401)
+                               .when()
+                               .get(String.format("/pattern/invert/custom/%s/checkCustom",
+                                                  pathComponent()));
                 });
     }
 }

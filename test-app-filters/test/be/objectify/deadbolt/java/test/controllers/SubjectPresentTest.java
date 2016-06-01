@@ -9,9 +9,8 @@ import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SubjectNotPresentMethodConstraintsTest extends AbstractApplicationTest
+public abstract class SubjectPresentTest extends AbstractApplicationTest
 {
-
     private static final int PORT = 3333;
 
     @Before
@@ -21,7 +20,7 @@ public class SubjectNotPresentMethodConstraintsTest extends AbstractApplicationT
     }
 
     @Test
-    public void testSubjectMustNotBePresent_noSubjectIsPresent()
+    public void testSubjectMustBePresent_noSubjectIsPresent()
     {
         running(testServer(PORT,
                            fakeApplication()),
@@ -29,14 +28,15 @@ public class SubjectNotPresentMethodConstraintsTest extends AbstractApplicationT
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
-                               .statusCode(200)
+                               .statusCode(401)
                                .when()
-                               .get("/subject/not/present/m/subjectMustNotBePresent");
+                               .get(String.format("/subject/present/%s/subjectMustBePresent",
+                                                  pathComponent()));
                 });
     }
 
     @Test
-    public void testSubjectNotMustBePresent_subjectIsPresent()
+    public void testSubjectMustBePresent_subjectIsPresent()
     {
         running(testServer(PORT,
                            app()),
@@ -44,9 +44,12 @@ public class SubjectNotPresentMethodConstraintsTest extends AbstractApplicationT
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
-                               .statusCode(401)
+                               .statusCode(200)
                                .when()
-                               .get("/subject/not/present/m/subjectMustNotBePresent");
+                               .get(String.format("/subject/present/%s/subjectMustBePresent",
+                                                  pathComponent()));
                 });
     }
+
+    public abstract String pathComponent();
 }

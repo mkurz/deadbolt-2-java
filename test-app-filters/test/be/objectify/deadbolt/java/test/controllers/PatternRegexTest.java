@@ -1,17 +1,14 @@
 package be.objectify.deadbolt.java.test.controllers;
 
-import static play.test.Helpers.fakeApplication;
-import static play.test.Helpers.running;
-import static play.test.Helpers.testServer;
-
-import java.util.Collections;
-import be.objectify.deadbolt.java.test.DataLoader;
-import be.objectify.deadbolt.java.test.controllers.AbstractApplicationTest;
 import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PatternRegexConstraintsTest extends AbstractApplicationTest
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.running;
+import static play.test.Helpers.testServer;
+
+public abstract class PatternRegexTest extends AbstractApplicationTest
 {
 
     private static final int PORT = 3333;
@@ -33,7 +30,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/regex/m/checkExactMatch");
+                               .get(String.format("/pattern/regex/%s/checkExactMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -48,7 +46,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/regex/m/checkExactMatch");
+                               .get(String.format("/pattern/regex/%s/checkExactMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -63,7 +62,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/pattern/regex/m/checkExactMatch");
+                               .get(String.format("/pattern/regex/%s/checkExactMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -78,7 +78,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/regex/m/checkHierarchicalMatch");
+                               .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -93,7 +94,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/regex/m/checkHierarchicalMatch");
+                               .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -108,7 +110,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/pattern/regex/m/checkHierarchicalMatch");
+                               .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -123,7 +126,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/pattern/regex/m/checkHierarchicalMatch");
+                               .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -138,7 +142,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/invert/regex/m/checkExactMatch");
+                               .get(String.format("/pattern/invert/regex/%s/checkExactMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -153,7 +158,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/pattern/invert/regex/m/checkExactMatch");
+                               .get(String.format("/pattern/invert/regex/%s/checkExactMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -168,7 +174,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/invert/regex/m/checkExactMatch");
+                               .get(String.format("/pattern/invert/regex/%s/checkExactMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -183,7 +190,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/invert/regex/m/checkHierarchicalMatch");
+                               .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -198,7 +206,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(200)
                                .when()
-                               .get("/pattern/invert/regex/m/checkHierarchicalMatch");
+                               .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -213,7 +222,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/invert/regex/m/checkHierarchicalMatch");
+                               .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
+                                                  pathComponent()));
                 });
     }
 
@@ -228,7 +238,8 @@ public class PatternRegexConstraintsTest extends AbstractApplicationTest
                                .expect()
                                .statusCode(401)
                                .when()
-                               .get("/pattern/invert/regex/m/checkHierarchicalMatch");
+                               .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
+                                                  pathComponent()));
                 });
     }
 }
