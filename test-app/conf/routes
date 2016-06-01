@@ -73,3 +73,8 @@ GET        /composite/m/fooInUnrestrictedController                             
 
 GET        /composite/c                                                                  be.objectify.deadbolt.java.test.controllers.composite.CompositeForController.protectedByControllerLevelComposite()
 GET        /composite/c/open                                                             be.objectify.deadbolt.java.test.controllers.composite.CompositeForController.unrestricted()
+
+#deadbolt:subjectPresent
+GET        /filtered/subject/present/subjectMustBePresent                                be.objectify.deadbolt.java.test.controllers.NoConstraintsApp.index
+#deadbolt:subjectNotPresent
+GET        /filtered/subject/notPresent/subjectMustBePresent                             be.objectify.deadbolt.java.test.controllers.NoConstraintsApp.index
