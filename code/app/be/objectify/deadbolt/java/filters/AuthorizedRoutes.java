@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 Steve Chaloner
+ * Copyright 2010-2016 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,31 @@
  */
 package be.objectify.deadbolt.java.filters;
 
+import javax.inject.Provider;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import javax.inject.Provider;
 
 /**
  * Matches an invoked route to a constraint.  If a constraint is present for that route, it
  * determines if the corresponding action should be invoked.
  *
- * @since 2.5.1
  * @author Steve Chaloner (steve@objectify.be)
+ * @since 2.5.1
  */
-public abstract class AuthorizedRoutes implements BiFunction<String, String, Optional<AuthorizedRoute>> {
-
+public abstract class AuthorizedRoutes implements BiFunction<String, String, Optional<AuthorizedRoute>>
+{
     public final FilterConstraints filterConstraints;
 
-    public AuthorizedRoutes(final Provider<FilterConstraints> filterConstraints) {
+    public AuthorizedRoutes(final Provider<FilterConstraints> filterConstraints)
+    {
         this.filterConstraints = filterConstraints.get();
     }
 
     @Override
     public Optional<AuthorizedRoute> apply(final String method,
-                                           final String path) {
+                                           final String path)
+    {
         return routes().stream()
                        .filter(authRoute -> authRoute.method()
                                                      .map(routeMethod -> routeMethod.equals(method) && authRoute.path().equals(path))

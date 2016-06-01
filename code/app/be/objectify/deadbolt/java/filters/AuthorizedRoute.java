@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 Steve Chaloner
+ * Copyright 2010-2016 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package be.objectify.deadbolt.java.filters;
 
-import java.util.Optional;
 import be.objectify.deadbolt.java.DeadboltHandler;
+
+import java.util.Optional;
 
 /**
  * Defines an authorization constraint for a given route.  The route path is the compiled path - you can get
@@ -31,13 +32,13 @@ import be.objectify.deadbolt.java.DeadboltHandler;
  * using the ANY method.
  * </p>
  *
- * @since 2.5.1
+ * @author Steve Chaloner (steve@objectify.be)
  * @see FilterConstraints
  * @see Methods
- * @author Steve Chaloner (steve@objectify.be)
+ * @since 2.5.1
  */
-public class AuthorizedRoute {
-
+public class AuthorizedRoute
+{
     private final Optional<String> method;
     private final String path;
     private final FilterFunction constraint;
@@ -47,14 +48,15 @@ public class AuthorizedRoute {
      * Define a route constraint that uses the default {@link DeadboltHandler}.  All standard Deadbolt constraints can be
      * created using {@link FilterConstraints}, or you can use a completely arbitrary {@link FilterFunction} implementation.
      *
-     * @see Methods
-     * @param method the HTTP method to match.  Use {@link Methods#ANY} if you want all methods for a given path to have the constraint.
-     * @param path the route path
+     * @param method     the HTTP method to match.  Use {@link Methods#ANY} if you want all methods for a given path to have the constraint.
+     * @param path       the route path
      * @param constraint the constraint to apply to the route
+     * @see Methods
      */
     public AuthorizedRoute(final Optional<String> method,
                            final String path,
-                           final FilterFunction constraint) {
+                           final FilterFunction constraint)
+    {
         this(method,
              path,
              constraint,
@@ -65,35 +67,40 @@ public class AuthorizedRoute {
      * Define a route constraint that uses a specific {@link DeadboltHandler}.  All standard Deadbolt constraints can be
      * created using {@link FilterConstraints}, or you can use a completely arbitrary {@link FilterFunction} implementation.
      *
-     * @see Methods
-     * @param method the HTTP method to match.  Use {@link Methods#ANY} if you want all methods for a given path to have the constraint.
-     * @param path the route path
+     * @param method     the HTTP method to match.  Use {@link Methods#ANY} if you want all methods for a given path to have the constraint.
+     * @param path       the route path
      * @param constraint the constraint to apply to the route
-     * @param handler the handler to use for this constraint
+     * @param handler    the handler to use for this constraint
+     * @see Methods
      */
     public AuthorizedRoute(final Optional<String> method,
                            final String path,
                            final FilterFunction constraint,
-                           final Optional<DeadboltHandler> handler) {
+                           final Optional<DeadboltHandler> handler)
+    {
         this.method = method;
         this.path = path;
         this.constraint = constraint;
         this.handler = handler;
     }
 
-    public FilterFunction constraint() {
+    public FilterFunction constraint()
+    {
         return constraint;
     }
 
-    public Optional<DeadboltHandler> handler() {
+    public Optional<DeadboltHandler> handler()
+    {
         return handler;
     }
 
-    public Optional<String> method() {
+    public Optional<String> method()
+    {
         return method;
     }
 
-    public String path() {
+    public String path()
+    {
         return path;
     }
 }
