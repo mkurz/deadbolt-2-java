@@ -1,18 +1,35 @@
+/*
+ * Copyright 2010-2016 Steve Chaloner
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package be.objectify.deadbolt.java.test.controllers.pattern;
 
-import be.objectify.deadbolt.java.test.DataLoader;
-import com.google.common.collect.ImmutableMap;
+import be.objectify.deadbolt.java.test.controllers.AbstractApplicationTest;
+import be.objectify.deadbolt.java.test.controllers.DataLoaderModule;
+import be.objectify.deadbolt.java.test.security.TestDeadboltHandler;
 import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Collections;
 
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
-public class CustomControllerConstraintsTest
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
+public class CustomControllerConstraintsTest extends AbstractApplicationTest
 {
 
     private static final int PORT = 3333;
@@ -27,10 +44,9 @@ public class CustomControllerConstraintsTest
     public void testProtectedByControllerLevelCustom_noSubjectIsPresent()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build())),
-                () -> {
+                           app(TestDeadboltHandler.class)),
+                () ->
+                {
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
@@ -44,11 +60,10 @@ public class CustomControllerConstraintsTest
     public void testProtectedByControllerLevelCustom_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
-                           fakeApplication(new ImmutableMap.Builder<String, String>().put("deadbolt.java.handlers.defaultHandler",
-                                                                                          "be.objectify.deadbolt.java.test.security.TestDeadboltHandler")
-                                                                                     .build(),
-                                           new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                () -> {
+                           app(TestDeadboltHandler.class,
+                               new DataLoaderModule())),
+                () ->
+                {
                     RestAssured.given()
                                .cookie("user", "lotte")
                                .expect()
@@ -62,9 +77,9 @@ public class CustomControllerConstraintsTest
     public void testProtectedByControllerLevelCustom_zombieKiller()
     {
         running(testServer(PORT,
-                           fakeApplication(Collections.emptyMap(),
-                                           new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                () -> {
+                           app()),
+                () ->
+                {
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
@@ -78,9 +93,9 @@ public class CustomControllerConstraintsTest
     public void testProtectedByControllerLevelCustom_somethingElseZombieRelated()
     {
         running(testServer(PORT,
-                           fakeApplication(Collections.emptyMap(),
-                                           new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                () -> {
+                           app()),
+                () ->
+                {
                     RestAssured.given()
                                .cookie("user", "mani")
                                .expect()
@@ -95,7 +110,8 @@ public class CustomControllerConstraintsTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () -> {
+                () ->
+                {
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()
@@ -109,9 +125,9 @@ public class CustomControllerConstraintsTest
     public void testUnrestricted_subjectHasPermission()
     {
         running(testServer(PORT,
-                           fakeApplication(Collections.emptyMap(),
-                                           new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                () -> {
+                           app()),
+                () ->
+                {
                     RestAssured.given()
                                .cookie("user", "steve")
                                .expect()
@@ -126,9 +142,9 @@ public class CustomControllerConstraintsTest
     public void testUnrestricted_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
-                           fakeApplication(Collections.emptyMap(),
-                                           new DataLoader("/be/objectify/deadbolt/java/test/standard.xml"))),
-                () -> {
+                           app()),
+                () ->
+                {
                     RestAssured.given()
                                .cookie("user", "greet")
                                .expect()

@@ -90,7 +90,8 @@ public class ConstraintLogic
         final ExecutionContextExecutor executor = executor();
         return getSubject(ctx,
                           deadboltHandler)
-                .thenApplyAsync(subjectOption -> {
+                .thenApplyAsync(subjectOption ->
+                                {
                                     boolean roleOk = false;
                                     if (subjectOption.isPresent())
                                     {
@@ -104,6 +105,40 @@ public class ConstraintLogic
                                     return roleOk;
                                 },
                                 executor)
+                .thenComposeAsync(allowed -> allowed ? pass.apply(ctx)
+                                                     : fail.apply(ctx,
+                                                                  deadboltHandler,
+                                                                  content),
+                                  executor);
+
+    }
+
+    public <T> CompletionStage<T> roleBasedPermissions(final Http.Context ctx,
+                                                       final DeadboltHandler deadboltHandler,
+                                                       final Optional<String> content,
+                                                       final String roleName,
+                                                       final Function<Http.Context, CompletionStage<T>> pass,
+                                                       final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail)
+    {
+        final ExecutionContextExecutor executor = executor();
+        return getSubject(ctx,
+                          deadboltHandler)
+                .thenComposeAsync(maybeSubject -> maybeSubject.isPresent() ? deadboltHandler.getPermissionsForRole(roleName)
+                                                                                            .thenApplyAsync(permissions -> permissions.stream()
+                                                                                                                                      .map(permission -> Optional
+                                                                                                                                              .ofNullable(patternCache
+                                                                                                                                                                  .apply(permission
+                                                                                                                                                                                 .getValue())))
+                                                                                                                                      .map(maybePattern -> analyzer
+                                                                                                                                              .checkRegexPattern(maybeSubject,
+                                                                                                                                                                 maybePattern))
+                                                                                                                                      .filter(matches -> matches)
+                                                                                                                                      .findFirst()
+                                                                                                                                      .isPresent(),
+                                                                                                            executor)
+
+                                                                           : CompletableFuture.completedFuture(false),
+                                  executor)
                 .thenComposeAsync(allowed -> allowed ? pass.apply(ctx)
                                                      : fail.apply(ctx,
                                                                   deadboltHandler,
@@ -212,7 +247,7 @@ public class ConstraintLogic
                                                 executor);
     }
 
-    private <T >CompletionStage<T> equality(final Http.Context ctx,
+    private <T> CompletionStage<T> equality(final Http.Context ctx,
                                             final DeadboltHandler deadboltHandler,
                                             final Optional<String> content,
                                             final String value,

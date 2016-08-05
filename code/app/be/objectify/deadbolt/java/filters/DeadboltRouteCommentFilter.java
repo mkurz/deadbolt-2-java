@@ -79,6 +79,12 @@ import java.util.regex.Pattern;
  * <li>handler - optional.  The name of a handler in the HandlerCache</li>
  * </ul>
  * </li>
+ * <li>deadbolt:rbp:name[role name]:handler[handler name]
+ * <ul>
+ * <li>name - required.  The name of a role, which will be used to resolve permissions from {@link DeadboltHandler#getPermissionsForRole(String)}</li>
+ * <li>handler - optional.  The name of a handler in the HandlerCache</li>
+ * </ul>
+ * </li>
  * </ul>
  * <p>
  * Restrict is a tricky one, because the possible combinations of roles leads to a nightmare to parse.  Instead, define your role constraints within the
@@ -98,6 +104,7 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
     final Pattern patternComment = Pattern.compile("deadbolt\\:(pattern)\\:value\\[(?<value>.+?)\\]\\:type\\[(?<type>EQUALITY|REGEX|CUSTOM)\\](?:\\:meta\\[(?<meta>.+?)\\]){0,1}(?:\\:invert\\[(?<invert>true|false)\\]){0,1}(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
     final Pattern compositeComment = Pattern.compile("deadbolt\\:(composite)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
     final Pattern restrictComment = Pattern.compile("deadbolt\\:(restrict)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
+    final Pattern roleBasedPermissionsComment = Pattern.compile("deadbolt\\:(rbp)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
 
     private final HandlerCache handlerCache;
     private final DeadboltHandler handler;
@@ -115,11 +122,12 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
         this.handler = handlerCache.get();
         this.filterConstraints = filterConstraints;
 
-        this.unknownDeadboltComment = new F.Tuple<>((context, requestHeader, dh, onSuccess) -> {
-            LOGGER.error("Unknown Deadbolt route comment [{}], denying access with default handler",
-                         requestHeader.tags().get(Router.Tags.ROUTE_COMMENTS));
-            return dh.onAuthFailure(context, Optional.empty());
-        }, handler);
+        this.unknownDeadboltComment = new F.Tuple<>((context, requestHeader, dh, onSuccess) ->
+                                                    {
+                                                        LOGGER.error("Unknown Deadbolt route comment [{}], denying access with default handler",
+                                                                     requestHeader.tags().get(Router.Tags.ROUTE_COMMENTS));
+                                                        return dh.onAuthFailure(context, Optional.empty());
+                                                    }, handler);
     }
 
     /**
@@ -135,7 +143,7 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
     {
         final String comment = requestHeader.tags().get(Router.Tags.ROUTE_COMMENTS);
         final CompletionStage<Result> result;
-        if (comment.startsWith("deadbolt:"))
+        if (comment != null && comment.startsWith("deadbolt:"))
         {
             // this is horrible
             final F.Tuple<FilterFunction, DeadboltHandler> tuple = subjectPresent(comment).orElseGet(() -> subjectNotPresent(comment)
@@ -143,7 +151,8 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
                             .orElseGet(() -> composite(comment)
                                     .orElseGet(() -> restrict(comment)
                                             .orElseGet(() -> pattern(comment)
-                                                    .orElse(unknownDeadboltComment))))));
+                                                    .orElseGet(() -> roleBasedPermissionsComment(comment)
+                                                            .orElse(unknownDeadboltComment)))))));
             result = tuple._1.apply(context(requestHeader),
                                     requestHeader,
                                     tuple._2,
@@ -196,6 +205,15 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
         final Matcher matcher = restrictComment.matcher(comment);
         return matcher.matches() ? Optional.of(new F.Tuple<>(filterConstraints.composite(matcher.group("name"),
                                                                                          Optional.ofNullable(matcher.group("content"))),
+                                                             handler(matcher)))
+                                 : Optional.empty();
+    }
+
+    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> roleBasedPermissionsComment(final String comment)
+    {
+        final Matcher matcher = roleBasedPermissionsComment.matcher(comment);
+        return matcher.matches() ? Optional.of(new F.Tuple<>(filterConstraints.roleBasedPermissions(matcher.group("name"),
+                                                                                                    Optional.ofNullable(matcher.group("content"))),
                                                              handler(matcher)))
                                  : Optional.empty();
     }

@@ -27,6 +27,9 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
 public class ConstraintTreeTest extends AbstractConstraintTest
 {
     private final Http.Context context = Mockito.mock(Http.Context.class);

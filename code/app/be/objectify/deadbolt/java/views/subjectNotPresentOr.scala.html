@@ -4,7 +4,7 @@
 @(handler: DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)(alternativeBody: => Html)
 
 @if(viewSupport.viewSubjectNotPresent(handler, content, timeout.get())) {
-@body
+    @body
 } else {
-@alternativeBody
+    @alternativeBody
 }

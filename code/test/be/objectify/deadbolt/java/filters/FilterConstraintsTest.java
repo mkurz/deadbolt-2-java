@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2016 Steve Chaloner
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package be.objectify.deadbolt.java.filters;
 
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
@@ -13,6 +28,7 @@ import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.composite.SubjectPresentConstraint;
 import be.objectify.deadbolt.java.models.PatternType;
+import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.testsupport.FakeCache;
 import be.objectify.deadbolt.java.testsupport.TestCookies;
@@ -24,6 +40,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -32,6 +50,7 @@ import play.routing.Router;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -114,7 +133,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -132,7 +152,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -150,7 +171,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -171,7 +193,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -192,7 +215,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -210,7 +234,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -228,7 +253,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -249,7 +275,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -272,7 +299,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -293,7 +321,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -313,7 +342,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -337,7 +367,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -361,7 +392,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -382,7 +414,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -414,7 +447,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -435,7 +469,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -459,7 +494,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -494,7 +530,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -519,7 +556,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -541,7 +579,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -574,7 +613,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -596,7 +636,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -621,7 +662,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -657,7 +699,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -682,7 +725,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -707,7 +751,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -743,7 +788,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -768,7 +814,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -790,7 +837,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -823,7 +871,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -847,7 +896,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -871,7 +921,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -906,7 +957,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -930,7 +982,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -957,7 +1010,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -995,7 +1049,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1022,7 +1077,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1049,7 +1105,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1087,7 +1144,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1114,7 +1172,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1138,7 +1197,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1173,7 +1233,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1203,7 +1264,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1234,7 +1296,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1266,7 +1329,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1296,7 +1360,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1330,7 +1395,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1365,7 +1431,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1386,7 +1453,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1405,7 +1473,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1423,7 +1492,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1445,7 +1515,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1467,7 +1538,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1487,7 +1559,8 @@ public class FilterConstraintsTest
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1501,12 +1574,22 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+        Mockito.when(handler.getPermissionsForRole("foo"))
+               .then(new Answer<List<? extends Permission>>()
+               {
+                   @Override
+                   public List<? extends Permission> answer(final InvocationOnMock invocation) throws Throwable
+                   {
+                       return Collections.singletonList(new TestPermission("bar"));
+                   }
+               });
         final CompletionStage<Result> eventualResult = filterConstraints.composite(new SubjectPresentConstraint(Optional.empty(),
                                                                                                                 constraintLogic))
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });
@@ -1523,13 +1606,153 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+        Mockito.when(handler.getPermissionsForRole("foo"))
+               .then(new Answer<List<? extends Permission>>()
+               {
+                   @Override
+                   public List<? extends Permission> answer(final InvocationOnMock invocation) throws Throwable
+                   {
+                       return Collections.singletonList(new TestPermission("bar"));
+                   }
+               });
         final CompletionStage<Result> eventualResult = filterConstraints.composite(new SubjectPresentConstraint(Optional.empty(),
                                                                                                                 constraintLogic),
                                                                                    Optional.of("json"))
                                                                         .apply(context,
                                                                                requestHeader,
                                                                                handler,
-                                                                               rh -> {
+                                                                               rh ->
+                                                                               {
+                                                                                   flag[0] = true;
+                                                                                   return CompletableFuture.completedFuture(Results.ok());
+                                                                               });
+        ((CompletableFuture) eventualResult).get();
+        Assert.assertFalse(flag[0]);
+        Mockito.verify(handler,
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                                                       Mockito.eq(Optional.of("json")));
+    }
+
+    @Test
+    public void testRoleBasedPermissions_pass() throws Exception
+    {
+        final boolean[] flag = {false};
+        final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar"))
+                                                             .build();
+        Mockito.when(handler.getSubject(context))
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
+        Mockito.when(handler.getPermissionsForRole("foo"))
+               .then(new Answer<CompletionStage<List<? extends Permission>>>()
+               {
+                   @Override
+                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
+                   {
+                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
+                   }
+               });
+        final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo")
+                                                                        .apply(context,
+                                                                               requestHeader,
+                                                                               handler,
+                                                                               rh ->
+                                                                               {
+                                                                                   flag[0] = true;
+                                                                                   return CompletableFuture.completedFuture(Results.ok());
+                                                                               });
+        ((CompletableFuture) eventualResult).get();
+        Assert.assertTrue(flag[0]);
+    }
+
+    @Test
+    public void testRoleBasedPermissions_withContent_pass() throws Exception
+    {
+        final boolean[] flag = {false};
+        final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar"))
+                                                             .build();
+        Mockito.when(handler.getSubject(context))
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
+        Mockito.when(handler.getPermissionsForRole("foo"))
+               .then(new Answer<CompletionStage<List<? extends Permission>>>()
+               {
+                   @Override
+                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
+                   {
+                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
+                   }
+               });
+        final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo",
+                                                                                              Optional.of("json"))
+                                                                        .apply(context,
+                                                                               requestHeader,
+                                                                               handler,
+                                                                               rh ->
+                                                                               {
+                                                                                   flag[0] = true;
+                                                                                   return CompletableFuture.completedFuture(Results.ok());
+                                                                               });
+        ((CompletableFuture) eventualResult).get();
+        Assert.assertTrue(flag[0]);
+    }
+
+    @Test
+    public void testRoleBasedPermissions_fail() throws Exception
+    {
+        final boolean[] flag = {false};
+        final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("hurdy"))
+                                                             .build();
+        Mockito.when(handler.getSubject(context))
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
+        Mockito.when(handler.getPermissionsForRole("foo"))
+               .then(new Answer<CompletionStage<List<? extends Permission>>>()
+               {
+                   @Override
+                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
+                   {
+                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
+                   }
+               });
+
+        final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo")
+                                                                        .apply(context,
+                                                                               requestHeader,
+                                                                               handler,
+                                                                               rh ->
+                                                                               {
+                                                                                   flag[0] = true;
+                                                                                   return CompletableFuture.completedFuture(Results.ok());
+                                                                               });
+        ((CompletableFuture) eventualResult).get();
+        Assert.assertFalse(flag[0]);
+        Mockito.verify(handler,
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                                                       Mockito.eq(Optional.empty()));
+    }
+
+    @Test
+    public void testRoleBasedPermissions_withContent_fail() throws Exception
+    {
+        final boolean[] flag = {false};
+        final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("hurdy"))
+                                                             .build();
+        Mockito.when(handler.getSubject(context))
+               .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
+        Mockito.when(handler.getPermissionsForRole("foo"))
+               .then(new Answer<CompletionStage<List<? extends Permission>>>()
+               {
+                   @Override
+                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
+                   {
+                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
+                   }
+               });
+
+        final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo",
+                                                                                              Optional.of("json"))
+                                                                        .apply(context,
+                                                                               requestHeader,
+                                                                               handler,
+                                                                               rh ->
+                                                                               {
                                                                                    flag[0] = true;
                                                                                    return CompletableFuture.completedFuture(Results.ok());
                                                                                });

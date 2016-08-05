@@ -1,0 +1,10 @@
+@import be.objectify.deadbolt.java.DeadboltHandler
+@import be.objectify.deadbolt.java.ViewAccessPoint.Implicits._
+@import play.api.Play.current
+@(roleName: String, handler: DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)(alternativeBody: => Html)
+
+@if(viewSupport.viewRoleBasedPermissions(roleName, handler, content, timeout.get())) {
+    @body
+} else {
+    @alternativeBody
+}

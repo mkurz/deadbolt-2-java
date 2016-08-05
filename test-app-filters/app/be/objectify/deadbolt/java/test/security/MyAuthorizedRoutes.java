@@ -1,32 +1,52 @@
+/*
+ * Copyright 2013 Steve Chaloner
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package be.objectify.deadbolt.java.test.security;
+
+import be.objectify.deadbolt.java.filters.AuthorizedRoute;
+import be.objectify.deadbolt.java.filters.AuthorizedRoutes;
+import be.objectify.deadbolt.java.filters.FilterConstraints;
+import be.objectify.deadbolt.java.models.PatternType;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static be.objectify.deadbolt.java.utils.TemplateUtils.allOf;
 import static be.objectify.deadbolt.java.utils.TemplateUtils.allOfGroup;
 import static be.objectify.deadbolt.java.utils.TemplateUtils.anyOf;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import be.objectify.deadbolt.java.filters.AuthorizedRoute;
-import be.objectify.deadbolt.java.filters.AuthorizedRoutes;
-import be.objectify.deadbolt.java.filters.FilterConstraints;
-import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.utils.TemplateUtils;
-
-public class MyAuthorizedRoutes extends AuthorizedRoutes {
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
+public class MyAuthorizedRoutes extends AuthorizedRoutes
+{
 
     private static final Optional<String> GET = Optional.of("GET");
 
     @Inject
-    public MyAuthorizedRoutes(final Provider<FilterConstraints> filterConstraints) {
+    public MyAuthorizedRoutes(final Provider<FilterConstraints> filterConstraints)
+    {
         super(filterConstraints);
     }
 
     @Override
-    public List<AuthorizedRoute> routes() {
+    public List<AuthorizedRoute> routes()
+    {
         return Arrays.asList(new AuthorizedRoute(GET,
                                                  "/restrict/rp/restrictedToFooAndBar",
                                                  filterConstraints.restrict(allOfGroup("foo", "bar"))),
@@ -89,6 +109,9 @@ public class MyAuthorizedRoutes extends AuthorizedRoutes {
                                                  "/pattern/invert/custom/rp/checkCustom",
                                                  filterConstraints.pattern("i-do-not-like-ice-cream",
                                                                            PatternType.CUSTOM,
-                                                                           true)));
+                                                                           true)),
+                             new AuthorizedRoute(GET,
+                                                 "/rbp/rp/index",
+                                                 filterConstraints.roleBasedPermissions("foo")));
     }
 }

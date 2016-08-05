@@ -17,6 +17,9 @@ package be.objectify.deadbolt.java.composite;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
 
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
 public class SubjectNotPresentConstraintBuilderTest extends AbstractSubjectNotPresentConstraintTest implements ConstraintLogicMixin
 {
     @Override

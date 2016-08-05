@@ -24,6 +24,9 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
 public abstract class AbstractSubjectPresentConstraintTest extends AbstractConstraintTest
 {
     @Test

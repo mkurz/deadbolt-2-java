@@ -16,12 +16,10 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.SubjectCache;
 import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -66,12 +64,13 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                                                                                                                     handler,
                                                                                                                     Optional.ofNullable(configuration.content())),
                                                                             executor))
-                             .orElseGet(() -> {
-                                 markActionAsUnauthorised(ctx);
-                                 return onAuthFailure(handler,
-                                                      Optional.ofNullable(configuration.content()),
-                                                      ctx);
-                             });
+                             .orElseGet(() ->
+                                        {
+                                            markActionAsUnauthorised(ctx);
+                                            return onAuthFailure(handler,
+                                                                 Optional.ofNullable(configuration.content()),
+                                                                 ctx);
+                                        });
     }
 
     public String getMeta()

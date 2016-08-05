@@ -89,7 +89,7 @@ public class TemplateUtils
      *
      * @param args the arguments
      * @return the arguments as an array
-     * @deprecated  use {@link TemplateUtils#allOf} instead
+     * @deprecated use {@link TemplateUtils#allOf} instead
      */
     @Deprecated
     public static String[] as(final String... args)
@@ -113,7 +113,7 @@ public class TemplateUtils
      *
      * @param args the arguments
      * @return a non-null list containing the arguments
-     * @deprecated  use {@link TemplateUtils#anyOf} instead
+     * @deprecated use {@link TemplateUtils#anyOf} instead
      */
     @Deprecated
     public static List<String[]> la(final String[]... args)

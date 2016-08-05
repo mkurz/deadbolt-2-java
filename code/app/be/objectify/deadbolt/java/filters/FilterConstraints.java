@@ -409,6 +409,32 @@ public class FilterConstraints
                                          executor);
     }
 
+    public FilterFunction roleBasedPermissions(final String roleName)
+    {
+        return roleBasedPermissions(roleName,
+                                    Optional.empty());
+    }
+
+    public FilterFunction roleBasedPermissions(final String roleName,
+                                               final Optional<String> content)
+    {
+        final ExecutionContextExecutor executor = executor();
+        return (Http.Context context,
+                Http.RequestHeader requestHeader,
+                DeadboltHandler handler,
+                Function<Http.RequestHeader, CompletionStage<Result>> next) ->
+                handler.beforeAuthCheck(context)
+                       .thenComposeAsync(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                     .orElseGet(() -> constraintLogic.roleBasedPermissions(context,
+                                                                                                                           handler,
+                                                                                                                           content,
+                                                                                                                           roleName,
+                                                                                                                           ctx -> next.apply(requestHeader),
+                                                                                                                           (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                                                                                     cntent))),
+                                         executor);
+    }
+
     private ExecutionContextExecutor executor()
     {
         final ExecutionContext executionContext = executionContextProvider.get();

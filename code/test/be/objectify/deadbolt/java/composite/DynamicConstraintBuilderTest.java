@@ -19,6 +19,9 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 
 import java.util.Optional;
 
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
 public class DynamicConstraintBuilderTest extends AbstractDynamicConstraintTest implements ConstraintLogicMixin
 {
     @Override

@@ -69,7 +69,8 @@ public class ViewSupport
                     timeout);
         this.defaultTimeout = () -> timeout;
 
-        timeoutHandler = (timeoutInMillis, e) -> {
+        timeoutHandler = (timeoutInMillis, e) ->
+        {
             LOGGER.error("Timeout when attempting to complete future within [{}]ms.  Denying access to resource.",
                          timeoutInMillis,
                          e);
@@ -78,7 +79,6 @@ public class ViewSupport
             return false;
         };
     }
-
 
     /**
      * Used for restrict tags in the template.
@@ -237,6 +237,39 @@ public class ViewSupport
                                            e);
         }
 
+        return allowed;
+    }
+
+    /**
+     * Used for role-based permissions tags in the template.
+     *
+     * @param roleName the role name that is the key for the permission set
+     * @return true if the view can be accessed, otherwise false
+     */
+    public boolean viewRoleBasedPermissions(final String roleName,
+                                            final DeadboltHandler handler,
+                                            final Optional<String> content,
+                                            final long timeoutInMillis) throws Throwable
+    {
+        boolean allowed;
+        try
+        {
+            allowed = constraintLogic.roleBasedPermissions(Http.Context.current(),
+                                                           handler(handler),
+                                                           content,
+                                                           roleName,
+                                                           ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                                           (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
+                                     .toCompletableFuture()
+                                     .get(timeoutInMillis,
+                                          TimeUnit.MILLISECONDS);
+
+        }
+        catch (TimeoutException e)
+        {
+            allowed = timeoutHandler.apply(timeoutInMillis,
+                                           e);
+        }
         return allowed;
     }
 

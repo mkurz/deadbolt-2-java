@@ -20,19 +20,24 @@ import java.util.function.BiFunction;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public enum Operator implements BiFunction<Constraint, Constraint, Constraint> {
-    AND {
-        @Override
-        public Constraint apply(final Constraint c1,
-                                final Constraint c2) {
-            return c1.and(c2);
-        }
-    },
-    OR {
-        @Override
-        public Constraint apply(final Constraint c1,
-                                final Constraint c2) {
-            return c1.or(c2);
-        }
-    }
+public enum Operator implements BiFunction<Constraint, Constraint, Constraint>
+{
+    AND
+            {
+                @Override
+                public Constraint apply(final Constraint c1,
+                                        final Constraint c2)
+                {
+                    return c1.and(c2);
+                }
+            },
+    OR
+            {
+                @Override
+                public Constraint apply(final Constraint c1,
+                                        final Constraint c2)
+                {
+                    return c1.or(c2);
+                }
+            }
 }

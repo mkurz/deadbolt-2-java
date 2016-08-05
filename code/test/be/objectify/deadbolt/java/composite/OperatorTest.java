@@ -18,6 +18,9 @@ package be.objectify.deadbolt.java.composite;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
 public class OperatorTest
 {
     @Test
@@ -39,7 +42,7 @@ public class OperatorTest
         final Constraint c1 = Mockito.mock(Constraint.class);
         final Constraint c2 = Mockito.mock(Constraint.class);
         Operator.OR.apply(c1,
-                           c2);
+                          c2);
         Mockito.verify(c1, Mockito.times(1))
                .or(c2);
         Mockito.verifyNoMoreInteractions(c1,

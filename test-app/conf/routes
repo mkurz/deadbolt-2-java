@@ -13,6 +13,8 @@ GET        /restrict/c/restrictedToFooAndNotBar/open                            
 GET        /restrict/c/restrictedToFooOrNotBar                                           be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.index()
 GET        /restrict/c/restrictedToFooOrNotBar/open                                      be.objectify.deadbolt.java.test.controllers.restrict.RestrictedToFooOrNotBar.unrestricted()
 
+GET        /rbp/index                                                                    be.objectify.deadbolt.java.test.controllers.rbp.RoleBasedPermissionsMethodConstraints.index()
+
 # SubjectPresent constraints
 GET        /subject/present/m/subjectMustBePresent                                       be.objectify.deadbolt.java.test.controllers.subject.SubjectPresentForMethod.subjectMustBePresent()
 GET        /subject/present/m/subjectMustBePresentInUnrestrictedController               be.objectify.deadbolt.java.test.controllers.subject.ExplicitlyUnrestrictedControllerWithSubjectPresentForMethod.subjectMustBePresent()

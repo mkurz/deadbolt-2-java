@@ -56,7 +56,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
 
     final HandlerCache handlerCache;
-    
+
     final Configuration config;
 
     final DeadboltExecutionContextProvider executionContextProvider;
@@ -85,7 +85,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * - the global handler defined in the application.conf by deadbolt.handler.  This has the lowest priority.
      *
      * @param handlerKey the DeadboltHandler key, if any, coming from the annotation.
-     * @param <C>                  the actual class of the DeadboltHandler
+     * @param <C>        the actual class of the DeadboltHandler
      * @return an option for the DeadboltHandler.
      */
     protected <C extends DeadboltHandler> DeadboltHandler getDeadboltHandler(final String handlerKey)
@@ -95,7 +95,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         return handlerCache.apply(handlerKey);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompletionStage<Result> call(final Http.Context ctx)
     {
@@ -110,7 +112,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
             }
             else if (!ctx.args.containsKey(IGNORE_DEFERRED_FLAG)
                     && annClass.isAnnotationPresent(Deferrable.class)
-                    && (Boolean)annClass.getMethod("deferred").invoke(configuration))
+                    && (Boolean) annClass.getMethod("deferred").invoke(configuration))
             {
                 defer(ctx,
                       this);
@@ -218,7 +220,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     /**
      * Defer execution until a later point.
      *
-     * @param ctx the request context
+     * @param ctx    the request context
      * @param action the action to defer
      */
     protected void defer(final Http.Context ctx,
@@ -256,7 +258,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         final Object o = ctx.args.get(ACTION_DEFERRED);
         if (o != null)
         {
-            action = (AbstractDeadboltAction)o;
+            action = (AbstractDeadboltAction) o;
 
             ctx.args.remove(ACTION_DEFERRED);
             ctx.args.put(IGNORE_DEFERRED_FLAG,
@@ -346,6 +348,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     @SuppressWarnings("unchecked")
     private static <T extends Throwable> void sneakyThrow0(final Throwable t) throws T
     {
-        throw (T)t;
+        throw (T) t;
     }
 }

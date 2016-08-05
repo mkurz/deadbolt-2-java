@@ -77,7 +77,7 @@ public interface DynamicResourceHandler
      * @param permissionValue the permission value
      * @param meta            additional information on the resource
      * @param deadboltHandler the current {@link DeadboltHandler}
-     * @param ctx the context of the current request
+     * @param ctx             the context of the current request
      * @return true if access based on the permission is  allowed, otherwise false
      */
     CompletionStage<Boolean> checkPermission(String permissionValue,

@@ -67,11 +67,12 @@ public class DefaultSubjectCache implements SubjectCache
                 final ExecutionContext executionContext = executionContextProvider.get();
                 final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
                 promise = deadboltHandler.getSubject(context)
-                                         .thenApplyAsync(subjectOption -> {
-                                             subjectOption.ifPresent(subject -> context.args.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
-                                                                                                 subject));
-                                             return subjectOption;
-                                         }, executor);
+                                         .thenApplyAsync(subjectOption ->
+                                                         {
+                                                             subjectOption.ifPresent(subject -> context.args.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
+                                                                                                                 subject));
+                                                             return subjectOption;
+                                                         }, executor);
             }
         }
         else

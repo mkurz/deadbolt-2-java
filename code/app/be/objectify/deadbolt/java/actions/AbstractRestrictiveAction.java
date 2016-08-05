@@ -62,7 +62,7 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .thenComposeAsync(option -> option.map(value -> (CompletionStage<Result>)CompletableFuture.completedFuture(value))
+                    .thenComposeAsync(option -> option.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
                                                       .orElseGet(() -> applyRestriction(ctx,
                                                                                         deadboltHandler)),
                                       executor);

@@ -32,7 +32,7 @@ import java.util.concurrent.CompletionStage;
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class  BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
+public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
 {
     @Inject
     public BeforeAccessAction(final HandlerCache handlerCache,
@@ -62,7 +62,7 @@ public class  BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .thenComposeAsync(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>)CompletableFuture.completedFuture(r))
+                    .thenComposeAsync(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>) CompletableFuture.completedFuture(r))
                                                                     .orElseGet(() -> sneakyCall(delegate, ctx)),
                                       executor);
         }

@@ -15,11 +15,15 @@
  */
 package be.objectify.deadbolt.java;
 
+import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -78,5 +82,16 @@ public interface DeadboltHandler
     default String handlerName()
     {
         return getClass().getName();
+    }
+
+    /**
+     * Get the permissions associated with a role.
+     *
+     * @param roleName the role the permissions are associated with
+     * @return a non-null list containing the permissions associated with the role
+     */
+    default CompletionStage<List<? extends Permission>> getPermissionsForRole(String roleName)
+    {
+        return CompletableFuture.completedFuture(Collections.emptyList());
     }
 }

@@ -19,8 +19,8 @@ package be.objectify.deadbolt.java.models;
  * A role that can be held by a {@link Subject}.  Checks should done on the name of the role, not using object equality
  * on the Role itself.
  *
- * @see be.objectify.deadbolt.java.models.Subject#getRoles()
  * @author Steve Chaloner (steve@objectify.be)
+ * @see be.objectify.deadbolt.java.models.Subject#getRoles()
  */
 public interface Role
 {

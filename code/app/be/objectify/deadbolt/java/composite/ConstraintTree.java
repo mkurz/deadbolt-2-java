@@ -52,7 +52,8 @@ public class ConstraintTree implements Constraint
                                          final Executor executor)
     {
         final CompletionStage<Boolean> result;
-        if (constraints.isEmpty()) {
+        if (constraints.isEmpty())
+        {
             result = CompletableFuture.completedFuture(false);
         }
         else

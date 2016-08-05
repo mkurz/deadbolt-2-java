@@ -28,6 +28,9 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
+/**
+ * @author Steve Chaloner (steve@objectify.be)
+ */
 public abstract class AbstractRestrictConstraintTest extends AbstractConstraintTest
 {
     @Test
@@ -106,7 +109,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"),
                                                                            new TestRole("bar"))),
                                                  Arrays.asList(new String[]{"foo", "bar"},
-                                                                           new String[]{"hurdy", "gurdy"}));
+                                                               new String[]{"hurdy", "gurdy"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("foo"),
                                                                                           new TestRole("bar"))),

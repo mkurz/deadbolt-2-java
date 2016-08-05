@@ -79,7 +79,7 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
         Mockito.when(c2.test(Mockito.any(Http.Context.class),
                              Mockito.any(DeadboltHandler.class),
                              Mockito.any(Executor.class)))
-                .thenReturn(CompletableFuture.completedFuture(false));
+               .thenReturn(CompletableFuture.completedFuture(false));
         final F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy = satisfy();
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1)));
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1.or(c2))));

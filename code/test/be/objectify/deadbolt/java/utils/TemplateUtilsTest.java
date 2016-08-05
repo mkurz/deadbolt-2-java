@@ -59,7 +59,7 @@ public class TemplateUtilsTest
     @Test
     public void testAllOf_nullArrayInput()
     {
-        final String[] array = TemplateUtils.allOf((String[])null);
+        final String[] array = TemplateUtils.allOf((String[]) null);
         Assert.assertNotNull(array);
         Assert.assertEquals(0,
                             array.length);
@@ -68,7 +68,7 @@ public class TemplateUtilsTest
     @Test
     public void testAllOf_nullStringInput()
     {
-        final String[] array = TemplateUtils.allOf((String)null);
+        final String[] array = TemplateUtils.allOf((String) null);
         Assert.assertNotNull(array);
         Assert.assertEquals(1,
                             array.length);
@@ -111,7 +111,7 @@ public class TemplateUtilsTest
     @Test
     public void testAs_nullArrayInput()
     {
-        final String[] array = TemplateUtils.as((String[])null);
+        final String[] array = TemplateUtils.as((String[]) null);
         Assert.assertNotNull(array);
         Assert.assertEquals(0,
                             array.length);
@@ -120,7 +120,7 @@ public class TemplateUtilsTest
     @Test
     public void testAs_nullStringInput()
     {
-        final String[] array = TemplateUtils.as((String)null);
+        final String[] array = TemplateUtils.as((String) null);
         Assert.assertNotNull(array);
         Assert.assertEquals(1,
                             array.length);

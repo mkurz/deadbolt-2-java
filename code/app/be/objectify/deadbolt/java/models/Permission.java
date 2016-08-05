@@ -19,8 +19,8 @@ package be.objectify.deadbolt.java.models;
  * A permission that can be held by a {@link Subject}.  Checks should done on the value of the permission, not using
  * object equality on the Permission itself.
  *
- * @see be.objectify.deadbolt.java.models.Subject#getPermissions()
  * @author Steve Chaloner (steve@objectify.be)
+ * @see be.objectify.deadbolt.java.models.Subject#getPermissions()
  */
 public interface Permission
 {
