@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
@@ -25,7 +26,9 @@ import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
 
 /**
  * Implements the {@link SubjectPresent} functionality, i.e. a {@link be.objectify.deadbolt.java.models.Subject} must be provided by the
@@ -77,5 +80,19 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
         return unauthorizeAndFail(context,
                                   handler,
                                   content);
+    }
+
+    @Override
+    protected Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
+                                                            final Http.Context content,
+                                                            final Config config,
+                                                            final DeadboltHandler deadboltHandler)
+    {
+        return () -> constraintLogic.subjectPresent(content,
+                                                    deadboltHandler,
+                                                    config.content,
+                                                    this::present,
+                                                    this::notPresent,
+                                                    ConstraintPoint.CONTROLLER).toCompletableFuture();
     }
 }

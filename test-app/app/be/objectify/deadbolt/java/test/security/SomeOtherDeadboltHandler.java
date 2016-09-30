@@ -17,10 +17,13 @@ package be.objectify.deadbolt.java.test.security;
 
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.test.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -39,6 +42,8 @@ import java.util.concurrent.CompletionStage;
 @HandlerQualifiers.SomeOtherHandler
 public class SomeOtherDeadboltHandler extends AbstractDeadboltHandler
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SomeOtherDeadboltHandler.class);
+
     @Inject
     public SomeOtherDeadboltHandler(final ExecutionContextProvider ecProvider)
     {
@@ -61,5 +66,16 @@ public class SomeOtherDeadboltHandler extends AbstractDeadboltHandler
     public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
     {
         return CompletableFuture.completedFuture(Optional.empty());
+    }
+
+    @Override
+    public void onAuthSuccess(Http.Context context,
+                              String constraintType,
+                              ConstraintPoint constraintPoint)
+    {
+        LOGGER.info("[{} - {}] - authorization succeeded for [{}]",
+                    constraintPoint,
+                    constraintType,
+                    context.args);
     }
 }

@@ -85,6 +85,19 @@ public interface DeadboltHandler
     }
 
     /**
+     * Invoked when access to a resource is authorized.
+     *
+     * @param context the context, can be used to get various bits of information such as the route and method
+     * @param constraintType the type of constraint, e.g. Dynamic, etc
+     * @param constraintPoint the point at which the constraint was amplied
+     */
+    default void onAuthSuccess(final Http.Context context,
+                               final String constraintType,
+                               final ConstraintPoint constraintPoint) {
+        // no-op
+    }
+
+    /**
      * Get the permissions associated with a role.
      *
      * @param roleName the role the permissions are associated with

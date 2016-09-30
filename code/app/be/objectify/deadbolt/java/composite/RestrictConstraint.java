@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.composite;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import play.mvc.Http;
 
@@ -57,6 +58,7 @@ public class RestrictConstraint implements Constraint
                                         content,
                                         () -> roleGroups,
                                         ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                        (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE));
+                                        (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                        ConstraintPoint.CONTROLLER);
     }
 }

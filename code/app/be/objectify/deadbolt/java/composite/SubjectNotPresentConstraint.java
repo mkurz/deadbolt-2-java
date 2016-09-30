@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.composite;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import play.mvc.Http;
 
@@ -43,11 +44,12 @@ public class SubjectNotPresentConstraint implements Constraint
                                          final DeadboltHandler handler,
                                          final Executor executor)
     {
-        return constraintLogic.subjectPresent(context,
-                                              handler,
-                                              content,
-                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
-                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE));
+        return constraintLogic.subjectNotPresent(context,
+                                                 handler,
+                                                 content,
+                                                 (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                                 (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                                 ConstraintPoint.CONTROLLER);
 
     }
 }

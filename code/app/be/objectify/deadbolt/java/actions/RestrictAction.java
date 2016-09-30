@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
@@ -74,7 +75,8 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                                         Optional.ofNullable(configuration.content()),
                                         this::getRoleGroups,
                                         this::authorizeAndExecute,
-                                        this::unauthorizeAndFail);
+                                        this::unauthorizeAndFail,
+                                        ConstraintPoint.CONTROLLER);
     }
 
     public List<String[]> getRoleGroups()

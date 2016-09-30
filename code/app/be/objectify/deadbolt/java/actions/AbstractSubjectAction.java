@@ -27,6 +27,7 @@ import scala.concurrent.ExecutionContextExecutor;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -72,16 +73,19 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
                              content,
                              deadboltHandler)
                     .thenComposeAsync(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
-                                                                  .orElseGet(() -> constraintLogic.subjectPresent(content,
-                                                                                                                  deadboltHandler,
-                                                                                                                  config.content,
-                                                                                                                  this::present,
-                                                                                                                  this::notPresent)
-                                                                                                  .toCompletableFuture()),
+                                                                  .orElseGet(testSubject(constraintLogic,
+                                                                                         content,
+                                                                                         config,
+                                                                                         deadboltHandler)),
                                       executor);
         }
         return maybeBlock(result);
     }
+
+    abstract Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
+                                                              final Http.Context content,
+                                                              final Config config,
+                                                              final DeadboltHandler deadboltHandler);
 
     abstract Config config();
 

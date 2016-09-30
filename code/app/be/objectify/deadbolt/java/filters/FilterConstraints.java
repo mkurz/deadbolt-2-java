@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.filters;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
@@ -63,7 +64,7 @@ public class FilterConstraints
      * A constraint that requires a subject to be present.
      *
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction)
+     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectPresent()
     {
@@ -75,7 +76,7 @@ public class FilterConstraints
      *
      * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction)
+     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectPresent(final Optional<String> content)
     {
@@ -91,7 +92,8 @@ public class FilterConstraints
                                                                                                                      content,
                                                                                                                      (ctx, hdlr, cntent) -> next.apply(requestHeader),
                                                                                                                      (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
-                                                                                                                                                               cntent))),
+                                                                                                                                                               cntent),
+                                                                                                                     ConstraintPoint.CONTROLLER)),
                                          executor);
     }
 
@@ -99,7 +101,7 @@ public class FilterConstraints
      * A constraint that requires a subject to not be present.
      *
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction)
+     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectNotPresent()
     {
@@ -111,7 +113,7 @@ public class FilterConstraints
      *
      * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction)
+     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectNotPresent(final Optional<String> content)
     {
@@ -122,12 +124,13 @@ public class FilterConstraints
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 handler.beforeAuthCheck(context)
                        .thenComposeAsync(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                     .orElseGet(() -> constraintLogic.subjectPresent(context,
-                                                                                                                     handler,
-                                                                                                                     content,
-                                                                                                                     (ctx, hdlr, cntent) -> hdlr.onAuthFailure(context,
-                                                                                                                                                               cntent),
-                                                                                                                     (ctx, hdlr, cntent) -> next.apply(requestHeader))),
+                                                                     .orElseGet(() -> constraintLogic.subjectNotPresent(context,
+                                                                                                                        handler,
+                                                                                                                        content,
+                                                                                                                        (ctx, hdlr, cntent) -> hdlr.onAuthFailure(context,
+                                                                                                                                                                  cntent),
+                                                                                                                        (ctx, hdlr, cntent) -> next.apply(requestHeader),
+                                                                                                                        ConstraintPoint.CONTROLLER)),
                                          executor);
     }
 
@@ -136,7 +139,7 @@ public class FilterConstraints
      *
      * @param roleGroups
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#restrict(Http.Context, DeadboltHandler, Optional, Supplier, Function, TriFunction)
+     * @see ConstraintLogic#restrict(Http.Context, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction restrict(final List<String[]> roleGroups)
     {
@@ -150,7 +153,7 @@ public class FilterConstraints
      * @param roleGroups
      * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#restrict(Http.Context, DeadboltHandler, Optional, Supplier, Function, TriFunction)
+     * @see ConstraintLogic#restrict(Http.Context, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction restrict(final List<String[]> roleGroups,
                                    final Optional<String> content)
@@ -168,7 +171,8 @@ public class FilterConstraints
                                                                                                                () -> roleGroups,
                                                                                                                ctx -> next.apply(requestHeader),
                                                                                                                (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
-                                                                                                                                                         cntent))),
+                                                                                                                                                         cntent),
+                                                                                                               ConstraintPoint.CONTROLLER)),
                                          executor);
     }
 
@@ -180,7 +184,7 @@ public class FilterConstraints
      * @param value       the constraint value
      * @param patternType the type of pattern matching
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction)
+     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType)
@@ -199,7 +203,7 @@ public class FilterConstraints
      * @param patternType the type of pattern matching
      * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)}
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction)
+     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType,
@@ -221,7 +225,7 @@ public class FilterConstraints
      * @param patternType the type of pattern matching
      * @param invert      invert the meaning of the constraint, where a successful match results in authorization failing
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction)
+     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType,
@@ -245,7 +249,7 @@ public class FilterConstraints
      * @param invert      invert the meaning of the constraint, where a successful match results in authorization failing
      * @param content     is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction)
+     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType,
@@ -269,7 +273,8 @@ public class FilterConstraints
                                                                                                               invert,
                                                                                                               ctx -> next.apply(requestHeader),
                                                                                                               (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
-                                                                                                                                                        cntent))),
+                                                                                                                                                        cntent),
+                                                                                                              ConstraintPoint.CONTROLLER)),
                                          executor);
     }
 
@@ -279,7 +284,7 @@ public class FilterConstraints
      *
      * @param name the name of the constraint
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction)
+     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction dynamic(final String name)
     {
@@ -294,7 +299,7 @@ public class FilterConstraints
      * @param name the name of the constraint
      * @param meta additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction)
+     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction dynamic(final String name,
                                   final Optional<String> meta)
@@ -312,7 +317,7 @@ public class FilterConstraints
      * @param meta    additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
      * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction)
+     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction dynamic(final String name,
                                   final Optional<String> meta,
@@ -332,7 +337,8 @@ public class FilterConstraints
                                                                                                               meta,
                                                                                                               ctx -> next.apply(requestHeader),
                                                                                                               (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
-                                                                                                                                                        cntent))),
+                                                                                                                                                        cntent),
+                                                                                                              ConstraintPoint.CONTROLLER)),
                                          executor);
     }
 
@@ -431,7 +437,8 @@ public class FilterConstraints
                                                                                                                            roleName,
                                                                                                                            ctx -> next.apply(requestHeader),
                                                                                                                            (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
-                                                                                                                                                                     cntent))),
+                                                                                                                                                                     cntent),
+                                                                                                                           ConstraintPoint.CONTROLLER)),
                                          executor);
     }
 

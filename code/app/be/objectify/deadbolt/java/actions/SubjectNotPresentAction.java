@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
@@ -25,7 +26,9 @@ import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
 
 /**
  * Implements the {@link SubjectNotPresent} functionality, i.e. the
@@ -81,5 +84,20 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
                                        final Optional<String> content)
     {
         return authorizeAndExecute(context);
+    }
+
+
+    @Override
+    protected Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
+                                                              final Http.Context content,
+                                                              final Config config,
+                                                              final DeadboltHandler deadboltHandler)
+    {
+        return () -> constraintLogic.subjectNotPresent(content,
+                                                       deadboltHandler,
+                                                       config.content,
+                                                       this::present,
+                                                       this::notPresent,
+                                                       ConstraintPoint.CONTROLLER).toCompletableFuture();
     }
 }

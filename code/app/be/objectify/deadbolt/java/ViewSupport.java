@@ -99,7 +99,8 @@ public class ViewSupport
                                                content,
                                                () -> roles,
                                                ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                               (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
+                                               (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                               ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
@@ -135,7 +136,8 @@ public class ViewSupport
                                               name,
                                               meta,
                                               ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
+                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                              ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
@@ -165,7 +167,8 @@ public class ViewSupport
                                                                      : handler,
                                                      content,
                                                      (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
+                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                                     ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
@@ -190,11 +193,12 @@ public class ViewSupport
         boolean allowed;
         try
         {
-            allowed = constraintLogic.subjectPresent(Http.Context.current(),
-                                                     handler(handler),
-                                                     content,
-                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
-                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE))
+            allowed = constraintLogic.subjectNotPresent(Http.Context.current(),
+                                                        handler(handler),
+                                                        content,
+                                                        (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                                        (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                                        ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
@@ -226,7 +230,8 @@ public class ViewSupport
                                               meta,
                                               invert,
                                               ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
+                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                              ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);
@@ -259,7 +264,8 @@ public class ViewSupport
                                                            content,
                                                            roleName,
                                                            ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                                           (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE))
+                                                           (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                                           ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
                                           TimeUnit.MILLISECONDS);

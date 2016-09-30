@@ -101,7 +101,8 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                                                                Optional.of("json"),
                                                                () -> Collections.singletonList(requiredRoles),
                                                                ctx -> CompletableFuture.completedFuture(true),
-                                                               (ctx, handler, context) -> CompletableFuture.completedFuture(false));
+                                                               (ctx, handler, context) -> CompletableFuture.completedFuture(false),
+                                                               ConstraintPoint.CONTROLLER);
         test.accept(result);
 
     }
@@ -150,7 +151,8 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                                                               "foo",
                                                               Optional.of("bar"),
                                                               ctx -> CompletableFuture.completedFuture(true),
-                                                              (ctx, handler, context) -> CompletableFuture.completedFuture(false));
+                                                              (ctx, handler, context) -> CompletableFuture.completedFuture(false),
+                                                              ConstraintPoint.CONTROLLER);
         test.accept(result);
 
     }
@@ -245,7 +247,8 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                                                                            Optional.of("json"),
                                                                            roleName,
                                                                            ctx -> CompletableFuture.completedFuture(true),
-                                                                           (ctx, handler, context) -> CompletableFuture.completedFuture(false));
+                                                                           (ctx, handler, context) -> CompletableFuture.completedFuture(false),
+                                                                           ConstraintPoint.CONTROLLER);
         test.accept(result);
     }
 

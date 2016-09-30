@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.composite;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.models.PatternType;
 import play.mvc.Http;
@@ -65,6 +66,7 @@ public class PatternConstraint implements Constraint
                                        meta,
                                        invert,
                                        ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                       (ctx, dh, ctn) -> CompletableFuture.completedFuture(Boolean.FALSE));
+                                       (ctx, dh, ctn) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                       ConstraintPoint.CONTROLLER);
     }
 }
