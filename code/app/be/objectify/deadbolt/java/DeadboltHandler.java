@@ -89,7 +89,7 @@ public interface DeadboltHandler
      *
      * @param context the context, can be used to get various bits of information such as the route and method
      * @param constraintType the type of constraint, e.g. Dynamic, etc
-     * @param constraintPoint the point at which the constraint was amplied
+     * @param constraintPoint the point at which the constraint was applied
      */
     default void onAuthSuccess(final Http.Context context,
                                final String constraintType,
