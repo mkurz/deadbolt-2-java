@@ -6,5 +6,6 @@ package be.objectify.deadbolt.java;
 public enum ConstraintPoint
 {
     CONTROLLER,
+    FILTER,
     TEMPLATE
 }
