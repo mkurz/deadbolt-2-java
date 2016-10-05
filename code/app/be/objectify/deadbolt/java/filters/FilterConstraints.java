@@ -15,6 +15,14 @@
  */
 package be.objectify.deadbolt.java.filters;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
@@ -29,15 +37,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.ExecutionContextExecutor;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -93,7 +92,7 @@ public class FilterConstraints
                                                                                                                      (ctx, hdlr, cntent) -> next.apply(requestHeader),
                                                                                                                      (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
                                                                                                                                                                cntent),
-                                                                                                                     ConstraintPoint.CONTROLLER)),
+                                                                                                                     ConstraintPoint.FILTER)),
                                          executor);
     }
 
@@ -130,7 +129,7 @@ public class FilterConstraints
                                                                                                                         (ctx, hdlr, cntent) -> hdlr.onAuthFailure(context,
                                                                                                                                                                   cntent),
                                                                                                                         (ctx, hdlr, cntent) -> next.apply(requestHeader),
-                                                                                                                        ConstraintPoint.CONTROLLER)),
+                                                                                                                        ConstraintPoint.FILTER)),
                                          executor);
     }
 
@@ -172,7 +171,7 @@ public class FilterConstraints
                                                                                                                ctx -> next.apply(requestHeader),
                                                                                                                (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
                                                                                                                                                          cntent),
-                                                                                                               ConstraintPoint.CONTROLLER)),
+                                                                                                               ConstraintPoint.FILTER)),
                                          executor);
     }
 
@@ -274,7 +273,7 @@ public class FilterConstraints
                                                                                                               ctx -> next.apply(requestHeader),
                                                                                                               (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
                                                                                                                                                         cntent),
-                                                                                                              ConstraintPoint.CONTROLLER)),
+                                                                                                              ConstraintPoint.FILTER)),
                                          executor);
     }
 
@@ -338,7 +337,7 @@ public class FilterConstraints
                                                                                                               ctx -> next.apply(requestHeader),
                                                                                                               (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
                                                                                                                                                         cntent),
-                                                                                                              ConstraintPoint.CONTROLLER)),
+                                                                                                              ConstraintPoint.FILTER)),
                                          executor);
     }
 
@@ -408,7 +407,12 @@ public class FilterConstraints
                                                                      .orElseGet(() -> constraint.test(context,
                                                                                                       handler,
                                                                                                       executor)
-                                                                                                .thenComposeAsync(allowed -> allowed ? next.apply(requestHeader)
+                                                                                                .thenComposeAsync(allowed -> allowed ? ((Supplier<CompletionStage<Result>>) () -> {
+                                                                                                                      handler.onAuthSuccess(context,
+                                                                                                                                            "composite",
+                                                                                                                                            ConstraintPoint.FILTER);
+                                                                                                                      return next.apply(requestHeader);
+                                                                                                                  }).get()
                                                                                                                                      : handler.onAuthFailure(context,
                                                                                                                                                              content),
                                                                                                                   executor)),
@@ -438,7 +442,7 @@ public class FilterConstraints
                                                                                                                            ctx -> next.apply(requestHeader),
                                                                                                                            (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
                                                                                                                                                                      cntent),
-                                                                                                                           ConstraintPoint.CONTROLLER)),
+                                                                                                                           ConstraintPoint.FILTER)),
                                          executor);
     }
 
