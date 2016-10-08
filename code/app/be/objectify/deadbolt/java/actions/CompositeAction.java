@@ -15,7 +15,11 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.CompositeCache;
@@ -24,10 +28,6 @@ import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
-
-import javax.inject.Inject;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -59,7 +59,8 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                              .map(constraint -> constraint.test(ctx,
                                                                 handler,
                                                                 executor)
-                                                          .thenComposeAsync(allowed -> allowed ? authorizeAndExecute(ctx)
+                                                          .thenComposeAsync(allowed -> allowed ? authorizeAndExecute(ctx,
+                                                                                                                     handler)
                                                                                                : unauthorizeAndFail(ctx,
                                                                                                                     handler,
                                                                                                                     Optional.ofNullable(configuration.content())),
@@ -83,6 +84,14 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
         return configuration.value();
     }
 
+    private CompletionStage<Result> authorizeAndExecute(final Http.Context context,
+                                                        final DeadboltHandler handler) 
+    {
+        handler.onAuthSuccess(context,
+                              "composite",
+                              ConstraintPoint.CONTROLLER);
+        return authorizeAndExecute(context);
+    }
 
     @Override
     public String getHandlerKey()
