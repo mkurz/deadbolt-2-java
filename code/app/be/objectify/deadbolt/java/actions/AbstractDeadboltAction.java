@@ -92,7 +92,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         LOGGER.debug("Getting Deadbolt handler with key [{}]",
                      handlerKey);
-        return handlerCache.apply(handlerKey);
+        return handlerKey == null || ConfigKeys.DEFAULT_HANDLER_KEY.equals(handlerKey) ? handlerCache.get()
+                                                                                       : handlerCache.apply(handlerKey);
     }
 
     /**
