@@ -12,20 +12,16 @@ script:
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.2 test
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.3 test
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.4 test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.5 test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.6 test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.7 test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.8 test
+# versions not recommended for use due to known regressions are skipped
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.9 test
 - cd ../test-app-filters
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.0 test
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.1 test
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.2 test
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.3 test
 - sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.4 test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.5 test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.6 test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.7 test
-- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.8 test
+# versions not recommended for use due to known regressions are skipped
+- sbt --warn ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.5.9 test
 - cd ../code
 after_success:
 - ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt warn publish; };'
