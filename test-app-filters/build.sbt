@@ -1,6 +1,6 @@
 name := """test-app-filters"""
 
-version := "2.5.3-SNAPSHOT"
+version := "2.5.4-SNAPSHOT"
 
 scalaVersion := "2.11.7"
 
@@ -10,7 +10,7 @@ libraryDependencies ++= Seq(
   javaJdbc,
 //  cache,
   javaWs,
-  "be.objectify" %% "deadbolt-java" % "2.5.3-SNAPSHOT",
+  "be.objectify" %% "deadbolt-java" % "2.5.4-SNAPSHOT",
   "com.jayway.restassured" % "rest-assured" % "2.4.0" % "test",
   "org.dbunit" % "dbunit" % "2.5.0" % "test"
 )
@@ -19,7 +19,7 @@ libraryDependencies ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
-sbt.Keys.fork in (Test) := false
+sbt.Keys.fork in Test := false
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
