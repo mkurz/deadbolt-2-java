@@ -25,6 +25,7 @@ script:
 - cd ../code
 after_success:
 - ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt warn publish; };'
+- bash <(curl -s https://codecov.io/bash)
 sudo: false
 env:
   global:
