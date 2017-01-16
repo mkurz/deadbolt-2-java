@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,11 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import play.mvc.Http;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -29,32 +31,45 @@ import java.util.concurrent.Executor;
 @FunctionalInterface
 public interface Constraint
 {
+    default CompletionStage<Boolean> test(Http.Context context,
+                                          DeadboltHandler handler,
+                                          Executor executor)
+    {
+        return test(context,
+                    handler,
+                    executor,
+                    Optional.empty(),
+                    (globalMeta, localMeta) -> localMeta);
+    }
+
     CompletionStage<Boolean> test(Http.Context context,
                                   DeadboltHandler handler,
-                                  Executor executor);
+                                  Executor executor,
+                                  Optional<String> globalMetaData,
+                                  BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn);
 
     default Constraint and(final Constraint other)
     {
         Objects.requireNonNull(other);
-        return (ctx, handler, executor) ->
-                test(ctx, handler, executor).thenComposeAsync(passed1 -> passed1 ? other.test(ctx, handler, executor).thenApplyAsync(passed2 -> passed2,
-                                                                                                                                     executor)
-                                                                                 : CompletableFuture.completedFuture(false),
-                                                              executor);
+        return (ctx, handler, executor, global, fMeta) ->
+                test(ctx, handler, executor, global, fMeta).thenComposeAsync(passed1 -> passed1 ? other.test(ctx, handler, executor, global, fMeta).thenApplyAsync(passed2 -> passed2,
+                                                                                                                                                                   executor)
+                                                                                                : CompletableFuture.completedFuture(false),
+                                                                             executor);
     }
 
     default Constraint negate()
     {
-        return (ctx, handler, executor) -> test(ctx, handler, executor).thenApplyAsync(p -> !p);
+        return (ctx, handler, executor, global, fMeta) -> test(ctx, handler, executor, global, fMeta).thenApplyAsync(p -> !p);
     }
 
     default Constraint or(final Constraint other)
     {
         Objects.requireNonNull(other);
-        return (ctx, handler, executor) ->
-                test(ctx, handler, executor).thenComposeAsync(passed1 -> passed1 ? CompletableFuture.completedFuture(true)
-                                                                                 : other.test(ctx, handler, executor).thenApplyAsync(passed2 -> passed2,
-                                                                                                                                     executor),
-                                                              executor);
+        return (ctx, handler, executor, global, fMeta) ->
+                test(ctx, handler, executor, global, fMeta).thenComposeAsync(passed1 -> passed1 ? CompletableFuture.completedFuture(true)
+                                                                                                : other.test(ctx, handler, executor, global, fMeta).thenApplyAsync(passed2 -> passed2,
+                                                                                                                                                                   executor),
+                                                                             executor);
     }
 }

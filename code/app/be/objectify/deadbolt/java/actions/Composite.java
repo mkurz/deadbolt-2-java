@@ -63,9 +63,19 @@ public @interface Composite
      * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global
      * one, identified by a key.
      *
-     * @return the ky of the handler
+     * @return the key of the handler
      */
     String handlerKey() default ConfigKeys.DEFAULT_HANDLER_KEY;
+
+    /**
+     * If true, constraints will use the metadata defined in this annotation over any constraint-local
+     * metadata.  If no metadata is defined, the local metadata - if any - will be used.
+     *
+     * Defaults to false.
+     *
+     * @return true iff this metadata should be preferred over constraint-local metadata, otherwise false
+     */
+    boolean preferGlobalMeta() default false;
 
     /**
      * If true, the annotation will only be run if there is a {@link DeferredDeadbolt} annotation at the class level.

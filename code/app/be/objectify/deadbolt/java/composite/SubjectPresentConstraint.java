@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -42,7 +43,9 @@ public class SubjectPresentConstraint implements Constraint
 
     public CompletionStage<Boolean> test(final Http.Context context,
                                          final DeadboltHandler handler,
-                                         final Executor executor)
+                                         final Executor executor,
+                                         final Optional<String> globalMetaData,
+                                         final BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn)
     {
         return constraintLogic.subjectPresent(context,
                                               handler,

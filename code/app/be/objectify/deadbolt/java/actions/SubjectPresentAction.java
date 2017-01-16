@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,15 +84,15 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
 
     @Override
     protected Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
-                                                            final Http.Context content,
-                                                            final Config config,
-                                                            final DeadboltHandler deadboltHandler)
+                                                              final Http.Context context,
+                                                              final Config config,
+                                                              final DeadboltHandler deadboltHandler)
     {
-        return () -> constraintLogic.subjectPresent(content,
-                                                    deadboltHandler,
-                                                    config.content,
-                                                    this::present,
-                                                    this::notPresent,
-                                                    ConstraintPoint.CONTROLLER).toCompletableFuture();
+        return () ->  constraintLogic.subjectPresent(context,
+                                                     deadboltHandler,
+                                                     config.content,
+                                                     this::present,
+                                                     this::notPresent,
+                                                     ConstraintPoint.CONTROLLER).toCompletableFuture();
     }
 }

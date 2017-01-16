@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,11 @@ import play.libs.F;
 import play.mvc.Http;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -57,12 +59,16 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
         final Constraint c2 = Mockito.mock(Constraint.class);
         Mockito.when(c2.test(Mockito.any(Http.Context.class),
                              Mockito.any(DeadboltHandler.class),
-                             Mockito.any(Executor.class)))
+                             Mockito.any(Executor.class),
+                             Mockito.any(Optional.class),
+                             Mockito.any(BiFunction.class)))
                .thenReturn(CompletableFuture.completedFuture(false));
         final Constraint negated = Mockito.mock(Constraint.class);
         Mockito.when(negated.test(Mockito.any(Http.Context.class),
                                   Mockito.any(DeadboltHandler.class),
-                                  Mockito.any(Executor.class)))
+                                  Mockito.any(Executor.class),
+                                  Mockito.any(Optional.class),
+                                  Mockito.any(BiFunction.class)))
                .thenReturn(CompletableFuture.completedFuture(true));
         Mockito.when(c2.negate())
                .thenReturn(negated);
@@ -78,7 +84,9 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
         final Constraint c2 = Mockito.mock(Constraint.class);
         Mockito.when(c2.test(Mockito.any(Http.Context.class),
                              Mockito.any(DeadboltHandler.class),
-                             Mockito.any(Executor.class)))
+                             Mockito.any(Executor.class),
+                             Mockito.any(Optional.class),
+                             Mockito.any(BiFunction.class)))
                .thenReturn(CompletableFuture.completedFuture(false));
         final F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy = satisfy();
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1)));

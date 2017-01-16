@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,11 @@ import play.mvc.Http;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +51,9 @@ public class ConstraintTree implements Constraint
     @Override
     public CompletionStage<Boolean> test(final Http.Context context,
                                          final DeadboltHandler handler,
-                                         final Executor executor)
+                                         final Executor executor,
+                                         final Optional<String> globalMetaData,
+                                         final BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn)
     {
         final CompletionStage<Boolean> result;
         if (constraints.isEmpty())
@@ -66,7 +70,9 @@ public class ConstraintTree implements Constraint
             }
             result = current.test(context,
                                   handler,
-                                  executor);
+                                  executor,
+                                  globalMetaData,
+                                  metaFn);
         }
         return result;
     }

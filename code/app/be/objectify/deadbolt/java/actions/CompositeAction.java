@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,15 +56,22 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     {
         final ExecutionContextExecutor executor = executor();
         return compositeCache.apply(getValue())
-                             .map(constraint -> constraint.test(ctx,
-                                                                handler,
-                                                                executor)
-                                                          .thenComposeAsync(allowed -> allowed ? authorizeAndExecute(ctx,
-                                                                                                                     handler)
-                                                                                               : unauthorizeAndFail(ctx,
-                                                                                                                    handler,
-                                                                                                                    Optional.ofNullable(configuration.content())),
-                                                                            executor))
+                             .map(constraint ->
+                                  {
+                                      final boolean preferGlobalMeta = configuration.preferGlobalMeta();
+                                      return constraint.test(ctx,
+                                                             handler,
+                                                             executor,
+                                                             Optional.ofNullable(getMeta()),
+                                                             (globalMd, localMd) -> preferGlobalMeta ? globalMd.isPresent() ? globalMd : localMd
+                                                                                                     : localMd.isPresent() ? localMd : globalMd)
+                                                       .thenComposeAsync(allowed -> allowed ? authorizeAndExecute(ctx,
+                                                                                                                  handler)
+                                                                                            : unauthorizeAndFail(ctx,
+                                                                                                                 handler,
+                                                                                                                 Optional.ofNullable(configuration.content())),
+                                                                         executor);
+                                  })
                              .orElseGet(() ->
                                         {
                                             markActionAsUnauthorised(ctx);

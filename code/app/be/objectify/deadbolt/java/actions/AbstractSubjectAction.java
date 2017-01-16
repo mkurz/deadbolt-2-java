@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
     }
 
     abstract Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
-                                                              final Http.Context content,
+                                                              final Http.Context context,
                                                               final Config config,
                                                               final DeadboltHandler deadboltHandler);
 
