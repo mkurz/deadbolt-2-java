@@ -1,6 +1,6 @@
 name := """test-app-filters"""
 
-version := "2.5.4-SNAPSHOT"
+version := "2.5.5-SNAPSHOT"
 
 scalaVersion := "2.11.7"
 
@@ -10,7 +10,7 @@ libraryDependencies ++= Seq(
   javaJdbc,
 //  cache,
   javaWs,
-  "be.objectify" %% "deadbolt-java" % "2.5.4-SNAPSHOT",
+  "be.objectify" %% "deadbolt-java" % "2.5.5-SNAPSHOT",
   "com.jayway.restassured" % "rest-assured" % "2.4.0" % "test",
   "org.dbunit" % "dbunit" % "2.5.0" % "test"
 )
