@@ -12,7 +12,7 @@ You can find documentation and examples for Deadbolt at [https://deadbolt-java.r
 ## Get the book!
 If you want to explore Deadbolt further, you might want to take a look at the book I'm currently writing on it.  You can find it at [https://leanpub.com/deadbolt-2](https://leanpub.com/deadbolt-2).
 
-![Deadbolt 2 - Powerful authorization for your Play application](http://www.objectify.be/wordpress/wp-content/uploads/2015/09/large.jpg)
+![Deadbolt 2 - Powerful authorization for your Play application](https://s3.amazonaws.com/titlepages.leanpub.com/deadbolt-2/hero?1480947900)
 
 ## Scala API
 The Scala version of Deadbolt can by found at [https://github.com/schaloner/deadbolt-2-scala](https://github.com/schaloner/deadbolt-2-scala).
