@@ -154,7 +154,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                                     final Optional<String> content,
                                                     final Http.Context ctx)
     {
-        LOGGER.warn("Deadbolt: Access failure on [{}]",
+        LOGGER.info("Deadbolt: Access failure on [{}]",
                     ctx.request().uri());
 
         CompletionStage<Result> result;
