@@ -16,8 +16,6 @@
 package be.objectify.deadbolt.java.test.controllers.pattern;
 
 import be.objectify.deadbolt.java.test.controllers.AbstractApplicationTest;
-import be.objectify.deadbolt.java.test.controllers.DataLoaderModule;
-import be.objectify.deadbolt.java.test.security.TestDeadboltHandler;
 import com.jayway.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +29,6 @@ import static play.test.Helpers.testServer;
  */
 public class CustomControllerConstraintsTest extends AbstractApplicationTest
 {
-
     private static final int PORT = 3333;
 
     @Before
@@ -44,33 +41,25 @@ public class CustomControllerConstraintsTest extends AbstractApplicationTest
     public void testProtectedByControllerLevelCustom_noSubjectIsPresent()
     {
         running(testServer(PORT,
-                           app(TestDeadboltHandler.class)),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/custom/c/checkCustom");
-                });
+                           app()),
+                () -> RestAssured.given()
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/custom/c/checkCustom"));
     }
 
     @Test
     public void testProtectedByControllerLevelCustom_subjectDoesNotHavePermission()
     {
         running(testServer(PORT,
-                           app(TestDeadboltHandler.class,
-                               new DataLoaderModule())),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/custom/c/checkCustom");
-                });
+                           app()),
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/custom/c/checkCustom"));
     }
 
     @Test
@@ -78,15 +67,12 @@ public class CustomControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/custom/c/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/custom/c/checkCustom"));
     }
 
     @Test
@@ -94,15 +80,12 @@ public class CustomControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "mani")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/custom/c/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "mani")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/custom/c/checkCustom"));
     }
 
     @Test
@@ -110,15 +93,11 @@ public class CustomControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/custom/c/checkCustom/open");
-                });
+                () -> RestAssured.given()
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/custom/c/checkCustom/open"));
     }
 
     @Test
@@ -126,15 +105,12 @@ public class CustomControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/custom/c/checkCustom/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/custom/c/checkCustom/open"));
     }
 
 
@@ -143,14 +119,11 @@ public class CustomControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/custom/c/checkCustom/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/custom/c/checkCustom/open"));
     }
 }

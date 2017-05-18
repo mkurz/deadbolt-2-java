@@ -18,14 +18,13 @@ package be.objectify.deadbolt.java;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Application;
 import play.Mode;
 import play.api.mvc.RequestHeader;
-import play.cache.CacheApi;
+import play.core.j.JavaContextComponents;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Http;
 import play.test.Helpers;
@@ -52,7 +51,6 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
     {
         return new GuiceApplicationBuilder().bindings(new DeadboltModule())
                                             .bindings(bind(HandlerCache.class).toInstance(handlers()))
-                                            .overrides(bind(CacheApi.class).to(FakeCache.class))
                                             .in(Mode.TEST)
                                             .build();
     }
@@ -66,7 +64,8 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
                                                   Mockito.mock(Http.Request.class),
                                                   Collections.<String, String>emptyMap(),
                                                   Collections.<String, String>emptyMap(),
-                                                  Collections.<String, Object>emptyMap()));
+                                                  Collections.<String, Object>emptyMap(),
+                                                  Mockito.mock(JavaContextComponents.class)));
     }
 
     public DeadboltHandler init(final Supplier<Subject> getSubject)

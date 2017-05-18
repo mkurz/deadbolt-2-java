@@ -42,14 +42,14 @@ public @interface SubjectPresent
 {
     /**
      * Indicates the expected response type.  Useful when working with non-HTML responses.  This is free text, which you
-     * can use in {@link be.objectify.deadbolt.java.DeadboltHandler#onAuthFailure} to decide on how to handle the response.
+     * can use in {@link DeadboltHandler#onAuthFailure} to decide on how to handle the response.
      *
      * @return a content indicator
      */
     String content() default "";
 
     /**
-     * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global
+     * Use a specific {@link DeadboltHandler} for this restriction in place of the global
      * one, identified by a key.
      *
      * @return the ky of the handler

@@ -22,7 +22,6 @@ import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
 import be.objectify.deadbolt.java.testsupport.TestRole;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
@@ -50,7 +49,7 @@ public class ConstraintBuildersTest extends AbstractCompositeTest
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(new FakeCache()),
+                                                          new DefaultPatternCache(),
                                                           ecProvider);
         final ConstraintBuilders builders = new ConstraintBuilders(logic);
 
@@ -76,7 +75,7 @@ public class ConstraintBuildersTest extends AbstractCompositeTest
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(new FakeCache()),
+                                                          new DefaultPatternCache(),
                                                           ecProvider);
         final ConstraintBuilders builders = new ConstraintBuilders(logic);
 

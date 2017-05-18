@@ -43,15 +43,12 @@ public class InvertedEqualityMethodConstraintsTest extends AbstractApplicationTe
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/invert/equality/m/checkEquality");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/invert/equality/m/checkEquality"));
     }
 
     @Test
@@ -59,15 +56,12 @@ public class InvertedEqualityMethodConstraintsTest extends AbstractApplicationTe
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/invert/equality/m/checkEquality");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/invert/equality/m/checkEquality"));
     }
 
 
@@ -76,14 +70,11 @@ public class InvertedEqualityMethodConstraintsTest extends AbstractApplicationTe
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/invert/equality/m/checkEquality");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/invert/equality/m/checkEquality"));
     }
 }

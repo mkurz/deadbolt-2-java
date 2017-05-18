@@ -30,7 +30,6 @@ import be.objectify.deadbolt.java.composite.SubjectPresentConstraint;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
 import be.objectify.deadbolt.java.testsupport.TestCookies;
 import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestRole;
@@ -91,7 +90,7 @@ public class FilterConstraintsTest
 
         constraintLogic = new ConstraintLogic(analyzer,
                                               subjectCache,
-                                              new DefaultPatternCache(new FakeCache()),
+                                              new DefaultPatternCache(),
                                               ecProvider);
 
         final CompositeCache compositeCache = new DefaultCompositeCache();

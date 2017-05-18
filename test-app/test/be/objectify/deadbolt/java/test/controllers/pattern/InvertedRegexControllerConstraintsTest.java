@@ -43,15 +43,12 @@ public class InvertedRegexControllerConstraintsTest extends AbstractApplicationT
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/invert/regex/c/checkMatch");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/invert/regex/c/checkMatch"));
     }
 
     @Test
@@ -59,15 +56,12 @@ public class InvertedRegexControllerConstraintsTest extends AbstractApplicationT
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/invert/regex/c/checkMatch");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/invert/regex/c/checkMatch"));
     }
 
     @Test
@@ -75,15 +69,12 @@ public class InvertedRegexControllerConstraintsTest extends AbstractApplicationT
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/invert/regex/c/checkMatch");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/invert/regex/c/checkMatch"));
     }
 
     @Test
@@ -91,15 +82,12 @@ public class InvertedRegexControllerConstraintsTest extends AbstractApplicationT
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/invert/regex/c/checkMatch");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/invert/regex/c/checkMatch"));
     }
 
     @Test
@@ -107,15 +95,12 @@ public class InvertedRegexControllerConstraintsTest extends AbstractApplicationT
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/invert/regex/c/checkMatch/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/invert/regex/c/checkMatch/open"));
     }
 
     @Test
@@ -123,15 +108,12 @@ public class InvertedRegexControllerConstraintsTest extends AbstractApplicationT
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/invert/regex/c/checkMatch/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/invert/regex/c/checkMatch/open"));
     }
 
 
@@ -140,14 +122,11 @@ public class InvertedRegexControllerConstraintsTest extends AbstractApplicationT
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/invert/regex/c/checkMatch/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/invert/regex/c/checkMatch/open"));
     }
 }

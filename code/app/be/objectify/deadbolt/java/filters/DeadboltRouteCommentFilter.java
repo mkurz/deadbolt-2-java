@@ -15,29 +15,30 @@
  */
 package be.objectify.deadbolt.java.filters;
 
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import akka.stream.Materializer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.api.routing.HandlerDef;
+import play.core.j.JavaContextComponents;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.routing.Router;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Filters all incoming HTTP requests and applies constraints based on the route's comment.  If a comment is present, the constraint
  * for that route will be applied.  If access is allowed, the next filter in the chain is invoked; if access is not allowed,
- * {@link be.objectify.deadbolt.java.DeadboltHandler#onAuthFailure(Http.Context, Optional)} is invoked.
+ * {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} is invoked.
  * <p>
  * The format of the comment is deadbolt:constraintType:config.  Individual configurations have the form :label[value] - to omit an optional config,
  * remove :label[value],
@@ -114,10 +115,12 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
 
     @Inject
     public DeadboltRouteCommentFilter(final Materializer mat,
+                                      final JavaContextComponents javaContextComponents,
                                       final HandlerCache handlerCache,
                                       final FilterConstraints filterConstraints)
     {
-        super(mat);
+        super(mat,
+              javaContextComponents);
         this.handlerCache = handlerCache;
         this.handler = handlerCache.get();
         this.filterConstraints = filterConstraints;
@@ -141,8 +144,9 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
     public CompletionStage<Result> apply(final Function<Http.RequestHeader, CompletionStage<Result>> next,
                                          final Http.RequestHeader requestHeader)
     {
-        final String comment = requestHeader.tags().get(Router.Tags.ROUTE_COMMENTS);
+        final HandlerDef handlerDef = requestHeader.attrs().get(Router.Attrs.HANDLER_DEF);
         final CompletionStage<Result> result;
+        final String comment = handlerDef.comments();
         if (comment != null && comment.startsWith("deadbolt:"))
         {
             // this is horrible

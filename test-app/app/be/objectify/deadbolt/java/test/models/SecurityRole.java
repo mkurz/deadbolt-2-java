@@ -15,34 +15,19 @@
  */
 package be.objectify.deadbolt.java.test.models;
 
+import java.util.Objects;
 import be.objectify.deadbolt.java.models.Role;
-import com.avaje.ebean.Model;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-@Entity
-public class SecurityRole extends Model implements Role
+public class SecurityRole implements Role
 {
-    @Id
-    public Long id;
+    public final String roleName;
 
-    @Column(nullable = false,
-            unique = true)
-    public String roleName;
-
-    public SecurityRole()
+    public SecurityRole(final String roleName)
     {
-        // no-op
-    }
-
-    private SecurityRole(Builder builder)
-    {
-        roleName = builder.roleName;
+        this.roleName = roleName;
     }
 
     @Override
@@ -52,48 +37,20 @@ public class SecurityRole extends Model implements Role
     }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-        {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass())
-        {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if (!super.equals(o))
-        {
-            return false;
-        }
-
-        SecurityRole that = (SecurityRole) o;
-
-        return !(roleName != null ? !roleName.equals(that.roleName) : that.roleName != null);
-
+        final SecurityRole that = (SecurityRole) o;
+        return Objects.equals(roleName,
+                              that.roleName);
     }
 
     @Override
-    public int hashCode()
-    {
-        int result = super.hashCode();
-        result = 31 * result + (roleName != null ? roleName.hashCode() : 0);
-        return result;
-    }
-
-    public static final class Builder
-    {
-        private String roleName;
-
-        public Builder roleName(String roleName)
-        {
-            this.roleName = roleName;
-            return this;
-        }
-
-        public SecurityRole build()
-        {
-            return new SecurityRole(this);
-        }
+    public int hashCode() {
+        return Objects.hash(roleName);
     }
 }

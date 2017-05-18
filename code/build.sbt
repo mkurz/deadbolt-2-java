@@ -2,15 +2,12 @@ name := "deadbolt-java"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.11"
 
 organization := "be.objectify"
 
 libraryDependencies ++= Seq(
-  cache,
   "org.mockito" % "mockito-all" % "1.10.19" % "test"
 )
-
-resolvers += Resolver.sonatypeRepo("snapshots")
 
 releasePublishArtifactsAction := PgpKeys.publishSigned.value

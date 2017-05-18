@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.test.controllers;
+package be.objectify.deadbolt.java.test.dao;
+
+import java.util.Optional;
+import be.objectify.deadbolt.java.test.models.User;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public interface PathComponent
-{
-    String pathComponent();
+public class DefaultUserDao implements UserDao {
+
+    public Optional<User> getByUserName(final String userName) {
+        return Optional.empty();
+    }
 }

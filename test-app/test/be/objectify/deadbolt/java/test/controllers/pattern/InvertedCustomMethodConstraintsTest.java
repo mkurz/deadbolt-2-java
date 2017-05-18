@@ -43,15 +43,12 @@ public class InvertedCustomMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/invert/custom/m/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/invert/custom/m/checkCustom"));
     }
 
     @Test
@@ -59,15 +56,12 @@ public class InvertedCustomMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/invert/custom/m/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/invert/custom/m/checkCustom"));
     }
 
     @Test
@@ -75,15 +69,12 @@ public class InvertedCustomMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/invert/custom/m/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/invert/custom/m/checkCustom"));
     }
 
     @Test
@@ -91,14 +82,11 @@ public class InvertedCustomMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "mani")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/invert/custom/m/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "mani")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/invert/custom/m/checkCustom"));
     }
 }

@@ -32,5 +32,4 @@ object ViewAccessPoint {
 
     implicit def handlerCache(implicit application: Application): HandlerCache = handlerStuff(application)
   }
-
 }

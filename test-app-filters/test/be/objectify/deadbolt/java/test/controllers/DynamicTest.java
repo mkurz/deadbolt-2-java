@@ -42,16 +42,13 @@ public abstract class DynamicTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/dynamic/%s/niceName",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/dynamic/%s/niceName",
+                                                    pathComponent())));
     }
 
     @Test
@@ -59,16 +56,13 @@ public abstract class DynamicTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/dynamic/%s/niceName",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "steve")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/dynamic/%s/niceName",
+                                                    pathComponent())));
     }
 
 
@@ -77,15 +71,12 @@ public abstract class DynamicTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/dynamic/%s/niceName",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/dynamic/%s/niceName",
+                                                    pathComponent())));
     }
 }

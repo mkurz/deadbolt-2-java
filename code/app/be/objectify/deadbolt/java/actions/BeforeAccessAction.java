@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
- * Invokes beforeAuthCheck on the global or a specific {@link be.objectify.deadbolt.java.DeadboltHandler}.
+ * Invokes beforeAuthCheck on the global or a specific {@link DeadboltHandler}.
  *
  * @author Steve Chaloner (steve@objectify.be)
  */

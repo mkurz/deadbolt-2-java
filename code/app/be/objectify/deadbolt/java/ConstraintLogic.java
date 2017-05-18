@@ -176,9 +176,7 @@ public class ConstraintLogic
                 .thenComposeAsync(maybeSubject -> maybeSubject.isPresent() ? deadboltHandler.getPermissionsForRole(roleName)
                                                                                             .thenApplyAsync(permissions -> permissions.stream()
                                                                                                                                       .map(permission -> Optional
-                                                                                                                                              .ofNullable(patternCache
-                                                                                                                                                                  .apply(permission
-                                                                                                                                                                                 .getValue())))
+                                                                                                                                              .ofNullable(patternCache.apply(permission.getValue())))
                                                                                                                                       .map(maybePattern -> analyzer
                                                                                                                                               .checkRegexPattern(maybeSubject,
                                                                                                                                                                  maybePattern))

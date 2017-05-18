@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The {@link be.objectify.deadbolt.java.models.Subject} provided by the {@link be.objectify.deadbolt.java.DeadboltHandler} must
+ * The {@link be.objectify.deadbolt.java.models.Subject} provided by the {@link DeadboltHandler} must
  * be null to have access to the resource,
  *
  * @author Steve Chaloner (steve@objectify.be)
@@ -42,14 +42,14 @@ public @interface SubjectNotPresent
 {
     /**
      * Indicates the expected response type.  Useful when working with non-HTML responses.  This is free text, which you
-     * can use in {@link be.objectify.deadbolt.java.DeadboltHandler#onAuthFailure} to decide on how to handle the response.
+     * can use in {@link DeadboltHandler#onAuthFailure} to decide on how to handle the response.
      *
      * @return a content indicator
      */
     String content() default "";
 
     /**
-     * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global
+     * Use a specific {@link DeadboltHandler} for this restriction in place of the global
      * one, identified by a key.
      *
      * @return the key of the handler

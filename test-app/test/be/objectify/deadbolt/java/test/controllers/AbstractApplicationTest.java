@@ -15,11 +15,10 @@
  */
 package be.objectify.deadbolt.java.test.controllers;
 
-import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.test.security.HandlerQualifiers;
+import be.objectify.deadbolt.java.test.dao.TestUserDao;
+import be.objectify.deadbolt.java.test.dao.UserDao;
 import play.Application;
 import play.Mode;
-import play.api.inject.Module;
 import play.inject.Bindings;
 import play.inject.guice.GuiceApplicationBuilder;
 
@@ -28,34 +27,10 @@ import play.inject.guice.GuiceApplicationBuilder;
  */
 public abstract class AbstractApplicationTest
 {
-
     public Application app()
     {
-        return new GuiceApplicationBuilder().bindings(new DataLoaderModule())
-                                            .in(Mode.TEST)
-                                            .build();
-    }
-
-    public Application app(final Module... modules)
-    {
-        return new GuiceApplicationBuilder().bindings(modules)
-                                            .in(Mode.TEST)
-                                            .build();
-    }
-
-    public Application app(final Class<? extends DeadboltHandler> handlerClass,
-                           final Module... modules)
-    {
-        return new GuiceApplicationBuilder().bindings(modules)
-                                            .overrides(Bindings.bind(DeadboltHandler.class).qualifiedWith(HandlerQualifiers.MainHandler.class).to(handlerClass))
-                                            .in(Mode.TEST)
-                                            .build();
-    }
-
-    public Application app(final Class<? extends DeadboltHandler> handlerClass)
-    {
-        return new GuiceApplicationBuilder().overrides(Bindings.bind(DeadboltHandler.class).qualifiedWith(HandlerQualifiers.MainHandler.class).to(handlerClass))
-                                            .in(Mode.TEST)
+        return new GuiceApplicationBuilder().in(Mode.TEST)
+                                            .overrides(Bindings.bind(UserDao.class).to(TestUserDao.class))
                                             .build();
     }
 }

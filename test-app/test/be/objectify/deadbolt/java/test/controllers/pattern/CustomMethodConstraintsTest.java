@@ -43,15 +43,12 @@ public class CustomMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/custom/m/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/custom/m/checkCustom"));
     }
 
     @Test
@@ -59,15 +56,12 @@ public class CustomMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/pattern/custom/m/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/pattern/custom/m/checkCustom"));
     }
 
     @Test
@@ -75,15 +69,12 @@ public class CustomMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/custom/m/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/custom/m/checkCustom"));
     }
 
     @Test
@@ -91,14 +82,11 @@ public class CustomMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "mani")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/pattern/custom/m/checkCustom");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "mani")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/pattern/custom/m/checkCustom"));
     }
 }

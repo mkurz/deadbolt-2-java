@@ -41,16 +41,13 @@ public abstract class SubjectPresentTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/subject/present/%s/subjectMustBePresent",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/subject/present/%s/subjectMustBePresent",
+                                                    pathComponent())));
     }
 
     @Test
@@ -58,16 +55,13 @@ public abstract class SubjectPresentTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/subject/present/%s/subjectMustBePresent",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/subject/present/%s/subjectMustBePresent",
+                                                    pathComponent())));
     }
 
     public abstract String pathComponent();

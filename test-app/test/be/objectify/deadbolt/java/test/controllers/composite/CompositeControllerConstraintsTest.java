@@ -43,15 +43,12 @@ public class CompositeControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/composite/c");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/composite/c"));
     }
 
     @Test
@@ -59,15 +56,12 @@ public class CompositeControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/composite/c");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/composite/c"));
     }
 
 
@@ -76,15 +70,12 @@ public class CompositeControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/composite/c");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/composite/c"));
     }
 
     @Test
@@ -92,14 +83,11 @@ public class CompositeControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/composite/c/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/composite/c/open"));
     }
 }

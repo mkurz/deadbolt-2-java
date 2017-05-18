@@ -42,16 +42,13 @@ public abstract class SubjectNotPresentTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/subject/not/present/%s/subjectMustNotBePresent",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/subject/not/present/%s/subjectMustNotBePresent",
+                                                    pathComponent())));
     }
 
     @Test
@@ -59,15 +56,12 @@ public abstract class SubjectNotPresentTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/subject/not/present/%s/subjectMustNotBePresent",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/subject/not/present/%s/subjectMustNotBePresent",
+                                                    pathComponent())));
     }
 }

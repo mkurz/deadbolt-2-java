@@ -15,84 +15,32 @@
  */
 package be.objectify.deadbolt.java.filters;
 
-import akka.stream.Materializer;
-import be.objectify.deadbolt.java.ConstraintLogic;
-import be.objectify.deadbolt.java.DeadboltAnalyzer;
-import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.cache.CompositeCache;
-import be.objectify.deadbolt.java.cache.DefaultPatternCache;
-import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.SubjectCache;
-import be.objectify.deadbolt.java.models.Subject;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
-import be.objectify.deadbolt.java.testsupport.TestCookies;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import play.mvc.Http;
-import play.mvc.Result;
-import play.mvc.Results;
-import play.routing.Router;
-
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
+import akka.stream.Materializer;
+import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.models.Subject;
+import org.junit.Assert;
+import org.junit.Test;
+import org.mockito.Mockito;
+import play.api.routing.HandlerDef;
+import play.core.j.JavaContextComponents;
+import play.mvc.Http;
+import play.mvc.Result;
+import play.mvc.Results;
+import play.routing.Router;
+import play.test.Helpers;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class DeadboltRoutePathFilterTest
+public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
 {
-    private final DeadboltAnalyzer analyzer = new DeadboltAnalyzer();
-    private FilterConstraints filterConstraints;
-    private Http.RequestHeader requestHeader;
-    private SubjectCache subjectCache;
-
-    @Before
-    public void setUp()
-    {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get())
-               .thenReturn(new DefaultDeadboltExecutionContextProvider());
-
-        subjectCache = Mockito.mock(SubjectCache.class);
-
-        final ConstraintLogic constraintLogic = new ConstraintLogic(analyzer,
-                                                                    subjectCache,
-                                                                    new DefaultPatternCache(new FakeCache()),
-                                                                    ecProvider);
-        filterConstraints = new FilterConstraints(constraintLogic,
-                                                  ecProvider,
-                                                  Mockito.mock(CompositeCache.class));
-
-        final Map<String, String> tags = new HashMap<>();
-        tags.put(Router.Tags.ROUTE_PATTERN,
-                 "/foo");
-        requestHeader = Mockito.mock(Http.RequestHeader.class);
-        Mockito.when(requestHeader.tags()).thenReturn(tags);
-        Mockito.when(requestHeader.method()).thenReturn("GET");
-        Mockito.when(requestHeader.uri()).thenReturn("http://localhost/foo");
-        Mockito.when(requestHeader.clientCertificateChain()).thenReturn(Optional.empty());
-        Mockito.when(requestHeader.cookies()).thenReturn(new TestCookies());
-    }
-
-    @After
-    public void tearDown()
-    {
-        filterConstraints = null;
-        requestHeader = null;
-        subjectCache = null;
-    }
-
     @Test
     public void testPass_defaultHandler() throws ExecutionException, InterruptedException
     {
@@ -109,6 +57,7 @@ public class DeadboltRoutePathFilterTest
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         final DeadboltRoutePathFilter filter = new DeadboltRoutePathFilter(Mockito.mock(Materializer.class),
+                                                                           Mockito.mock(JavaContextComponents.class),
                                                                            handlerCache,
                                                                            () -> new AuthorizedRoutes(() -> filterConstraints)
                                                                            {
@@ -126,7 +75,7 @@ public class DeadboltRoutePathFilterTest
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    requestHeader);
+                                                                    request());
         ((CompletableFuture) eventualResult).get();
         Assert.assertTrue(flag[0]);
     }
@@ -150,6 +99,7 @@ public class DeadboltRoutePathFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         final DeadboltRoutePathFilter filter = new DeadboltRoutePathFilter(Mockito.mock(Materializer.class),
+                                                                           Mockito.mock(JavaContextComponents.class),
                                                                            handlerCache,
                                                                            () -> new AuthorizedRoutes(() -> filterConstraints)
                                                                            {
@@ -167,7 +117,7 @@ public class DeadboltRoutePathFilterTest
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    requestHeader);
+                                                                    request());
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
@@ -195,6 +145,7 @@ public class DeadboltRoutePathFilterTest
                                            Mockito.eq(Optional.of("foo"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         final DeadboltRoutePathFilter filter = new DeadboltRoutePathFilter(Mockito.mock(Materializer.class),
+                                                                           Mockito.mock(JavaContextComponents.class),
                                                                            handlerCache,
                                                                            () -> new AuthorizedRoutes(() -> filterConstraints)
                                                                            {
@@ -212,7 +163,7 @@ public class DeadboltRoutePathFilterTest
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    requestHeader);
+                                                                    request());
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
@@ -238,6 +189,7 @@ public class DeadboltRoutePathFilterTest
         Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         final DeadboltRoutePathFilter filter = new DeadboltRoutePathFilter(Mockito.mock(Materializer.class),
+                                                                           Mockito.mock(JavaContextComponents.class),
                                                                            handlerCache,
                                                                            () -> new AuthorizedRoutes(() -> filterConstraints)
                                                                            {
@@ -256,7 +208,7 @@ public class DeadboltRoutePathFilterTest
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    requestHeader);
+                                                                    request());
         ((CompletableFuture) eventualResult).get();
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
@@ -282,6 +234,7 @@ public class DeadboltRoutePathFilterTest
                                                    Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         final DeadboltRoutePathFilter filter = new DeadboltRoutePathFilter(Mockito.mock(Materializer.class),
+                                                                           Mockito.mock(JavaContextComponents.class),
                                                                            handlerCache,
                                                                            () -> new AuthorizedRoutes(() -> filterConstraints)
                                                                            {
@@ -300,7 +253,7 @@ public class DeadboltRoutePathFilterTest
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    requestHeader);
+                                                                    request());
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
@@ -330,6 +283,7 @@ public class DeadboltRoutePathFilterTest
                                                    Mockito.eq(Optional.of("foo"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         final DeadboltRoutePathFilter filter = new DeadboltRoutePathFilter(Mockito.mock(Materializer.class),
+                                                                           Mockito.mock(JavaContextComponents.class),
                                                                            handlerCache,
                                                                            () -> new AuthorizedRoutes(() -> filterConstraints)
                                                                            {
@@ -348,7 +302,7 @@ public class DeadboltRoutePathFilterTest
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    requestHeader);
+                                                                    request());
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
@@ -356,5 +310,29 @@ public class DeadboltRoutePathFilterTest
                .onAuthFailure(Mockito.any(Http.Context.class),
                               Mockito.eq(Optional.of("foo")));
         Mockito.verifyZeroInteractions(defaultHandler);
+    }
+
+    private Http.RequestImpl request() {
+        //        final Map<String, String> tags = new HashMap<>();
+        //        tags.put(Router.Tags.ROUTE_PATTERN,
+        //                 "/foo");
+        //        requestHeader = Mockito.mock(Http.RequestHeader.class);
+        //        Mockito.when(requestHeader.tags()).thenReturn(tags);
+        //        Mockito.when(requestHeader.method()).thenReturn("GET");
+        //        Mockito.when(requestHeader.uri()).thenReturn("http://localhost/foo");
+        //        Mockito.when(requestHeader.clientCertificateChain()).thenReturn(Optional.empty());
+        //        Mockito.when(requestHeader.cookies()).thenReturn(new TestCookies());
+
+        return Helpers.fakeRequest("GET", "http://localhost/foo")
+                      .attr(Router.Attrs.HANDLER_DEF,
+                            HandlerDef.apply(getClass().getClassLoader(),
+                                             "",
+                                             "",
+                                             "",
+                                             null,
+                                             "GET",
+                                             "",
+                                             "/foo"))
+                      .build();
     }
 }

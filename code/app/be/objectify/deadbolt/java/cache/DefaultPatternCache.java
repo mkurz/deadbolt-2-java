@@ -15,10 +15,9 @@
  */
 package be.objectify.deadbolt.java.cache;
 
-import play.cache.CacheApi;
-
-import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -27,18 +26,12 @@ import java.util.regex.Pattern;
 @Singleton
 public class DefaultPatternCache implements PatternCache
 {
-    private final CacheApi cache;
-
-    @Inject
-    public DefaultPatternCache(final CacheApi cache)
-    {
-        this.cache = cache;
-    }
+    private final Map<String, Pattern> cache = new HashMap<>();
 
     @Override
     public Pattern apply(final String patternValue)
     {
-        return cache.getOrElse("Deadbolt." + patternValue,
-                               () -> Pattern.compile(patternValue));
+        return cache.computeIfAbsent(patternValue,
+                                     Pattern::compile);
     }
 }

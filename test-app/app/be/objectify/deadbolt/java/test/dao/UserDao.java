@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.test.controllers;
+package be.objectify.deadbolt.java.test.dao;
 
-import play.api.Configuration;
-import play.api.Environment;
-import play.api.inject.Binding;
-import play.api.inject.Module;
-import scala.collection.Seq;
+import java.util.Optional;
+import be.objectify.deadbolt.java.test.models.User;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class DataLoaderModule extends Module
-{
+public interface UserDao {
 
-    @Override
-    public Seq<Binding<?>> bindings(final Environment environment,
-                                    final Configuration configuration)
-    {
-        return seq(bind(DataLoader.class).toSelf().eagerly());
-    }
+    Optional<User> getByUserName(String userName);
 }

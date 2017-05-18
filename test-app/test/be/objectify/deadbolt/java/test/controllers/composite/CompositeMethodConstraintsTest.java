@@ -43,15 +43,12 @@ public class CompositeMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/composite/m/foo");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/composite/m/foo"));
     }
 
     @Test
@@ -59,15 +56,12 @@ public class CompositeMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/composite/m/foo");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/composite/m/foo"));
     }
 
     @Test
@@ -75,15 +69,12 @@ public class CompositeMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/composite/m/foo");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/composite/m/foo"));
     }
 
     @Test
@@ -91,15 +82,12 @@ public class CompositeMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/composite/m/fooInUnrestrictedController");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/composite/m/fooInUnrestrictedController"));
     }
 
     @Test
@@ -107,15 +95,12 @@ public class CompositeMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/composite/m/fooInUnrestrictedController");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/composite/m/fooInUnrestrictedController"));
     }
 
     @Test
@@ -123,14 +108,11 @@ public class CompositeMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/composite/m/fooInUnrestrictedController");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/composite/m/fooInUnrestrictedController"));
     }
 }

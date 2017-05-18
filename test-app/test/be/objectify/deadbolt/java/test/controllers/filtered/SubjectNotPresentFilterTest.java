@@ -42,15 +42,12 @@ public class SubjectNotPresentFilterTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/filtered/subject/notPresent/subjectMustBePresent");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/filtered/subject/notPresent/subjectMustBePresent"));
     }
 
     @Test
@@ -58,15 +55,12 @@ public class SubjectNotPresentFilterTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/filtered/subject/notPresent/subjectMustBePresent");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/filtered/subject/notPresent/subjectMustBePresent"));
     }
 
 }

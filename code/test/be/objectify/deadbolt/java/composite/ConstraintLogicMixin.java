@@ -22,7 +22,6 @@ import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
 import org.mockito.Mockito;
 import play.mvc.Http;
 
@@ -41,7 +40,7 @@ public interface ConstraintLogicMixin
                .thenReturn(deadboltHandler.getSubject(Mockito.mock(Http.Context.class)));
         return new ConstraintLogic(new DeadboltAnalyzer(),
                                    subjectCache,
-                                   new DefaultPatternCache(new FakeCache()),
+                                   new DefaultPatternCache(),
                                    ecProvider);
     }
 }

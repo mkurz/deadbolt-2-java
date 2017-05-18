@@ -42,16 +42,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooAndBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooAndBar",
+                                                    pathComponent())));
     }
 
     @Test
@@ -59,16 +56,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooAndBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooAndBar",
+                                                    pathComponent())));
 
     }
 
@@ -77,16 +71,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooAndBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "steve")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooAndBar",
+                                                    pathComponent())));
 
     }
 
@@ -95,16 +86,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooAndBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooAndBar",
+                                                    pathComponent())));
 
     }
 
@@ -113,16 +101,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooOrBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooOrBar",
+                                                    pathComponent())));
     }
 
     @Test
@@ -130,16 +115,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooOrBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooOrBar",
+                                                    pathComponent())));
 
     }
 
@@ -148,16 +130,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooOrBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "steve")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooOrBar",
+                                                    pathComponent())));
 
     }
 
@@ -166,16 +145,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooOrBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooOrBar",
+                                                    pathComponent())));
 
     }
 
@@ -184,16 +160,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
+                                                    pathComponent())));
     }
 
     @Test
@@ -201,16 +174,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
+                                                    pathComponent())));
 
     }
 
@@ -219,16 +189,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "steve")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
+                                                    pathComponent())));
 
     }
 
@@ -237,16 +204,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooAndNotBar",
+                                                    pathComponent())));
 
     }
 
@@ -255,16 +219,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
+                                                    pathComponent())));
     }
 
     @Test
@@ -272,16 +233,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
+                                                    pathComponent())));
 
     }
 
@@ -290,16 +248,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "steve")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
+                                                    pathComponent())));
 
     }
 
@@ -308,16 +263,13 @@ public abstract class RestrictTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/restrict/%s/restrictedToFooOrNotBar",
+                                                    pathComponent())));
 
     }
 }

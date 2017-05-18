@@ -20,7 +20,6 @@ import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
-import be.objectify.deadbolt.java.testsupport.FakeCache;
 import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestRole;
@@ -93,7 +92,7 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(new FakeCache()),
+                                                          new DefaultPatternCache(),
                                                           ecProvider);
 
         final CompletionStage<Boolean> result = logic.restrict(context(),
@@ -132,7 +131,7 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(new FakeCache()),
+                                                          new DefaultPatternCache(),
                                                           ecProvider);
 
         final CompletionStage<Boolean> result = logic.dynamic(context(),
@@ -238,7 +237,7 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(new FakeCache()),
+                                                          new DefaultPatternCache(),
                                                           ecProvider);
 
         final CompletionStage<Boolean> result = logic.roleBasedPermissions(context(),

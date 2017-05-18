@@ -28,7 +28,6 @@ import static play.test.Helpers.testServer;
  */
 public abstract class PatternRegexTest extends AbstractApplicationTest
 {
-
     private static final int PORT = 3333;
 
     @Before
@@ -42,16 +41,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/regex/%s/checkExactMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/regex/%s/checkExactMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -59,16 +55,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/regex/%s/checkExactMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "steve")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/regex/%s/checkExactMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -76,16 +69,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/regex/%s/checkExactMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/regex/%s/checkExactMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -93,16 +83,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -110,16 +97,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "steve")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -127,16 +111,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -144,16 +125,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/regex/%s/checkHierarchicalMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -161,16 +139,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/regex/%s/checkExactMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/regex/%s/checkExactMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -178,16 +153,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/invert/regex/%s/checkExactMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "steve")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/invert/regex/%s/checkExactMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -195,16 +167,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/regex/%s/checkExactMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/regex/%s/checkExactMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -212,16 +181,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -229,16 +195,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "steve")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -246,16 +209,13 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
+                                                    pathComponent())));
     }
 
     @Test
@@ -263,15 +223,12 @@ public abstract class PatternRegexTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/regex/%s/checkHierarchicalMatch",
+                                                    pathComponent())));
     }
 }

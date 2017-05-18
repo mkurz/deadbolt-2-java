@@ -15,8 +15,11 @@
  */
 package be.objectify.deadbolt.java.test.controllers;
 
+import be.objectify.deadbolt.java.test.dao.TestUserDao;
+import be.objectify.deadbolt.java.test.dao.UserDao;
 import play.Application;
 import play.Mode;
+import play.inject.Bindings;
 import play.inject.guice.GuiceApplicationBuilder;
 
 /**
@@ -24,11 +27,9 @@ import play.inject.guice.GuiceApplicationBuilder;
  */
 public abstract class AbstractApplicationTest implements PathComponent
 {
-
     public Application app()
     {
-        return new GuiceApplicationBuilder().bindings(new DataLoaderModule())
-//                                            .overrides(bind(CacheApi.class).to(FakeCache.class))
+        return new GuiceApplicationBuilder().overrides(Bindings.bind(UserDao.class).to(TestUserDao.class))
                                             .in(Mode.TEST)
                                             .build();
     }

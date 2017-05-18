@@ -43,15 +43,12 @@ public class DynamicMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/dynamic/m/niceName");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/dynamic/m/niceName"));
     }
 
     @Test
@@ -59,15 +56,12 @@ public class DynamicMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/dynamic/m/niceName");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/dynamic/m/niceName"));
     }
 
 
@@ -76,15 +70,12 @@ public class DynamicMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/dynamic/m/niceName");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/dynamic/m/niceName"));
     }
 
     @Test
@@ -92,15 +83,12 @@ public class DynamicMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/dynamic/m/niceNameInUnrestrictedController");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/dynamic/m/niceNameInUnrestrictedController"));
     }
 
     @Test
@@ -108,15 +96,12 @@ public class DynamicMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/dynamic/m/niceNameInUnrestrictedController");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/dynamic/m/niceNameInUnrestrictedController"));
     }
 
     @Test
@@ -124,14 +109,11 @@ public class DynamicMethodConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/dynamic/m/niceNameInUnrestrictedController");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/dynamic/m/niceNameInUnrestrictedController"));
     }
 }

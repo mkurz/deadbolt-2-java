@@ -43,15 +43,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndBar"));
     }
 
     @Test
@@ -59,15 +56,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndBar/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndBar/open"));
     }
 
     @Test
@@ -75,15 +69,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndBar"));
 
     }
 
@@ -92,15 +83,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndBar"));
 
     }
 
@@ -109,15 +97,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndBar"));
 
     }
 
@@ -126,15 +111,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrBar"));
     }
 
     @Test
@@ -142,15 +124,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrBar/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrBar/open"));
 
     }
 
@@ -159,15 +138,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrBar"));
 
     }
 
@@ -176,15 +152,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrBar"));
 
     }
 
@@ -193,15 +166,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrBar"));
 
     }
 
@@ -210,15 +180,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndNotBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndNotBar"));
     }
 
     @Test
@@ -226,15 +193,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndNotBar/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndNotBar/open"));
     }
 
     @Test
@@ -242,15 +206,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndNotBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndNotBar"));
 
     }
 
@@ -259,15 +220,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndNotBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndNotBar"));
 
     }
 
@@ -276,15 +234,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooAndNotBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooAndNotBar"));
 
     }
 
@@ -293,15 +248,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrNotBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrNotBar"));
     }
 
     @Test
@@ -309,15 +261,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrNotBar/open");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrNotBar/open"));
     }
 
     @Test
@@ -325,15 +274,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrNotBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "greet")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrNotBar"));
 
     }
 
@@ -342,15 +288,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "steve")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrNotBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "steve")
+                           .expect()
+                           .statusCode(401)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrNotBar"));
 
     }
 
@@ -359,15 +302,12 @@ public class RestrictControllerConstraintsTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get("/restrict/c/restrictedToFooOrNotBar");
-                });
+                () -> RestAssured.given()
+                           .cookie("user", "lotte")
+                           .expect()
+                           .statusCode(200)
+                           .when()
+                           .get("/restrict/c/restrictedToFooOrNotBar"));
 
     }
 }

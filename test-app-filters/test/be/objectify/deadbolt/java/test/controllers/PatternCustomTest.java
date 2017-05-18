@@ -28,7 +28,6 @@ import static play.test.Helpers.testServer;
  */
 public abstract class PatternCustomTest extends AbstractApplicationTest
 {
-
     private static final int PORT = 3333;
 
     @Before
@@ -42,16 +41,13 @@ public abstract class PatternCustomTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/custom/%s/checkCustom",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/custom/%s/checkCustom",
+                                                    pathComponent())));
     }
 
     @Test
@@ -59,16 +55,13 @@ public abstract class PatternCustomTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/custom/%s/checkCustom",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/custom/%s/checkCustom",
+                                                    pathComponent())));
     }
 
     @Test
@@ -76,16 +69,13 @@ public abstract class PatternCustomTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/custom/%s/checkCustom",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/custom/%s/checkCustom",
+                                                    pathComponent())));
     }
 
     @Test
@@ -93,16 +83,13 @@ public abstract class PatternCustomTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "mani")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/custom/%s/checkCustom",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "mani")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/custom/%s/checkCustom",
+                                                    pathComponent())));
     }
 
     @Test
@@ -110,16 +97,13 @@ public abstract class PatternCustomTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/custom/%s/checkCustom",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/custom/%s/checkCustom",
+                                                    pathComponent())));
     }
 
     @Test
@@ -127,16 +111,13 @@ public abstract class PatternCustomTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/invert/custom/%s/checkCustom",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/invert/custom/%s/checkCustom",
+                                                    pathComponent())));
     }
 
     @Test
@@ -144,16 +125,13 @@ public abstract class PatternCustomTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/custom/%s/checkCustom",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/custom/%s/checkCustom",
+                                                    pathComponent())));
     }
 
     @Test
@@ -161,15 +139,12 @@ public abstract class PatternCustomTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "mani")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/custom/%s/checkCustom",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "mani")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/custom/%s/checkCustom",
+                                                    pathComponent())));
     }
 }

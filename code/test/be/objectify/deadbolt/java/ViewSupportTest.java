@@ -44,8 +44,6 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
         specificDrhs.put("allow",
                          new AbstractDynamicResourceHandler()
                          {
-                             private final String foo = "true";
-
                              @Override
                              public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                              final Optional<String> meta,
@@ -58,8 +56,6 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
         specificDrhs.put("deny",
                          new AbstractDynamicResourceHandler()
                          {
-                             private final String bar = "false";
-
                              @Override
                              public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                              final Optional<String> meta,

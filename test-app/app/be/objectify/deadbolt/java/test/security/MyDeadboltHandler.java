@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
+import be.objectify.deadbolt.java.test.dao.UserDao;
 import be.objectify.deadbolt.java.test.models.SecurityPermission;
-import be.objectify.deadbolt.java.test.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.mvc.Http;
@@ -47,22 +47,25 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     private static final Logger LOGGER = LoggerFactory.getLogger(MyDeadboltHandler.class);
 
     private final DynamicResourceHandler dynamicHandler;
+    private final UserDao userDao;
 
     @Inject
-    public MyDeadboltHandler(final ExecutionContextProvider ecProvider)
+    public MyDeadboltHandler(final ExecutionContextProvider ecProvider,
+                             final UserDao userDao)
     {
         super(ecProvider);
         Map<String, DynamicResourceHandler> delegates = new HashMap<>();
         delegates.put("niceName",
                       new NiceNameDynamicResourceHandler());
         this.dynamicHandler = new CompositeDynamicResourceHandler(delegates);
+        this.userDao = userDao;
     }
 
     @Override
     public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
     {
-        final Http.Cookie userCookie = context.request().cookie("user");
-        return CompletableFuture.supplyAsync(() -> Optional.ofNullable(User.findByUserName(userCookie.value())));
+        final Optional<Http.Cookie> maybeUserCookie = Optional.ofNullable(context.request().cookie("user"));
+        return CompletableFuture.supplyAsync(() -> maybeUserCookie.flatMap(cookie -> userDao.getByUserName(cookie.value())));
     }
 
     @Override
@@ -79,8 +82,7 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
 
     @Override
     public CompletionStage<List<? extends Permission>> getPermissionsForRole(final String roleName) {
-        return CompletableFuture.completedFuture(Collections.singletonList(new SecurityPermission.Builder().value("killer.undead.*")
-                                                                                                           .build()));
+        return CompletableFuture.completedFuture(Collections.singletonList(new SecurityPermission("killer.undead.*")));
     }
 
     @Override

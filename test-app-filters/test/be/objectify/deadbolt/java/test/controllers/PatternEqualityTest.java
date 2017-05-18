@@ -28,7 +28,6 @@ import static play.test.Helpers.testServer;
  */
 public abstract class PatternEqualityTest extends AbstractApplicationTest
 {
-
     private static final int PORT = 3333;
 
     @Before
@@ -42,16 +41,13 @@ public abstract class PatternEqualityTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/equality/%s/checkEquality",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/equality/%s/checkEquality",
+                                                    pathComponent())));
     }
 
     @Test
@@ -59,16 +55,13 @@ public abstract class PatternEqualityTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/equality/%s/checkEquality",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/equality/%s/checkEquality",
+                                                    pathComponent())));
     }
 
     @Test
@@ -76,16 +69,13 @@ public abstract class PatternEqualityTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/equality/%s/checkEquality",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/equality/%s/checkEquality",
+                                                    pathComponent())));
     }
 
     @Test
@@ -93,16 +83,13 @@ public abstract class PatternEqualityTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            fakeApplication()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/equality/%s/checkEquality",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/equality/%s/checkEquality",
+                                                    pathComponent())));
     }
 
     @Test
@@ -110,16 +97,13 @@ public abstract class PatternEqualityTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "lotte")
-                               .expect()
-                               .statusCode(200)
-                               .when()
-                               .get(String.format("/pattern/invert/equality/%s/checkEquality",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "lotte")
+                                 .expect()
+                                 .statusCode(200)
+                                 .when()
+                                 .get(String.format("/pattern/invert/equality/%s/checkEquality",
+                                                    pathComponent())));
     }
 
 
@@ -128,15 +112,12 @@ public abstract class PatternEqualityTest extends AbstractApplicationTest
     {
         running(testServer(PORT,
                            app()),
-                () ->
-                {
-                    RestAssured.given()
-                               .cookie("user", "greet")
-                               .expect()
-                               .statusCode(401)
-                               .when()
-                               .get(String.format("/pattern/invert/equality/%s/checkEquality",
-                                                  pathComponent()));
-                });
+                () -> RestAssured.given()
+                                 .cookie("user", "greet")
+                                 .expect()
+                                 .statusCode(401)
+                                 .when()
+                                 .get(String.format("/pattern/invert/equality/%s/checkEquality",
+                                                    pathComponent())));
     }
 }
