@@ -20,7 +20,7 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.utils.TriFunction;
-import com.google.inject.Singleton;
+import javax.inject.Singleton;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import scala.concurrent.ExecutionContext;
