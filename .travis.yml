@@ -5,17 +5,13 @@ scala:
 - 2.11.11
 script:
 - cd code
-- sbt --info ++$TRAVIS_SCALA_VERSION publishLocal
+- sbt --info ++$TRAVIS_SCALA_VERSION +publishLocal
 - cd ../test-app
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.6.0-M5 test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.6.0-RC1 +test
 - cd ../test-app-filters
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.6.0-M5 test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.6.0-RC1 +test
 - cd ../code
 after_success:
-- ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt --info publish; };'
+- ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt --info +publish; };'
 - python <(curl -s https://raw.githubusercontent.com/TouK/sputnik-ci/master/sputnik-ci.py)
 sudo: false
-env:
-  global:
-  - secure: lWiAEXvfiZWpdhly/x9OHewK2xwLHFH32m5KbeYqGnNxpzJLrR0nSXUDMJabKQZ8msbqh7MUBSgCsWKhI0cqYO/rq22kAZGzKj3sHShe0Eg8uNGb4lMbU8PqWzYfXSfMf2pmnrrNpWLlCkHXr7WKwr+7QGS97D2w/7pOoIb19q8=
-  - secure: q/WADPRt9glUwpu0Gi63FDiHbG0CKcKqhsWz5ihULxQErck3gKpcIqeoM5z3i+UWeA36d/h2hcPUG0pso4ro888FFC4ZWjuz/LNn0XupktdLcfCERRKqNCe6+DvIbgS8R3BbTy76TauS18VG31glXS9KUC6uFmGlzLPx+uPoPVc=
