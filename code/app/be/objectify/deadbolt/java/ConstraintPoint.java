@@ -7,5 +7,6 @@ public enum ConstraintPoint
 {
     CONTROLLER,
     FILTER,
-    TEMPLATE
+    TEMPLATE,
+    MODEL
 }
