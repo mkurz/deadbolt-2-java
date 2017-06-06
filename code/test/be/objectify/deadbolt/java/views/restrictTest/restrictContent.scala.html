@@ -1,8 +1,9 @@
+@this(restrict: be.objectify.deadbolt.java.views.html.restrict)
 @(roles: List[Array[String]], deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
 
 This is before the constraint.
 
-@be.objectify.deadbolt.java.views.html.restrict(roles = roles, handler = deadboltHandler) {
+@restrict(roles = roles, handler = deadboltHandler) {
     This is protected by the constraint.
 }
 

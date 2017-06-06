@@ -1,8 +1,9 @@
 @import java.util
 
 @import be.objectify.deadbolt.java.DeadboltHandler
+@import play.api.Application
 @import be.objectify.deadbolt.java.ViewAccessPoint.Implicits._
-@import play.api.Play.current
+@this(implicit app:Application)
 @(roles: util.List[Array[String]], handler: DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)(alternativeBody: => Html)
 
 @if(viewSupport.viewRestrict(roles, handler, content, timeout.get())) {

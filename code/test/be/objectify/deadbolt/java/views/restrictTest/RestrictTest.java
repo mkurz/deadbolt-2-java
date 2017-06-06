@@ -41,7 +41,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testSingleRole_present()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                        handlers.apply("foo"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -52,7 +52,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testSingleRole_notPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                        handlers.apply("bar"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -63,7 +63,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testSingleRole_noRolesPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                        handlers.apply("noRoles"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -74,7 +74,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testSingleRole_noSubject()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                        handlers.apply("noSubject"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -85,7 +85,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_fooPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Arrays.asList(new String[]{"foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Arrays.asList(new String[]{"foo"},
                                                                                                                      new String[]{"bar"}),
                                                                                                        handlers.apply("foo"));
         final String content = Helpers.contentAsString(html);
@@ -97,7 +97,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_barPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Arrays.asList(new String[]{"foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Arrays.asList(new String[]{"foo"},
                                                                                                                      new String[]{"bar"}),
                                                                                                        handlers.apply("bar"));
         final String content = Helpers.contentAsString(html);
@@ -109,7 +109,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_bothPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Arrays.asList(new String[]{"foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Arrays.asList(new String[]{"foo"},
                                                                                                                      new String[]{"bar"}),
                                                                                                        handlers.apply("fooBar"));
         final String content = Helpers.contentAsString(html);
@@ -121,7 +121,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_neitherPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Arrays.asList(new String[]{"foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Arrays.asList(new String[]{"foo"},
                                                                                                                      new String[]{"bar"}),
                                                                                                        handlers.apply("noRoles"));
         final String content = Helpers.contentAsString(html);
@@ -133,7 +133,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_noSubject()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                        handlers.apply("noSubject"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -144,7 +144,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_fooPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                        handlers.apply("foo"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -155,7 +155,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_barPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                        handlers.apply("bar"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -166,7 +166,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_bothPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                        handlers.apply("fooBar"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -177,7 +177,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_neitherPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                        handlers.apply("noRoles"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -188,7 +188,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_noSubject()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                        handlers.apply("noSubject"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -199,7 +199,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_subjectHasRole()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                        handlers.apply("foo"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -210,7 +210,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_subjectDoesNotHaveRole()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                        handlers.apply("bar"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -221,7 +221,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_subjectHasMultipleRole()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                        handlers.apply("fooBar"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -232,7 +232,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_noRolesPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                        handlers.apply("noRoles"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -243,7 +243,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testNegatedRole_noSubject()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                        handlers.apply("noSubject"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -254,7 +254,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_fooPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Arrays.asList(new String[]{"!foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Arrays.asList(new String[]{"!foo"},
                                                                                                                      new String[]{"bar"}),
                                                                                                        handlers.apply("foo"));
         final String content = Helpers.contentAsString(html);
@@ -266,7 +266,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_barPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Arrays.asList(new String[]{"!foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Arrays.asList(new String[]{"!foo"},
                                                                                                                      new String[]{"bar"}),
                                                                                                        handlers.apply("bar"));
         final String content = Helpers.contentAsString(html);
@@ -278,7 +278,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_bothPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Arrays.asList(new String[]{"!foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Arrays.asList(new String[]{"!foo"},
                                                                                                                      new String[]{"bar"}),
                                                                                                        handlers.apply("fooBar"));
         final String content = Helpers.contentAsString(html);
@@ -290,7 +290,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_neitherPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Arrays.asList(new String[]{"!foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Arrays.asList(new String[]{"!foo"},
                                                                                                                      new String[]{"bar"}),
                                                                                                        handlers.apply("noRoles"));
         final String content = Helpers.contentAsString(html);
@@ -302,7 +302,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testOr_oneSideNegated_noSubject()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                        handlers.apply("noSubject"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -313,7 +313,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_fooPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                        handlers.apply("foo"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -324,7 +324,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_barPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                        handlers.apply("bar"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -335,7 +335,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_bothPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                        handlers.apply("fooBar"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -346,7 +346,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_neitherPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                        handlers.apply("noRoles"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -357,7 +357,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     @Test
     public void testAnd_oneSideNegated_noSubject()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictContent(new be.objectify.deadbolt.java.views.html.restrict(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                        handlers.apply("noSubject"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));

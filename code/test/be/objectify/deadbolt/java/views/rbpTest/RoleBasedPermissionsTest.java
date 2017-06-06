@@ -60,7 +60,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.emptyList());
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.rbpTest.roleBasedPermissionsContent.render("foo",
+        final Content html = new be.objectify.deadbolt.java.views.html.rbpTest.roleBasedPermissionsContent(new be.objectify.deadbolt.java.views.html.roleBasedPermissions(app.asScala())).render("foo",
                                                                                                               deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -86,7 +86,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.rbpTest.roleBasedPermissionsContent.render("foo",
+        final Content html = new be.objectify.deadbolt.java.views.html.rbpTest.roleBasedPermissionsContent(new be.objectify.deadbolt.java.views.html.roleBasedPermissions(app.asScala())).render("foo",
                                                                                                               deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -112,7 +112,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("hurdy")));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.rbpTest.roleBasedPermissionsContent.render("foo",
+        final Content html = new be.objectify.deadbolt.java.views.html.rbpTest.roleBasedPermissionsContent(new be.objectify.deadbolt.java.views.html.roleBasedPermissions(app.asScala())).render("foo",
                                                                                                               deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -137,7 +137,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("hurdy")));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.rbpTest.roleBasedPermissionsContent.render("foo",
+        final Content html = new be.objectify.deadbolt.java.views.html.rbpTest.roleBasedPermissionsContent(new be.objectify.deadbolt.java.views.html.roleBasedPermissions(app.asScala())).render("foo",
                                                                                                               deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));

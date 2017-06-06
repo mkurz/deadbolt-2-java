@@ -54,7 +54,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -75,7 +75,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -95,7 +95,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -115,7 +115,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -136,7 +136,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Arrays.asList(new String[]{"foo"},
                                                                                                                        new String[]{"bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -158,7 +158,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Arrays.asList(new String[]{"foo"},
                                                                                                                        new String[]{"bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -181,7 +181,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Arrays.asList(new String[]{"foo"},
                                                                                                                        new String[]{"bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -202,7 +202,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Arrays.asList(new String[]{"foo"},
                                                                                                                        new String[]{"bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -223,7 +223,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -244,7 +244,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -265,7 +265,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -287,7 +287,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -307,7 +307,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -327,7 +327,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -348,7 +348,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -369,7 +369,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -391,7 +391,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -411,7 +411,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -431,7 +431,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -452,7 +452,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"!foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Arrays.asList(new String[]{"!foo"},
                                                                                                                        new String[]{"bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -474,7 +474,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"!foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Arrays.asList(new String[]{"!foo"},
                                                                                                                        new String[]{"bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -497,7 +497,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"!foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Arrays.asList(new String[]{"!foo"},
                                                                                                                        new String[]{"bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -518,7 +518,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"!foo"},
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Arrays.asList(new String[]{"!foo"},
                                                                                                                        new String[]{"bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -539,7 +539,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -560,7 +560,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -581,7 +581,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -603,7 +603,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                                                                                                 .build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -623,7 +623,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -643,7 +643,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = new be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent(new be.objectify.deadbolt.java.views.html.restrictOr(app.asScala())).render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                                                                          deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));

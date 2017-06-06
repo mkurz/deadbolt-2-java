@@ -1,8 +1,9 @@
+@this(roleBasedPermissions: be.objectify.deadbolt.java.views.html.roleBasedPermissions)
 @(roleName: String, deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
 
 This is before the constraint.
 
-@be.objectify.deadbolt.java.views.html.roleBasedPermissions(roleName = roleName, handler = deadboltHandler) {
+@roleBasedPermissions(roleName = roleName, handler = deadboltHandler) {
     This is protected by the constraint.
 }
 

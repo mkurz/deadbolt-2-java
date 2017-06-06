@@ -1,8 +1,9 @@
+@this(subjectNotPresentOr: be.objectify.deadbolt.java.views.html.subjectNotPresentOr)
 @(deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
 
 This is before the constraint.
 
-@be.objectify.deadbolt.java.views.html.subjectNotPresentOr(handler = deadboltHandler) {
+@subjectNotPresentOr(handler = deadboltHandler) {
     This is protected by the constraint.
 } {
     This is default content in case the constraint denies access to the protected content.

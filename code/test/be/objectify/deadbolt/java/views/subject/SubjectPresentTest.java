@@ -38,7 +38,7 @@ public class SubjectPresentTest extends AbstractFakeApplicationTest
     @Test
     public void testWithSubjectPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.subject.subjectPresentContent.render(handlers.apply("present"));
+        final Content html = new be.objectify.deadbolt.java.views.html.subject.subjectPresentContent(new be.objectify.deadbolt.java.views.html.subjectPresent(app.asScala())).render(handlers.apply("present"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -48,7 +48,7 @@ public class SubjectPresentTest extends AbstractFakeApplicationTest
     @Test
     public void testWithNoSubjectPresent()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.subject.subjectPresentContent.render(handlers.apply("notPresent"));
+        final Content html = new be.objectify.deadbolt.java.views.html.subject.subjectPresentContent(new be.objectify.deadbolt.java.views.html.subjectPresent(app.asScala())).render(handlers.apply("notPresent"));
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));

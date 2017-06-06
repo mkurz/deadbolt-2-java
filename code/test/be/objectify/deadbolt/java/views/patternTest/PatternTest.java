@@ -55,7 +55,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.zombie",
                                                                                                      PatternType.EQUALITY,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -77,7 +77,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.zombie",
                                                                                                      PatternType.EQUALITY,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -98,7 +98,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.zombie",
                                                                                                      PatternType.EQUALITY,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -110,7 +110,7 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testEquality_noSubject()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.zombie",
                                                                                                      PatternType.EQUALITY,
                                                                                                      new NoPreAuthDeadboltHandler(ecProvider())
                                                                                                      {
@@ -134,7 +134,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.*",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.*",
                                                                                                      PatternType.REGEX,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -156,7 +156,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.*",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.*",
                                                                                                      PatternType.REGEX,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -178,7 +178,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.pixies.*",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.pixies.*",
                                                                                                      PatternType.REGEX,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -199,7 +199,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.zombie",
                                                                                                      PatternType.REGEX,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -211,7 +211,7 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_noSubject()
     {
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.zombie",
                                                                                                      PatternType.REGEX,
                                                                                                      new NoPreAuthDeadboltHandler(ecProvider())
                                                                                                      {
@@ -243,7 +243,7 @@ public class PatternTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.zombie",
                                                                                                      PatternType.CUSTOM,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -273,7 +273,7 @@ public class PatternTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.zombie",
                                                                                                      PatternType.CUSTOM,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -303,7 +303,7 @@ public class PatternTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.patternTest.patternContent.render("killer.undead.zombie",
+        final Content html = new be.objectify.deadbolt.java.views.html.patternTest.patternContent(new be.objectify.deadbolt.java.views.html.pattern(app.asScala())).render("killer.undead.zombie",
                                                                                                      PatternType.CUSTOM,
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);

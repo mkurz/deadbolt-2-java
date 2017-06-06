@@ -59,7 +59,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicContent.render("foo",
+        final Content html = new be.objectify.deadbolt.java.views.html.dynamicTest.dynamicContent(new be.objectify.deadbolt.java.views.html.dynamic(app.asScala())).render("foo",
                                                                                                      Optional.of("bar"),
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -89,7 +89,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicContent.render("foo",
+        final Content html = new be.objectify.deadbolt.java.views.html.dynamicTest.dynamicContent(new be.objectify.deadbolt.java.views.html.dynamic(app.asScala())).render("foo",
                                                                                                      Optional.of("bar"),
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -119,7 +119,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicContent.render("foo",
+        final Content html = new be.objectify.deadbolt.java.views.html.dynamicTest.dynamicContent(new be.objectify.deadbolt.java.views.html.dynamic(app.asScala())).render("foo",
                                                                                                      Optional.of("bar"),
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -149,7 +149,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = be.objectify.deadbolt.java.views.html.dynamicTest.dynamicContent.render("foo",
+        final Content html = new be.objectify.deadbolt.java.views.html.dynamicTest.dynamicContent(new be.objectify.deadbolt.java.views.html.dynamic(app.asScala())).render("foo",
                                                                                                      Optional.of("bar"),
                                                                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
