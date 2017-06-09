@@ -13,6 +13,3 @@ libraryDependencies ++= Seq(
 )
 
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
-
-resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
-
