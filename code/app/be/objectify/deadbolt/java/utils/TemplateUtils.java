@@ -85,19 +85,6 @@ public class TemplateUtils
     }
 
     /**
-     * Converts the arguments into a String array.
-     *
-     * @param args the arguments
-     * @return the arguments as an array
-     * @deprecated use {@link TemplateUtils#allOf} instead
-     */
-    @Deprecated
-    public static String[] as(final String... args)
-    {
-        return allOf(args);
-    }
-
-    /**
      * Converts the argument array into a List of String arrays.
      *
      * @param args the arguments
@@ -106,18 +93,5 @@ public class TemplateUtils
     public static List<String[]> anyOf(final String[]... args)
     {
         return Arrays.asList(args);
-    }
-
-    /**
-     * Converts the argument array into a List of String arrays.
-     *
-     * @param args the arguments
-     * @return a non-null list containing the arguments
-     * @deprecated use {@link TemplateUtils#anyOf} instead
-     */
-    @Deprecated
-    public static List<String[]> la(final String[]... args)
-    {
-        return anyOf(args);
     }
 }

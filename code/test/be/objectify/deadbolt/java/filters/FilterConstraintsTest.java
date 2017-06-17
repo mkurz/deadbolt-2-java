@@ -28,39 +28,38 @@ import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.composite.SubjectPresentConstraint;
 import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.testsupport.TestCookies;
 import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestRole;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
+import com.typesafe.config.ConfigFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import play.Configuration;
+import play.core.j.HttpExecutionContext;
+import play.libs.typedmap.TypedEntry;
+import play.libs.typedmap.TypedMap;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import play.routing.HandlerDef;
 import play.routing.Router;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executors;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
 public class FilterConstraintsTest
 {
-
     private final DeadboltAnalyzer analyzer = new DeadboltAnalyzer();
     private FilterConstraints filterConstraints;
     private Http.RequestHeader requestHeader;
@@ -72,10 +71,9 @@ public class FilterConstraintsTest
     @Before
     public void setUp()
     {
-
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
         Mockito.when(ecProvider.get())
-               .thenReturn(new DefaultDeadboltExecutionContextProvider());
+               .thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
 
         handler = Mockito.mock(DeadboltHandler.class);
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
@@ -85,7 +83,7 @@ public class FilterConstraintsTest
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         context = Mockito.mock(Http.Context.class);
-        subjectCache = new DefaultSubjectCache(Mockito.mock(Configuration.class),
+        subjectCache = new DefaultSubjectCache(ConfigFactory.empty(),
                                                ecProvider);
 
         constraintLogic = new ConstraintLogic(analyzer,
@@ -102,11 +100,14 @@ public class FilterConstraintsTest
                                                   ecProvider,
                                                   compositeCache);
 
-        final Map<String, String> tags = new HashMap<>();
-        tags.put(Router.Tags.ROUTE_PATTERN,
-                 "/foo");
         requestHeader = Mockito.mock(Http.RequestHeader.class);
-        Mockito.when(requestHeader.tags()).thenReturn(tags);
+
+        final HandlerDef handlerDef = Mockito.mock(HandlerDef.class);
+        Mockito.when(handlerDef.path()).thenReturn("/foo");
+        Mockito.when(handlerDef.verb()).thenReturn("GET");
+        final TypedMap attrs = TypedMap.create(new TypedEntry(Router.Attrs.HANDLER_DEF,
+                                                              handlerDef));
+        Mockito.when(requestHeader.attrs()).thenReturn(attrs);
         Mockito.when(requestHeader.method()).thenReturn("GET");
         Mockito.when(requestHeader.uri()).thenReturn("http://localhost/foo");
         Mockito.when(requestHeader.clientCertificateChain()).thenReturn(Optional.empty());
@@ -1574,14 +1575,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<List<? extends Permission>>()
-               {
-                   @Override
-                   public List<? extends Permission> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return Collections.singletonList(new TestPermission("bar"));
-                   }
-               });
+               .then(invocation -> Collections.singletonList(new TestPermission("bar")));
         final CompletionStage<Result> eventualResult = filterConstraints.composite(new SubjectPresentConstraint(Optional.empty(),
                                                                                                                 constraintLogic))
                                                                         .apply(context,
@@ -1606,14 +1600,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<List<? extends Permission>>()
-               {
-                   @Override
-                   public List<? extends Permission> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return Collections.singletonList(new TestPermission("bar"));
-                   }
-               });
+               .then(invocation -> Collections.singletonList(new TestPermission("bar")));
         final CompletionStage<Result> eventualResult = filterConstraints.composite(new SubjectPresentConstraint(Optional.empty(),
                                                                                                                 constraintLogic),
                                                                                    Optional.of("json"))
@@ -1641,14 +1628,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo")
                                                                         .apply(context,
                                                                                requestHeader,
@@ -1671,14 +1651,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo",
                                                                                               Optional.of("json"))
                                                                         .apply(context,
@@ -1702,14 +1675,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
 
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo")
                                                                         .apply(context,
@@ -1736,14 +1702,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
 
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo",
                                                                                               Optional.of("json"))

@@ -15,10 +15,11 @@
  */
 package be.objectify.deadbolt.java.filters;
 
+import static org.awaitility.Awaitility.await;
+
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import akka.stream.Materializer;
 import be.objectify.deadbolt.java.DeadboltHandler;
@@ -66,13 +67,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectPresent"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectPresent"))
+                                                               .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
     }
 
@@ -100,13 +102,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectPresent"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectPresent"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -138,13 +141,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectPresent:content[bar]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectPresent:content[bar]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -174,13 +178,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectPresent:handler[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectPresent:handler[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -210,13 +215,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectPresent:handler[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectPresent:handler[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -250,13 +256,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectPresent:content[bar]:handler[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectPresent:content[bar]:handler[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -290,13 +297,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectNotPresent"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectNotPresent"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -329,13 +337,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectNotPresent:content[bar]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectNotPresent:content[bar]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -365,13 +374,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectNotPresent"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectNotPresent"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
     }
 
@@ -400,13 +410,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectNotPresent:handler[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectNotPresent:handler[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -440,13 +451,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectNotPresent:content[bar]:handler[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectNotPresent:content[bar]:handler[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -480,13 +492,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:subjectNotPresent:handler[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:subjectNotPresent:handler[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -518,13 +531,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:dynamic:name[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:dynamic:name[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
     }
 
@@ -558,13 +572,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:dynamic:name[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:dynamic:name[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -602,13 +617,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:dynamic:name[foo]:content[bar]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:dynamic:name[foo]:content[bar]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -644,13 +660,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:dynamic:name[foo]:handler[gurdy]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:dynamic:name[foo]:handler[gurdy]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -686,13 +703,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:dynamic:name[foo]:handler[gurdy]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:dynamic:name[foo]:handler[gurdy]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -732,13 +750,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:dynamic:name[foo]:content[bar]:handler[gurdy]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:dynamic:name[foo]:content[bar]:handler[gurdy]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -763,13 +782,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:sbujectPresent"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:sbujectPresent"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -802,12 +822,13 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh -> {
+        final CompletableFuture<Result> eventualResult = filter.apply(rh -> {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:rbp:name[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:rbp:name[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
     }
 
@@ -839,13 +860,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:rbp:name[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:rbp:name[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -881,13 +903,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:rbp:name[foo]:content[bar]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:rbp:name[foo]:content[bar]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -921,13 +944,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:rbp:name[foo]:handler[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:rbp:name[foo]:handler[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -960,13 +984,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:rbp:name[foo]:handler[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:rbp:name[foo]:handler[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -1003,13 +1028,14 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
                                                                     {
                                                                         flag[0] = true;
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
-                                                                    request("deadbolt:rbp:name[foo]:content[bar]:handler[foo]"));
-        ((CompletableFuture) eventualResult).get();
+                                                                    request("deadbolt:rbp:name[foo]:content[bar]:handler[foo]"))
+                                                             .toCompletableFuture();
+        await().until(eventualResult::isDone);
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -1027,8 +1053,9 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                              "",
                                              null,
                                              "",
+                                             "",
                                              comment,
-                                             ""))
+                                             null))
                       .build();
     }
 }

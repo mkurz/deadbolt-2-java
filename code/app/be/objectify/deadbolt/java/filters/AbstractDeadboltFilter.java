@@ -43,7 +43,6 @@ public abstract class AbstractDeadboltFilter extends Filter
                                                                             .remoteAddress(requestHeader.remoteAddress())
                                                                             .secure(requestHeader.secure())
                                                                             .attrs(requestHeader.attrs())
-                                                                            .tags(requestHeader.tags())
                                                                             .host(requestHeader.host())
                                                                             .uri(requestHeader.uri())
                                                                             .version(requestHeader.version());

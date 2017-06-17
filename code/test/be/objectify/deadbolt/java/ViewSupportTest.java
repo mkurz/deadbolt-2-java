@@ -16,13 +16,11 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import play.Configuration;
 import play.mvc.Http;
 
 import java.util.HashMap;
@@ -140,21 +138,6 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                                                          Optional.empty(),
                                                          1000L);
         Assert.assertTrue(result);
-    }
-
-    private ViewSupport viewSupport()
-    {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
-        final ConstraintLogic constraintLogic = new ConstraintLogic(new DeadboltAnalyzer(),
-                                                                    (deadboltHandler, context) -> CompletableFuture.completedFuture(Optional.empty()),
-                                                                    Mockito.mock(PatternCache.class),
-                                                                    ecProvider);
-
-        return new ViewSupport(Mockito.mock(Configuration.class),
-                               handlerCache,
-                               new TemplateFailureListenerProvider(provideApplication().injector()),
-                               constraintLogic);
     }
 
     @Override

@@ -128,7 +128,7 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
         this.unknownDeadboltComment = new F.Tuple<>((context, requestHeader, dh, onSuccess) ->
                                                     {
                                                         LOGGER.error("Unknown Deadbolt route comment [{}], denying access with default handler",
-                                                                     requestHeader.tags().get(Router.Tags.ROUTE_COMMENTS));
+                                                                     requestHeader.attrs().get(Router.Attrs.HANDLER_DEF).comments());
                                                         return dh.onAuthFailure(context, Optional.empty());
                                                     }, handler);
     }

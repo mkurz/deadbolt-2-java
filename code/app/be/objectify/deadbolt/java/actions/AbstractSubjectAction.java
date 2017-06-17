@@ -19,7 +19,6 @@ import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
@@ -37,7 +36,7 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
     private final ConstraintLogic constraintLogic;
 
     AbstractSubjectAction(final HandlerCache handlerCache,
-                          final Configuration config,
+                          final com.typesafe.config.Config config,
                           final ExecutionContextProvider ecProvider,
                           final ConstraintLogic constraintLogic)
     {

@@ -21,6 +21,7 @@ import play.mvc.Http;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -44,7 +45,7 @@ public class ConstraintTree implements Constraint
     {
         this.operator = operator;
         Arrays.stream(constraints)
-              .filter(c -> c != null)
+              .filter(Objects::nonNull)
               .collect(Collectors.toCollection(() -> this.constraints));
     }
 

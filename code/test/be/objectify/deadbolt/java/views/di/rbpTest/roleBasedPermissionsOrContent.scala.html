@@ -1,0 +1,12 @@
+@this(rbp: be.objectify.deadbolt.java.views.html.di.roleBasedPermissionsOr)
+@(roleName: String, deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+
+This is before the constraint.
+
+@rbp(roleName = roleName, handler = deadboltHandler) {
+    This is protected by the constraint.
+} {
+    This is default content in case the constraint denies access to the protected content.
+}
+
+    This is after the constraint.

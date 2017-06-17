@@ -15,13 +15,15 @@
  */
 package be.objectify.deadbolt.java;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.Configuration;
 import play.inject.Injector;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 /**
@@ -35,13 +37,16 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
     private final DeadboltExecutionContextProvider ecProvider;
 
     @Inject
-    public ExecutionContextProvider(final Configuration config,
-                                    final Injector injector)
+    public ExecutionContextProvider(final Config config,
+                                    final Injector injector,
+                                    final DefaultDeadboltExecutionContextProvider defaultEcProvider)
     {
-        boolean customEcEnabled = config.getBoolean(ConfigKeys.CUSTOM_EC_DEFAULT._1,
-                                                    ConfigKeys.CUSTOM_EC_DEFAULT._2);
-        DeadboltExecutionContextProvider defaultProvider = new DefaultDeadboltExecutionContextProvider();
-        DeadboltExecutionContextProvider ecp = defaultProvider;
+        final HashMap<String, Object> defaults = new HashMap<>();
+        defaults.put(ConfigKeys.CUSTOM_EC_DEFAULT._1,
+                     ConfigKeys.CUSTOM_EC_DEFAULT._2);
+        final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
+        boolean customEcEnabled = configWithFallback.getBoolean(ConfigKeys.CUSTOM_EC_DEFAULT._1);
+        DeadboltExecutionContextProvider ecp = defaultEcProvider;
         if (customEcEnabled)
         {
             try
@@ -57,7 +62,7 @@ public class ExecutionContextProvider implements Supplier<DeadboltExecutionConte
         }
         else
         {
-            ecProvider = defaultProvider;
+            ecProvider = defaultEcProvider;
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,27 @@
  */
 package be.objectify.deadbolt.java;
 
-import play.libs.concurrent.HttpExecution;
+import javax.inject.Inject;
 import scala.concurrent.ExecutionContext;
 
 /**
- * The default implementation of {@link DeadboltExecutionContextProvider} uses Play's internal exeuction context support.
+ * The default implementation of {@link DeadboltExecutionContextProvider} uses Play's internal execution context support.
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
 public class DefaultDeadboltExecutionContextProvider implements DeadboltExecutionContextProvider
 {
+    private final ExecutionContext ec;
+
+    @Inject
+    public DefaultDeadboltExecutionContextProvider(final ExecutionContext ec) {
+
+        this.ec = ec;
+    }
+
     @Override
     public ExecutionContext get()
     {
-        return HttpExecution.defaultContext();
+        return ec;
     }
 }

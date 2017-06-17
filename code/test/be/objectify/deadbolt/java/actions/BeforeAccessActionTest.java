@@ -21,9 +21,10 @@ import java.util.concurrent.CompletableFuture;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.junit.Test;
 import org.mockito.Mockito;
-import play.Configuration;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
@@ -51,12 +52,12 @@ public class BeforeAccessActionTest
                .thenReturn(handler);
 
         final BeforeAccessAction action = new BeforeAccessAction(handlerCache,
-                                                                 Mockito.mock(Configuration.class),
+                                                                 ConfigFactory.empty(),
                                                                  Mockito.mock(ExecutionContextProvider.class))
         {
             @Override
             protected ExecutionContextExecutor executor() {
-                return HttpExecution.defaultContext();
+                return Mockito.mock(ExecutionContextExecutor.class);
             }
         };
         action.configuration = Mockito.mock(BeforeAccess.class);
@@ -73,7 +74,7 @@ public class BeforeAccessActionTest
     public void testExecute_alreadyAuthorised_alwaysExecuteFalse() throws Exception
     {
         final BeforeAccessAction action = new BeforeAccessAction(Mockito.mock(HandlerCache.class),
-                                                                 Mockito.mock(Configuration.class),
+                                                                 ConfigFactory.empty(),
                                                                  Mockito.mock(ExecutionContextProvider.class));
         action.configuration = Mockito.mock(BeforeAccess.class);
         Mockito.when(action.configuration.alwaysExecute())

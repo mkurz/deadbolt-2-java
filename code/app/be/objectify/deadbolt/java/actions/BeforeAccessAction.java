@@ -18,7 +18,7 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import play.Configuration;
+import com.typesafe.config.Config;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
@@ -36,7 +36,7 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
 {
     @Inject
     public BeforeAccessAction(final HandlerCache handlerCache,
-                              final Configuration config,
+                              final Config config,
                               final ExecutionContextProvider ecProvider)
     {
         super(handlerCache,

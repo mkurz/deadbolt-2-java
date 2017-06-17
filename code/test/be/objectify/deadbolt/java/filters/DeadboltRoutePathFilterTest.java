@@ -331,8 +331,9 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                              "",
                                              null,
                                              "GET",
+                                             "/foo",
                                              "",
-                                             "/foo"))
+                                             null))
                       .build();
     }
 }

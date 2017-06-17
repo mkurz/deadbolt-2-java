@@ -27,11 +27,14 @@ import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import play.core.j.HttpExecutionContext;
 import play.mvc.Http;
+import scala.concurrent.ExecutionContext;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -42,7 +45,7 @@ public class ConstraintBuildersTest extends AbstractCompositeTest
     public void testAllOf() throws Exception
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))
@@ -68,7 +71,7 @@ public class ConstraintBuildersTest extends AbstractCompositeTest
     public void testAnyOf() throws Exception
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))

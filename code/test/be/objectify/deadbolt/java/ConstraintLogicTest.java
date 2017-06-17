@@ -27,7 +27,9 @@ import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import play.core.j.HttpExecutionContext;
 import play.mvc.Http;
+import scala.concurrent.ExecutionContext;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /**
@@ -85,7 +88,7 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                               final Consumer<CompletionStage<Boolean>> test)
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))
@@ -124,7 +127,7 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                              final Consumer<CompletionStage<Boolean>> test)
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))
@@ -230,7 +233,7 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                                           final Consumer<CompletionStage<Boolean>> test)
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))

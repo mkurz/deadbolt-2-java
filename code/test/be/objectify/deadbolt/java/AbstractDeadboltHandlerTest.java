@@ -19,12 +19,14 @@ import be.objectify.deadbolt.java.models.Subject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import play.core.j.HttpExecutionContext;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,7 +40,7 @@ public class AbstractDeadboltHandlerTest
     public void testGetSubject() throws Exception
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler(ecProvider)
         {
             @Override
@@ -63,7 +65,7 @@ public class AbstractDeadboltHandlerTest
     public void testOnAuthFailure() throws Exception
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler(ecProvider)
         {
             @Override
@@ -90,7 +92,7 @@ public class AbstractDeadboltHandlerTest
     public void testGetDynamicResourceHandler() throws Exception
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler(ecProvider)
         {
             @Override

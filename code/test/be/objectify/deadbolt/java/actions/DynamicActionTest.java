@@ -23,10 +23,11 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.utils.TriFunction;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import play.Configuration;
 import play.mvc.Action;
 import play.mvc.Http;
 
@@ -47,7 +48,7 @@ public class DynamicActionTest
                .thenReturn("x/y");
         final ConstraintLogic constraintLogic = Mockito.mock(ConstraintLogic.class);
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(Configuration.class),
+                                                       ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ExecutionContextProvider.class),
@@ -75,7 +76,7 @@ public class DynamicActionTest
         Mockito.when(dynamic.meta())
                .thenReturn("foo");
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(Configuration.class),
+                                                       ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ExecutionContextProvider.class),
@@ -93,7 +94,7 @@ public class DynamicActionTest
         Mockito.when(dynamic.value())
                .thenReturn("foo");
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(Configuration.class),
+                                                       ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ExecutionContextProvider.class),
@@ -110,7 +111,7 @@ public class DynamicActionTest
         Mockito.when(dynamic.handlerKey())
                .thenReturn("foo");
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(Configuration.class),
+                                                       ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ExecutionContextProvider.class),

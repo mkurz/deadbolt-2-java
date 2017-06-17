@@ -115,12 +115,12 @@ public class ConstraintLogic
         final ExecutionContextExecutor executor = executor();
         return getSubject(ctx,
                           deadboltHandler)
-                .thenComposeAsync(maybeSubject -> maybeSubject.isPresent() ? present.apply(ctx,
-                                                                                           deadboltHandler,
-                                                                                           content)
-                                                                           : notPresent.apply(ctx,
-                                                                                              deadboltHandler,
-                                                                                              content),
+                .thenComposeAsync(maybeSubject -> maybeSubject.map(subject -> present.apply(ctx,
+                                                                                            deadboltHandler,
+                                                                                            content))
+                                                              .orElseGet(() -> notPresent.apply(ctx,
+                                                                                                deadboltHandler,
+                                                                                                content)),
                                   executor);
     }
 
@@ -175,11 +175,9 @@ public class ConstraintLogic
                           deadboltHandler)
                 .thenComposeAsync(maybeSubject -> maybeSubject.isPresent() ? deadboltHandler.getPermissionsForRole(roleName)
                                                                                             .thenApplyAsync(permissions -> permissions.stream()
-                                                                                                                                      .map(permission -> Optional
-                                                                                                                                              .ofNullable(patternCache.apply(permission.getValue())))
-                                                                                                                                      .map(maybePattern -> analyzer
-                                                                                                                                              .checkRegexPattern(maybeSubject,
-                                                                                                                                                                 maybePattern))
+                                                                                                                                      .map(permission -> Optional.ofNullable(patternCache.apply(permission.getValue())))
+                                                                                                                                      .map(maybePattern -> analyzer.checkRegexPattern(maybeSubject,
+                                                                                                                                                                                      maybePattern))
                                                                                                                                       .filter(matches -> matches)
                                                                                                                                       .findFirst()
                                                                                                                                       .isPresent(),
@@ -342,7 +340,6 @@ public class ConstraintLogic
     protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
                                                                       final DeadboltHandler deadboltHandler)
     {
-        final ExecutionContextExecutor executor = executor();
         return subjectCache.apply(deadboltHandler,
                                   ctx);
     }

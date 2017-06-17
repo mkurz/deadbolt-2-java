@@ -20,7 +20,7 @@ import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import play.Configuration;
+import com.typesafe.config.Config;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -39,7 +39,7 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
 {
     @Inject
     public DynamicAction(final HandlerCache handlerCache,
-                         final Configuration config,
+                         final Config config,
                          final ExecutionContextProvider ecProvider,
                          final ConstraintLogic constraintLogic)
     {
@@ -50,7 +50,7 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     }
 
     public DynamicAction(final HandlerCache handlerCache,
-                         final Configuration config,
+                         final Config config,
                          final Dynamic configuration,
                          final Action<?> delegate,
                          final ExecutionContextProvider ecProvider,

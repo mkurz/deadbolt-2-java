@@ -20,9 +20,10 @@ import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.Configuration;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
@@ -31,6 +32,7 @@ import play.mvc.Results;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.ExecutionContextExecutor;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -57,7 +59,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     final HandlerCache handlerCache;
 
-    final Configuration config;
+    final Config config;
 
     final DeadboltExecutionContextProvider executionContextProvider;
 
@@ -65,7 +67,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     public final long blockingTimeout;
 
     protected AbstractDeadboltAction(final HandlerCache handlerCache,
-                                     final Configuration config,
+                                     final Config config,
                                      final ExecutionContextProvider ecProvider)
     {
         this.handlerCache = handlerCache;
@@ -73,10 +75,14 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
         this.executionContextProvider = ecProvider.get();
 
-        this.blocking = config.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1,
-                                          ConfigKeys.BLOCKING_DEFAULT._2);
-        this.blockingTimeout = this.config.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
-                                                   ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
+        final HashMap<String, Object> defaults = new HashMap<>();
+        defaults.put(ConfigKeys.BLOCKING_DEFAULT._1,
+                     ConfigKeys.BLOCKING_DEFAULT._2);
+        defaults.put(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
+                     ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
+        final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
+        this.blocking = configWithFallback.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1);
+        this.blockingTimeout = configWithFallback.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1);
     }
 
     /**
@@ -297,7 +303,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     /**
      * Add a flag to the context to indicate the action has been blocked by the
-     * constraint and call {@link DeadboltHandler#onAuthFailure(Http.Context, String)}.
+     * constraint and call {@link DeadboltHandler#onAuthFailure(Http.Context, Optional<String>)}.
      *
      * @param context the context
      * @param handler the relevant handler

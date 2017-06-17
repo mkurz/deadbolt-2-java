@@ -20,7 +20,8 @@ import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
-import play.Configuration;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import scala.concurrent.ExecutionContext;
@@ -28,6 +29,7 @@ import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -42,11 +44,14 @@ public class DefaultSubjectCache implements SubjectCache
     private final DeadboltExecutionContextProvider executionContextProvider;
 
     @Inject
-    public DefaultSubjectCache(final Configuration configuration,
+    public DefaultSubjectCache(final Config config,
                                final ExecutionContextProvider ecProvider)
     {
-        this.cacheUserPerRequestEnabled = configuration.getBoolean(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
-                                                                   ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._2);
+        final HashMap<String, Object> defaults = new HashMap<>();
+        defaults.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
+                     ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._2);
+        final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
+        this.cacheUserPerRequestEnabled = configWithFallback.getBoolean(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1);
         this.executionContextProvider = ecProvider.get();
     }
 

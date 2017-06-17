@@ -1,5 +1,6 @@
 package be.objectify.deadbolt.java.filters;
 
+import java.util.concurrent.Executors;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
@@ -10,6 +11,8 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mockito;
+import play.core.j.HttpExecutionContext;
+import scala.concurrent.ExecutionContext;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -25,7 +28,7 @@ public abstract class AbstractDeadboltFilterTest {
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
         Mockito.when(ecProvider.get())
-               .thenReturn(new DefaultDeadboltExecutionContextProvider());
+               .thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
 
         subjectCache = Mockito.mock(SubjectCache.class);
 

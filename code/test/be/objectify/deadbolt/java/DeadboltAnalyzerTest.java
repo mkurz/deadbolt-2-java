@@ -463,9 +463,9 @@ public class DeadboltAnalyzerTest
 
     private static class TestSubject implements Subject
     {
-        private String identifier;
-        private List<? extends Role> roles;
-        private List<? extends Permission> permissions;
+        private final String identifier;
+        private final List<? extends Role> roles;
+        private final List<? extends Permission> permissions;
 
         private TestSubject(Builder builder)
         {

@@ -24,10 +24,11 @@ import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.utils.TriFunction;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import play.Configuration;
 import play.mvc.Action;
 import play.mvc.Http;
 
@@ -52,7 +53,7 @@ public class PatternActionTest
                .thenReturn(PatternType.EQUALITY);
         final ConstraintLogic constraintLogic = Mockito.mock(ConstraintLogic.class);
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(Configuration.class),
+                                                       ConfigFactory.empty(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ExecutionContextProvider.class),
@@ -82,7 +83,7 @@ public class PatternActionTest
         Mockito.when(pattern.value())
                .thenReturn("foo");
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(Configuration.class),
+                                                       ConfigFactory.empty(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ExecutionContextProvider.class),
@@ -99,7 +100,7 @@ public class PatternActionTest
         Mockito.when(pattern.meta())
                .thenReturn("foo");
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(Configuration.class),
+                                                       ConfigFactory.empty(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ExecutionContextProvider.class),
@@ -118,7 +119,7 @@ public class PatternActionTest
         Mockito.when(pattern.handlerKey())
                .thenReturn("foo");
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(Configuration.class),
+                                                       ConfigFactory.empty(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ExecutionContextProvider.class),

@@ -17,9 +17,9 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import com.typesafe.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
@@ -40,7 +40,7 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
 
     @Inject
     public DeferredDeadboltAction(final HandlerCache handlerCache,
-                                  final Configuration config,
+                                  final Config config,
                                   final ExecutionContextProvider ecProvider)
     {
         super(handlerCache,

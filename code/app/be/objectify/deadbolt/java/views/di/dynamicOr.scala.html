@@ -1,0 +1,7 @@
+@this(viewSupport: be.objectify.deadbolt.java.ViewSupport, handlerCache: be.objectify.deadbolt.java.cache.HandlerCache)
+@(name: String, meta: Optional[String] = Optional.empty(), handler: be.objectify.deadbolt.java.DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)(alternativeBody: => Html)
+@if(viewSupport.viewDynamic(name, meta, handler, content, timeout.get())) {
+    @body
+} else {
+    @alternativeBody
+}

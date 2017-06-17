@@ -17,7 +17,7 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import play.Configuration;
+import com.typesafe.config.Config;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
@@ -36,7 +36,7 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
 {
     @Inject
     public UnrestrictedAction(final HandlerCache handlerCache,
-                              final Configuration config,
+                              final Config config,
                               final ExecutionContextProvider ecProvider)
     {
         super(handlerCache,

@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -140,7 +141,7 @@ public class ConstraintBuilders
             if (roleGroups != null)
             {
                 roleGroups.stream()
-                          .filter(group -> group != null)
+                          .filter(Objects::nonNull)
                           .collect(Collectors.toCollection(() -> this.roleGroups));
             }
             this.constraintLogic = constraintLogic;

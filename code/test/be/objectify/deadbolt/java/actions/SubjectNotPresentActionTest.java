@@ -24,10 +24,11 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.utils.TriFunction;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import play.Configuration;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Results;
@@ -48,7 +49,7 @@ public class SubjectNotPresentActionTest {
         Mockito.when(subjectNotPresent.content())
                .thenReturn("x/y");
         final SubjectNotPresentAction action = new SubjectNotPresentAction(Mockito.mock(HandlerCache.class),
-                                                                           Mockito.mock(Configuration.class),
+                                                                           ConfigFactory.empty(),
                                                                            Mockito.mock(ExecutionContextProvider.class),
                                                                            Mockito.mock(ConstraintLogic.class));
         action.configuration = subjectNotPresent;
@@ -65,7 +66,7 @@ public class SubjectNotPresentActionTest {
     public void testPresent() throws Exception
     {
         final SubjectNotPresentAction action = new SubjectNotPresentAction(Mockito.mock(HandlerCache.class),
-                                                                           Mockito.mock(Configuration.class),
+                                                                           ConfigFactory.empty(),
                                                                            Mockito.mock(ExecutionContextProvider.class),
                                                                            Mockito.mock(ConstraintLogic.class));
 
@@ -91,7 +92,7 @@ public class SubjectNotPresentActionTest {
     public void testNotPresent() throws Exception
     {
         final SubjectNotPresentAction action = new SubjectNotPresentAction(Mockito.mock(HandlerCache.class),
-                                                                           Mockito.mock(Configuration.class),
+                                                                           ConfigFactory.empty(),
                                                                            Mockito.mock(ExecutionContextProvider.class),
                                                                            Mockito.mock(ConstraintLogic.class));
         action.delegate = Mockito.mock(Action.class);
@@ -120,7 +121,7 @@ public class SubjectNotPresentActionTest {
                .thenReturn(CompletableFuture.completedFuture(Results.TODO));
 
         final SubjectNotPresentAction action = new SubjectNotPresentAction(Mockito.mock(HandlerCache.class),
-                                                                           Mockito.mock(Configuration.class),
+                                                                           ConfigFactory.empty(),
                                                                            Mockito.mock(ExecutionContextProvider.class),
                                                                            constraintLogic);
         action.configuration = Mockito.mock(SubjectNotPresent.class);

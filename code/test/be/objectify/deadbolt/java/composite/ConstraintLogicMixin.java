@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java.composite;
 
+import java.util.concurrent.Executors;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
@@ -23,17 +24,19 @@ import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.mockito.Mockito;
+import play.core.j.HttpExecutionContext;
 import play.mvc.Http;
+import scala.concurrent.ExecutionContext;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
 public interface ConstraintLogicMixin
 {
-    default public ConstraintLogic logic(final DeadboltHandler deadboltHandler)
+    default ConstraintLogic logic(final DeadboltHandler deadboltHandler)
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))

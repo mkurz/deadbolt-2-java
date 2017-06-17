@@ -15,15 +15,17 @@
  */
 package be.objectify.deadbolt.java;
 
+import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
+import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
+import com.typesafe.config.ConfigFactory;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import play.Application;
 import play.Mode;
 import play.api.mvc.RequestHeader;
+import play.core.j.HttpExecutionContext;
 import play.core.j.JavaContextComponents;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Http;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static play.inject.Bindings.bind;
@@ -44,8 +47,6 @@ import static play.inject.Bindings.bind;
  */
 public abstract class AbstractFakeApplicationTest extends WithApplication
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFakeApplicationTest.class);
-
     @Override
     protected Application provideApplication()
     {
@@ -77,13 +78,17 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
         return handler;
     }
 
+    protected HandlerCache handlers(DeadboltHandler handler) {
+        return handlers();
+    }
+
     protected abstract HandlerCache handlers();
 
     protected ExecutionContextProvider ecProvider()
     {
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
         Mockito.when(ecProvider.get())
-               .thenReturn(new DefaultDeadboltExecutionContextProvider());
+               .thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         return ecProvider;
     }
 
@@ -128,6 +133,21 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
                 return CompletableFuture.supplyAsync(() -> Optional.ofNullable(drh.get()));
             }
         };
+    }
+
+    public ViewSupport viewSupport()
+    {
+        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
+        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
+        final ConstraintLogic constraintLogic = new ConstraintLogic(new DeadboltAnalyzer(),
+                                                                    DeadboltHandler::getSubject,
+                                                                    new DefaultPatternCache(),
+                                                                    ecProvider);
+
+        return new ViewSupport(ConfigFactory.empty(),
+                               handlers(),
+                               new TemplateFailureListenerProvider(provideApplication().injector()),
+                               constraintLogic);
     }
 
     public Http.Context context()

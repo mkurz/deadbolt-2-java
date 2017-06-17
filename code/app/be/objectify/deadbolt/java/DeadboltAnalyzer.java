@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -66,7 +67,7 @@ public class DeadboltAnalyzer
                                     if (roles != null)
                                     {
                                         roleNames.addAll(roles.stream()
-                                                              .filter(role -> role != null)
+                                                              .filter(Objects::nonNull)
                                                               .map(Role::getName)
                                                               .collect(Collectors.toList()));
                                     }
