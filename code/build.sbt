@@ -1,6 +1,6 @@
 name := "deadbolt-java"
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava)
+lazy val root = (project in file(".")).enablePlugins(PlayJava).disablePlugins(PlayFilters)
 
 scalaVersion := "2.11.11"
 
