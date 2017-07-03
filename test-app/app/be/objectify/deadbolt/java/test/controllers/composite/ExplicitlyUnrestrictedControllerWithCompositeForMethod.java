@@ -16,7 +16,6 @@
 package be.objectify.deadbolt.java.test.controllers.composite;
 
 import be.objectify.deadbolt.java.actions.Composite;
-import be.objectify.deadbolt.java.actions.Dynamic;
 import be.objectify.deadbolt.java.actions.Unrestricted;
 import play.mvc.Controller;
 import play.mvc.Result;
