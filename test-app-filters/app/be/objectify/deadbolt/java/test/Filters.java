@@ -15,6 +15,9 @@
  */
 package be.objectify.deadbolt.java.test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import be.objectify.deadbolt.java.filters.DeadboltRouteCommentFilter;
 import be.objectify.deadbolt.java.filters.DeadboltRoutePathFilter;
 import play.http.HttpFilters;
@@ -40,10 +43,8 @@ public class Filters implements HttpFilters
     }
 
     @Override
-    public EssentialFilter[] filters()
+    public List<EssentialFilter> getFilters()
     {
-        return new EssentialFilter[]
-                {deadboltRoutePaths,
-                        deadboltComments};
+        return Arrays.asList(deadboltRoutePaths, deadboltComments);
     }
 }
