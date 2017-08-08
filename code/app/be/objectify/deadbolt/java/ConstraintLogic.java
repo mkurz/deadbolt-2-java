@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2016 Steve Chaloner
+ * Copyright 2010-2017 Steve Chaloner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,31 +135,28 @@ public class ConstraintLogic
         final ExecutionContextExecutor executor = executor();
         return getSubject(ctx,
                           deadboltHandler)
-                .thenApplyAsync(subjectOption ->
-                                {
-                                    boolean roleOk = false;
-                                    if (subjectOption.isPresent())
-                                    {
-                                        final List<String[]> roleGroups = roleGroupSupplier.get();
-                                        for (int i = 0; !roleOk && i < roleGroups.size(); i++)
-                                        {
-                                            roleOk = analyzer.checkRole(subjectOption,
-                                                                        roleGroups.get(i));
-                                        }
-                                    }
-                                    return roleOk;
-                                },
-                                executor)
-                .thenComposeAsync(allowed -> allowed ? pass(ctx,
-                                                            deadboltHandler,
-                                                            pass,
-                                                            constraintPoint,
-                                                            "restrict")
-                                                     : fail.apply(ctx,
-                                                                  deadboltHandler,
-                                                                  content),
+                .thenComposeAsync(subjectOption ->
+                                  {
+                                      boolean roleOk = false;
+                                      if (subjectOption.isPresent())
+                                      {
+                                          final List<String[]> roleGroups = roleGroupSupplier.get();
+                                          for (int i = 0; !roleOk && i < roleGroups.size(); i++)
+                                          {
+                                              roleOk = analyzer.checkRole(subjectOption,
+                                                                          roleGroups.get(i));
+                                          }
+                                      }
+                                      return roleOk ? pass(ctx,
+                                                           deadboltHandler,
+                                                           pass,
+                                                           constraintPoint,
+                                                           "restrict")
+                                                    : fail.apply(ctx,
+                                                                 deadboltHandler,
+                                                                 content);
+                                  },
                                   executor);
-
     }
 
     public <T> CompletionStage<T> roleBasedPermissions(final Http.Context ctx,
@@ -323,18 +320,20 @@ public class ConstraintLogic
         final ExecutionContextExecutor executor = executor();
         return getSubject(ctx,
                           deadboltHandler)
-                .thenApplyAsync(subject -> subject.isPresent() ? analyzer.checkPatternEquality(subject,
-                                                                                               Optional.ofNullable(value))
-                                                               : invert, // this is a little clumsy - it means no subject + invert is still denied
-                                executor)
-                .thenComposeAsync(equal -> (invert ? !equal : equal) ? pass(ctx,
-                                                                            deadboltHandler,
-                                                                            pass,
-                                                                            constraintPoint,
-                                                                            "pattern - equality")
-                                                                     : fail.apply(ctx,
-                                                                                  deadboltHandler,
-                                                                                  content), executor);
+                .thenComposeAsync(subject -> {
+                                      final boolean equal = subject.isPresent() ? analyzer.checkPatternEquality(subject,
+                                                                                                                Optional.ofNullable(value))
+                                                                                : invert; // this is a little clumsy - it means no subject + invert is still denied
+                                      return (invert ? !equal : equal) ? pass(ctx,
+                                                                              deadboltHandler,
+                                                                              pass,
+                                                                              constraintPoint,
+                                                                              "pattern - equality")
+                                                                       : fail.apply(ctx,
+                                                                                    deadboltHandler,
+                                                                                    content);
+                                  },
+                                  executor);
     }
 
     protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
