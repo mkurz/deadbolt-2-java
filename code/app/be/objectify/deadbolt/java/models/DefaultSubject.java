@@ -38,8 +38,8 @@ public class DefaultSubject implements Subject, Serializable
     public DefaultSubject(final String identifier, final List<String> roles, final List<String> permissions)
     {
         this.identifier = identifier;
-        this.roles = (roles != null) ? Collections.unmodifiableList(roles.stream().<Role>map(role -> () -> role).collect(Collectors.toCollection(() -> new ArrayList<>()))) : null;
-        this.permissions = (permissions != null) ? Collections.unmodifiableList(permissions.stream().<Permission>map(permission -> () -> permission).collect(Collectors.toCollection(() -> new ArrayList<>()))) : null;
+        this.roles = (roles != null) ? Collections.unmodifiableList(roles.stream().map(role -> (Role & Serializable)() -> role).collect(Collectors.toCollection(() -> new ArrayList<>()))) : null;
+        this.permissions = (permissions != null) ? Collections.unmodifiableList(permissions.stream().map(permission -> (Permission & Serializable)() -> permission).collect(Collectors.toCollection(() -> new ArrayList<>()))) : null;
     }
 
     @Override
