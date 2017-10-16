@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 /**
  * Default implementation of a Subject.
  *
- * @author Steve Chaloner (steve@objectify.be)
+ * @author Matthias Kurz (m.kurz@irregular.at)
  */
 public class DefaultSubject implements Subject, Serializable
 {
