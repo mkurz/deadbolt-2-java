@@ -15,24 +15,22 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.function.BiFunction;
-
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.composite.Constraint;
-import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import play.mvc.Http;
 import scala.concurrent.ExecutionContextExecutor;
+
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -54,10 +52,9 @@ public class CompositeActionTest
         final Constraint constraint = Mockito.mock(Constraint.class);
         Mockito.when(constraint.test(Mockito.any(Http.Context.class),
                                      Mockito.any(DeadboltHandler.class),
-                                     Mockito.any(Executor.class),
                                      Mockito.eq(Optional.of("bar")),
                                      Mockito.any(BiFunction.class)))
-               .then(invocation -> ((Optional<String>)invocation.getArguments()[3]).map(meta -> meta.equals("bar"))
+               .then(invocation -> ((Optional<String>)invocation.getArguments()[2]).map(meta -> meta.equals("bar"))
                                                                                    .map(CompletableFuture::completedFuture)
                                                                                    .orElse(CompletableFuture.completedFuture(false)));
 
@@ -84,7 +81,6 @@ public class CompositeActionTest
 
         Mockito.verify(constraint).test(Mockito.eq(ctx),
                                         Mockito.eq(handler),
-                                        Mockito.any(Executor.class),
                                         Mockito.eq(Optional.of("bar")),
                                         Mockito.any(BiFunction.class));
     }

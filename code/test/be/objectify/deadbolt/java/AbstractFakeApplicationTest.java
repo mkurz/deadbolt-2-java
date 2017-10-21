@@ -17,7 +17,6 @@ package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
 import com.typesafe.config.ConfigFactory;
@@ -63,9 +62,9 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
         Http.Context.current.set(new Http.Context(1L,
                                                   Mockito.mock(RequestHeader.class),
                                                   Mockito.mock(Http.Request.class),
-                                                  Collections.<String, String>emptyMap(),
-                                                  Collections.<String, String>emptyMap(),
-                                                  Collections.<String, Object>emptyMap(),
+                                                  Collections.emptyMap(),
+                                                  Collections.emptyMap(),
+                                                  Collections.emptyMap(),
                                                   Mockito.mock(JavaContextComponents.class)));
     }
 
@@ -137,12 +136,9 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
 
     public ViewSupport viewSupport()
     {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         final ConstraintLogic constraintLogic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                                     DeadboltHandler::getSubject,
-                                                                    new DefaultPatternCache(),
-                                                                    ecProvider);
+                                                                    new DefaultPatternCache());
 
         return new ViewSupport(ConfigFactory.empty(),
                                handlers(),

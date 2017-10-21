@@ -25,7 +25,6 @@ import play.mvc.Http;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 /**
@@ -51,8 +50,7 @@ public abstract class AbstractDynamicConstraintTest extends AbstractConstraintTe
         });
         final DynamicConstraint constraint = constraint(handler);
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                handler,
-                                                                Executors.newSingleThreadExecutor());
+                                                                handler);
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -72,8 +70,7 @@ public abstract class AbstractDynamicConstraintTest extends AbstractConstraintTe
         });
         final DynamicConstraint constraint = constraint(handler);
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                handler,
-                                                                Executors.newSingleThreadExecutor());
+                                                                handler);
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -93,7 +90,6 @@ public abstract class AbstractDynamicConstraintTest extends AbstractConstraintTe
         });
         return new F.Tuple<>(constraint(handler),
                              c -> c.test(context,
-                                         handler,
-                                         Executors.newSingleThreadExecutor()));
+                                         handler));
     }
 }

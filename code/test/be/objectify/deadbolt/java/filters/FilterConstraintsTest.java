@@ -88,8 +88,7 @@ public class FilterConstraintsTest
 
         constraintLogic = new ConstraintLogic(analyzer,
                                               subjectCache,
-                                              new DefaultPatternCache(),
-                                              ecProvider);
+                                              new DefaultPatternCache());
 
         final CompositeCache compositeCache = new DefaultCompositeCache();
         compositeCache.register("testConstraint",
@@ -97,7 +96,6 @@ public class FilterConstraintsTest
                                                              constraintLogic));
 
         filterConstraints = new FilterConstraints(constraintLogic,
-                                                  ecProvider,
                                                   compositeCache);
 
         requestHeader = Mockito.mock(Http.RequestHeader.class);

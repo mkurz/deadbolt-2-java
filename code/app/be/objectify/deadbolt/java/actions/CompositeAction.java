@@ -15,9 +15,6 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
@@ -28,6 +25,10 @@ import com.typesafe.config.Config;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;
+
+import javax.inject.Inject;
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -61,7 +62,6 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                                       final boolean preferGlobalMeta = configuration.preferGlobalMeta();
                                       return constraint.test(ctx,
                                                              handler,
-                                                             executor,
                                                              Optional.ofNullable(getMeta()),
                                                              (globalMd, localMd) -> preferGlobalMeta ? globalMd.isPresent() ? globalMd : localMd
                                                                                                      : localMd.isPresent() ? localMd : globalMd)

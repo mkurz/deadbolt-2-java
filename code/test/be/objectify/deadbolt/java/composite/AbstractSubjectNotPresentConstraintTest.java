@@ -21,7 +21,6 @@ import org.junit.Test;
 import play.libs.F;
 
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 /**
@@ -34,8 +33,7 @@ public abstract class AbstractSubjectNotPresentConstraintTest extends AbstractCo
     {
         final Constraint constraint = constraint(withSubject(this::subject));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(this::subject),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(this::subject));
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -44,8 +42,7 @@ public abstract class AbstractSubjectNotPresentConstraintTest extends AbstractCo
     {
         final Constraint constraint = constraint(withSubject(() -> null));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> null),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> null));
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -54,8 +51,7 @@ public abstract class AbstractSubjectNotPresentConstraintTest extends AbstractCo
     {
         return new F.Tuple<>(constraint(withSubject(() -> null)),
                              c -> c.test(context,
-                                         withSubject(() -> null),
-                                         Executors.newSingleThreadExecutor()));
+                                         withSubject(() -> null)));
     }
 
     protected abstract SubjectNotPresentConstraint constraint(final DeadboltHandler handler);

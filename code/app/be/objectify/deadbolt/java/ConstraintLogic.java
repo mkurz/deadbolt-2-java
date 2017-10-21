@@ -20,13 +20,10 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.utils.TriFunction;
-import javax.inject.Singleton;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -48,18 +45,14 @@ public class ConstraintLogic
 
     private final PatternCache patternCache;
 
-    private final DeadboltExecutionContextProvider executionContextProvider;
-
     @Inject
     public ConstraintLogic(final DeadboltAnalyzer analyzer,
                            final SubjectCache subjectCache,
-                           final PatternCache patternCache,
-                           final ExecutionContextProvider ecProvider)
+                           final PatternCache patternCache)
     {
         this.analyzer = analyzer;
         this.subjectCache = subjectCache;
         this.patternCache = patternCache;
-        this.executionContextProvider = ecProvider.get();
     }
 
     public <T> CompletionStage<T> subjectPresent(final Http.Context ctx,
@@ -112,16 +105,14 @@ public class ConstraintLogic
                                                final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> present,
                                                final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> notPresent)
     {
-        final ExecutionContextExecutor executor = executor();
         return getSubject(ctx,
                           deadboltHandler)
-                .thenComposeAsync(maybeSubject -> maybeSubject.map(subject -> present.apply(ctx,
-                                                                                            deadboltHandler,
-                                                                                            content))
-                                                              .orElseGet(() -> notPresent.apply(ctx,
-                                                                                                deadboltHandler,
-                                                                                                content)),
-                                  executor);
+                .thenCompose(maybeSubject -> maybeSubject.map(subject -> present.apply(ctx,
+                                                                                       deadboltHandler,
+                                                                                       content))
+                                                         .orElseGet(() -> notPresent.apply(ctx,
+                                                                                           deadboltHandler,
+                                                                                           content)));
     }
 
     public <T> CompletionStage<T> restrict(final Http.Context ctx,
@@ -132,10 +123,9 @@ public class ConstraintLogic
                                            final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                            final ConstraintPoint constraintPoint)
     {
-        final ExecutionContextExecutor executor = executor();
         return getSubject(ctx,
                           deadboltHandler)
-                .thenComposeAsync(subjectOption ->
+                .thenCompose(subjectOption ->
                                   {
                                       boolean roleOk = false;
                                       if (subjectOption.isPresent())
@@ -155,8 +145,7 @@ public class ConstraintLogic
                                                     : fail.apply(ctx,
                                                                  deadboltHandler,
                                                                  content);
-                                  },
-                                  executor);
+                                  });
     }
 
     public <T> CompletionStage<T> roleBasedPermissions(final Http.Context ctx,
@@ -167,30 +156,26 @@ public class ConstraintLogic
                                                        final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                                        final ConstraintPoint constraintPoint)
     {
-        final ExecutionContextExecutor executor = executor();
         return getSubject(ctx,
                           deadboltHandler)
-                .thenComposeAsync(maybeSubject -> maybeSubject.isPresent() ? deadboltHandler.getPermissionsForRole(roleName)
-                                                                                            .thenApplyAsync(permissions -> permissions.stream()
-                                                                                                                                      .map(permission -> Optional.ofNullable(patternCache.apply(permission.getValue())))
-                                                                                                                                      .map(maybePattern -> analyzer.checkRegexPattern(maybeSubject,
+                .thenCompose(maybeSubject -> maybeSubject.isPresent() ? deadboltHandler.getPermissionsForRole(roleName)
+                                                                                       .thenApply(permissions -> permissions.stream()
+                                                                                                                            .map(permission -> Optional.ofNullable(patternCache.apply(permission.getValue())))
+                                                                                                                            .map(maybePattern -> analyzer.checkRegexPattern(maybeSubject,
                                                                                                                                                                                       maybePattern))
-                                                                                                                                      .filter(matches -> matches)
-                                                                                                                                      .findFirst()
-                                                                                                                                      .isPresent(),
-                                                                                                            executor)
+                                                                                                                            .filter(matches -> matches)
+                                                                                                                            .findFirst()
+                                                                                                                            .isPresent())
 
-                                                                           : CompletableFuture.completedFuture(false),
-                                  executor)
-                .thenComposeAsync(allowed -> allowed ? pass(ctx,
+                                                                      : CompletableFuture.completedFuture(false))
+                .thenCompose(allowed -> allowed ? pass(ctx,
                                                             deadboltHandler,
                                                             pass,
                                                             constraintPoint,
                                                             "roleBasedPermissions")
                                                      : fail.apply(ctx,
                                                                   deadboltHandler,
-                                                                  content),
-                                  executor);
+                                                                  content));
 
     }
 
@@ -256,24 +241,20 @@ public class ConstraintLogic
                                           final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                           final ConstraintPoint constraintPoint)
     {
-        final ExecutionContextExecutor executor = executor();
         return deadboltHandler.getDynamicResourceHandler(ctx)
-                              .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
-                                              executor)
-                              .thenComposeAsync(drh -> drh.isAllowed(name,
-                                                                     meta,
-                                                                     deadboltHandler,
-                                                                     ctx),
-                                                executor)
-                              .thenComposeAsync(allowed -> allowed ? pass(ctx,
+                              .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
+                              .thenCompose(drh -> drh.isAllowed(name,
+                                                                meta,
+                                                                deadboltHandler,
+                                                                ctx))
+                              .thenCompose(allowed -> allowed ? pass(ctx,
                                                                           deadboltHandler,
                                                                           pass,
                                                                           constraintPoint,
                                                                           "dynamic")
                                                                    : fail.apply(ctx,
                                                                                 deadboltHandler,
-                                                                                content),
-                                                executor);
+                                                                                content));
     }
 
     private <T> CompletionStage<T> custom(final Http.Context ctx,
@@ -288,24 +269,20 @@ public class ConstraintLogic
     {
         ctx.args.put(ConfigKeys.PATTERN_INVERT,
                      invert);
-        final ExecutionContextExecutor executor = executor();
         return deadboltHandler.getDynamicResourceHandler(ctx)
-                              .thenApplyAsync(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE),
-                                              executor)
-                              .thenComposeAsync(resourceHandler -> resourceHandler.checkPermission(value,
-                                                                                                   meta,
-                                                                                                   deadboltHandler,
-                                                                                                   ctx),
-                                                executor)
-                              .thenComposeAsync(allowed -> (invert ? !allowed : allowed) ? pass(ctx,
+                              .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
+                              .thenCompose(resourceHandler -> resourceHandler.checkPermission(value,
+                                                                                              meta,
+                                                                                              deadboltHandler,
+                                                                                              ctx))
+                              .thenCompose(allowed -> (invert ? !allowed : allowed) ? pass(ctx,
                                                                                                 deadboltHandler,
                                                                                                 pass,
                                                                                                 constraintPoint,
                                                                                                 "pattern - custom")
                                                                                          : fail.apply(ctx,
                                                                                                       deadboltHandler,
-                                                                                                      content),
-                                                executor);
+                                                                                                      content));
     }
 
     private <T> CompletionStage<T> equality(final Http.Context ctx,
@@ -317,10 +294,9 @@ public class ConstraintLogic
                                             final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                             final ConstraintPoint constraintPoint)
     {
-        final ExecutionContextExecutor executor = executor();
         return getSubject(ctx,
                           deadboltHandler)
-                .thenComposeAsync(subject -> {
+                .thenCompose(subject -> {
                                       final boolean equal = subject.isPresent() ? analyzer.checkPatternEquality(subject,
                                                                                                                 Optional.ofNullable(value))
                                                                                 : invert; // this is a little clumsy - it means no subject + invert is still denied
@@ -332,8 +308,7 @@ public class ConstraintLogic
                                                                        : fail.apply(ctx,
                                                                                     deadboltHandler,
                                                                                     content);
-                                  },
-                                  executor);
+                });
     }
 
     protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
@@ -360,33 +335,22 @@ public class ConstraintLogic
                                          final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                          final ConstraintPoint constraintPoint)
     {
-        final ExecutionContextExecutor executor = executor();
-        return CompletableFuture.supplyAsync(() -> patternCache.apply(value),
-                                             executor)
-                                .thenCombineAsync(getSubject(ctx,
+        return CompletableFuture.completedFuture(patternCache.apply(value))
+                                .thenCombine(getSubject(ctx,
                                                              deadboltHandler),
-                                                  (patternValue, subject) ->
-                                                          subject.isPresent() ? analyzer.checkRegexPattern(subject,
-                                                                                                           Optional.ofNullable(patternValue))
-                                                                              : invert, // this is a little clumsy - it means no subject + invert is still denied
-                                                  executor)
+                                             (patternValue, subject) ->
+                                                     subject.isPresent() ? analyzer.checkRegexPattern(subject,
+                                                                                                      Optional.ofNullable(patternValue))
+                                                                         : invert) // this is a little clumsy - it means no subject + invert is still denied
 
-                                .thenComposeAsync(hasPassed -> (invert ? !hasPassed : hasPassed) ? pass(ctx,
-                                                                                                        deadboltHandler,
-                                                                                                        pass,
-                                                                                                        constraintPoint,
-                                                                                                        "pattern - regex")
-                                                                                                 : fail.apply(ctx,
-                                                                                                              deadboltHandler,
-                                                                                                              content),
-                                                  executor);
-    }
-
-
-    protected ExecutionContextExecutor executor()
-    {
-        final ExecutionContext executionContext = executionContextProvider.get();
-        return HttpExecution.fromThread(executionContext);
+                                .thenCompose(hasPassed -> (invert ? !hasPassed : hasPassed) ? pass(ctx,
+                                                                                                   deadboltHandler,
+                                                                                                   pass,
+                                                                                                   constraintPoint,
+                                                                                                   "pattern - regex")
+                                                                                            : fail.apply(ctx,
+                                                                                                         deadboltHandler,
+                                                                                                         content));
     }
 
     private <T> CompletionStage<T> pass(final Http.Context context,

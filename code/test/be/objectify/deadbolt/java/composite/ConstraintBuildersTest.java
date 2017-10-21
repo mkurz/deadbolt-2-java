@@ -18,8 +18,6 @@ package be.objectify.deadbolt.java.composite;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.testsupport.TestRole;
@@ -27,14 +25,11 @@ import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import play.core.j.HttpExecutionContext;
 import play.mvc.Http;
-import scala.concurrent.ExecutionContext;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -44,16 +39,13 @@ public class ConstraintBuildersTest extends AbstractCompositeTest
     @Test
     public void testAllOf() throws Exception
     {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(),
-                                                          ecProvider);
+                                                          new DefaultPatternCache());
         final ConstraintBuilders builders = new ConstraintBuilders(logic);
 
         final String[] array = builders.allOf("foo",
@@ -70,16 +62,13 @@ public class ConstraintBuildersTest extends AbstractCompositeTest
     @Test
     public void testAnyOf() throws Exception
     {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(),
-                                                          ecProvider);
+                                                          new DefaultPatternCache());
         final ConstraintBuilders builders = new ConstraintBuilders(logic);
 
         final List<String[]> list = builders.anyOf(new String[]{"foo"},

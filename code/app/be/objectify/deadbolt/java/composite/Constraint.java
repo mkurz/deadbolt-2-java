@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
 /**
@@ -32,44 +31,37 @@ import java.util.function.BiFunction;
 public interface Constraint
 {
     default CompletionStage<Boolean> test(Http.Context context,
-                                          DeadboltHandler handler,
-                                          Executor executor)
+                                          DeadboltHandler handler)
     {
         return test(context,
                     handler,
-                    executor,
                     Optional.empty(),
                     (globalMeta, localMeta) -> localMeta);
     }
 
     CompletionStage<Boolean> test(Http.Context context,
                                   DeadboltHandler handler,
-                                  Executor executor,
                                   Optional<String> globalMetaData,
                                   BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn);
 
     default Constraint and(final Constraint other)
     {
         Objects.requireNonNull(other);
-        return (ctx, handler, executor, global, fMeta) ->
-                test(ctx, handler, executor, global, fMeta).thenComposeAsync(passed1 -> passed1 ? other.test(ctx, handler, executor, global, fMeta).thenApplyAsync(passed2 -> passed2,
-                                                                                                                                                                   executor)
-                                                                                                : CompletableFuture.completedFuture(false),
-                                                                             executor);
+        return (ctx, handler, global, fMeta) ->
+                test(ctx, handler, global, fMeta).thenCompose(passed1 -> passed1 ? other.test(ctx, handler, global, fMeta).thenApply(passed2 -> passed2)
+                                                                                 : CompletableFuture.completedFuture(false));
     }
 
     default Constraint negate()
     {
-        return (ctx, handler, executor, global, fMeta) -> test(ctx, handler, executor, global, fMeta).thenApplyAsync(p -> !p);
+        return (ctx, handler, global, fMeta) -> test(ctx, handler, global, fMeta).thenApplyAsync(p -> !p);
     }
 
     default Constraint or(final Constraint other)
     {
         Objects.requireNonNull(other);
-        return (ctx, handler, executor, global, fMeta) ->
-                test(ctx, handler, executor, global, fMeta).thenComposeAsync(passed1 -> passed1 ? CompletableFuture.completedFuture(true)
-                                                                                                : other.test(ctx, handler, executor, global, fMeta).thenApplyAsync(passed2 -> passed2,
-                                                                                                                                                                   executor),
-                                                                             executor);
+        return (ctx, handler, global, fMeta) ->
+                test(ctx, handler, global, fMeta).thenCompose(passed1 -> passed1 ? CompletableFuture.completedFuture(true)
+                                                                                                : other.test(ctx, handler, global, fMeta).thenApply(passed2 -> passed2));
     }
 }
