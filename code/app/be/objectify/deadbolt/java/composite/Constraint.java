@@ -54,7 +54,7 @@ public interface Constraint
 
     default Constraint negate()
     {
-        return (ctx, handler, global, fMeta) -> test(ctx, handler, global, fMeta).thenApplyAsync(p -> !p);
+        return (ctx, handler, global, fMeta) -> test(ctx, handler, global, fMeta).thenApply(p -> !p);
     }
 
     default Constraint or(final Constraint other)

@@ -71,8 +71,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
         final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
         return CompletableFuture.supplyAsync(unauthorized::render,
                                              executor)
-                                .thenApplyAsync(Results::unauthorized,
-                                                executor);
+                                .thenApply(Results::unauthorized);
     }
 
     /**

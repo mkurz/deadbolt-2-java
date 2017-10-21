@@ -16,21 +16,16 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConfigKeys;
-import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -61,19 +56,14 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     final Config config;
 
-    final DeadboltExecutionContextProvider executionContextProvider;
-
     public final boolean blocking;
     public final long blockingTimeout;
 
     protected AbstractDeadboltAction(final HandlerCache handlerCache,
-                                     final Config config,
-                                     final ExecutionContextProvider ecProvider)
+                                     final Config config)
     {
         this.handlerCache = handlerCache;
         this.config = config;
-
-        this.executionContextProvider = ecProvider.get();
 
         final HashMap<String, Object> defaults = new HashMap<>();
         defaults.put(ConfigKeys.BLOCKING_DEFAULT._1,
@@ -280,12 +270,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         return forcePreAuthCheck ? deadboltHandler.beforeAuthCheck(ctx)
                                  : CompletableFuture.completedFuture(Optional.empty());
-    }
-
-    protected ExecutionContextExecutor executor()
-    {
-        final ExecutionContext executionContext = executionContextProvider.get();
-        return HttpExecution.fromThread(executionContext);
     }
 
     /**

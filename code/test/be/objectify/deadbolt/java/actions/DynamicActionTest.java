@@ -15,21 +15,20 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import java.util.Optional;
-import java.util.function.Function;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.utils.TriFunction;
-import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import play.mvc.Action;
 import play.mvc.Http;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -51,7 +50,6 @@ public class DynamicActionTest
                                                        ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
-                                                       Mockito.mock(ExecutionContextProvider.class),
                                                        constraintLogic);
 
         final Http.Context ctx = Mockito.mock(Http.Context.class);
@@ -79,7 +77,6 @@ public class DynamicActionTest
                                                        ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
-                                                       Mockito.mock(ExecutionContextProvider.class),
                                                        Mockito.mock(ConstraintLogic.class));
 
         final Optional<String> maybeMeta = action.getMeta();
@@ -97,7 +94,6 @@ public class DynamicActionTest
                                                        ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
-                                                       Mockito.mock(ExecutionContextProvider.class),
                                                        Mockito.mock(ConstraintLogic.class));
 
         Assert.assertEquals("foo",
@@ -114,7 +110,6 @@ public class DynamicActionTest
                                                        ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
-                                                       Mockito.mock(ExecutionContextProvider.class),
                                                        Mockito.mock(ConstraintLogic.class));
 
         Assert.assertEquals("foo",

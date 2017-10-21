@@ -42,12 +42,10 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     @Inject
     public RestrictAction(final HandlerCache handlerCache,
                           final Config config,
-                          final ExecutionContextProvider ecProvider,
                           final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
               config,
-              ecProvider,
               constraintLogic);
     }
 
@@ -60,7 +58,6 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     {
         this(handlerCache,
              config,
-             ecProvider,
              constraintLogic);
         this.configuration = configuration;
         this.delegate = delegate;

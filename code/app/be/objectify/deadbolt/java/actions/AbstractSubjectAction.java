@@ -17,11 +17,9 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -37,12 +35,10 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
 
     AbstractSubjectAction(final HandlerCache handlerCache,
                           final com.typesafe.config.Config config,
-                          final ExecutionContextProvider ecProvider,
                           final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
-              config,
-              ecProvider);
+              config);
         this.constraintLogic = constraintLogic;
     }
 
@@ -67,16 +63,14 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
         else
         {
             final DeadboltHandler deadboltHandler = getDeadboltHandler(config.handlerKey);
-            final ExecutionContextExecutor executor = executor();
             result = preAuth(config.forceBeforeAuthCheck,
                              content,
                              deadboltHandler)
-                    .thenComposeAsync(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
-                                                                  .orElseGet(testSubject(constraintLogic,
-                                                                                         content,
-                                                                                         config,
-                                                                                         deadboltHandler)),
-                                      executor);
+                    .thenCompose(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
+                                                             .orElseGet(testSubject(constraintLogic,
+                                                                                    content,
+                                                                                    config,
+                                                                                    deadboltHandler)));
         }
         return maybeBlock(result);
     }

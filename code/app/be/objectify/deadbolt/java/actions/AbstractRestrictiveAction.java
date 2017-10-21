@@ -17,12 +17,10 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -38,12 +36,10 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
 
     public AbstractRestrictiveAction(final HandlerCache handlerCache,
                                      final Config config,
-                                     final ExecutionContextProvider ecProvider,
                                      final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
-              config,
-              ecProvider);
+              config);
         this.constraintLogic = constraintLogic;
     }
 
@@ -58,14 +54,12 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
         else
         {
             final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
-            final ExecutionContextExecutor executor = executor();
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .thenComposeAsync(option -> option.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
+                    .thenCompose(option -> option.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
                                                       .orElseGet(() -> applyRestriction(ctx,
-                                                                                        deadboltHandler)),
-                                      executor);
+                                                                                        deadboltHandler)));
         }
         return maybeBlock(result);
     }

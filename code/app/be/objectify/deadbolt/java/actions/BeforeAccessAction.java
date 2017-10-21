@@ -16,12 +16,10 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
@@ -36,12 +34,10 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
 {
     @Inject
     public BeforeAccessAction(final HandlerCache handlerCache,
-                              final Config config,
-                              final ExecutionContextProvider ecProvider)
+                              final Config config)
     {
         super(handlerCache,
-              config,
-              ecProvider);
+              config);
     }
 
     /**
@@ -58,13 +54,11 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
         else
         {
             final DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey());
-            final ExecutionContextExecutor executor = executor();
             result = preAuth(true,
                              ctx,
                              deadboltHandler)
-                    .thenComposeAsync(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>) CompletableFuture.completedFuture(r))
-                                                                    .orElseGet(() -> sneakyCall(delegate, ctx)),
-                                      executor);
+                    .thenCompose(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>) CompletableFuture.completedFuture(r))
+                                                               .orElseGet(() -> sneakyCall(delegate, ctx)));
         }
         return maybeBlock(result);
     }

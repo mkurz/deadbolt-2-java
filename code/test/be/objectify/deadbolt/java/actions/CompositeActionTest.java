@@ -17,7 +17,6 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.composite.Constraint;
@@ -26,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import play.mvc.Http;
-import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -63,15 +61,8 @@ public class CompositeActionTest
 
         final CompositeAction action = new CompositeAction(Mockito.mock(HandlerCache.class),
                                                            ConfigFactory.empty(),
-                                                           Mockito.mock(ExecutionContextProvider.class),
                                                            compositeCache,
-                                                           Mockito.mock(ConstraintLogic.class))
-        {
-            @Override
-            protected ExecutionContextExecutor executor() {
-                return Mockito.mock(ExecutionContextExecutor.class);
-            }
-        };
+                                                           Mockito.mock(ConstraintLogic.class));
         action.configuration = composite;
 
         final Http.Context ctx = Mockito.mock(Http.Context.class);
@@ -93,7 +84,6 @@ public class CompositeActionTest
                .thenReturn("foo");
         final CompositeAction action = new CompositeAction(Mockito.mock(HandlerCache.class),
                                                            ConfigFactory.empty(),
-                                                           Mockito.mock(ExecutionContextProvider.class),
                                                            Mockito.mock(CompositeCache.class),
                                                            Mockito.mock(ConstraintLogic.class));
         action.configuration = composite;
@@ -110,7 +100,6 @@ public class CompositeActionTest
                .thenReturn("foo");
         final CompositeAction action = new CompositeAction(Mockito.mock(HandlerCache.class),
                                                            ConfigFactory.empty(),
-                                                           Mockito.mock(ExecutionContextProvider.class),
                                                            Mockito.mock(CompositeCache.class),
                                                            Mockito.mock(ConstraintLogic.class));
         action.configuration = composite;
@@ -127,7 +116,6 @@ public class CompositeActionTest
                .thenReturn("foo");
         final CompositeAction action = new CompositeAction(Mockito.mock(HandlerCache.class),
                                                            ConfigFactory.empty(),
-                                                           Mockito.mock(ExecutionContextProvider.class),
                                                            Mockito.mock(CompositeCache.class),
                                                            Mockito.mock(ConstraintLogic.class));
         action.configuration = composite;

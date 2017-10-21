@@ -18,7 +18,6 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -41,12 +40,10 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
     @Inject
     public SubjectNotPresentAction(final HandlerCache handlerCache,
                                    final com.typesafe.config.Config config,
-                                   final ExecutionContextProvider ecProvider,
                                    final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
               config,
-              ecProvider,
               constraintLogic);
     }
 

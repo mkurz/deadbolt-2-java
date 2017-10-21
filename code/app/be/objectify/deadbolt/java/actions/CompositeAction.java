@@ -18,13 +18,11 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -40,13 +38,11 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     @Inject
     public CompositeAction(final HandlerCache handlerCache,
                            final Config config,
-                           final ExecutionContextProvider ecProvider,
                            final CompositeCache compositeCache,
                            final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
               config,
-              ecProvider,
               constraintLogic);
         this.compositeCache = compositeCache;
     }
@@ -55,7 +51,6 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler handler)
     {
-        final ExecutionContextExecutor executor = executor();
         return compositeCache.apply(getValue())
                              .map(constraint ->
                                   {
@@ -65,12 +60,11 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                                                              Optional.ofNullable(getMeta()),
                                                              (globalMd, localMd) -> preferGlobalMeta ? globalMd.isPresent() ? globalMd : localMd
                                                                                                      : localMd.isPresent() ? localMd : globalMd)
-                                                       .thenComposeAsync(allowed -> allowed ? authorizeAndExecute(ctx,
-                                                                                                                  handler)
-                                                                                            : unauthorizeAndFail(ctx,
-                                                                                                                 handler,
-                                                                                                                 Optional.ofNullable(configuration.content())),
-                                                                         executor);
+                                                       .thenCompose(allowed -> allowed ? authorizeAndExecute(ctx,
+                                                                                                             handler)
+                                                                                       : unauthorizeAndFail(ctx,
+                                                                                                            handler,
+                                                                                                            Optional.ofNullable(configuration.content())));
                                   })
                              .orElseGet(() ->
                                         {

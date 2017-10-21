@@ -41,12 +41,10 @@ public class RoleBasedPermissionsAction extends AbstractRestrictiveAction<RoleBa
     @Inject
     public RoleBasedPermissionsAction(final HandlerCache handlerCache,
                                       final Config config,
-                                      final ExecutionContextProvider ecProvider,
                                       final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
               config,
-              ecProvider,
               constraintLogic);
     }
 
@@ -59,7 +57,6 @@ public class RoleBasedPermissionsAction extends AbstractRestrictiveAction<RoleBa
     {
         this(handlerCache,
              config,
-             ecProvider,
              constraintLogic);
         this.configuration = configuration;
         this.delegate = delegate;
