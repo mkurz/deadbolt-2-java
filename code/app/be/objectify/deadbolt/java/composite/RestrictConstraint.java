@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -53,7 +52,6 @@ public class RestrictConstraint implements Constraint
     @Override
     public CompletionStage<Boolean> test(final Http.Context context,
                                          final DeadboltHandler handler,
-                                         final Executor executor,
                                          final Optional<String> globalMetaData,
                                          final BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn)
     {

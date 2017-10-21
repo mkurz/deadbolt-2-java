@@ -15,13 +15,13 @@
  */
 package be.objectify.deadbolt.java.composite;
 
-import java.util.Optional;
-import java.util.concurrent.Executor;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import play.mvc.Http;
+
+import java.util.Optional;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -36,7 +36,6 @@ public class ExceptionThrowingConstraintTest
             new ExceptionThrowingConstraint("testConstraint")
                     .test(Mockito.mock(Http.Context.class),
                           Mockito.mock(DeadboltHandler.class),
-                          Mockito.mock(Executor.class),
                           Optional.empty(),
                           (md1, md2) -> md1);
             Assert.fail();

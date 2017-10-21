@@ -15,14 +15,12 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
@@ -40,20 +38,17 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
 
     @Inject
     public DeferredDeadboltAction(final HandlerCache handlerCache,
-                                  final Configuration config,
-                                  final ExecutionContextProvider ecProvider)
+                                  final Configuration config)
     {
         super(handlerCache,
-              config,
-              ecProvider);
+              config);
     }
 
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final ExecutionContextExecutor executor = executor();
-        final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> getDeferredAction(ctx), executor)
-                                                                          .thenComposeAsync(deferredAction ->
+        final CompletableFuture<Result> eventualResult = CompletableFuture.completedFuture(getDeferredAction(ctx))
+                                                                          .thenCompose(deferredAction ->
                                                                                             {
                                                                                                 final CompletionStage<Result> result;
                                                                                                 if (deferredAction == null)
@@ -67,7 +62,7 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
                                                                                                     result = deferredAction.call(ctx);
                                                                                                 }
                                                                                                 return result;
-                                                                                            }, executor);
+                                                                                            });
         return maybeBlock(eventualResult);
     }
 }

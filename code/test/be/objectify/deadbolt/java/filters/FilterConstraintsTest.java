@@ -73,7 +73,6 @@ public class FilterConstraintsTest
     @Before
     public void setUp()
     {
-
         final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
         Mockito.when(ecProvider.get())
                .thenReturn(new DefaultDeadboltExecutionContextProvider());
@@ -91,8 +90,7 @@ public class FilterConstraintsTest
 
         constraintLogic = new ConstraintLogic(analyzer,
                                               subjectCache,
-                                              new DefaultPatternCache(new FakeCache()),
-                                              ecProvider);
+                                              new DefaultPatternCache(new FakeCache()));
 
         final CompositeCache compositeCache = new DefaultCompositeCache();
         compositeCache.register("testConstraint",
@@ -100,7 +98,6 @@ public class FilterConstraintsTest
                                                              constraintLogic));
 
         filterConstraints = new FilterConstraints(constraintLogic,
-                                                  ecProvider,
                                                   compositeCache);
 
         final Map<String, String> tags = new HashMap<>();
@@ -1642,14 +1639,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo")
                                                                         .apply(context,
                                                                                requestHeader,
@@ -1672,14 +1662,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo",
                                                                                               Optional.of("json"))
                                                                         .apply(context,
@@ -1703,14 +1686,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
 
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo")
                                                                         .apply(context,
@@ -1737,14 +1713,7 @@ public class FilterConstraintsTest
         Mockito.when(handler.getSubject(context))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
 
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo",
                                                                                               Optional.of("json"))

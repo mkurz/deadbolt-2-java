@@ -19,9 +19,7 @@ import akka.stream.Materializer;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
@@ -38,7 +36,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import play.mvc.Filter;
 import play.mvc.Http;
@@ -70,19 +67,12 @@ public class DeadboltRouteCommentFilterTest
     @Before
     public void setUp()
     {
-
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get())
-               .thenReturn(new DefaultDeadboltExecutionContextProvider());
-
         subjectCache = Mockito.mock(SubjectCache.class);
 
         final ConstraintLogic constraintLogic = new ConstraintLogic(analyzer,
                                                                     subjectCache,
-                                                                    new DefaultPatternCache(new FakeCache()),
-                                                                    ecProvider);
+                                                                    new DefaultPatternCache(new FakeCache()));
         filterConstraints = new FilterConstraints(constraintLogic,
-                                                  ecProvider,
                                                   Mockito.mock(CompositeCache.class));
 
         requestHeader = Mockito.mock(Http.RequestHeader.class);
@@ -855,14 +845,7 @@ public class DeadboltRouteCommentFilterTest
         Mockito.when(handler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
@@ -899,14 +882,7 @@ public class DeadboltRouteCommentFilterTest
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         Mockito.when(handler.onAuthFailure(Mockito.any(Http.Context.class),
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
@@ -948,14 +924,7 @@ public class DeadboltRouteCommentFilterTest
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         Mockito.when(handler.onAuthFailure(Mockito.any(Http.Context.class),
                                            Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
@@ -998,14 +967,7 @@ public class DeadboltRouteCommentFilterTest
         Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         comment("deadbolt:rbp:name[foo]:handler[foo]");
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
@@ -1044,14 +1006,7 @@ public class DeadboltRouteCommentFilterTest
                                                    Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         comment("deadbolt:rbp:name[foo]:handler[foo]");
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
@@ -1094,14 +1049,7 @@ public class DeadboltRouteCommentFilterTest
                                                    Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
-               .then(new Answer<CompletionStage<List<? extends Permission>>>()
-               {
-                   @Override
-                   public CompletionStage<List<? extends Permission>> answer(final InvocationOnMock invocation) throws Throwable
-                   {
-                       return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
-                   }
-               });
+               .then((Answer<CompletionStage<List<? extends Permission>>>) invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         comment("deadbolt:rbp:name[foo]:content[bar]:handler[foo]");
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,

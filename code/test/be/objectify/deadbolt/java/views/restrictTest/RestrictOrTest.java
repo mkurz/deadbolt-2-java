@@ -50,7 +50,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
@@ -71,7 +71,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
@@ -92,7 +92,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
@@ -112,7 +112,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(Optional::empty);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
@@ -132,7 +132,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
@@ -154,7 +154,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
@@ -176,7 +176,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
@@ -199,7 +199,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"foo"},
@@ -220,7 +220,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(Optional::empty);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo"}),
@@ -240,7 +240,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
@@ -261,7 +261,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
@@ -282,7 +282,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
@@ -304,7 +304,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
@@ -324,7 +324,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(Optional::empty);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"foo", "bar"}),
@@ -344,7 +344,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
@@ -365,7 +365,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
@@ -386,7 +386,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
@@ -408,7 +408,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
@@ -428,7 +428,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(Optional::empty);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
@@ -448,7 +448,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
@@ -470,7 +470,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
@@ -492,7 +492,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
@@ -515,7 +515,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Arrays.asList(new String[]{"!foo"},
@@ -536,7 +536,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(Optional::empty);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo"}),
@@ -556,7 +556,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
@@ -577,7 +577,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
@@ -598,7 +598,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
@@ -620,7 +620,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().build()));
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),
@@ -640,7 +640,7 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(Optional::empty);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         };
         final Content html = be.objectify.deadbolt.java.views.html.restrictTest.restrictOrContent.render(Collections.singletonList(new String[]{"!foo", "bar"}),

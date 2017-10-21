@@ -50,7 +50,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
                                                                                                 .build()));
             }
 
@@ -72,7 +72,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
                                                                                                 .build()));
             }
 
@@ -94,7 +94,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().build()));
             }
 
         };
@@ -129,7 +129,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
                                                                                                 .build()));
             }
 
@@ -151,7 +151,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.zombie"))
                                                                                                 .build()));
             }
 
@@ -173,7 +173,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().permission(new TestPermission("killer.undead.vampire"))
                                                                                                 .build()));
             }
 
@@ -195,7 +195,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().build()));
             }
 
         };
@@ -230,7 +230,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
                     public CompletionStage<Boolean> checkPermission(final String permissionValue,
@@ -260,7 +260,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
                     public CompletionStage<Boolean> checkPermission(final String permissionValue,
@@ -290,7 +290,7 @@ public class PatternTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
                     public CompletionStage<Boolean> checkPermission(final String permissionValue,

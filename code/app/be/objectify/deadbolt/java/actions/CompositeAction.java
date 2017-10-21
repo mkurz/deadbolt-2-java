@@ -15,19 +15,18 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContextExecutor;
+
+import javax.inject.Inject;
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -39,13 +38,11 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     @Inject
     public CompositeAction(final HandlerCache handlerCache,
                            final Configuration config,
-                           final ExecutionContextProvider ecProvider,
                            final CompositeCache compositeCache,
                            final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
               config,
-              ecProvider,
               constraintLogic);
         this.compositeCache = compositeCache;
     }
@@ -54,23 +51,20 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler handler)
     {
-        final ExecutionContextExecutor executor = executor();
         return compositeCache.apply(getValue())
                              .map(constraint ->
                                   {
                                       final boolean preferGlobalMeta = configuration.preferGlobalMeta();
                                       return constraint.test(ctx,
                                                              handler,
-                                                             executor,
                                                              Optional.ofNullable(getMeta()),
                                                              (globalMd, localMd) -> preferGlobalMeta ? globalMd.isPresent() ? globalMd : localMd
                                                                                                      : localMd.isPresent() ? localMd : globalMd)
-                                                       .thenComposeAsync(allowed -> allowed ? authorizeAndExecute(ctx,
-                                                                                                                  handler)
-                                                                                            : unauthorizeAndFail(ctx,
-                                                                                                                 handler,
-                                                                                                                 Optional.ofNullable(configuration.content())),
-                                                                         executor);
+                                                       .thenCompose(allowed -> allowed ? authorizeAndExecute(ctx,
+                                                                                                             handler)
+                                                                                       : unauthorizeAndFail(ctx,
+                                                                                                            handler,
+                                                                                                            Optional.ofNullable(configuration.content())));
                                   })
                              .orElseGet(() ->
                                         {

@@ -15,19 +15,17 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import org.junit.Test;
 import org.mockito.Mockito;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
-import scala.concurrent.ExecutionContextExecutor;
+
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -51,14 +49,7 @@ public class BeforeAccessActionTest
                .thenReturn(handler);
 
         final BeforeAccessAction action = new BeforeAccessAction(handlerCache,
-                                                                 Mockito.mock(Configuration.class),
-                                                                 Mockito.mock(ExecutionContextProvider.class))
-        {
-            @Override
-            protected ExecutionContextExecutor executor() {
-                return HttpExecution.defaultContext();
-            }
-        };
+                                                                 Mockito.mock(Configuration.class));
         action.configuration = Mockito.mock(BeforeAccess.class);
         Mockito.when(action.configuration.alwaysExecute())
                .thenReturn(true);
@@ -73,8 +64,7 @@ public class BeforeAccessActionTest
     public void testExecute_alreadyAuthorised_alwaysExecuteFalse() throws Exception
     {
         final BeforeAccessAction action = new BeforeAccessAction(Mockito.mock(HandlerCache.class),
-                                                                 Mockito.mock(Configuration.class),
-                                                                 Mockito.mock(ExecutionContextProvider.class));
+                                                                 Mockito.mock(Configuration.class));
         action.configuration = Mockito.mock(BeforeAccess.class);
         Mockito.when(action.configuration.alwaysExecute())
                .thenReturn(false);

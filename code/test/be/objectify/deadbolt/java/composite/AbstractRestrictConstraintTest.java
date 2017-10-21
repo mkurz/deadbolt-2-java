@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 /**
@@ -39,8 +38,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"))),
                                                  Collections.singletonList(new String[]{"foo"}));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> subject(new TestRole("foo"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> subject(new TestRole("foo"))));
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -50,8 +48,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("bar"))),
                                                  Collections.singletonList(new String[]{"foo"}));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> subject(new TestRole("bar"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> subject(new TestRole("bar"))));
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -61,8 +58,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"))),
                                                  Collections.singletonList(new String[]{"!foo"}));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> subject(new TestRole("foo"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> subject(new TestRole("foo"))));
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -72,8 +68,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("bar"))),
                                                  Collections.singletonList(new String[]{"!foo"}));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> subject(new TestRole("bar"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> subject(new TestRole("bar"))));
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -85,8 +80,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
                                                  Collections.singletonList(new String[]{"foo", "bar"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("foo"),
-                                                                                          new TestRole("bar"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                                          new TestRole("bar"))));
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -98,8 +92,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
                                                  Collections.singletonList(new String[]{"foo", "bar"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("foo"),
-                                                                                          new TestRole("hurdy"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                                          new TestRole("hurdy"))));
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -112,8 +105,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
                                                                new String[]{"hurdy", "gurdy"}));
         final CompletionStage<Boolean> result = constraint.test(context,
                                                                 withSubject(() -> subject(new TestRole("foo"),
-                                                                                          new TestRole("bar"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                                          new TestRole("bar"))));
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -124,8 +116,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
                                                  Arrays.asList(new String[]{"foo"},
                                                                new String[]{"bar"}));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> subject(new TestRole("hurdy"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> subject(new TestRole("hurdy"))));
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -135,8 +126,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
         return new F.Tuple<>(constraint(withSubject(() -> subject(new TestRole("foo"))),
                                         Collections.singletonList(new String[]{"foo"})),
                              c -> c.test(context,
-                                         withSubject(() -> subject(new TestRole("foo"))),
-                                         Executors.newSingleThreadExecutor()));
+                                         withSubject(() -> subject(new TestRole("foo")))));
     }
 
     protected abstract RestrictConstraint constraint(DeadboltHandler handler,

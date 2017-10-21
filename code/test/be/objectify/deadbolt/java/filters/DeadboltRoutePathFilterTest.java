@@ -19,8 +19,6 @@ import akka.stream.Materializer;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
@@ -60,18 +58,12 @@ public class DeadboltRoutePathFilterTest
     @Before
     public void setUp()
     {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get())
-               .thenReturn(new DefaultDeadboltExecutionContextProvider());
-
         subjectCache = Mockito.mock(SubjectCache.class);
 
         final ConstraintLogic constraintLogic = new ConstraintLogic(analyzer,
                                                                     subjectCache,
-                                                                    new DefaultPatternCache(new FakeCache()),
-                                                                    ecProvider);
+                                                                    new DefaultPatternCache(new FakeCache()));
         filterConstraints = new FilterConstraints(constraintLogic,
-                                                  ecProvider,
                                                   Mockito.mock(CompositeCache.class));
 
         final Map<String, String> tags = new HashMap<>();

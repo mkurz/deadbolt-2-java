@@ -27,7 +27,6 @@ import play.mvc.Http;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 /**
@@ -41,8 +40,7 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
         final Constraint constraint = constraint(PatternType.EQUALITY,
                                                  withSubject(() -> subject(new TestPermission("foo"))));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> subject(new TestPermission("foo"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> subject(new TestPermission("foo"))));
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -52,8 +50,7 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
         final Constraint constraint = constraint(PatternType.EQUALITY,
                                                  withSubject(() -> subject(new TestPermission("bar"))));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> subject(new TestPermission("bar"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> subject(new TestPermission("bar"))));
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -63,8 +60,7 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
         final Constraint constraint = constraint(PatternType.REGEX,
                                                  withSubject(() -> subject(new TestPermission("1"))));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> subject(new TestPermission("1"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> subject(new TestPermission("1"))));
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -74,8 +70,7 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
         final Constraint constraint = constraint(PatternType.REGEX,
                                                  withSubject(() -> subject(new TestPermission("3"))));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> subject(new TestPermission("3"))),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> subject(new TestPermission("3"))));
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -96,8 +91,7 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
         final Constraint constraint = constraint(PatternType.CUSTOM,
                                                  handler);
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                handler,
-                                                                Executors.newSingleThreadExecutor());
+                                                                handler);
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -118,8 +112,7 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
         final Constraint constraint = constraint(PatternType.CUSTOM,
                                                  handler);
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                handler,
-                                                                Executors.newSingleThreadExecutor());
+                                                                handler);
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -132,7 +125,6 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
         return new F.Tuple<>(constraint(PatternType.EQUALITY,
                                         withSubject(() -> subject(new TestPermission("foo")))),
                              c -> c.test(context,
-                                         withSubject(() -> subject(new TestPermission("foo"))),
-                                         Executors.newSingleThreadExecutor()));
+                                         withSubject(() -> subject(new TestPermission("foo")))));
     }
 }

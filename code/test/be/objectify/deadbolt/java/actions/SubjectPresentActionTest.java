@@ -15,13 +15,9 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.utils.TriFunction;
 import org.junit.Assert;
@@ -31,6 +27,10 @@ import play.Configuration;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Results;
+
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -49,7 +49,6 @@ public class SubjectPresentActionTest {
                .thenReturn("x/y");
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
                                                                      Mockito.mock(Configuration.class),
-                                                                     Mockito.mock(ExecutionContextProvider.class),
                                                                      Mockito.mock(ConstraintLogic.class));
         action.configuration = subjectPresent;
 
@@ -66,7 +65,6 @@ public class SubjectPresentActionTest {
     {
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
                                                                      Mockito.mock(Configuration.class),
-                                                                     Mockito.mock(ExecutionContextProvider.class),
                                                                      Mockito.mock(ConstraintLogic.class));
         action.delegate = Mockito.mock(Action.class);
 
@@ -85,7 +83,6 @@ public class SubjectPresentActionTest {
     {
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
                                                                      Mockito.mock(Configuration.class),
-                                                                     Mockito.mock(ExecutionContextProvider.class),
                                                                      Mockito.mock(ConstraintLogic.class));
 
         final Http.Context ctx = Mockito.mock(Http.Context.class);
@@ -119,7 +116,6 @@ public class SubjectPresentActionTest {
 
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
                                                                      Mockito.mock(Configuration.class),
-                                                                     Mockito.mock(ExecutionContextProvider.class),
                                                                      constraintLogic);
         action.configuration = Mockito.mock(SubjectPresent.class);
 

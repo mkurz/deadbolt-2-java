@@ -15,12 +15,10 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -36,12 +34,10 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
 {
     @Inject
     public UnrestrictedAction(final HandlerCache handlerCache,
-                              final Configuration config,
-                              final ExecutionContextProvider ecProvider)
+                              final Configuration config)
     {
         super(handlerCache,
-              config,
-              ecProvider);
+              config);
     }
 
     /**
@@ -50,16 +46,13 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final ExecutionContextExecutor executor = executor();
-        final CompletableFuture<Result> eventualResult = CompletableFuture.supplyAsync(() -> isActionUnauthorised(ctx),
-                                                                                       executor)
-                                                                          .thenComposeAsync(unauthorised -> unauthorised ? unauthorizeAndFail(ctx,
+        final CompletableFuture<Result> eventualResult = CompletableFuture.completedFuture(isActionUnauthorised(ctx))
+                                                                          .thenCompose(unauthorised -> unauthorised ? unauthorizeAndFail(ctx,
                                                                                                                                               getDeadboltHandler(configuration
                                                                                                                                                                          .handlerKey()),
                                                                                                                                               Optional.ofNullable(configuration
                                                                                                                                                                           .content()))
-                                                                                                                         : authorizeAndExecute(ctx)
-                                                                                  , executor);
+                                                                                                                    : authorizeAndExecute(ctx));
         return maybeBlock(eventualResult);
     }
 }

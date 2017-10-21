@@ -18,7 +18,6 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import play.Configuration;
 import play.mvc.Action;
@@ -37,12 +36,10 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     @Inject
     public PatternAction(final HandlerCache handlerCache,
                          final Configuration config,
-                         final ExecutionContextProvider ecProvider,
                          final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
               config,
-              ecProvider,
               constraintLogic);
     }
 
@@ -50,12 +47,10 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                          final Configuration config,
                          final Pattern configuration,
                          final Action<?> delegate,
-                         final ExecutionContextProvider ecProvider,
                          final ConstraintLogic constraintLogic)
     {
         this(handlerCache,
              config,
-             ecProvider,
              constraintLogic);
         this.configuration = configuration;
         this.delegate = delegate;

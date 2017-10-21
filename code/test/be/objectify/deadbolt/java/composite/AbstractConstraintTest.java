@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -59,14 +58,12 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
         final Constraint c2 = Mockito.mock(Constraint.class);
         Mockito.when(c2.test(Mockito.any(Http.Context.class),
                              Mockito.any(DeadboltHandler.class),
-                             Mockito.any(Executor.class),
                              Mockito.any(Optional.class),
                              Mockito.any(BiFunction.class)))
                .thenReturn(CompletableFuture.completedFuture(false));
         final Constraint negated = Mockito.mock(Constraint.class);
         Mockito.when(negated.test(Mockito.any(Http.Context.class),
                                   Mockito.any(DeadboltHandler.class),
-                                  Mockito.any(Executor.class),
                                   Mockito.any(Optional.class),
                                   Mockito.any(BiFunction.class)))
                .thenReturn(CompletableFuture.completedFuture(true));
@@ -84,7 +81,6 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
         final Constraint c2 = Mockito.mock(Constraint.class);
         Mockito.when(c2.test(Mockito.any(Http.Context.class),
                              Mockito.any(DeadboltHandler.class),
-                             Mockito.any(Executor.class),
                              Mockito.any(Optional.class),
                              Mockito.any(BiFunction.class)))
                .thenReturn(CompletableFuture.completedFuture(false));

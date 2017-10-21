@@ -148,12 +148,9 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
 
     private ViewSupport viewSupport()
     {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
         final ConstraintLogic constraintLogic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                                     (deadboltHandler, context) -> CompletableFuture.completedFuture(Optional.empty()),
-                                                                    Mockito.mock(PatternCache.class),
-                                                                    ecProvider);
+                                                                    Mockito.mock(PatternCache.class));
 
         return new ViewSupport(Mockito.mock(Configuration.class),
                                handlerCache,

@@ -46,7 +46,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
                     public CompletionStage<Boolean> isAllowed(final String name,
@@ -76,7 +76,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
                     public CompletionStage<Boolean> isAllowed(final String name,
@@ -106,7 +106,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
                     public CompletionStage<Boolean> isAllowed(final String name,
@@ -136,7 +136,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
+                return CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                 {
                     @Override
                     public CompletionStage<Boolean> isAllowed(final String name,

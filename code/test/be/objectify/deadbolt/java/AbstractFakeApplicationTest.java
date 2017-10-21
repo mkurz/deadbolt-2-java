@@ -95,7 +95,7 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.ofNullable(getSubject.get()));
+                return CompletableFuture.completedFuture(Optional.ofNullable(getSubject.get()));
             }
         };
     }
@@ -108,7 +108,7 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.ofNullable(getSubject.get()));
+                return CompletableFuture.completedFuture(Optional.ofNullable(getSubject.get()));
             }
 
             @Override
@@ -126,7 +126,7 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.ofNullable(drh.get()));
+                return CompletableFuture.completedFuture(Optional.ofNullable(drh.get()));
             }
         };
     }

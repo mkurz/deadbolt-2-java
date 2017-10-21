@@ -15,12 +15,9 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import java.util.Optional;
-import java.util.function.Function;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.utils.TriFunction;
@@ -30,6 +27,9 @@ import org.mockito.Mockito;
 import play.Configuration;
 import play.mvc.Action;
 import play.mvc.Http;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -55,7 +55,6 @@ public class PatternActionTest
                                                        Mockito.mock(Configuration.class),
                                                        pattern,
                                                        Mockito.mock(Action.class),
-                                                       Mockito.mock(ExecutionContextProvider.class),
                                                        constraintLogic);
 
         final Http.Context ctx = Mockito.mock(Http.Context.class);
@@ -85,7 +84,6 @@ public class PatternActionTest
                                                        Mockito.mock(Configuration.class),
                                                        pattern,
                                                        Mockito.mock(Action.class),
-                                                       Mockito.mock(ExecutionContextProvider.class),
                                                        Mockito.mock(ConstraintLogic.class));
 
         Assert.assertEquals("foo",
@@ -102,7 +100,6 @@ public class PatternActionTest
                                                        Mockito.mock(Configuration.class),
                                                        pattern,
                                                        Mockito.mock(Action.class),
-                                                       Mockito.mock(ExecutionContextProvider.class),
                                                        Mockito.mock(ConstraintLogic.class));
 
         final Optional<String> maybeMeta = action.getMeta();
@@ -121,7 +118,6 @@ public class PatternActionTest
                                                        Mockito.mock(Configuration.class),
                                                        pattern,
                                                        Mockito.mock(Action.class),
-                                                       Mockito.mock(ExecutionContextProvider.class),
                                                        Mockito.mock(ConstraintLogic.class));
 
         Assert.assertEquals("foo",

@@ -50,8 +50,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
-                                                                                                .build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
+                                                                                              .build()));
             }
 
             @Override
@@ -77,8 +77,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
-                                                                                                .build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
+                                                                                              .build()));
             }
 
             @Override
@@ -104,8 +104,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
             {
-                return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
-                                                                                                .build()));
+                return CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
+                                                                                              .build()));
             }
 
             @Override

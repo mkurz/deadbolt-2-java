@@ -15,28 +15,24 @@
  */
 package be.objectify.deadbolt.java.filters;
 
+import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
+import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.CompositeCache;
+import be.objectify.deadbolt.java.composite.Constraint;
+import be.objectify.deadbolt.java.models.PatternType;
+import be.objectify.deadbolt.java.utils.TriFunction;
+import play.mvc.Http;
+import play.mvc.Result;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import be.objectify.deadbolt.java.ConstraintLogic;
-import be.objectify.deadbolt.java.ConstraintPoint;
-import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
-import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
-import be.objectify.deadbolt.java.cache.CompositeCache;
-import be.objectify.deadbolt.java.composite.Constraint;
-import be.objectify.deadbolt.java.models.PatternType;
-import be.objectify.deadbolt.java.utils.TriFunction;
-import play.libs.concurrent.HttpExecution;
-import play.mvc.Http;
-import play.mvc.Result;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.ExecutionContextExecutor;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -46,16 +42,13 @@ import scala.concurrent.ExecutionContextExecutor;
 public class FilterConstraints
 {
     private final ConstraintLogic constraintLogic;
-    private final DeadboltExecutionContextProvider executionContextProvider;
     private final CompositeCache compositeCache;
 
     @Inject
     public FilterConstraints(final ConstraintLogic constraintLogic,
-                             final ExecutionContextProvider ecProvider,
                              final CompositeCache compositeCache)
     {
         this.constraintLogic = constraintLogic;
-        this.executionContextProvider = ecProvider.get();
         this.compositeCache = compositeCache;
     }
 
@@ -79,21 +72,19 @@ public class FilterConstraints
      */
     public FilterFunction subjectPresent(final Optional<String> content)
     {
-        final ExecutionContextExecutor executor = executor();
         return (Http.Context context,
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 handler.beforeAuthCheck(context)
-                       .thenComposeAsync(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                     .orElseGet(() -> constraintLogic.subjectPresent(context,
-                                                                                                                     handler,
-                                                                                                                     content,
-                                                                                                                     (ctx, hdlr, cntent) -> next.apply(requestHeader),
-                                                                                                                     (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.subjectPresent(context,
+                                                                                                                handler,
+                                                                                                                content,
+                                                                                                                (ctx, hdlr, cntent) -> next.apply(requestHeader),
+                                                                                                                (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
                                                                                                                                                                cntent),
-                                                                                                                     ConstraintPoint.FILTER)),
-                                         executor);
+                                                                                                                ConstraintPoint.FILTER)));
     }
 
     /**
@@ -116,21 +107,19 @@ public class FilterConstraints
      */
     public FilterFunction subjectNotPresent(final Optional<String> content)
     {
-        final ExecutionContextExecutor executor = executor();
         return (Http.Context context,
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 handler.beforeAuthCheck(context)
-                       .thenComposeAsync(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                     .orElseGet(() -> constraintLogic.subjectNotPresent(context,
-                                                                                                                        handler,
-                                                                                                                        content,
-                                                                                                                        (ctx, hdlr, cntent) -> hdlr.onAuthFailure(context,
+                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.subjectNotPresent(context,
+                                                                                                                   handler,
+                                                                                                                   content,
+                                                                                                                   (ctx, hdlr, cntent) -> hdlr.onAuthFailure(context,
                                                                                                                                                                   cntent),
-                                                                                                                        (ctx, hdlr, cntent) -> next.apply(requestHeader),
-                                                                                                                        ConstraintPoint.FILTER)),
-                                         executor);
+                                                                                                                   (ctx, hdlr, cntent) -> next.apply(requestHeader),
+                                                                                                                   ConstraintPoint.FILTER)));
     }
 
     /**
@@ -157,22 +146,20 @@ public class FilterConstraints
     public FilterFunction restrict(final List<String[]> roleGroups,
                                    final Optional<String> content)
     {
-        final ExecutionContextExecutor executor = executor();
         return (Http.Context context,
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 handler.beforeAuthCheck(context)
-                       .thenComposeAsync(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                     .orElseGet(() -> constraintLogic.restrict(context,
-                                                                                                               handler,
-                                                                                                               content,
-                                                                                                               () -> roleGroups,
+                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.restrict(context,
+                                                                                                          handler,
+                                                                                                          content,
+                                                                                                          () -> roleGroups,
                                                                                                                ctx -> next.apply(requestHeader),
-                                                                                                               (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
-                                                                                                                                                         cntent),
-                                                                                                               ConstraintPoint.FILTER)),
-                                         executor);
+                                                                                                          (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                                                                    cntent),
+                                                                                                          ConstraintPoint.FILTER)));
     }
 
     /**
@@ -256,25 +243,23 @@ public class FilterConstraints
                                   final boolean invert,
                                   final Optional<String> content)
     {
-        final ExecutionContextExecutor executor = executor();
         return (Http.Context context,
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 handler.beforeAuthCheck(context)
-                       .thenComposeAsync(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                     .orElseGet(() -> constraintLogic.pattern(context,
-                                                                                                              handler,
-                                                                                                              content,
-                                                                                                              value,
-                                                                                                              patternType,
-                                                                                                              meta,
-                                                                                                              invert,
+                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.pattern(context,
+                                                                                                         handler,
+                                                                                                         content,
+                                                                                                         value,
+                                                                                                         patternType,
+                                                                                                         meta,
+                                                                                                         invert,
                                                                                                               ctx -> next.apply(requestHeader),
-                                                                                                              (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
-                                                                                                                                                        cntent),
-                                                                                                              ConstraintPoint.FILTER)),
-                                         executor);
+                                                                                                         (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                                                                   cntent),
+                                                                                                         ConstraintPoint.FILTER)));
     }
 
     /**
@@ -322,23 +307,21 @@ public class FilterConstraints
                                   final Optional<String> meta,
                                   final Optional<String> content)
     {
-        final ExecutionContextExecutor executor = executor();
         return (Http.Context context,
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 handler.beforeAuthCheck(context)
-                       .thenComposeAsync(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                     .orElseGet(() -> constraintLogic.dynamic(context,
-                                                                                                              handler,
-                                                                                                              content,
-                                                                                                              name,
-                                                                                                              meta,
+                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.dynamic(context,
+                                                                                                         handler,
+                                                                                                         content,
+                                                                                                         name,
+                                                                                                         meta,
                                                                                                               ctx -> next.apply(requestHeader),
-                                                                                                              (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
-                                                                                                                                                        cntent),
-                                                                                                              ConstraintPoint.FILTER)),
-                                         executor);
+                                                                                                         (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                                                                   cntent),
+                                                                                                         ConstraintPoint.FILTER)));
     }
 
     /**
@@ -397,26 +380,22 @@ public class FilterConstraints
     public FilterFunction composite(final Constraint constraint,
                                     final Optional<String> content)
     {
-        final ExecutionContextExecutor executor = executor();
         return (Http.Context context,
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 handler.beforeAuthCheck(context)
-                       .thenComposeAsync(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                     .orElseGet(() -> constraint.test(context,
-                                                                                                      handler,
-                                                                                                      executor)
-                                                                                                .thenComposeAsync(allowed -> allowed ? ((Supplier<CompletionStage<Result>>) () -> {
+                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraint.test(context,
+                                                                                                 handler)
+                                                                                           .thenCompose(allowed -> allowed ? ((Supplier<CompletionStage<Result>>) () -> {
                                                                                                                       handler.onAuthSuccess(context,
                                                                                                                                             "composite",
                                                                                                                                             ConstraintPoint.FILTER);
                                                                                                                       return next.apply(requestHeader);
                                                                                                                   }).get()
                                                                                                                                      : handler.onAuthFailure(context,
-                                                                                                                                                             content),
-                                                                                                                  executor)),
-                                         executor);
+                                                                                                                                                             content))));
     }
 
     public FilterFunction roleBasedPermissions(final String roleName)
@@ -428,27 +407,19 @@ public class FilterConstraints
     public FilterFunction roleBasedPermissions(final String roleName,
                                                final Optional<String> content)
     {
-        final ExecutionContextExecutor executor = executor();
         return (Http.Context context,
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 handler.beforeAuthCheck(context)
-                       .thenComposeAsync(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                     .orElseGet(() -> constraintLogic.roleBasedPermissions(context,
-                                                                                                                           handler,
-                                                                                                                           content,
-                                                                                                                           roleName,
+                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.roleBasedPermissions(context,
+                                                                                                                      handler,
+                                                                                                                      content,
+                                                                                                                      roleName,
                                                                                                                            ctx -> next.apply(requestHeader),
-                                                                                                                           (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                                      (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
                                                                                                                                                                      cntent),
-                                                                                                                           ConstraintPoint.FILTER)),
-                                         executor);
-    }
-
-    private ExecutionContextExecutor executor()
-    {
-        final ExecutionContext executionContext = executionContextProvider.get();
-        return HttpExecution.fromThread(executionContext);
+                                                                                                                      ConstraintPoint.FILTER)));
     }
 }

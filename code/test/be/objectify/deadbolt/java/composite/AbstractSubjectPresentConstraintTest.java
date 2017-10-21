@@ -21,7 +21,6 @@ import org.junit.Test;
 import play.libs.F;
 
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 /**
@@ -34,8 +33,7 @@ public abstract class AbstractSubjectPresentConstraintTest extends AbstractConst
     {
         final Constraint constraint = constraint(withSubject(this::subject));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(this::subject),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(this::subject));
         Assert.assertTrue(toBoolean(result));
     }
 
@@ -44,8 +42,7 @@ public abstract class AbstractSubjectPresentConstraintTest extends AbstractConst
     {
         final Constraint constraint = constraint(withSubject(() -> null));
         final CompletionStage<Boolean> result = constraint.test(context,
-                                                                withSubject(() -> null),
-                                                                Executors.newSingleThreadExecutor());
+                                                                withSubject(() -> null));
         Assert.assertFalse(toBoolean(result));
     }
 
@@ -56,7 +53,6 @@ public abstract class AbstractSubjectPresentConstraintTest extends AbstractConst
     {
         return new F.Tuple<>(constraint(withSubject(this::subject)),
                              c -> c.test(context,
-                                         withSubject(this::subject),
-                                         Executors.newSingleThreadExecutor()));
+                                         withSubject(this::subject)));
     }
 }

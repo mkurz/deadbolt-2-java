@@ -85,16 +85,13 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
     private void testRestrict(final String[] requiredRoles,
                               final Consumer<CompletionStage<Boolean>> test)
     {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(new FakeCache()),
-                                                          ecProvider);
+                                                          new DefaultPatternCache(new FakeCache()));
 
         final CompletionStage<Boolean> result = logic.restrict(context(),
                                                                handler(() -> new TestSubject.Builder().role(new TestRole("foo")).build()),
@@ -124,16 +121,13 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
     private void testDynamic(final boolean allow,
                              final Consumer<CompletionStage<Boolean>> test)
     {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(new FakeCache()),
-                                                          ecProvider);
+                                                          new DefaultPatternCache(new FakeCache()));
 
         final CompletionStage<Boolean> result = logic.dynamic(context(),
                                                               withDrh(() -> new AbstractDynamicResourceHandler()
@@ -230,16 +224,13 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                                           final List<? extends Permission> associatedPermissions,
                                           final Consumer<CompletionStage<Boolean>> test)
     {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider());
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
-                                                          new DefaultPatternCache(new FakeCache()),
-                                                          ecProvider);
+                                                          new DefaultPatternCache(new FakeCache()));
 
         final CompletionStage<Boolean> result = logic.roleBasedPermissions(context(),
                                                                            handler(() -> subject,

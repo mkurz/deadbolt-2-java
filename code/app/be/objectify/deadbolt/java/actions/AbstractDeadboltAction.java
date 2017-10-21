@@ -16,20 +16,15 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConfigKeys;
-import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -59,19 +54,14 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     final Configuration config;
 
-    final DeadboltExecutionContextProvider executionContextProvider;
-
     public final boolean blocking;
     public final long blockingTimeout;
 
     protected AbstractDeadboltAction(final HandlerCache handlerCache,
-                                     final Configuration config,
-                                     final ExecutionContextProvider ecProvider)
+                                     final Configuration config)
     {
         this.handlerCache = handlerCache;
         this.config = config;
-
-        this.executionContextProvider = ecProvider.get();
 
         this.blocking = config.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1,
                                           ConfigKeys.BLOCKING_DEFAULT._2);
@@ -274,12 +264,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         return forcePreAuthCheck ? deadboltHandler.beforeAuthCheck(ctx)
                                  : CompletableFuture.completedFuture(Optional.empty());
-    }
-
-    protected ExecutionContextExecutor executor()
-    {
-        final ExecutionContext executionContext = executionContextProvider.get();
-        return HttpExecution.fromThread(executionContext);
     }
 
     /**
