@@ -52,7 +52,7 @@ public class CompositeActionTest
                                      Mockito.any(DeadboltHandler.class),
                                      Mockito.eq(Optional.of("bar")),
                                      Mockito.any(BiFunction.class)))
-               .then(invocation -> ((Optional<String>)invocation.getArguments()[3]).map(meta -> meta.equals("bar"))
+               .then(invocation -> ((Optional<String>)invocation.getArguments()[2]).map(meta -> meta.equals("bar"))
                                                                                    .map(CompletableFuture::completedFuture)
                                                                                    .orElse(CompletableFuture.completedFuture(false)));
 
