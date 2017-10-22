@@ -18,7 +18,6 @@ package be.objectify.deadbolt.java.composite;
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
@@ -41,8 +40,7 @@ public abstract class AbstractCompositeTest
 {
     protected DeadboltHandler withDrh(final DynamicResourceHandler drh)
     {
-        final ExecutionContextProvider ecp = Mockito.mock(ExecutionContextProvider.class);
-        return new AbstractDeadboltHandler(ecp)
+        return new AbstractDeadboltHandler()
         {
             @Override
             public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context, Optional<String> content)
@@ -60,8 +58,7 @@ public abstract class AbstractCompositeTest
 
     protected DeadboltHandler withSubject(final Supplier<Subject> subject)
     {
-        final ExecutionContextProvider ecp = Mockito.mock(ExecutionContextProvider.class);
-        return new AbstractDeadboltHandler(ecp)
+        return new AbstractDeadboltHandler()
         {
             @Override
             public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)

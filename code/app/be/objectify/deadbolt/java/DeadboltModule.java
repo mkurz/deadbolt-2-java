@@ -48,7 +48,6 @@ public class DeadboltModule extends Module
                    analyzer(),
                    viewSupport(),
                    templateFailureListenerProvider(),
-                   executionContextProvider(),
                    constraintLogic(),
                    compositeCache(),
                    constraintBuilders(),
@@ -63,16 +62,6 @@ public class DeadboltModule extends Module
     public Binding<TemplateFailureListenerProvider> templateFailureListenerProvider()
     {
         return bind(TemplateFailureListenerProvider.class).toSelf().in(Singleton.class);
-    }
-
-    /**
-     * Create a binding for {@link ExecutionContextProvider}.
-     *
-     * @return the binding
-     */
-    public Binding<ExecutionContextProvider> executionContextProvider()
-    {
-        return bind(ExecutionContextProvider.class).toSelf().in(Singleton.class);
     }
 
     /**

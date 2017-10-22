@@ -18,7 +18,6 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
@@ -56,7 +55,6 @@ public class RoleBasedPermissionsAction extends AbstractRestrictiveAction<RoleBa
                                       final Config config,
                                       final RoleBasedPermissions configuration,
                                       final Action<?> delegate,
-                                      final ExecutionContextProvider ecProvider,
                                       final ConstraintLogic constraintLogic)
     {
         this(handlerCache,

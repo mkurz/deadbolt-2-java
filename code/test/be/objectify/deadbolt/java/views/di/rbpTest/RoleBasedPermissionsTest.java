@@ -47,7 +47,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
     @Test
     public void testNoPermissionsForRole()
     {
-        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -73,7 +73,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
     @Test
     public void testMatchingPermissionsForRole()
     {
-        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -99,7 +99,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
     @Test
     public void testNoMatchingPermissionsForRole()
     {
-        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -125,7 +125,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
     @Test
     public void testNoSubject()
     {
-        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler(ecProvider())
+        final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)

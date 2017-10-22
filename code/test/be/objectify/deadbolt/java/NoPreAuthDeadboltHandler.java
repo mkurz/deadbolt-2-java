@@ -27,11 +27,6 @@ import java.util.concurrent.CompletionStage;
  */
 public class NoPreAuthDeadboltHandler extends AbstractDeadboltHandler
 {
-    public NoPreAuthDeadboltHandler(final ExecutionContextProvider ecProvider)
-    {
-        super(ecProvider);
-    }
-
     @Override
     public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
     {
