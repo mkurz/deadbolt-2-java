@@ -25,6 +25,7 @@ import scala.concurrent.ExecutionContextExecutor;
 import views.html.defaultpages.unauthorized;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -37,9 +38,19 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
 {
     protected final DeadboltExecutionContextProvider executionContextProvider;
 
+    private static final AtomicLong NEXT_ID = new AtomicLong(0);
+    private final long id = NEXT_ID.getAndIncrement();
+
     public AbstractDeadboltHandler(final ExecutionContextProvider ecProvider)
     {
         this.executionContextProvider = ecProvider.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public long getId() {
+        return this.id;
     }
 
     /**
