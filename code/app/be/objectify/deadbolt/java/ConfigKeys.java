@@ -39,6 +39,10 @@ public class ConfigKeys
     public static final F.Tuple<String, Boolean> CUSTOM_EC_DEFAULT = new F.Tuple<>(CUSTOM_EC,
                                                                                    false);
 
+    public static final String ALWAYS_CHECK_ALL_CONSTRAINTS = "deadbolt.java.always-check-all-constraints";
+    public static final F.Tuple<String, Boolean> ALWAYS_CHECK_ALL_CONSTRAINTS_DEFAULT = new F.Tuple<>(ALWAYS_CHECK_ALL_CONSTRAINTS,
+                                                                                   false);
+
     public static final String PATTERN_INVERT = "deadbolt.pattern.invert";
 
     private ConfigKeys()

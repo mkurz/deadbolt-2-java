@@ -58,6 +58,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     public final boolean blocking;
     public final long blockingTimeout;
+    public final boolean alwaysCheckAllConstraints;
 
     protected AbstractDeadboltAction(final HandlerCache handlerCache,
                                      final Config config)
@@ -70,9 +71,12 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                      ConfigKeys.BLOCKING_DEFAULT._2);
         defaults.put(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
                      ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
+        defaults.put(ConfigKeys.ALWAYS_CHECK_ALL_CONSTRAINTS_DEFAULT._1,
+                     ConfigKeys.ALWAYS_CHECK_ALL_CONSTRAINTS_DEFAULT._2);
         final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
         this.blocking = configWithFallback.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1);
         this.blockingTimeout = configWithFallback.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1);
+        this.alwaysCheckAllConstraints = configWithFallback.getBoolean(ConfigKeys.ALWAYS_CHECK_ALL_CONSTRAINTS_DEFAULT._1);
     }
 
     /**
@@ -175,6 +179,11 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      */
     protected void markActionAsAuthorised(final Http.Context ctx)
     {
+        if(alwaysCheckAllConstraints)
+        {
+            // Don't mark an action as authorised, we want the other constraints to get evaluated as well!
+            return;
+        }
         ctx.args.put(ACTION_AUTHORISED,
                      true);
     }
@@ -198,6 +207,11 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      */
     protected boolean isActionAuthorised(final Http.Context ctx)
     {
+        if(alwaysCheckAllConstraints)
+        {
+            // Never say an action is authorised, we want all constraints to be evaluated
+            return false;
+        }
         final Object o = ctx.args.get(ACTION_AUTHORISED);
         return o != null && (Boolean) o;
     }
