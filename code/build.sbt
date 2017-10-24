@@ -4,7 +4,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava).disablePlugins(Pl
 
 scalaVersion := "2.11.11"
 
-crossScalaVersions := Seq("2.11.11", "2.12.2")
+crossScalaVersions := Seq("2.11.11", "2.12.4")
 
 organization := "be.objectify"
 
