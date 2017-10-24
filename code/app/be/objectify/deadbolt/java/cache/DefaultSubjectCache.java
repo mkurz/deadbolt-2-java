@@ -62,7 +62,8 @@ public class DefaultSubjectCache implements SubjectCache
         final CompletionStage<Optional<? extends Subject>> promise;
         if (cacheUserPerRequestEnabled)
         {
-            final Optional<? extends Subject> cachedUser = Optional.ofNullable((Subject) context.args.get(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1));
+            final String deadboltHandlerCacheId = ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1 + "." + deadboltHandler.getId(); // results into "deadbolt.java.cache-user.0"
+            final Optional<? extends Subject> cachedUser = Optional.ofNullable((Subject) context.args.get(deadboltHandlerCacheId));
             if (cachedUser.isPresent())
             {
                 promise = CompletableFuture.completedFuture(cachedUser);
@@ -74,7 +75,7 @@ public class DefaultSubjectCache implements SubjectCache
                 promise = deadboltHandler.getSubject(context)
                                          .thenApplyAsync(subjectOption ->
                                                          {
-                                                             subjectOption.ifPresent(subject -> context.args.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
+                                                             subjectOption.ifPresent(subject -> context.args.put(deadboltHandlerCacheId,
                                                                                                                  subject));
                                                              return subjectOption;
                                                          }, executor);

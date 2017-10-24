@@ -37,6 +37,14 @@ public interface DeadboltHandler
 {
 
     /**
+     * Gets the unique id of this DeadboltHandler instance. Each instance of a DeadboltHandler interface gets
+     * an application wide unique id.
+     *
+     * @return the application wide unique id of this DeadboltHandler instance.
+     */
+    long getId();
+
+    /**
      * Invoked immediately before controller or view restrictions are checked. This forms the integration with any
      * authentication actions that may need to occur.
      *
