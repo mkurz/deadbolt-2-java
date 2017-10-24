@@ -22,10 +22,7 @@ import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.ExecutionContextExecutor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -70,15 +67,13 @@ public class DefaultSubjectCache implements SubjectCache
             }
             else
             {
-                final ExecutionContext executionContext = executionContextProvider.get();
-                final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
                 promise = deadboltHandler.getSubject(context)
-                                         .thenApplyAsync(subjectOption ->
+                                         .thenApply(subjectOption ->
                                                          {
                                                              subjectOption.ifPresent(subject -> context.args.put(deadboltHandlerCacheId,
                                                                                                                  subject));
                                                              return subjectOption;
-                                                         }, executor);
+                                                         });
             }
         }
         else
