@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
@@ -37,11 +38,13 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
 
     @Inject
     public CompositeAction(final HandlerCache handlerCache,
+                           final BeforeAuthCheckCache beforeAuthCheckCache,
                            final Config config,
                            final CompositeCache compositeCache,
                            final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
+              beforeAuthCheckCache,
               config,
               constraintLogic);
         this.compositeCache = compositeCache;

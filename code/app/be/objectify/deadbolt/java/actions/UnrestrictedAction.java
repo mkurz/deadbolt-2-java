@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import play.mvc.Http;
@@ -34,9 +35,11 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
 {
     @Inject
     public UnrestrictedAction(final HandlerCache handlerCache,
+                              final BeforeAuthCheckCache beforeAuthCheckCache,
                               final Config config)
     {
         super(handlerCache,
+              beforeAuthCheckCache,
               config);
     }
 

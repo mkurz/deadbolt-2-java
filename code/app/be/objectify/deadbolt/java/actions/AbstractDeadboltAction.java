@@ -17,6 +17,7 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -54,15 +55,19 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     final HandlerCache handlerCache;
 
+    final BeforeAuthCheckCache beforeAuthCheckCache;
+
     final Config config;
 
     public final boolean blocking;
     public final long blockingTimeout;
 
     protected AbstractDeadboltAction(final HandlerCache handlerCache,
+                                     final BeforeAuthCheckCache beforeAuthCheckCache,
                                      final Config config)
     {
         this.handlerCache = handlerCache;
+        this.beforeAuthCheckCache = beforeAuthCheckCache;
         this.config = config;
 
         final HashMap<String, Object> defaults = new HashMap<>();
@@ -268,7 +273,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                                      final Http.Context ctx,
                                                      final DeadboltHandler deadboltHandler)
     {
-        return forcePreAuthCheck ? deadboltHandler.beforeAuthCheck(ctx)
+        return forcePreAuthCheck ? beforeAuthCheckCache.apply(deadboltHandler, ctx)
                                  : CompletableFuture.completedFuture(Optional.empty());
     }
 
