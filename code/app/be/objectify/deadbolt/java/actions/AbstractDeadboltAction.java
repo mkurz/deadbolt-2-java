@@ -307,6 +307,12 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                                          final DeadboltHandler handler,
                                                          final Optional<String> content)
     {
+        if(constraintMode == ConstraintMode.OR && constraintLeftInActionChain(this))
+        {
+            // In OR mode we don't fail immediately but also check remaining constraints (it there is any left). Maybe one of these next ones authorizes...
+            return delegate.call(context);
+        }
+
         markActionAsUnauthorised(context);
         return onAuthFailure(handler,
                              content,
@@ -349,5 +355,19 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     private static <T extends Throwable> void sneakyThrow0(final Throwable t) throws T
     {
         throw (T) t;
+    }
+
+    /**
+     * Recursive method to determine if there is another deadbolt action further down the action chain
+     */
+    private static boolean constraintLeftInActionChain(final Action<?> action) {
+        if(action != null) {
+            if(action.delegate instanceof AbstractDeadboltAction) {
+                return true; // yes, there is at least one deadbolt action remaining
+            }
+            // action.delegate wasn't a deadbolt action, let's check the next one in the chain
+            return constraintLeftInActionChain(action.delegate);
+        }
+        return false;
     }
 }

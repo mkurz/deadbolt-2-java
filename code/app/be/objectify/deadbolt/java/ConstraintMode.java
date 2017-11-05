@@ -7,6 +7,9 @@ public enum ConstraintMode {
     PROCESS_FIRST_CONSTRAINT_ONLY,
 
     // All constraints in the action composition chain have to be successful.
-    AND
+    AND,
+
+    // All constraints in the the action composition chain will be checked until one is successful (in that case the remaining constraint will be skipped).
+    OR
 
 }
