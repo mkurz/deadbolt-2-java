@@ -82,21 +82,17 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
         return authorizeAndExecute(context);
     }
 
-
     @Override
     protected Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
                                                               final Http.Context context,
                                                               final Config config,
                                                               final DeadboltHandler deadboltHandler)
     {
-        return () -> {
-            final CompletionStage<Result> resultCompletionStage = constraintLogic.subjectNotPresent(context,
-                                                                                                    deadboltHandler,
-                                                                                                    config.content,
-                                                                                                    this::present,
-                                                                                                    this::notPresent,
-                                                                                                    ConstraintPoint.CONTROLLER);
-            return resultCompletionStage.toCompletableFuture();
-        };
+        return () -> constraintLogic.subjectNotPresent(context,
+                                                        deadboltHandler,
+                                                        config.content,
+                                                        this::present,
+                                                        this::notPresent,
+                                                        ConstraintPoint.CONTROLLER).toCompletableFuture();
     }
 }
