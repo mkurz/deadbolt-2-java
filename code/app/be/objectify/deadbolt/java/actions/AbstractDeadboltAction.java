@@ -26,6 +26,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 
+import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -94,7 +95,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         CompletionStage<Result> result;
 
-        Class annClass = configuration.getClass();
+        Class annClass = ((Annotation)configuration).annotationType();
         try
         {
             if (isDeferred(ctx))
