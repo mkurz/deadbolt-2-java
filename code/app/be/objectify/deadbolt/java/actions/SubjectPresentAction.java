@@ -46,6 +46,9 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
               constraintLogic);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Config config()
     {
@@ -84,7 +87,7 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
                                                               final Config config,
                                                               final DeadboltHandler deadboltHandler)
     {
-        return () ->  constraintLogic.subjectPresent(context,
+        return () -> constraintLogic.subjectPresent(context,
                                                      deadboltHandler,
                                                      config.content,
                                                      this::present,
