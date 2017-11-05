@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java;
+package be.objectify.deadbolt.java.models;
 
 import java.io.Serializable;
 import java.util.Arrays;
