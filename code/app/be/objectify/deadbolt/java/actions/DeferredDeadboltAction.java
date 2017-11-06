@@ -65,4 +65,13 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
                                                                                             });
         return maybeBlock(eventualResult);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean deferred() {
+        return false;
+    }
+
 }

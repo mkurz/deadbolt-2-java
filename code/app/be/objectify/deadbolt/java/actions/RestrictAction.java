@@ -76,6 +76,14 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                                         ConstraintPoint.CONTROLLER);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean deferred() {
+        return configuration.deferred();
+    }
+
     public List<String[]> getRoleGroups()
     {
         final List<String[]> roleGroups = new ArrayList<>();

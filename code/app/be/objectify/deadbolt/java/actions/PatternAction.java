@@ -72,6 +72,14 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                        ConstraintPoint.CONTROLLER);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean deferred() {
+        return configuration.deferred();
+    }
+
     public String getValue()
     {
         return configuration.value();

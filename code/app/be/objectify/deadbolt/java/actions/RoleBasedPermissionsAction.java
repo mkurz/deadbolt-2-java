@@ -75,6 +75,14 @@ public class RoleBasedPermissionsAction extends AbstractRestrictiveAction<RoleBa
                                                     ConstraintPoint.CONTROLLER);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean deferred() {
+        return configuration.deferred();
+    }
+
     @Override
     public String getHandlerKey()
     {
