@@ -53,17 +53,6 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
      * {@inheritDoc}
      */
     @Override
-    Config config()
-    {
-        return new Config(configuration.forceBeforeAuthCheck(),
-                          configuration.handlerKey(),
-                          configuration.content());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     CompletionStage<Result> present(final Http.Context context,
                                     final DeadboltHandler handler,
                                     final Optional<String> content)
@@ -87,12 +76,11 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
     @Override
     protected Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
                                                               final Http.Context context,
-                                                              final Config config,
                                                               final DeadboltHandler deadboltHandler)
     {
         return () -> constraintLogic.subjectPresent(context,
                                                      deadboltHandler,
-                                                     config.content,
+                                                     getContent(),
                                                      this::present,
                                                      this::notPresent,
                                                      ConstraintPoint.CONTROLLER).toCompletableFuture();
@@ -106,4 +94,21 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
         return configuration.deferred();
     }
 
+    @Override
+    public Optional<String> getContent()
+    {
+        return Optional.ofNullable(configuration.content());
+    }
+
+    @Override
+    public String getHandlerKey()
+    {
+        return configuration.handlerKey();
+    }
+
+    @Override
+    public boolean isForceBeforeAuthCheck()
+    {
+        return configuration.forceBeforeAuthCheck();
+    }
 }
