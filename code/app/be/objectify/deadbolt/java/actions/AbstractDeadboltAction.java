@@ -178,7 +178,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param ctx the request context
      */
-    protected void markActionAsAuthorised(final Http.Context ctx)
+    private void markActionAsAuthorised(final Http.Context ctx)
     {
         ctx.args.put(ACTION_AUTHORISED,
                      true);
@@ -189,7 +189,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param ctx the request context
      */
-    protected void markActionAsUnauthorised(final Http.Context ctx)
+    private void markActionAsUnauthorised(final Http.Context ctx)
     {
         ctx.args.put(ACTION_UNAUTHORISED,
                      true);
