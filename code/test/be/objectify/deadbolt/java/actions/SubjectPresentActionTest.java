@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.utils.TriFunction;
 import com.typesafe.config.ConfigFactory;
@@ -48,6 +49,7 @@ public class SubjectPresentActionTest {
         Mockito.when(subjectPresent.content())
                .thenReturn("x/y");
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
+                                                                     Mockito.mock(BeforeAuthCheckCache.class),
                                                                      ConfigFactory.empty(),
                                                                      Mockito.mock(ConstraintLogic.class));
         action.configuration = subjectPresent;
@@ -64,6 +66,7 @@ public class SubjectPresentActionTest {
     public void testPresent() throws Exception
     {
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
+                                                                     Mockito.mock(BeforeAuthCheckCache.class),
                                                                      ConfigFactory.empty(),
                                                                      Mockito.mock(ConstraintLogic.class));
         action.delegate = Mockito.mock(Action.class);
@@ -82,6 +85,7 @@ public class SubjectPresentActionTest {
     public void testNotPresent() throws Exception
     {
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
+                                                                     Mockito.mock(BeforeAuthCheckCache.class),
                                                                      ConfigFactory.empty(),
                                                                      Mockito.mock(ConstraintLogic.class));
 
@@ -115,6 +119,7 @@ public class SubjectPresentActionTest {
                .thenReturn(CompletableFuture.completedFuture(Results.TODO));
 
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
+                                                                     Mockito.mock(BeforeAuthCheckCache.class),
                                                                      ConfigFactory.empty(),
                                                                      constraintLogic);
         action.configuration = Mockito.mock(SubjectPresent.class);

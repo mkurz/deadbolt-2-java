@@ -44,7 +44,7 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler(ecProvider)
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
@@ -69,7 +69,7 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler(ecProvider)
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
@@ -96,7 +96,7 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler(ecProvider)
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }

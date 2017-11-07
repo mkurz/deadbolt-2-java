@@ -280,9 +280,10 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     public CompletionStage<Optional<Result>> preAuth(final boolean forcePreAuthCheck,
                                                      final Http.Context ctx,
+                                                     final Optional<String> content,
                                                      final DeadboltHandler deadboltHandler)
     {
-        return forcePreAuthCheck ? beforeAuthCheckCache.apply(deadboltHandler, ctx)
+        return forcePreAuthCheck ? beforeAuthCheckCache.apply(deadboltHandler, ctx, content)
                                  : CompletableFuture.completedFuture(Optional.empty());
     }
 

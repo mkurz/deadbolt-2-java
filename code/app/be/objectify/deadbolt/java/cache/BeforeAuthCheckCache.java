@@ -21,11 +21,15 @@ import play.mvc.Result;
 
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
-import java.util.function.BiFunction;
 
 /**
  * @author Matthias Kurz (m.kurz@irregular.at)
  */
-public interface BeforeAuthCheckCache extends BiFunction<DeadboltHandler, Http.Context, CompletionStage<Optional<Result>>>
+public interface BeforeAuthCheckCache extends Function3<DeadboltHandler, Http.Context, Optional<String>, CompletionStage<Optional<Result>>>
 {
+}
+
+// Can be replaced with scala.Function3 when dropping support for Scala 2.11 (probably in Play 2.7)
+interface Function3<A,B,C,R> {
+    R apply(A a, B b, C c);
 }

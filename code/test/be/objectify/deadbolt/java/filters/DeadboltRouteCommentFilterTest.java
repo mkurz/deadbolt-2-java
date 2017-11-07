@@ -59,7 +59,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(handler);
         Mockito.when(handler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
@@ -91,7 +91,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(handler);
         Mockito.when(handler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.onAuthFailure(Mockito.any(Http.Context.class),
                                            Mockito.eq(Optional.empty())))
@@ -130,7 +130,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(handler);
         Mockito.when(handler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.onAuthFailure(Mockito.any(Http.Context.class),
                                            Mockito.eq(Optional.of("bar"))))
@@ -170,7 +170,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                                         specificHandler));
         Mockito.when(specificHandler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
@@ -204,7 +204,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                                         specificHandler));
         Mockito.when(specificHandler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.Context.class),
                                                    Mockito.eq(Optional.empty())))
@@ -245,7 +245,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                                         specificHandler));
         Mockito.when(specificHandler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.Context.class),
                                                    Mockito.eq(Optional.of("bar"))))
@@ -286,7 +286,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(handler);
         Mockito.when(handler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.onAuthFailure(Mockito.any(Http.Context.class),
                                            Mockito.eq(Optional.empty())))
@@ -326,7 +326,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(handler);
         Mockito.when(handler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.onAuthFailure(Mockito.any(Http.Context.class),
                                            Mockito.eq(Optional.of("bar"))))
@@ -366,7 +366,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(handler);
         Mockito.when(handler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
@@ -399,7 +399,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                                         specificHandler));
         Mockito.when(specificHandler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.Context.class),
                                                    Mockito.eq(Optional.empty())))
@@ -440,7 +440,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                                         specificHandler));
         Mockito.when(specificHandler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.Context.class),
                                                    Mockito.eq(Optional.of("bar"))))
@@ -481,7 +481,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                                         specificHandler));
         Mockito.when(specificHandler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.Context.class),
                                                    Mockito.eq(Optional.empty())))
@@ -516,7 +516,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         final DynamicResourceHandler drh = Mockito.mock(DynamicResourceHandler.class);
         Mockito.when(handlerCache.get())
                .thenReturn(handler);
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(drh)));
@@ -554,7 +554,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         final DynamicResourceHandler drh = Mockito.mock(DynamicResourceHandler.class);
         Mockito.when(handlerCache.get())
                .thenReturn(handler);
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(drh)));
@@ -599,7 +599,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         final DynamicResourceHandler drh = Mockito.mock(DynamicResourceHandler.class);
         Mockito.when(handlerCache.get())
                .thenReturn(handler);
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(drh)));
@@ -645,7 +645,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         final HandlerCache handlerCache = new TestHandlerCache(defaultHandler,
                                                                Collections.singletonMap("gurdy",
                                                                                         specificHandler));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.getDynamicResourceHandler(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(drh)));
@@ -685,7 +685,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         final HandlerCache handlerCache = new TestHandlerCache(defaultHandler,
                                                                Collections.singletonMap("gurdy",
                                                                                         specificHandler));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.getDynamicResourceHandler(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(drh)));
@@ -732,7 +732,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         final HandlerCache handlerCache = new TestHandlerCache(defaultHandler,
                                                                Collections.singletonMap("gurdy",
                                                                                         specificHandler));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.getDynamicResourceHandler(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(drh)));
@@ -814,7 +814,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
@@ -847,7 +847,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(handler);
         Mockito.when(handler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
@@ -890,7 +890,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(handler);
         Mockito.when(handler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
@@ -934,7 +934,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                                         specificHandler));
         Mockito.when(specificHandler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
@@ -972,7 +972,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                                         specificHandler));
         Mockito.when(specificHandler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.Context.class),
                                                    Mockito.eq(Optional.empty())))
@@ -1016,7 +1016,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                                         specificHandler));
         Mockito.when(specificHandler.getSubject(Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.Context.class),
                                                    Mockito.eq(Optional.of("bar"))))

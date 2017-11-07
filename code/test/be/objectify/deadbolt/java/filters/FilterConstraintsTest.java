@@ -21,7 +21,9 @@ import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.CompositeCache;
+import be.objectify.deadbolt.java.cache.DefaultBeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.DefaultCompositeCache;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
@@ -76,7 +78,7 @@ public class FilterConstraintsTest
                .thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
 
         handler = Mockito.mock(DeadboltHandler.class);
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.onAuthFailure(Mockito.any(Http.Context.class),
                                            Mockito.any(Optional.class)))
@@ -95,8 +97,11 @@ public class FilterConstraintsTest
                                 new SubjectPresentConstraint(Optional.empty(),
                                                              constraintLogic));
 
+        final BeforeAuthCheckCache beforeAuthCheckCache = new DefaultBeforeAuthCheckCache(ConfigFactory.empty());
+
         filterConstraints = new FilterConstraints(constraintLogic,
-                                                  compositeCache);
+                                                  compositeCache,
+                                                  beforeAuthCheckCache);
 
         requestHeader = Mockito.mock(Http.RequestHeader.class);
 

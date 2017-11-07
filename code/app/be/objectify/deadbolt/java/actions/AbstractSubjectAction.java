@@ -68,6 +68,7 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
             final DeadboltHandler deadboltHandler = getDeadboltHandler(config.handlerKey);
             result = preAuth(config.forceBeforeAuthCheck,
                              ctx,
+                             config.content,
                              deadboltHandler)
                     .thenCompose(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
                                                              .orElseGet(testSubject(constraintLogic,

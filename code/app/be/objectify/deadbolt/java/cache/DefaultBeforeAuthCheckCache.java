@@ -49,7 +49,8 @@ public class DefaultBeforeAuthCheckCache implements BeforeAuthCheckCache
 
     @Override
     public CompletionStage<Optional<Result>> apply(final DeadboltHandler deadboltHandler,
-                                                              final Http.Context context)
+                                                              final Http.Context context,
+                                                              final Optional<String> content)
     {
         final CompletionStage<Optional<Result>> promise;
         if (cacheBeforeAuthCheckPerRequestEnabled)
@@ -61,7 +62,7 @@ public class DefaultBeforeAuthCheckCache implements BeforeAuthCheckCache
             }
             else
             {
-                promise = deadboltHandler.beforeAuthCheck(context)
+                promise = deadboltHandler.beforeAuthCheck(context, content)
                                          .thenApply(beforeAuthCheckOption ->
                                                          {
                                                              if(!beforeAuthCheckOption.isPresent())
@@ -74,7 +75,7 @@ public class DefaultBeforeAuthCheckCache implements BeforeAuthCheckCache
         }
         else
         {
-            promise = deadboltHandler.beforeAuthCheck(context);
+            promise = deadboltHandler.beforeAuthCheck(context, content);
         }
 
         return promise;
