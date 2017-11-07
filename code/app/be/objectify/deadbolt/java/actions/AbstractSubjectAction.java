@@ -46,29 +46,29 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
      * {@inheritDoc}
      */
     @Override
-    public CompletionStage<Result> execute(final Http.Context content) throws Exception
+    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
         final CompletionStage<Result> result;
         final Config config = config();
-        if (isActionUnauthorised(content))
+        if (isActionUnauthorised(ctx))
         {
             result = onAuthFailure(getDeadboltHandler(config.handlerKey),
                                    config.content,
-                                   content);
+                                   ctx);
         }
-        else if (isActionAuthorised(content))
+        else if (isActionAuthorised(ctx))
         {
-            result = delegate.call(content);
+            result = delegate.call(ctx);
         }
         else
         {
             final DeadboltHandler deadboltHandler = getDeadboltHandler(config.handlerKey);
             result = preAuth(config.forceBeforeAuthCheck,
-                             content,
+                             ctx,
                              deadboltHandler)
                     .thenCompose(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
                                                              .orElseGet(testSubject(constraintLogic,
-                                                                                    content,
+                                                                                    ctx,
                                                                                     config,
                                                                                     deadboltHandler)));
         }
