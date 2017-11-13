@@ -16,12 +16,9 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.java.models.Subject;
-import play.libs.concurrent.HttpExecution;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.ExecutionContextExecutor;
 import views.html.defaultpages.unauthorized;
 
 import java.util.Optional;
@@ -67,12 +64,8 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     public CompletionStage<Result> onAuthFailure(final Http.Context context,
                                                  final Optional<String> content)
     {
-        final ExecutionContext executionContext = executionContextProvider.get();
-        final ExecutionContextExecutor executor = HttpExecution.fromThread(executionContext);
-        return CompletableFuture.supplyAsync(unauthorized::render,
-                                             executor)
-                                .thenApplyAsync(Results::unauthorized,
-                                                executor);
+        return CompletableFuture.completedFuture(unauthorized.render())
+                                .thenApply(Results::unauthorized);
     }
 
     /**
