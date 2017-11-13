@@ -23,6 +23,8 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -59,6 +61,7 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
             final DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey());
             result = preAuth(true,
                              ctx,
+                             Optional.ofNullable(configuration.content()),
                              deadboltHandler)
                     .thenCompose(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>) CompletableFuture.completedFuture(r))
                                                                .orElseGet(() -> sneakyCall(delegate, ctx)));

@@ -100,6 +100,12 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     }
 
     @Override
+    public Optional<String> getContent()
+    {
+        return Optional.ofNullable(configuration.content());
+    }
+
+    @Override
     public String getHandlerKey()
     {
         return configuration.handlerKey();

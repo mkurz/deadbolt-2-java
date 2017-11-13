@@ -16,6 +16,8 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
+import be.objectify.deadbolt.java.cache.DefaultBeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.ConfigFactory;
 import org.junit.Test;
@@ -41,14 +43,17 @@ public class BeforeAccessActionTest
                      true);
 
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-        Mockito.when(handler.beforeAuthCheck(ctx))
+        Mockito.when(handler.beforeAuthCheck(ctx, Optional.empty()))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
         final HandlerCache handlerCache = Mockito.mock(HandlerCache.class);
         Mockito.when(handlerCache.get())
                .thenReturn(handler);
 
+        final BeforeAuthCheckCache beforeAuthCheckCache = new DefaultBeforeAuthCheckCache(ConfigFactory.empty());
+
         final BeforeAccessAction action = new BeforeAccessAction(handlerCache,
+                                                                 beforeAuthCheckCache,
                                                                  ConfigFactory.empty());
         action.configuration = Mockito.mock(BeforeAccess.class);
         Mockito.when(action.configuration.alwaysExecute())
@@ -57,13 +62,14 @@ public class BeforeAccessActionTest
 
         action.execute(ctx);
 
-        Mockito.verify(handler).beforeAuthCheck(ctx);
+        Mockito.verify(handler).beforeAuthCheck(ctx, Optional.empty());
     }
 
     @Test
     public void testExecute_alreadyAuthorised_alwaysExecuteFalse() throws Exception
     {
         final BeforeAccessAction action = new BeforeAccessAction(Mockito.mock(HandlerCache.class),
+                                                                 Mockito.mock(BeforeAuthCheckCache.class),
                                                                  ConfigFactory.empty());
         action.configuration = Mockito.mock(BeforeAccess.class);
         Mockito.when(action.configuration.alwaysExecute())

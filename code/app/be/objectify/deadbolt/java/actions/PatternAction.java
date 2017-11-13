@@ -77,6 +77,12 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                        ConstraintPoint.CONTROLLER);
     }
 
+    @Override
+    public Optional<String> getContent()
+    {
+        return Optional.ofNullable(configuration.content());
+    }
+
     /**
      * {@inheritDoc}
      */

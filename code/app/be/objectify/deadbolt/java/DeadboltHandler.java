@@ -53,7 +53,7 @@ public interface DeadboltHandler
      * the user is authenticated (or whatever your test condition is), this will be null otherwise the restriction
      * won't be applied.
      */
-    CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context);
+    CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context, Optional<String> content);
 
     /**
      * Gets the current {@link Subject}, e.g. the current user.

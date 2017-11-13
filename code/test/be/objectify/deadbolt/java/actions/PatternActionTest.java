@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.utils.TriFunction;
@@ -52,6 +53,7 @@ public class PatternActionTest
                .thenReturn(PatternType.EQUALITY);
         final ConstraintLogic constraintLogic = Mockito.mock(ConstraintLogic.class);
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
+                                                       Mockito.mock(BeforeAuthCheckCache.class),
                                                        ConfigFactory.empty(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
@@ -81,6 +83,7 @@ public class PatternActionTest
         Mockito.when(pattern.value())
                .thenReturn("foo");
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
+                                                       Mockito.mock(BeforeAuthCheckCache.class),
                                                        ConfigFactory.empty(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
@@ -97,6 +100,7 @@ public class PatternActionTest
         Mockito.when(pattern.meta())
                .thenReturn("foo");
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
+                                                       Mockito.mock(BeforeAuthCheckCache.class),
                                                        ConfigFactory.empty(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
@@ -115,6 +119,7 @@ public class PatternActionTest
         Mockito.when(pattern.handlerKey())
                .thenReturn("foo");
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
+                                                       Mockito.mock(BeforeAuthCheckCache.class),
                                                        ConfigFactory.empty(),
                                                        pattern,
                                                        Mockito.mock(Action.class),

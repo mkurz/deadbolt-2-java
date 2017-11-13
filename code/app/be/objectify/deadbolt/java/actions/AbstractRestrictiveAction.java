@@ -23,6 +23,7 @@ import com.typesafe.config.Config;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -59,6 +60,7 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
             final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
             result = preAuth(true,
                              ctx,
+                             getContent(),
                              deadboltHandler)
                     .thenCompose(option -> option.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
                                                       .orElseGet(() -> applyRestriction(ctx,
@@ -66,6 +68,8 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
         }
         return maybeBlock(result);
     }
+
+    public abstract Optional<String> getContent();
 
     /**
      * Get the key of a specific DeadboltHandler instance.

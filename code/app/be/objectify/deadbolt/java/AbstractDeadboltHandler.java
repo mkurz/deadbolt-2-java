@@ -54,7 +54,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
      * {@inheritDoc}
      */
     @Override
-    public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context)
+    public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context, Optional<String> content)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }

@@ -45,7 +45,7 @@ public abstract class AbstractCompositeTest
         return new AbstractDeadboltHandler(ecp)
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context, Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
@@ -64,7 +64,7 @@ public abstract class AbstractCompositeTest
         return new AbstractDeadboltHandler(ecp)
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }

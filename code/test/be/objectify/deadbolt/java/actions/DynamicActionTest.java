@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.utils.TriFunction;
 import com.typesafe.config.ConfigFactory;
@@ -47,6 +48,7 @@ public class DynamicActionTest
                .thenReturn("x/y");
         final ConstraintLogic constraintLogic = Mockito.mock(ConstraintLogic.class);
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
+                                                       Mockito.mock(BeforeAuthCheckCache.class),
                                                        ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
@@ -74,6 +76,7 @@ public class DynamicActionTest
         Mockito.when(dynamic.meta())
                .thenReturn("foo");
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
+                                                       Mockito.mock(BeforeAuthCheckCache.class),
                                                        ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
@@ -91,6 +94,7 @@ public class DynamicActionTest
         Mockito.when(dynamic.value())
                .thenReturn("foo");
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
+                                                       Mockito.mock(BeforeAuthCheckCache.class),
                                                        ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
@@ -107,6 +111,7 @@ public class DynamicActionTest
         Mockito.when(dynamic.handlerKey())
                .thenReturn("foo");
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
+                                                       Mockito.mock(BeforeAuthCheckCache.class),
                                                        ConfigFactory.empty(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),

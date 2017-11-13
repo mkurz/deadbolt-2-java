@@ -33,7 +33,7 @@ public class NoPreAuthDeadboltHandler extends AbstractDeadboltHandler
     }
 
     @Override
-    public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context)
+    public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
