@@ -58,4 +58,13 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
                                                                                                                     : authorizeAndExecute(ctx));
         return maybeBlock(eventualResult);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean deferred() {
+        return configuration.deferred();
+    }
+
 }

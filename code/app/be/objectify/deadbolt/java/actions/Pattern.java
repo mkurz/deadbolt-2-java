@@ -34,7 +34,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Inherited
 @Documented
-@Deferrable
 public @interface Pattern
 {
     /**

@@ -65,4 +65,13 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
         }
         return maybeBlock(result);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean deferred() {
+        return configuration.deferred();
+    }
+
 }

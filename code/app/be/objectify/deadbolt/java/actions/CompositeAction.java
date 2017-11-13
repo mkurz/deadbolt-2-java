@@ -74,6 +74,14 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                             		                             Optional.ofNullable(configuration.content())));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean deferred() {
+        return configuration.deferred();
+    }
+
     public String getMeta()
     {
         return configuration.meta();

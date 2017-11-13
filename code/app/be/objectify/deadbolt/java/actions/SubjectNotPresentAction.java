@@ -98,4 +98,12 @@ public class SubjectNotPresentAction extends AbstractSubjectAction<SubjectNotPre
                                                         this::notPresent,
                                                         ConstraintPoint.CONTROLLER).toCompletableFuture();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean deferred() {
+        return configuration.deferred();
+    }
 }

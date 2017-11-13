@@ -110,7 +110,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         CompletionStage<Result> result;
 
-        Class annClass = configuration.getClass();
         try
         {
             if (isDeferred(ctx))
@@ -118,8 +117,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                 result = getDeferredAction(ctx).call(ctx);
             }
             else if (!ctx.args.containsKey(IGNORE_DEFERRED_FLAG)
-                    && annClass.isAnnotationPresent(Deferrable.class)
-                    && (Boolean) annClass.getMethod("deferred").invoke(configuration))
+                    && deferred())
             {
                 defer(ctx,
                       this);
@@ -147,6 +145,11 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @throws Exception if something bad happens
      */
     public abstract CompletionStage<Result> execute(final Http.Context ctx) throws Exception;
+
+    /**
+     * If a constraint is deferrable, i.e. method-level constraints are not applied until controller-level annotations are applied.
+     */
+    protected abstract boolean deferred();
 
     /**
      * Wrapper for {@link DeadboltHandler#onAuthFailure} to ensure the access failure is logged.
