@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.ConstraintMode;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
@@ -58,6 +59,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     public final boolean blocking;
     public final long blockingTimeout;
+    public final ConstraintMode constraintMode;
 
     protected AbstractDeadboltAction(final HandlerCache handlerCache,
                                      final Config config)
@@ -70,9 +72,12 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                      ConfigKeys.BLOCKING_DEFAULT._2);
         defaults.put(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
                      ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
+        defaults.put(ConfigKeys.CONSTRAINT_MODE_DEFAULT._1,
+                     ConfigKeys.CONSTRAINT_MODE_DEFAULT._2);
         final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
         this.blocking = configWithFallback.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1);
         this.blockingTimeout = configWithFallback.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1);
+        this.constraintMode = ConstraintMode.valueOf(configWithFallback.getString(ConfigKeys.CONSTRAINT_MODE_DEFAULT._1));
     }
 
     /**
@@ -173,7 +178,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param ctx the request context
      */
-    protected void markActionAsAuthorised(final Http.Context ctx)
+    private void markActionAsAuthorised(final Http.Context ctx)
     {
         ctx.args.put(ACTION_AUTHORISED,
                      true);
@@ -184,7 +189,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param ctx the request context
      */
-    protected void markActionAsUnauthorised(final Http.Context ctx)
+    private void markActionAsUnauthorised(final Http.Context ctx)
     {
         ctx.args.put(ACTION_UNAUTHORISED,
                      true);
@@ -281,7 +286,11 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      */
     protected CompletionStage<Result> authorizeAndExecute(final Http.Context context)
     {
-        markActionAsAuthorised(context);
+        if(constraintMode != ConstraintMode.AND)
+        {
+            // In AND mode we don't mark an action as authorised because we want ALL (remaining) constraints to be evaluated as well!
+            markActionAsAuthorised(context);
+        }
         return delegate.call(context);
     }
 
@@ -298,6 +307,12 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                                          final DeadboltHandler handler,
                                                          final Optional<String> content)
     {
+        if(constraintMode == ConstraintMode.OR && constraintLeftInActionChain(this))
+        {
+            // In OR mode we don't fail immediately but also check remaining constraints (it there is any left). Maybe one of these next ones authorizes...
+            return delegate.call(context);
+        }
+
         markActionAsUnauthorised(context);
         return onAuthFailure(handler,
                              content,
@@ -340,5 +355,19 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     private static <T extends Throwable> void sneakyThrow0(final Throwable t) throws T
     {
         throw (T) t;
+    }
+
+    /**
+     * Recursive method to determine if there is another deadbolt action further down the action chain
+     */
+    private static boolean constraintLeftInActionChain(final Action<?> action) {
+        if(action != null) {
+            if(action.delegate instanceof AbstractDeadboltAction) {
+                return true; // yes, there is at least one deadbolt action remaining
+            }
+            // action.delegate wasn't a deadbolt action, let's check the next one in the chain
+            return constraintLeftInActionChain(action.delegate);
+        }
+        return false;
     }
 }
