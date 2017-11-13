@@ -50,22 +50,8 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final CompletableFuture<Result> eventualResult = CompletableFuture.completedFuture(getDeferredAction(ctx))
-                                                                          .thenCompose(deferredAction ->
-                                                                                            {
-                                                                                                final CompletionStage<Result> result;
-                                                                                                if (deferredAction == null)
-                                                                                                {
-                                                                                                    result = delegate.call(ctx);
-                                                                                                }
-                                                                                                else
-                                                                                                {
-                                                                                                    LOGGER.debug("Executing deferred action [{}]",
-                                                                                                                 deferredAction.getClass().getName());
-                                                                                                    result = deferredAction.call(ctx);
-                                                                                                }
-                                                                                                return result;
-                                                                                            });
+        final CompletionStage<Result> eventualResult = delegate.call(ctx);
+
         return maybeBlock(eventualResult);
     }
 

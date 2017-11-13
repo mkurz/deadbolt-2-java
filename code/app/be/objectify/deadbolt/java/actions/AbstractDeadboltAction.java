@@ -114,7 +114,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         {
             if (isDeferred(ctx))
             {
-                result = getDeferredAction(ctx).call(ctx);
+                final AbstractDeadboltAction<?> deferredAction = getDeferredAction(ctx);
+                LOGGER.debug("Executing deferred action [{}]", deferredAction.getClass().getName());
+                result = deferredAction.call(ctx);
             }
             else if (!ctx.args.containsKey(IGNORE_DEFERRED_FLAG)
                     && deferred())
