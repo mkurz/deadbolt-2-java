@@ -251,6 +251,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         if (o != null)
         {
             action = (AbstractDeadboltAction) o;
+            action.delegate = this;
 
             ctx.args.remove(ACTION_DEFERRED);
             ctx.args.put(IGNORE_DEFERRED_FLAG,
