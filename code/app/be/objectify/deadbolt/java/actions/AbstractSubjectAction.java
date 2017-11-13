@@ -52,11 +52,10 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
         final CompletionStage<Result> result;
-        final Config config = config();
         if (isActionUnauthorised(ctx))
         {
-            result = onAuthFailure(getDeadboltHandler(config.handlerKey),
-                                   config.content,
+            result = onAuthFailure(getDeadboltHandler(getHandlerKey()),
+                                   getContent(),
                                    ctx);
         }
         else if (isActionAuthorised(ctx))
@@ -65,15 +64,14 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
         }
         else
         {
-            final DeadboltHandler deadboltHandler = getDeadboltHandler(config.handlerKey);
-            result = preAuth(config.forceBeforeAuthCheck,
+            final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
+            result = preAuth(isForceBeforeAuthCheck(),
                              ctx,
-                             config.content,
+                             getContent(),
                              deadboltHandler)
                     .thenCompose(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
                                                              .orElseGet(testSubject(constraintLogic,
                                                                                     ctx,
-                                                                                    config,
                                                                                     deadboltHandler)));
         }
         return maybeBlock(result);
@@ -81,10 +79,7 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
 
     abstract Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
                                                               final Http.Context context,
-                                                              final Config config,
                                                               final DeadboltHandler deadboltHandler);
-
-    abstract Config config();
 
     abstract CompletionStage<Result> present(Http.Context context,
                                              DeadboltHandler handler,
@@ -94,19 +89,9 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
                                                 DeadboltHandler handler,
                                                 Optional<String> content);
 
-    class Config
-    {
-        public final boolean forceBeforeAuthCheck;
-        public final String handlerKey;
-        public final Optional<String> content;
+    public abstract Optional<String> getContent();
 
-        Config(final boolean forceBeforeAuthCheck,
-               final String handlerKey,
-               final String content)
-        {
-            this.forceBeforeAuthCheck = forceBeforeAuthCheck;
-            this.handlerKey = handlerKey;
-            this.content = Optional.ofNullable(content);
-        }
-    }
+    public abstract String getHandlerKey();
+
+    public abstract boolean isForceBeforeAuthCheck();
 }

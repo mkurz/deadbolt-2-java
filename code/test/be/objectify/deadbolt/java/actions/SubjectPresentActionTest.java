@@ -54,12 +54,11 @@ public class SubjectPresentActionTest {
                                                                      Mockito.mock(ConstraintLogic.class));
         action.configuration = subjectPresent;
 
-        final AbstractSubjectAction<SubjectPresent>.Config config = action.config();
-        Assert.assertTrue(config.forceBeforeAuthCheck);
+        Assert.assertTrue(action.isForceBeforeAuthCheck());
         Assert.assertEquals("foo",
-                            config.handlerKey);
+                            action.getHandlerKey());
         Assert.assertEquals("x/y",
-                            config.content.orElse(null));
+                            action.getContent().orElse(null));
     }
 
     @Test
@@ -126,7 +125,6 @@ public class SubjectPresentActionTest {
 
         action.testSubject(constraintLogic,
                            Mockito.mock(Http.Context.class),
-                           action.config(),
                            Mockito.mock(DeadboltHandler.class)).get();
         Mockito.verify(constraintLogic).subjectPresent(Mockito.any(Http.Context.class),
                                                        Mockito.any(DeadboltHandler.class),
