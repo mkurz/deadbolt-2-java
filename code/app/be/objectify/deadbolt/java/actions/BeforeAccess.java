@@ -56,14 +56,6 @@ public @interface BeforeAccess
     String handlerKey() default ConfigKeys.DEFAULT_HANDLER_KEY;
 
     /**
-     * By default, if another Deadbolt action has already been executed in the same request and has allowed access,
-     * beforeAuthCheck will not be executed again.  Set this to true if you want it to execute unconditionally.
-     *
-     * @return true if beforeAuthCheck should always be executed, otherwise false
-     */
-    boolean alwaysExecute() default true;
-
-    /**
      * If true, the annotation will only be run if there is a {@link DeferredDeadbolt} annotation at the class level.
      *
      * @return true iff the associated action should be deferred until class-level annotations are applied.

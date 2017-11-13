@@ -52,7 +52,7 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
         final CompletionStage<Result> result;
-        if (isActionAuthorised(ctx) && !configuration.alwaysExecute())
+        if (isActionAuthorised(ctx))
         {
             result = delegate.call(ctx);
         }
