@@ -19,6 +19,7 @@ import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import play.mvc.Action;
@@ -41,15 +42,18 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
 {
     @Inject
     public RestrictAction(final HandlerCache handlerCache,
+                          final BeforeAuthCheckCache beforeAuthCheckCache,
                           final Config config,
                           final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
+              beforeAuthCheckCache,
               config,
               constraintLogic);
     }
 
     public RestrictAction(final HandlerCache handlerCache,
+                          final BeforeAuthCheckCache beforeAuthCheckCache,
                           final Config config,
                           final Restrict configuration,
                           final Action<?> delegate,
@@ -57,6 +61,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
                           final ConstraintLogic constraintLogic)
     {
         this(handlerCache,
+             beforeAuthCheckCache,
              config,
              constraintLogic);
         this.configuration = configuration;

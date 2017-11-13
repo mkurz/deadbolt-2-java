@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -38,10 +39,12 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
 {
     @Inject
     public SubjectPresentAction(final HandlerCache handlerCache,
+                                final BeforeAuthCheckCache beforeAuthCheckCache,
                                 final com.typesafe.config.Config config,
                                 final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
+              beforeAuthCheckCache,
               config,
               constraintLogic);
     }

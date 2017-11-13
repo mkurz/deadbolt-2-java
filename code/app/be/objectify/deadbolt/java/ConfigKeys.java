@@ -23,9 +23,15 @@ import play.libs.F;
 public class ConfigKeys
 {
     public static final String DEFAULT_HANDLER_KEY = "defaultHandler";
+
     public static final String CACHE_DEADBOLT_USER = "deadbolt.java.cache-user";
     public static final F.Tuple<String, Boolean> CACHE_DEADBOLT_USER_DEFAULT = new F.Tuple<>(CACHE_DEADBOLT_USER,
                                                                                              false);
+
+    public static final String CACHE_BEFORE_AUTH_CHECK = "deadbolt.java.cache-before-auth-check";
+    public static final F.Tuple<String, Boolean> CACHE_BEFORE_AUTH_CHECK_DEFAULT = new F.Tuple<>(CACHE_BEFORE_AUTH_CHECK,
+                                                                                             false);
+
     public static final String DEFAULT_VIEW_TIMEOUT = "deadbolt.java.view-timeout";
     public static final F.Tuple<String, Long> DEFAULT_VIEW_TIMEOUT_DEFAULT = new F.Tuple<>(DEFAULT_VIEW_TIMEOUT,
                                                                                            1000L);

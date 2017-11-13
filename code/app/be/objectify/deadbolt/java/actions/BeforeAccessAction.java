@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import play.mvc.Http;
@@ -34,9 +35,11 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
 {
     @Inject
     public BeforeAccessAction(final HandlerCache handlerCache,
+                              final BeforeAuthCheckCache beforeAuthCheckCache,
                               final Config config)
     {
         super(handlerCache,
+              beforeAuthCheckCache,
               config);
     }
 

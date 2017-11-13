@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.filters;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.composite.Constraint;
 import be.objectify.deadbolt.java.models.PatternType;
@@ -43,13 +44,16 @@ public class FilterConstraints
 {
     private final ConstraintLogic constraintLogic;
     private final CompositeCache compositeCache;
+    private final BeforeAuthCheckCache beforeAuthCheckCache;
 
     @Inject
     public FilterConstraints(final ConstraintLogic constraintLogic,
-                             final CompositeCache compositeCache)
+                             final CompositeCache compositeCache,
+                             final BeforeAuthCheckCache beforeAuthCheckCache)
     {
         this.constraintLogic = constraintLogic;
         this.compositeCache = compositeCache;
+        this.beforeAuthCheckCache = beforeAuthCheckCache;
     }
 
     /**
@@ -76,7 +80,7 @@ public class FilterConstraints
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                handler.beforeAuthCheck(context)
+                beforeAuthCheckCache.apply(handler, context)
                        .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
                                                                 .orElseGet(() -> constraintLogic.subjectPresent(context,
                                                                                                                 handler,
@@ -111,7 +115,7 @@ public class FilterConstraints
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                handler.beforeAuthCheck(context)
+                beforeAuthCheckCache.apply(handler, context)
                        .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
                                                                 .orElseGet(() -> constraintLogic.subjectNotPresent(context,
                                                                                                                    handler,
@@ -150,7 +154,7 @@ public class FilterConstraints
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                handler.beforeAuthCheck(context)
+                beforeAuthCheckCache.apply(handler, context)
                        .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
                                                                 .orElseGet(() -> constraintLogic.restrict(context,
                                                                                                           handler,
@@ -247,7 +251,7 @@ public class FilterConstraints
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                handler.beforeAuthCheck(context)
+                beforeAuthCheckCache.apply(handler, context)
                        .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
                                                                 .orElseGet(() -> constraintLogic.pattern(context,
                                                                                                          handler,
@@ -311,7 +315,7 @@ public class FilterConstraints
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                handler.beforeAuthCheck(context)
+                beforeAuthCheckCache.apply(handler, context)
                        .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
                                                                 .orElseGet(() -> constraintLogic.dynamic(context,
                                                                                                          handler,
@@ -384,7 +388,7 @@ public class FilterConstraints
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                handler.beforeAuthCheck(context)
+                beforeAuthCheckCache.apply(handler, context)
                        .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
                                                                 .orElseGet(() -> constraint.test(context,
                                                                                                  handler)
@@ -411,7 +415,7 @@ public class FilterConstraints
                 Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                handler.beforeAuthCheck(context)
+                beforeAuthCheckCache.apply(handler, context)
                        .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
                                                                 .orElseGet(() -> constraintLogic.roleBasedPermissions(context,
                                                                                                                       handler,

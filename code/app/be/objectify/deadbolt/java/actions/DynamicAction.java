@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import play.mvc.Action;
@@ -38,21 +39,25 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
 {
     @Inject
     public DynamicAction(final HandlerCache handlerCache,
+                         final BeforeAuthCheckCache beforeAuthCheckCache,
                          final Config config,
                          final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
+              beforeAuthCheckCache,
               config,
               constraintLogic);
     }
 
     public DynamicAction(final HandlerCache handlerCache,
+                         final BeforeAuthCheckCache beforeAuthCheckCache,
                          final Config config,
                          final Dynamic configuration,
                          final Action<?> delegate,
                          final ConstraintLogic constraintLogic)
     {
         this(handlerCache,
+             beforeAuthCheckCache,
              config,
              constraintLogic);
         this.configuration = configuration;

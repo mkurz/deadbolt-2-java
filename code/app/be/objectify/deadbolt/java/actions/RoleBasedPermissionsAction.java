@@ -19,6 +19,7 @@ import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.ExecutionContextProvider;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import play.mvc.Action;
@@ -40,15 +41,18 @@ public class RoleBasedPermissionsAction extends AbstractRestrictiveAction<RoleBa
 {
     @Inject
     public RoleBasedPermissionsAction(final HandlerCache handlerCache,
+                                      final BeforeAuthCheckCache beforeAuthCheckCache,
                                       final Config config,
                                       final ConstraintLogic constraintLogic)
     {
         super(handlerCache,
+              beforeAuthCheckCache,
               config,
               constraintLogic);
     }
 
     public RoleBasedPermissionsAction(final HandlerCache handlerCache,
+                                      final BeforeAuthCheckCache beforeAuthCheckCache,
                                       final Config config,
                                       final RoleBasedPermissions configuration,
                                       final Action<?> delegate,
@@ -56,6 +60,7 @@ public class RoleBasedPermissionsAction extends AbstractRestrictiveAction<RoleBa
                                       final ConstraintLogic constraintLogic)
     {
         this(handlerCache,
+             beforeAuthCheckCache,
              config,
              constraintLogic);
         this.configuration = configuration;

@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
 import org.slf4j.Logger;
@@ -38,9 +39,11 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
 
     @Inject
     public DeferredDeadboltAction(final HandlerCache handlerCache,
+                                  final BeforeAuthCheckCache beforeAuthCheckCache,
                                   final Config config)
     {
         super(handlerCache,
+              beforeAuthCheckCache,
               config);
     }
 

@@ -45,7 +45,7 @@ public interface DeadboltHandler
     long getId();
 
     /**
-     * Invoked immediately before controller or view restrictions are checked. This forms the integration with any
+     * Invoked immediately before controller restrictions are checked. This forms the integration with any
      * authentication actions that may need to occur.
      *
      * @param context the HTTP context

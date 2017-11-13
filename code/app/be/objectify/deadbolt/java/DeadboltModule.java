@@ -19,8 +19,10 @@ import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.DefaultCompositeCache;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.DefaultSubjectCache;
+import be.objectify.deadbolt.java.cache.DefaultBeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.PatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
+import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.composite.ConstraintBuilders;
 import be.objectify.deadbolt.java.filters.FilterConstraints;
 import play.api.Configuration;
@@ -41,6 +43,7 @@ public class DeadboltModule extends Module
                                     final Configuration configuration)
     {
         return seq(subjectCache(),
+                   beforeAuthCheckCache(),
                    patternCache(),
                    analyzer(),
                    viewSupport(),
@@ -130,6 +133,16 @@ public class DeadboltModule extends Module
     public Binding<SubjectCache> subjectCache()
     {
         return bind(SubjectCache.class).to(DefaultSubjectCache.class).in(Singleton.class);
+    }
+
+    /**
+     * Create a binding for {@link BeforeAuthCheckCache}.
+     *
+     * @return the binding
+     */
+    public Binding<BeforeAuthCheckCache> beforeAuthCheckCache()
+    {
+        return bind(BeforeAuthCheckCache.class).to(DefaultBeforeAuthCheckCache.class).in(Singleton.class);
     }
 
     /**
