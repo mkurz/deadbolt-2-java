@@ -64,7 +64,7 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
                              Optional.ofNullable(configuration.content()),
                              deadboltHandler)
                     .thenCompose(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>) CompletableFuture.completedFuture(r))
-                                                               .orElseGet(() -> sneakyCall(delegate, ctx)));
+                                                               .orElseGet(() -> delegate.call(ctx)));
         }
         return maybeBlock(result);
     }

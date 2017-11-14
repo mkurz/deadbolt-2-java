@@ -331,19 +331,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                              context);
     }
 
-    public static CompletionStage<Result> sneakyCall(final Action<?> action,
-                                                     final Http.Context context)
-    {
-        try
-        {
-            return action.call(context);
-        }
-        catch (Throwable t)
-        {
-            throw sneakyThrow(t);
-        }
-    }
-
     CompletionStage<Result> maybeBlock(CompletionStage<Result> eventualResult) throws InterruptedException,
                                                                                       ExecutionException,
                                                                                       TimeoutException
@@ -351,22 +338,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         return blocking ? CompletableFuture.completedFuture(eventualResult.toCompletableFuture().get(blockingTimeout,
                                                                                                      TimeUnit.MILLISECONDS))
                         : eventualResult;
-    }
-
-    private static RuntimeException sneakyThrow(final Throwable t)
-    {
-        if (t == null)
-        {
-            throw new NullPointerException("Can't use sneakyThrow without a throwable");
-        }
-        sneakyThrow0(t);
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Throwable> void sneakyThrow0(final Throwable t) throws T
-    {
-        throw (T) t;
     }
 
     /**
