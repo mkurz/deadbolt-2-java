@@ -26,7 +26,6 @@ import play.mvc.Result;
 import javax.inject.Inject;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -52,9 +51,23 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final CompletionStage<Result> eventualResult = delegate.call(ctx);
+        final CompletionStage<Result> result;
+        if (isActionUnauthorised(ctx))
+        {
+            result = onAuthFailure(getDeadboltHandler(getHandlerKey()),
+                                   getContent(),
+                                   ctx);
+        }
+        else if (isActionAuthorised(ctx))
+        {
+            result = delegate.call(ctx);
+        }
+        else
+        {
+            result = delegate.call(ctx);
+        }
 
-        return maybeBlock(eventualResult);
+        return maybeBlock(result);
     }
 
     /**

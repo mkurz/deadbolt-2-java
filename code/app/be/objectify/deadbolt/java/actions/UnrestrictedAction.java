@@ -49,14 +49,28 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final CompletableFuture<Result> eventualResult = CompletableFuture.completedFuture(isActionUnauthorised(ctx))
+        final CompletionStage<Result> result;
+        if (isActionUnauthorised(ctx))
+        {
+            result = onAuthFailure(getDeadboltHandler(getHandlerKey()),
+                                   getContent(),
+                                   ctx);
+        }
+        else if (isActionAuthorised(ctx))
+        {
+            result = delegate.call(ctx);
+        }
+        else
+        {
+            result = CompletableFuture.completedFuture(isActionUnauthorised(ctx))
                                                                           .thenCompose(unauthorised -> unauthorised ? unauthorizeAndFail(ctx,
                                                                                                                                          getDeadboltHandler(configuration
                                                                                                                                                                     .handlerKey()),
                                                                                                                                          Optional.ofNullable(configuration
                                                                                                                                                                      .content()))
                                                                                                                     : authorizeAndExecute(ctx));
-        return maybeBlock(eventualResult);
+        }
+        return maybeBlock(result);
     }
 
     /**
