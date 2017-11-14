@@ -22,4 +22,4 @@ server.pid
 *.iml
 *.eml
 atlassian-ide-plugin.xml
-
+bin/
