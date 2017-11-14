@@ -55,9 +55,9 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
                          ctx,
                          getContent(),
                          deadboltHandler)
-                .thenCompose(option -> option.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
-                                                  .orElseGet(() -> applyRestriction(ctx,
-                                                                                    deadboltHandler)));
+                .thenCompose(preAuthResult -> preAuthResult.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
+                                                           .orElseGet(() -> applyRestriction(ctx,
+                                                                                             deadboltHandler)));
     }
 
     public abstract Optional<String> getContent();

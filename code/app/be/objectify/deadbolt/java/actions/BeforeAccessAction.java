@@ -56,7 +56,7 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
                          ctx,
                          getContent(),
                          deadboltHandler)
-                .thenCompose(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>) CompletableFuture.completedFuture(r))
+                .thenCompose(preAuthResult -> preAuthResult.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
                                                            .orElseGet(() -> delegate.call(ctx)));
     }
 

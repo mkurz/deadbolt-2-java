@@ -56,10 +56,10 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
                          ctx,
                          getContent(),
                          deadboltHandler)
-                .thenCompose(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
-                                                         .orElseGet(testSubject(constraintLogic,
-                                                                                ctx,
-                                                                                deadboltHandler)));
+                .thenCompose(preAuthResult -> preAuthResult.map(CompletableFuture::completedFuture)
+                                                           .orElseGet(testSubject(constraintLogic,
+                                                                                  ctx,
+                                                                                  deadboltHandler)));
     }
 
     abstract Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
