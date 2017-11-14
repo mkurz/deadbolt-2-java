@@ -24,6 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import be.objectify.deadbolt.java.ConfigKeys;
+
 /**
  * If a method-level Deadbolt annotation is marked as deferred, it can be run by adding this annotation to the class level.
  * This is useful if you have, for example, a class-level @Security.Authenticated(Secured.class) or similar.
@@ -38,4 +40,19 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface DeferredDeadbolt
 {
+    /**
+     * Indicates the expected response type.  Useful when working with non-HTML responses.  This is free text, which you
+     * can use in {@link be.objectify.deadbolt.java.DeadboltHandler#onAuthFailure} to decide on how to handle the response.
+     *
+     * @return a content indicator
+     */
+    String content() default "";
+
+    /**
+     * Use a specific {@link be.objectify.deadbolt.java.DeadboltHandler} for this restriction in place of the global
+     * one, identified by a key.
+     *
+     * @return the ky of the handler
+     */
+    String handlerKey() default ConfigKeys.DEFAULT_HANDLER_KEY;
 }

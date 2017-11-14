@@ -73,7 +73,7 @@ public class RoleBasedPermissionsAction extends AbstractRestrictiveAction<RoleBa
     {
         return constraintLogic.roleBasedPermissions(ctx,
                                                     deadboltHandler,
-                                                    Optional.ofNullable(configuration.content()),
+                                                    getContent(),
                                                     configuration.value(),
                                                     this::authorizeAndExecute,
                                                     this::unauthorizeAndFail,

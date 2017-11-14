@@ -67,10 +67,10 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     {
         return constraintLogic.pattern(ctx,
                                        deadboltHandler,
-                                       Optional.ofNullable(configuration.content()),
-                                       getValue(),
+                                       getContent(),
+                                       configuration.value(),
                                        configuration.patternType(),
-                                       getMeta(),
+                                       Optional.ofNullable(configuration.meta()),
                                        configuration.invert(),
                                        this::authorizeAndExecute,
                                        this::unauthorizeAndFail,
@@ -89,16 +89,6 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     @Override
     protected boolean deferred() {
         return configuration.deferred();
-    }
-
-    public String getValue()
-    {
-        return configuration.value();
-    }
-
-    public Optional<String> getMeta()
-    {
-        return Optional.ofNullable(configuration.meta());
     }
 
     @Override

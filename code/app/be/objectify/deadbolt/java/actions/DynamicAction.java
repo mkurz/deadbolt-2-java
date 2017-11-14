@@ -70,9 +70,9 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     {
         return constraintLogic.dynamic(ctx,
                                        deadboltHandler,
-                                       Optional.ofNullable(configuration.content()),
-                                       getValue(),
-                                       getMeta(),
+                                       getContent(),
+                                       configuration.value(),
+                                       Optional.ofNullable(configuration.meta()),
                                        this::authorizeAndExecute,
                                        this::unauthorizeAndFail,
                                        ConstraintPoint.CONTROLLER);
@@ -84,16 +84,6 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     @Override
     protected boolean deferred() {
         return configuration.deferred();
-    }
-
-    public Optional<String> getMeta()
-    {
-        return Optional.ofNullable(configuration.meta());
-    }
-
-    public String getValue()
-    {
-        return configuration.value();
     }
 
     @Override

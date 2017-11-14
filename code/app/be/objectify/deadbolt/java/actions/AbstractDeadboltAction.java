@@ -353,4 +353,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         }
         return false;
     }
+
+    public abstract Optional<String> getContent();
+
+    public abstract String getHandlerKey();
+
 }

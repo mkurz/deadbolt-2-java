@@ -70,41 +70,6 @@ public class DynamicActionTest
     }
 
     @Test
-    public void testGetMeta() throws Exception
-    {
-        final Dynamic dynamic = Mockito.mock(Dynamic.class);
-        Mockito.when(dynamic.meta())
-               .thenReturn("foo");
-        final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
-                                                       dynamic,
-                                                       Mockito.mock(Action.class),
-                                                       Mockito.mock(ConstraintLogic.class));
-
-        final Optional<String> maybeMeta = action.getMeta();
-        Assert.assertEquals("foo",
-                            maybeMeta.orElse(null));
-    }
-
-    @Test
-    public void testGetValue() throws Exception
-    {
-        final Dynamic dynamic = Mockito.mock(Dynamic.class);
-        Mockito.when(dynamic.value())
-               .thenReturn("foo");
-        final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
-                                                       dynamic,
-                                                       Mockito.mock(Action.class),
-                                                       Mockito.mock(ConstraintLogic.class));
-
-        Assert.assertEquals("foo",
-                            action.getValue());
-    }
-
-    @Test
     public void testGetHandlerKey() throws Exception
     {
         final Dynamic dynamic = Mockito.mock(Dynamic.class);

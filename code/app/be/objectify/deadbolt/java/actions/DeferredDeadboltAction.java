@@ -24,6 +24,8 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -60,7 +62,19 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
      */
     @Override
     protected boolean deferred() {
-        return false;
+        return false; // you can't defer a DeferredDeadboltAction, makes absolutely no sense
+    }
+
+    @Override
+    public Optional<String> getContent()
+    {
+        return Optional.ofNullable(configuration.content());
+    }
+
+    @Override
+    public String getHandlerKey()
+    {
+        return configuration.handlerKey();
     }
 
 }

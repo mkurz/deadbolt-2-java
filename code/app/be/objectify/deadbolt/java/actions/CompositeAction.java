@@ -54,24 +54,24 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler handler)
     {
-        return compositeCache.apply(getValue())
+        return compositeCache.apply(configuration.value())
                              .map(constraint ->
                                   {
                                       final boolean preferGlobalMeta = configuration.preferGlobalMeta();
                                       return constraint.test(ctx,
                                                              handler,
-                                                             Optional.ofNullable(getMeta()),
+                                                             Optional.ofNullable(configuration.meta()),
                                                              (globalMd, localMd) -> preferGlobalMeta ? globalMd.isPresent() ? globalMd : localMd
                                                                                                      : localMd.isPresent() ? localMd : globalMd)
                                                        .thenCompose(allowed -> allowed ? authorizeAndExecute(ctx,
                                                                                                              handler)
                                                                                        : unauthorizeAndFail(ctx,
                                                                                                             handler,
-                                                                                                            Optional.ofNullable(configuration.content())));
+                                                                                                            getContent()));
                                   })
                              .orElseGet(() -> unauthorizeAndFail(ctx,
                             		                             handler,
-                            		                             Optional.ofNullable(configuration.content())));
+                            		                             getContent()));
     }
 
     /**
@@ -80,16 +80,6 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     @Override
     protected boolean deferred() {
         return configuration.deferred();
-    }
-
-    public String getMeta()
-    {
-        return configuration.meta();
-    }
-
-    public String getValue()
-    {
-        return configuration.value();
     }
 
     private CompletionStage<Result> authorizeAndExecute(final Http.Context context,
