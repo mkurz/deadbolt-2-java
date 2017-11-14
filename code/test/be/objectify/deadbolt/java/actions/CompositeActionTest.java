@@ -79,40 +79,6 @@ public class CompositeActionTest
     }
 
     @Test
-    public void testGetMeta() throws Exception
-    {
-        final Composite composite = Mockito.mock(Composite.class);
-        Mockito.when(composite.meta())
-               .thenReturn("foo");
-        final CompositeAction action = new CompositeAction(Mockito.mock(HandlerCache.class),
-                                                           Mockito.mock(BeforeAuthCheckCache.class),
-                                                           ConfigFactory.empty(),
-                                                           Mockito.mock(CompositeCache.class),
-                                                           Mockito.mock(ConstraintLogic.class));
-        action.configuration = composite;
-
-        Assert.assertEquals("foo",
-                            action.getMeta());
-    }
-
-    @Test
-    public void testGetValue() throws Exception
-    {
-        final Composite composite = Mockito.mock(Composite.class);
-        Mockito.when(composite.value())
-               .thenReturn("foo");
-        final CompositeAction action = new CompositeAction(Mockito.mock(HandlerCache.class),
-                                                           Mockito.mock(BeforeAuthCheckCache.class),
-                                                           ConfigFactory.empty(),
-                                                           Mockito.mock(CompositeCache.class),
-                                                           Mockito.mock(ConstraintLogic.class));
-        action.configuration = composite;
-
-        Assert.assertEquals("foo",
-                            action.getValue());
-    }
-
-    @Test
     public void testGetHandlerKey() throws Exception
     {
         final Composite composite = Mockito.mock(Composite.class);

@@ -58,10 +58,10 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
         }
         else
         {
-            final DeadboltHandler deadboltHandler = getDeadboltHandler(configuration.handlerKey());
+            final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
             result = preAuth(true,
                              ctx,
-                             Optional.ofNullable(configuration.content()),
+                             getContent(),
                              deadboltHandler)
                     .thenCompose(preAuthResult -> preAuthResult.map(r -> (CompletionStage<Result>) CompletableFuture.completedFuture(r))
                                                                .orElseGet(() -> delegate.call(ctx)));
@@ -75,6 +75,18 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
     @Override
     protected boolean deferred() {
         return configuration.deferred();
+    }
+
+    @Override
+    public Optional<String> getContent()
+    {
+        return Optional.ofNullable(configuration.content());
+    }
+
+    @Override
+    public String getHandlerKey()
+    {
+        return configuration.handlerKey();
     }
 
 }

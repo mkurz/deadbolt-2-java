@@ -89,9 +89,5 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
                                                 DeadboltHandler handler,
                                                 Optional<String> content);
 
-    public abstract Optional<String> getContent();
-
-    public abstract String getHandlerKey();
-
     public abstract boolean isForceBeforeAuthCheck();
 }

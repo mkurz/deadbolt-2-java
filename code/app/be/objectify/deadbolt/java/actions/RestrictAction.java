@@ -74,7 +74,7 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     {
         return constraintLogic.restrict(ctx,
                                         deadboltHandler,
-                                        Optional.ofNullable(configuration.content()),
+                                        getContent(),
                                         this::getRoleGroups,
                                         this::authorizeAndExecute,
                                         this::unauthorizeAndFail,

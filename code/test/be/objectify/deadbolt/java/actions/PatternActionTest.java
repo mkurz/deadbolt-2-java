@@ -77,42 +77,6 @@ public class PatternActionTest
     }
 
     @Test
-    public void testGetValue() throws Exception
-    {
-        final Pattern pattern = Mockito.mock(Pattern.class);
-        Mockito.when(pattern.value())
-               .thenReturn("foo");
-        final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
-                                                       pattern,
-                                                       Mockito.mock(Action.class),
-                                                       Mockito.mock(ConstraintLogic.class));
-
-        Assert.assertEquals("foo",
-                            action.getValue());
-    }
-
-    @Test
-    public void testGetMeta() throws Exception
-    {
-        final Pattern pattern = Mockito.mock(Pattern.class);
-        Mockito.when(pattern.meta())
-               .thenReturn("foo");
-        final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
-                                                       Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
-                                                       pattern,
-                                                       Mockito.mock(Action.class),
-                                                       Mockito.mock(ConstraintLogic.class));
-
-        final Optional<String> maybeMeta = action.getMeta();
-        Assert.assertTrue(maybeMeta.isPresent());
-        Assert.assertEquals("foo",
-                            maybeMeta.orElse(null));
-    }
-
-    @Test
     public void testGetHandlerKey() throws Exception
     {
         final Pattern pattern = Mockito.mock(Pattern.class);
