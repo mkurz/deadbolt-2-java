@@ -72,7 +72,7 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
                                                       .orElseGet(() -> applyRestriction(ctx,
                                                                                         deadboltHandler)));
         }
-        return maybeBlock(result);
+        return result;
     }
 
     public abstract Optional<String> getContent();

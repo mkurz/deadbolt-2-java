@@ -70,7 +70,7 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
                                                                                                                                                                      .content()))
                                                                                                                     : authorizeAndExecute(ctx));
         }
-        return maybeBlock(result);
+        return result;
     }
 
     /**

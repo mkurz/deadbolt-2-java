@@ -67,7 +67,7 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
             result = delegate.call(ctx);
         }
 
-        return maybeBlock(result);
+        return result;
     }
 
     /**

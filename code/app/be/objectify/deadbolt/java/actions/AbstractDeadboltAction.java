@@ -127,7 +127,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
             }
             else
             {
-                result = execute(ctx);
+                result = maybeBlock(execute(ctx));
             }
             return result;
         }
@@ -331,7 +331,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                              context);
     }
 
-    CompletionStage<Result> maybeBlock(CompletionStage<Result> eventualResult) throws InterruptedException,
+    private CompletionStage<Result> maybeBlock(CompletionStage<Result> eventualResult) throws InterruptedException,
                                                                                       ExecutionException,
                                                                                       TimeoutException
     {

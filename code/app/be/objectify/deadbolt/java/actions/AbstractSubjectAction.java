@@ -74,7 +74,7 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
                                                                                     ctx,
                                                                                     deadboltHandler)));
         }
-        return maybeBlock(result);
+        return result;
     }
 
     abstract Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
