@@ -127,7 +127,20 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
             }
             else
             {
-                result = maybeBlock(execute(ctx));
+                if (isActionUnauthorised(ctx))
+                {
+                    result = onAuthFailure(getDeadboltHandler(getHandlerKey()),
+                                           getContent(),
+                                           ctx);
+                }
+                else if (isActionAuthorised(ctx))
+                {
+                    result = delegate.call(ctx);
+                }
+                else
+                {
+                    result = maybeBlock(execute(ctx));
+                }
             }
             return result;
         }

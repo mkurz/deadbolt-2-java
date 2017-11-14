@@ -50,29 +50,14 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final CompletionStage<Result> result;
-        if (isActionUnauthorised(ctx))
-        {
-            result = onAuthFailure(getDeadboltHandler(getHandlerKey()),
-                                   getContent(),
-                                   ctx);
-        }
-        else if (isActionAuthorised(ctx))
-        {
-            result = delegate.call(ctx);
-        }
-        else
-        {
-            final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
-            result = preAuth(true,
-                             ctx,
-                             getContent(),
-                             deadboltHandler)
-                    .thenCompose(option -> option.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
-                                                      .orElseGet(() -> applyRestriction(ctx,
-                                                                                        deadboltHandler)));
-        }
-        return result;
+        final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
+        return preAuth(true,
+                         ctx,
+                         getContent(),
+                         deadboltHandler)
+                .thenCompose(option -> option.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
+                                                  .orElseGet(() -> applyRestriction(ctx,
+                                                                                    deadboltHandler)));
     }
 
     public abstract Optional<String> getContent();

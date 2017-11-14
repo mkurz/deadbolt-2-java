@@ -51,23 +51,7 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final CompletionStage<Result> result;
-        if (isActionUnauthorised(ctx))
-        {
-            result = onAuthFailure(getDeadboltHandler(getHandlerKey()),
-                                   getContent(),
-                                   ctx);
-        }
-        else if (isActionAuthorised(ctx))
-        {
-            result = delegate.call(ctx);
-        }
-        else
-        {
-            result = delegate.call(ctx);
-        }
-
-        return result;
+        return delegate.call(ctx);
     }
 
     /**

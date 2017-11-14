@@ -51,30 +51,15 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final CompletionStage<Result> result;
-        if (isActionUnauthorised(ctx))
-        {
-            result = onAuthFailure(getDeadboltHandler(getHandlerKey()),
-                                   getContent(),
-                                   ctx);
-        }
-        else if (isActionAuthorised(ctx))
-        {
-            result = delegate.call(ctx);
-        }
-        else
-        {
-            final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
-            result = preAuth(isForceBeforeAuthCheck(),
-                             ctx,
-                             getContent(),
-                             deadboltHandler)
-                    .thenCompose(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
-                                                             .orElseGet(testSubject(constraintLogic,
-                                                                                    ctx,
-                                                                                    deadboltHandler)));
-        }
-        return result;
+        final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
+        return preAuth(isForceBeforeAuthCheck(),
+                         ctx,
+                         getContent(),
+                         deadboltHandler)
+                .thenCompose(maybePreAuth -> maybePreAuth.map(CompletableFuture::completedFuture)
+                                                         .orElseGet(testSubject(constraintLogic,
+                                                                                ctx,
+                                                                                deadboltHandler)));
     }
 
     abstract Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
