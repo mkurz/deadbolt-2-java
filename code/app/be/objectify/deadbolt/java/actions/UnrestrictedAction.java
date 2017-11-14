@@ -23,7 +23,6 @@ import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -49,13 +48,7 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        return CompletableFuture.completedFuture(isActionUnauthorised(ctx))
-                                                                      .thenCompose(unauthorised -> unauthorised ? unauthorizeAndFail(ctx,
-                                                                                                                                     getDeadboltHandler(configuration
-                                                                                                                                                                .handlerKey()),
-                                                                                                                                     Optional.ofNullable(configuration
-                                                                                                                                                                 .content()))
-                                                                                                                : authorizeAndExecute(ctx));
+        return authorizeAndExecute(ctx);
     }
 
     /**
