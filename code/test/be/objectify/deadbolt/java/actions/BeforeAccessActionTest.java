@@ -44,7 +44,7 @@ public class BeforeAccessActionTest
         ctx.args.put("deadbolt.action-authorised",
                      true);
 
-        action.execute(ctx);
+        action.call(ctx);
 
         Mockito.verify(action.delegate).call(ctx);
     }
