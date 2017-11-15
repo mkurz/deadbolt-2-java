@@ -82,7 +82,6 @@ public class SubjectNotPresentActionTest {
                        handler,
                        Optional.empty());
 
-        Assert.assertTrue((Boolean)ctx.args.get("deadbolt.action-unauthorised"));
         Mockito.verify(handler).onAuthFailure(ctx,
                                               Optional.empty());
     }
