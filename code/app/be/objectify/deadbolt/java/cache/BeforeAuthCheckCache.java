@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.cache;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import be.objectify.deadbolt.java.utils.TriFunction;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -25,11 +26,6 @@ import java.util.concurrent.CompletionStage;
 /**
  * @author Matthias Kurz (m.kurz@irregular.at)
  */
-public interface BeforeAuthCheckCache extends Function3<DeadboltHandler, Http.Context, Optional<String>, CompletionStage<Optional<Result>>>
+public interface BeforeAuthCheckCache extends TriFunction<DeadboltHandler, Http.Context, Optional<String>, CompletionStage<Optional<Result>>>
 {
-}
-
-// Can be replaced with scala.Function3 when dropping support for Scala 2.11 (probably in Play 2.7)
-interface Function3<A,B,C,R> {
-    R apply(A a, B b, C c);
 }
