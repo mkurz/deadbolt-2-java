@@ -15,22 +15,20 @@
  */
 package be.objectify.deadbolt.java.filters;
 
-import akka.stream.Materializer;
 import play.core.j.JavaContextComponents;
-import play.mvc.Filter;
+import play.mvc.EssentialFilter;
 import play.mvc.Http;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public abstract class AbstractDeadboltFilter extends Filter
+public abstract class AbstractDeadboltFilter extends EssentialFilter
 {
     private final JavaContextComponents javaContextComponents;
 
-    public AbstractDeadboltFilter(final Materializer mat,
-                                  final JavaContextComponents javaContextComponents)
+    public AbstractDeadboltFilter(final JavaContextComponents javaContextComponents)
     {
-        super(mat);
+        super();
         this.javaContextComponents = javaContextComponents;
     }
 

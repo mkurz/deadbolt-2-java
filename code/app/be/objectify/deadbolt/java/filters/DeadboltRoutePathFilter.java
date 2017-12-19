@@ -19,15 +19,15 @@ import akka.stream.Materializer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import play.core.j.JavaContextComponents;
-import play.mvc.Http;
-import play.mvc.Result;
+import play.libs.streams.Accumulator;
+import play.mvc.EssentialAction;
+import play.mvc.StatusHeader;
 import play.routing.Router;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Applies constraints before the action is invoked, allowing constraints to be defined outside of controllers.
@@ -37,6 +37,7 @@ import java.util.function.Function;
  */
 public class DeadboltRoutePathFilter extends AbstractDeadboltFilter
 {
+    private final Materializer mat;
     private final DeadboltHandler handler;
     private final AuthorizedRoutes authorizedRoutes;
 
@@ -46,8 +47,8 @@ public class DeadboltRoutePathFilter extends AbstractDeadboltFilter
                                    final HandlerCache handlerCache,
                                    final Provider<AuthorizedRoutes> authorizedRoutes)
     {
-        super(mat,
-              javaContextComponents);
+        super(javaContextComponents);
+        this.mat = mat;
         this.handler = handlerCache.get();
         this.authorizedRoutes = authorizedRoutes.get();
     }
@@ -60,15 +61,24 @@ public class DeadboltRoutePathFilter extends AbstractDeadboltFilter
      * @return a future for the result
      */
     @Override
-    public CompletionStage<Result> apply(final Function<Http.RequestHeader, CompletionStage<Result>> next,
-                                         final Http.RequestHeader requestHeader)
+    public EssentialAction apply(final EssentialAction next)
     {
-        final Optional<AuthorizedRoute> maybeAuthRoute = authorizedRoutes.apply(requestHeader.method(),
-                                                                                requestHeader.attrs().get(Router.Attrs.HANDLER_DEF).path());
-        return maybeAuthRoute.map(authRoute -> authRoute.constraint().apply(context(requestHeader),
-                                                                            requestHeader,
+        return EssentialAction.of(request -> {
+            final int fakeHttpStatusHeader = 9999999;
+            final Optional<AuthorizedRoute> maybeAuthRoute = authorizedRoutes.apply(request.method(),
+                                                                                request.attrs().get(Router.Attrs.HANDLER_DEF).path());
+            return maybeAuthRoute.map(authRoute -> Accumulator.flatten(authRoute.constraint().apply(context(request),
+                                                                            request,
                                                                             authRoute.handler().orElse(handler),
-                                                                            next)
-        ).orElseGet(() -> next.apply(requestHeader));
+                                                                            header -> CompletableFuture.completedFuture(new StatusHeader(fakeHttpStatusHeader))).thenApply(myResult -> {
+                                                                                if(myResult.status() == fakeHttpStatusHeader) {
+                                                                                    // success
+                                                                                    return next.apply(request);
+                                                                                } else {
+                                                                                    return Accumulator.done(myResult);
+                                                                                }
+                                                                            }), this.mat)
+            ).orElseGet(() -> next.apply(request));
+        });
     }
 }

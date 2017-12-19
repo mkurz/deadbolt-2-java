@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import akka.stream.Materializer;
 import be.objectify.deadbolt.java.DeadboltHandler;
@@ -30,8 +29,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import play.api.routing.HandlerDef;
 import play.core.j.JavaContextComponents;
+import play.libs.streams.Accumulator;
+import play.mvc.EssentialAction;
 import play.mvc.Http;
-import play.mvc.Result;
 import play.mvc.Results;
 import play.routing.Router;
 import play.test.Helpers;
@@ -70,13 +70,10 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                                }
                                                                            });
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request());
-        ((CompletableFuture) eventualResult).get();
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request());
         Assert.assertTrue(flag[0]);
     }
 
@@ -112,13 +109,10 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                                }
                                                                            });
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request());
-        ((CompletableFuture) eventualResult).get();
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request());
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -158,13 +152,10 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                                }
                                                                            });
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request());
-        ((CompletableFuture) eventualResult).get();
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request());
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -203,13 +194,10 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                                }
                                                                            });
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request());
-        ((CompletableFuture) eventualResult).get();
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request());
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -248,13 +236,10 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                                }
                                                                            });
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request());
-        ((CompletableFuture) eventualResult).get();
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request());
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -297,14 +282,10 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                                }
                                                                            });
         final boolean[] flag = {false};
-        final CompletionStage<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request());
-        ((CompletableFuture) eventualResult).get();
-        Assert.assertFalse(flag[0]);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request());
         Mockito.verify(specificHandler,
                        Mockito.times(1))
                .onAuthFailure(Mockito.any(Http.Context.class),

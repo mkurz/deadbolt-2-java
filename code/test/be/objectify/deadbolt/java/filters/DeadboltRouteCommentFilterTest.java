@@ -15,12 +15,11 @@
  */
 package be.objectify.deadbolt.java.filters;
 
-import static org.awaitility.Awaitility.await;
-
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
 import akka.stream.Materializer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
@@ -29,14 +28,16 @@ import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.testsupport.TestHandlerCache;
 import be.objectify.deadbolt.java.testsupport.TestPermission;
 import be.objectify.deadbolt.java.testsupport.TestSubject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import play.api.routing.HandlerDef;
 import play.core.j.JavaContextComponents;
-import play.mvc.Filter;
+import play.libs.streams.Accumulator;
+import play.mvc.EssentialAction;
+import play.mvc.EssentialFilter;
 import play.mvc.Http;
-import play.mvc.Result;
 import play.mvc.Results;
 import play.routing.Router;
 import play.test.Helpers;
@@ -62,19 +63,17 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectPresent"))
-                                                               .toCompletableFuture();
-        await().until(eventualResult::isDone);
+
+        filter.apply(EssentialAction.of(header -> {
+                    flag[0] = true;
+                    return Accumulator.done(Results.ok());    
+                })).apply(request("deadbolt:subjectNotPresent"));
+
         Assert.assertTrue(flag[0]);
     }
 
@@ -97,19 +96,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectPresent"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectPresent"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -136,19 +131,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectPresent:content[bar]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectPresent:content[bar]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -173,19 +164,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectPresent:handler[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectPresent:handler[foo]"));
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -210,19 +197,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectPresent:handler[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectPresent:handler[foo]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -251,19 +234,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectPresent:content[bar]:handler[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectPresent:content[bar]:handler[foo]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -292,19 +271,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectNotPresent"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectNotPresent"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -332,19 +307,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectNotPresent:content[bar]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectNotPresent:content[bar]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -369,19 +340,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectNotPresent"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectNotPresent"));
         Assert.assertTrue(flag[0]);
     }
 
@@ -405,19 +372,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectNotPresent:handler[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectNotPresent:handler[foo]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -446,19 +409,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectNotPresent:content[bar]:handler[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectNotPresent:content[bar]:handler[foo]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -487,19 +446,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:subjectNotPresent:handler[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:subjectNotPresent:handler[foo]"));
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -526,19 +481,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                    Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Boolean.TRUE));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:dynamic:name[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:dynamic:name[foo]"));
         Assert.assertTrue(flag[0]);
     }
 
@@ -567,19 +518,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:dynamic:name[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:dynamic:name[foo]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -612,19 +559,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:dynamic:name[foo]:content[bar]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:dynamic:name[foo]:content[bar]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -655,19 +598,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                    Mockito.any(Http.Context.class)))
                .thenReturn(CompletableFuture.completedFuture(Boolean.TRUE));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:dynamic:name[foo]:handler[gurdy]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:dynamic:name[foo]:handler[gurdy]"));
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -698,19 +637,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:dynamic:name[foo]:handler[gurdy]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:dynamic:name[foo]:handler[gurdy]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -745,19 +680,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:dynamic:name[foo]:content[bar]:handler[gurdy]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:dynamic:name[foo]:content[bar]:handler[gurdy]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -777,19 +708,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:sbujectPresent"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:sbujectPresent"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -817,18 +744,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh -> {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:rbp:name[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:rbp:name[foo]"));
         Assert.assertTrue(flag[0]);
     }
 
@@ -855,19 +779,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:rbp:name[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:rbp:name[foo]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -898,19 +818,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:rbp:name[foo]:content[bar]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:rbp:name[foo]:content[bar]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -939,19 +855,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:rbp:name[foo]:handler[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:rbp:name[foo]:handler[foo]"));
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -979,19 +891,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:rbp:name[foo]:handler[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:rbp:name[foo]:handler[foo]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -1023,19 +931,15 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final EssentialFilter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              Mockito.mock(JavaContextComponents.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
-        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
-                                                                    {
-                                                                        flag[0] = true;
-                                                                        return CompletableFuture.completedFuture(Results.ok());
-                                                                    },
-                                                                    request("deadbolt:rbp:name[foo]:content[bar]:handler[foo]"))
-                                                             .toCompletableFuture();
-        await().until(eventualResult::isDone);
+        filter.apply(EssentialAction.of(header -> {
+            flag[0] = true;
+            return Accumulator.done(Results.ok());    
+        })).apply(request("deadbolt:rbp:name[foo]:content[bar]:handler[foo]"));
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))

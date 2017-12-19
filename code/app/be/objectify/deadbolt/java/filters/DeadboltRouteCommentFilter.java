@@ -16,8 +16,7 @@
 package be.objectify.deadbolt.java.filters;
 
 import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -31,8 +30,10 @@ import org.slf4j.LoggerFactory;
 import play.api.routing.HandlerDef;
 import play.core.j.JavaContextComponents;
 import play.libs.F;
+import play.libs.streams.Accumulator;
+import play.mvc.EssentialAction;
 import play.mvc.Http;
-import play.mvc.Result;
+import play.mvc.StatusHeader;
 import play.routing.Router;
 
 /**
@@ -107,6 +108,7 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
     final Pattern restrictComment = Pattern.compile("deadbolt\\:(restrict)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
     final Pattern roleBasedPermissionsComment = Pattern.compile("deadbolt\\:(rbp)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
 
+    private final Materializer mat;
     private final HandlerCache handlerCache;
     private final DeadboltHandler handler;
     private final FilterConstraints filterConstraints;
@@ -119,8 +121,8 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
                                       final HandlerCache handlerCache,
                                       final FilterConstraints filterConstraints)
     {
-        super(mat,
-              javaContextComponents);
+        super(javaContextComponents);
+        this.mat = mat;
         this.handlerCache = handlerCache;
         this.handler = handlerCache.get();
         this.filterConstraints = filterConstraints;
@@ -141,32 +143,41 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
      * @return a future for the result
      */
     @Override
-    public CompletionStage<Result> apply(final Function<Http.RequestHeader, CompletionStage<Result>> next,
-                                         final Http.RequestHeader requestHeader)
+    public EssentialAction apply(final EssentialAction next)
     {
-        final HandlerDef handlerDef = requestHeader.attrs().get(Router.Attrs.HANDLER_DEF);
-        final CompletionStage<Result> result;
-        final String comment = handlerDef.comments();
-        if (comment != null && comment.startsWith("deadbolt:"))
-        {
-            // this is horrible
-            final F.Tuple<FilterFunction, DeadboltHandler> tuple = subjectPresent(comment).orElseGet(() -> subjectNotPresent(comment)
-                    .orElseGet(() -> dynamic(comment)
-                            .orElseGet(() -> composite(comment)
-                                    .orElseGet(() -> restrict(comment)
-                                            .orElseGet(() -> pattern(comment)
-                                                    .orElseGet(() -> roleBasedPermissionsComment(comment)
-                                                            .orElse(unknownDeadboltComment)))))));
-            result = tuple._1.apply(context(requestHeader),
-                                    requestHeader,
-                                    tuple._2,
-                                    next);
-        }
-        else
-        {
-            result = next.apply(requestHeader);
-        }
-        return result;
+        return EssentialAction.of(request -> {
+            final HandlerDef handlerDef = request.attrs().get(Router.Attrs.HANDLER_DEF);
+            final String comment = handlerDef.comments();
+            if (comment != null && comment.startsWith("deadbolt:"))
+            {
+                // this is horrible
+                final F.Tuple<FilterFunction, DeadboltHandler> tuple = subjectPresent(comment).orElseGet(() -> subjectNotPresent(comment)
+                        .orElseGet(() -> dynamic(comment)
+                                .orElseGet(() -> composite(comment)
+                                        .orElseGet(() -> restrict(comment)
+                                                .orElseGet(() -> pattern(comment)
+                                                        .orElseGet(() -> roleBasedPermissionsComment(comment)
+                                                                .orElse(unknownDeadboltComment)))))));
+                final int fakeHttpStatusHeader = 9999999;
+                return Accumulator.flatten(
+                tuple._1.apply(context(request),
+                        request,
+                        tuple._2,
+                        header -> CompletableFuture.completedFuture(new StatusHeader(fakeHttpStatusHeader)))
+                .thenApply(myResult -> {
+                    if(myResult.status() == fakeHttpStatusHeader) {
+                        // success
+                        return next.apply(request);
+                    } else {
+                        return Accumulator.done(myResult);
+                    }
+                }), this.mat);
+            }
+            else
+            {
+                return next.apply(request);
+            }
+        });
     }
 
     private Optional<F.Tuple<FilterFunction, DeadboltHandler>> subjectPresent(final String comment)
