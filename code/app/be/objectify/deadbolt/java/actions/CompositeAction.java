@@ -70,8 +70,8 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                                                                                                             getContent()));
                                   })
                              .orElseGet(() -> unauthorizeAndFail(ctx,
-                            		                             handler,
-                            		                             getContent()));
+                                                                 handler,
+                                                                 getContent()));
     }
 
     /**
