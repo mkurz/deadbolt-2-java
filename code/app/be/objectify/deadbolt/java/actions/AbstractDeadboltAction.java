@@ -132,7 +132,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
             }
             else
             {
-                if (isActionAuthorised(ctx))
+                if (isActionAuthorised(ctx) && !alwaysExecute())
                 {
                     result = delegate.call(ctx);
                 }
@@ -369,5 +369,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     public abstract Optional<String> getContent();
 
     public abstract String getHandlerKey();
+
+    public boolean alwaysExecute() {
+        return false;
+    }
 
 }
