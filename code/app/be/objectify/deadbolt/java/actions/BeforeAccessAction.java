@@ -80,4 +80,9 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
         return configuration.handlerKey();
     }
 
+    @Override
+    public boolean alwaysExecute() {
+        return configuration.alwaysExecute();
+    }
+
 }
