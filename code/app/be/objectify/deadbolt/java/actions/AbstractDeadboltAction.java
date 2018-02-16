@@ -52,6 +52,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     private static final String ACTION_DEFERRED = "deadbolt.action-deferred";
     private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
 
+    private static final String CONSTRAINT_COUNT = "deadbolt.constraints-count-in-action-chain";
+
     final HandlerCache handlerCache;
 
     final BeforeAuthCheckCache beforeAuthCheckCache;
@@ -108,6 +110,11 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         CompletionStage<Result> result;
 
+        // The first deadbolt-annotations that runs saves how many constraints in the action chain are, so we know that for later
+        // Be aware: Not every deadbolt-annotation is a constraint, but every constraint is a deadbolt-annotation ;)
+        // @BeforeAccess and @DeferredDeadboltAction do NOT count as constraint, because they just pass trough (=they do NOT call markActionAsAuthorised() in success case)
+        ctx.args.computeIfAbsent(CONSTRAINT_COUNT, key -> constraintsCountInActionChain(this, 0));
+
         try
         {
             if (isDeferred(ctx))
@@ -133,6 +140,13 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                 {
                     result = maybeBlock(execute(ctx));
                 }
+            }
+            if(constraintMode == ConstraintMode.OR && !deadboltActionLeftInActionChain(this) && !isActionAuthorised(ctx) && ((Integer)ctx.args.get(CONSTRAINT_COUNT)) > 0) {
+                // We are in OR mode and "this" is the last deadbolt-action that runs and no constraint marked the targeted action-method as authorised yet -> we finally have to fail now.
+                // If there was no "real" constraint, we don't come here, e.g. just calling @BeforeAccess or/and @DeferredDeadboltAction doesn't count as constraint
+                result = onAuthFailure(getDeadboltHandler(getHandlerKey()),
+                        getContent(),
+                        ctx);
             }
             return result;
         }
@@ -301,7 +315,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                                          final DeadboltHandler handler,
                                                          final Optional<String> content)
     {
-        if(constraintMode == ConstraintMode.OR && constraintLeftInActionChain(this))
+        if(constraintMode == ConstraintMode.OR && deadboltActionLeftInActionChain(this))
         {
             // In OR mode we don't fail immediately but also check remaining constraints (it there is any left). Maybe one of these next ones authorizes...
             return delegate.call(context);
@@ -324,15 +338,32 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     /**
      * Recursive method to determine if there is another deadbolt action further down the action chain
      */
-    private static boolean constraintLeftInActionChain(final Action<?> action) {
+    private static boolean deadboltActionLeftInActionChain(final Action<?> action) {
         if(action != null) {
             if(action.delegate instanceof AbstractDeadboltAction) {
                 return true; // yes, there is at least one deadbolt action remaining
             }
             // action.delegate wasn't a deadbolt action, let's check the next one in the chain
-            return constraintLeftInActionChain(action.delegate);
+            return deadboltActionLeftInActionChain(action.delegate);
         }
         return false;
+    }
+
+    /**
+     * Be aware: Not every deadbolt-annotation is a constraint, but every constraint is a deadbolt-annotation ;)
+     * @BeforeAccess and @DeferredDeadboltAction do NOT count as constraint, because they just pass trough (=they do NOT call markActionAsAuthorised() in success case)
+     */
+    private static int constraintsCountInActionChain(final Action<?> action, final int count) {
+        if(action != null) {
+            if(action instanceof AbstractDeadboltAction &&
+                    !(action instanceof BeforeAccessAction) &&
+                    !(action instanceof DeferredDeadboltAction)) {
+                return constraintsCountInActionChain(action.delegate, count + 1);
+            }
+            // that wasn't a deadbolt constraint, let's go and check the next action in the chain
+            return constraintsCountInActionChain(action.delegate, count);
+        }
+        return count;
     }
 
     public abstract Optional<String> getContent();
