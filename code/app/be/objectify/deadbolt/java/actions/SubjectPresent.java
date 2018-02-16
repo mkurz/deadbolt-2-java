@@ -20,10 +20,11 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import play.mvc.With;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.*;
 import java.lang.annotation.Inherited;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import static java.lang.annotation.RetentionPolicy.*;
 import java.lang.annotation.Target;
 
 /**
@@ -33,8 +34,9 @@ import java.lang.annotation.Target;
  * @author Steve Chaloner (steve@objectify.be)
  */
 @With(SubjectPresentAction.class)
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Repeatable(SubjectPresent.List.class)
+@Retention(RUNTIME)
+@Target({METHOD, TYPE})
 @Documented
 @Inherited
 public @interface SubjectPresent
@@ -69,4 +71,15 @@ public @interface SubjectPresent
      * @return true iff {@link DeadboltHandler#beforeAuthCheck} should be invoked prior to applying this constraint.
      */
     boolean forceBeforeAuthCheck() default false;
+
+    /**
+     * Defines several {@code SubjectPresent} annotations on the same element.
+     */
+    @Retention(RUNTIME)
+    @Target({METHOD, TYPE})
+    @Documented
+    @Inherited
+    public @interface List {
+        SubjectPresent[] value();
+    }
 }

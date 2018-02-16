@@ -19,10 +19,11 @@ import be.objectify.deadbolt.java.ConfigKeys;
 import play.mvc.With;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.*;
 import java.lang.annotation.Inherited;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import static java.lang.annotation.RetentionPolicy.*;
 import java.lang.annotation.Target;
 
 /**
@@ -30,8 +31,9 @@ import java.lang.annotation.Target;
  * @since 2.5.1
  */
 @With(RoleBasedPermissionsAction.class)
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Repeatable(RoleBasedPermissions.List.class)
+@Retention(RUNTIME)
+@Target({METHOD, TYPE})
 @Documented
 @Inherited
 public @interface RoleBasedPermissions
@@ -66,4 +68,15 @@ public @interface RoleBasedPermissions
      * @return true iff the associated action should be deferred until class-level annotations are applied.
      */
     boolean deferred() default false;
+
+    /**
+     * Defines several {@code RoleBasedPermissions} annotations on the same element.
+     */
+    @Retention(RUNTIME)
+    @Target({METHOD, TYPE})
+    @Documented
+    @Inherited
+    public @interface List {
+        RoleBasedPermissions[] value();
+    }
 }
