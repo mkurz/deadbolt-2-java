@@ -49,8 +49,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     private static final String ACTION_AUTHORISED = "deadbolt.action-authorised";
 
-    private static final String ACTION_UNAUTHORISED = "deadbolt.action-unauthorised";
-
     private static final String ACTION_DEFERRED = "deadbolt.action-deferred";
     private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
 
@@ -127,7 +125,14 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
             }
             else
             {
-                result = execute(ctx);
+                if (isActionAuthorised(ctx))
+                {
+                    result = delegate.call(ctx);
+                }
+                else
+                {
+                    result = maybeBlock(execute(ctx));
+                }
             }
             return result;
         }
@@ -195,17 +200,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     }
 
     /**
-     * Marks the current action as unauthorised.  This allows method-level annotations to override controller-level annotations.
-     *
-     * @param ctx the request context
-     */
-    private void markActionAsUnauthorised(final Http.Context ctx)
-    {
-        ctx.args.put(ACTION_UNAUTHORISED,
-                     true);
-    }
-
-    /**
      * Checks if an action is authorised.  This allows controller-level annotations to cede control to method-level annotations.
      *
      * @param ctx the request context
@@ -214,18 +208,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     protected boolean isActionAuthorised(final Http.Context ctx)
     {
         final Object o = ctx.args.get(ACTION_AUTHORISED);
-        return o != null && (Boolean) o;
-    }
-
-    /**
-     * Checks if an action is unauthorised.  This allows controller-level annotations to cede control to method-level annotations.
-     *
-     * @param ctx the request context
-     * @return true if a more-specific annotation has blocked access, otherwise false
-     */
-    protected boolean isActionUnauthorised(final Http.Context ctx)
-    {
-        final Object o = ctx.args.get(ACTION_UNAUTHORISED);
         return o != null && (Boolean) o;
     }
 
@@ -325,13 +307,12 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
             return delegate.call(context);
         }
 
-        markActionAsUnauthorised(context);
         return onAuthFailure(handler,
                              content,
                              context);
     }
 
-    CompletionStage<Result> maybeBlock(CompletionStage<Result> eventualResult) throws InterruptedException,
+    private CompletionStage<Result> maybeBlock(CompletionStage<Result> eventualResult) throws InterruptedException,
                                                                                       ExecutionException,
                                                                                       TimeoutException
     {

@@ -18,15 +18,12 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -37,7 +34,6 @@ import java.util.concurrent.CompletionStage;
  */
 public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadbolt>
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeferredDeadboltAction.class);
 
     @Inject
     public DeferredDeadboltAction(final HandlerCache handlerCache,
@@ -52,9 +48,7 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     @Override
     public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
     {
-        final CompletionStage<Result> eventualResult = delegate.call(ctx);
-
-        return maybeBlock(eventualResult);
+        return delegate.call(ctx);
     }
 
     /**
