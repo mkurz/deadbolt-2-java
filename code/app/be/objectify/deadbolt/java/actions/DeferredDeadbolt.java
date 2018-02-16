@@ -18,10 +18,11 @@ package be.objectify.deadbolt.java.actions;
 import play.mvc.With;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.*;
 import java.lang.annotation.Inherited;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import static java.lang.annotation.RetentionPolicy.*;
 import java.lang.annotation.Target;
 
 import be.objectify.deadbolt.java.ConfigKeys;
@@ -34,8 +35,9 @@ import be.objectify.deadbolt.java.ConfigKeys;
  * @author Steve Chaloner (steve@objectify.be)
  */
 @With(DeferredDeadboltAction.class)
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Repeatable(DeferredDeadbolt.List.class)
+@Retention(RUNTIME)
+@Target(TYPE)
 @Documented
 @Inherited
 public @interface DeferredDeadbolt
@@ -55,4 +57,15 @@ public @interface DeferredDeadbolt
      * @return the ky of the handler
      */
     String handlerKey() default ConfigKeys.DEFAULT_HANDLER_KEY;
+
+    /**
+     * Defines several {@code DeferredDeadbolt} annotations on the same element.
+     */
+    @Retention(RUNTIME)
+    @Target(TYPE)
+    @Documented
+    @Inherited
+    public @interface List {
+        DeferredDeadbolt[] value();
+    }
 }
