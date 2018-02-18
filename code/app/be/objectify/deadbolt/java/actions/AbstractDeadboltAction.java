@@ -141,14 +141,16 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                     result = maybeBlock(execute(ctx));
                 }
             }
-            if(constraintMode == ConstraintMode.OR && !deadboltActionLeftInActionChain(this) && !isActionAuthorised(ctx) && ((Integer)ctx.args.get(CONSTRAINT_COUNT)) > 0) {
-                // We are in OR mode and "this" is the last deadbolt-action that runs and no constraint marked the targeted action-method as authorised yet -> we finally have to fail now.
-                // If there was no "real" constraint, we don't come here, e.g. just calling @BeforeAccess or/and @DeferredDeadboltAction doesn't count as constraint
-                result = onAuthFailure(getDeadboltHandler(getHandlerKey()),
-                        getContent(),
-                        ctx);
-            }
-            return result;
+            return result.thenCompose(r -> {
+                if(constraintMode == ConstraintMode.OR && !deadboltActionLeftInActionChain(this) && !isActionAuthorised(ctx) && ((Integer)ctx.args.get(CONSTRAINT_COUNT)) > 0) {
+                    // We are in OR mode and "this" was the last deadbolt-action that ran and no constraint marked the targeted action-method as authorised yet -> we finally have to fail now.
+                    // If there was no "real" constraint, we don't come here, e.g. just calling @BeforeAccess or/and @DeferredDeadboltAction doesn't count as constraint
+                    return onAuthFailure(getDeadboltHandler(getHandlerKey()),
+                            getContent(),
+                            ctx);
+                }
+                return CompletableFuture.completedFuture(r);
+            });
         }
         catch (Exception e)
         {
