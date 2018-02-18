@@ -15,22 +15,39 @@
  */
 package be.objectify.deadbolt.java.test.controllers;
 
+import java.util.Map;
+
 import be.objectify.deadbolt.java.test.dao.TestUserDao;
 import be.objectify.deadbolt.java.test.dao.UserDao;
 import play.Application;
 import play.Mode;
 import play.inject.Bindings;
 import play.inject.guice.GuiceApplicationBuilder;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
 public abstract class AbstractApplicationTest
 {
-    public Application app()
+    public Application app(final Map<String, Object> conf)
     {
         return new GuiceApplicationBuilder().in(Mode.TEST)
                                             .overrides(Bindings.bind(UserDao.class).to(TestUserDao.class))
+                                            .configure(conf)
                                             .build();
+    }
+
+    public Application app(final String key, final Object value)
+    {
+        if(key != null && value != null) {
+            return app(ImmutableMap.of(key, value));
+        }
+        return app();
+    }
+
+    public Application app()
+    {
+        return app(ImmutableMap.of());
     }
 }
