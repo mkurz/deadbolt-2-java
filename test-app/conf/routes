@@ -80,3 +80,10 @@ GET        /composite/c/open                                                    
 GET        /filtered/subject/present/subjectMustBePresent                                be.objectify.deadbolt.java.test.controllers.NoConstraintsApp.index
 #deadbolt:subjectNotPresent
 GET        /filtered/subject/notPresent/subjectMustBePresent                             be.objectify.deadbolt.java.test.controllers.NoConstraintsApp.index
+
+# Modes
+GET        /mode/checkMode                                                               be.objectify.deadbolt.java.test.controllers.modes.ModesController.modeDependend()
+GET        /mode/checkModeUnrestricted                                                   be.objectify.deadbolt.java.test.controllers.modes.ModesController.modeDependendUnrestricted()
+GET        /mode/NoConstraintsDeferredDeadbolt                                           be.objectify.deadbolt.java.test.controllers.modes.NoConstraintsController.deferredDeadbolt()
+GET        /mode/NoConstraintsBeforeAccess                                               be.objectify.deadbolt.java.test.controllers.modes.NoConstraintsController.beforeAccess()
+GET        /mode/NoConstraintsBeforeAccessAndPattern                                     be.objectify.deadbolt.java.test.controllers.modes.NoConstraintsController.beforeAccessAndPattern()
