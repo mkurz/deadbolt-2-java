@@ -50,4 +50,11 @@ public abstract class AbstractApplicationTest
     {
         return app(ImmutableMap.of());
     }
+
+    public Application appWithoutUser(final Map<String, Object> conf)
+    {
+        return new GuiceApplicationBuilder().in(Mode.TEST)
+                                            .configure(conf)
+                                            .build();
+    }
 }
