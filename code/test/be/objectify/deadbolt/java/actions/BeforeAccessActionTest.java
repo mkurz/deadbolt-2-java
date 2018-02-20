@@ -89,6 +89,8 @@ public class BeforeAccessActionTest
         Mockito.when(action.configuration.alwaysExecute())
                .thenReturn(false);
         action.delegate = Mockito.mock(Action.class);
+        Mockito.when(action.delegate.call(ctx))
+               .thenReturn(CompletableFuture.completedFuture(null));
 
         action.call(ctx);
 
