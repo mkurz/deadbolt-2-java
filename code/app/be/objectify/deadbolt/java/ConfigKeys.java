@@ -47,7 +47,7 @@ public class ConfigKeys
 
     public static final String CONSTRAINT_MODE = "deadbolt.java.constraint-mode";
     public static final F.Tuple<String, String> CONSTRAINT_MODE_DEFAULT = new F.Tuple<>(CONSTRAINT_MODE,
-                                                                                   ConstraintMode.PROCESS_FIRST_CONSTRAINT_ONLY.toString());
+                                                                                   ConstraintAnnotationMode.PROCESS_FIRST_CONSTRAINT_ONLY.toString());
 
     public static final String PATTERN_INVERT = "deadbolt.pattern.invert";
 
