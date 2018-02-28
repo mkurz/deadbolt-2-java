@@ -16,7 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConfigKeys;
-import be.objectify.deadbolt.java.ConstraintMode;
+import be.objectify.deadbolt.java.ConstraintAnnotationMode;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
@@ -62,7 +62,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     public final boolean blocking;
     public final long blockingTimeout;
-    public final ConstraintMode constraintMode;
+    public final ConstraintAnnotationMode constraintAnnotationMode;
 
     protected AbstractDeadboltAction(final HandlerCache handlerCache,
                                      final BeforeAuthCheckCache beforeAuthCheckCache,
@@ -82,7 +82,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
         this.blocking = configWithFallback.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1);
         this.blockingTimeout = configWithFallback.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1);
-        this.constraintMode = ConstraintMode.valueOf(configWithFallback.getString(ConfigKeys.CONSTRAINT_MODE_DEFAULT._1));
+        this.constraintAnnotationMode = ConstraintAnnotationMode.valueOf(configWithFallback.getString(ConfigKeys.CONSTRAINT_MODE_DEFAULT._1));
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                 }
             }
             return result.thenCompose(r -> {
-                if(constraintMode == ConstraintMode.OR && !deadboltActionLeftInActionChain(this) && !isActionAuthorised(ctx) && ((Integer)ctx.args.get(CONSTRAINT_COUNT)) > 0) {
+                if(constraintAnnotationMode == ConstraintAnnotationMode.OR && !deadboltActionLeftInActionChain(this) && !isActionAuthorised(ctx) && ((Integer)ctx.args.get(CONSTRAINT_COUNT)) > 0) {
                     // We are in OR mode and "this" was the last deadbolt-action that ran and no constraint marked the targeted action-method as authorised yet -> we finally have to fail now.
                     // If there was no "real" constraint, we don't come here, e.g. just calling @BeforeAccess or/and @DeferredDeadboltAction doesn't count as constraint
                     return onAuthFailure(getDeadboltHandler(getHandlerKey()),
@@ -296,7 +296,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      */
     protected CompletionStage<Result> authorizeAndExecute(final Http.Context context)
     {
-        if(constraintMode != ConstraintMode.AND)
+        if(constraintAnnotationMode != ConstraintAnnotationMode.AND)
         {
             // In AND mode we don't mark an action as authorised because we want ALL (remaining) constraints to be evaluated as well!
             markActionAsAuthorised(context);
@@ -317,7 +317,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                                          final DeadboltHandler handler,
                                                          final Optional<String> content)
     {
-        if(constraintMode == ConstraintMode.OR && deadboltActionLeftInActionChain(this))
+        if(constraintAnnotationMode == ConstraintAnnotationMode.OR && deadboltActionLeftInActionChain(this))
         {
             // In OR mode we don't fail immediately but also check remaining constraints (it there is any left). Maybe one of these next ones authorizes...
             return delegate.call(context);
