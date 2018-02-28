@@ -190,6 +190,21 @@ public class ConstraintLogic
                                           final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                           final ConstraintPoint constraintPoint)
     {
+        return pattern(ctx, deadboltHandler, content, new String[] {value}, null, patternType, meta, invert, pass, fail, constraintPoint);
+    }
+
+    public <T> CompletionStage<T> pattern(final Http.Context ctx,
+                                          final DeadboltHandler deadboltHandler,
+                                          final Optional<String> content,
+                                          final String[] values,
+                                          final ConstraintMode mode,
+                                          final PatternType patternType,
+                                          final Optional<String> meta,
+                                          final boolean invert,
+                                          final Function<Http.Context, CompletionStage<T>> pass,
+                                          final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
+                                          final ConstraintPoint constraintPoint)
+    {
         final CompletionStage<T> result;
 
         switch (patternType)
@@ -198,7 +213,9 @@ public class ConstraintLogic
                 result = equality(ctx,
                                   deadboltHandler,
                                   content,
-                                  value,
+                                  values,
+                                  0,
+                                  mode,
                                   invert,
                                   pass,
                                   fail,
@@ -208,7 +225,9 @@ public class ConstraintLogic
                 result = regex(ctx,
                                deadboltHandler,
                                content,
-                               value,
+                               values,
+                               0,
+                               mode,
                                invert,
                                pass,
                                fail,
@@ -218,7 +237,9 @@ public class ConstraintLogic
                 result = custom(ctx,
                                 deadboltHandler,
                                 content,
-                                value,
+                                values,
+                                0,
+                                mode,
                                 meta,
                                 invert,
                                 pass,
@@ -260,7 +281,9 @@ public class ConstraintLogic
     private <T> CompletionStage<T> custom(final Http.Context ctx,
                                           final DeadboltHandler deadboltHandler,
                                           final Optional<String> content,
-                                          final String value,
+                                          final String[] values,
+                                          final int valueIndex,
+                                          final ConstraintMode mode,
                                           final Optional<String> meta,
                                           final boolean invert,
                                           final Function<Http.Context, CompletionStage<T>> pass,
@@ -271,24 +294,48 @@ public class ConstraintLogic
                      invert);
         return deadboltHandler.getDynamicResourceHandler(ctx)
                               .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
-                              .thenCompose(resourceHandler -> resourceHandler.checkPermission(value,
+                              .thenCompose(resourceHandler -> resourceHandler.checkPermission(values[valueIndex],
                                                                                               meta,
                                                                                               deadboltHandler,
                                                                                               ctx))
-                              .thenCompose(allowed -> (invert ? !allowed : allowed) ? pass(ctx,
-                                                                                                deadboltHandler,
-                                                                                                pass,
-                                                                                                constraintPoint,
-                                                                                                "pattern - custom")
-                                                                                         : fail.apply(ctx,
-                                                                                                      deadboltHandler,
-                                                                                                      content));
+                              .thenCompose(allowed -> (invert ? !allowed : allowed) ? (successCallAgain(mode, values, valueIndex) ? custom(ctx,
+                                                                                                                                           deadboltHandler,
+                                                                                                                                           content,
+                                                                                                                                           values,
+                                                                                                                                           valueIndex + 1,
+                                                                                                                                           mode,
+                                                                                                                                           meta,
+                                                                                                                                           invert,
+                                                                                                                                           pass,
+                                                                                                                                           fail,
+                                                                                                                                           constraintPoint)
+                                                                                                                                  : pass(ctx,
+                                                                                                                                         deadboltHandler,
+                                                                                                                                         pass,
+                                                                                                                                         constraintPoint,
+                                                                                                                                         "pattern - custom"))
+                                                                                    : (failCallAgain(mode, values, valueIndex) ? custom(ctx,
+                                                                                                                                        deadboltHandler,
+                                                                                                                                        content,
+                                                                                                                                        values,
+                                                                                                                                        valueIndex + 1,
+                                                                                                                                        mode,
+                                                                                                                                        meta,
+                                                                                                                                        invert,
+                                                                                                                                        pass,
+                                                                                                                                        fail,
+                                                                                                                                        constraintPoint)
+                                                                                                                               : fail.apply(ctx,
+                                                                                                                                            deadboltHandler,
+                                                                                                                                            content)));
     }
 
     private <T> CompletionStage<T> equality(final Http.Context ctx,
                                             final DeadboltHandler deadboltHandler,
                                             final Optional<String> content,
-                                            final String value,
+                                            final String[] values,
+                                            final int valueIndex,
+                                            final ConstraintMode mode,
                                             final boolean invert,
                                             final Function<Http.Context, CompletionStage<T>> pass,
                                             final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
@@ -298,16 +345,36 @@ public class ConstraintLogic
                           deadboltHandler)
                 .thenCompose(subject -> {
                                       final boolean equal = subject.isPresent() ? analyzer.checkPatternEquality(subject,
-                                                                                                                Optional.ofNullable(value))
+                                                                                                                Optional.ofNullable(values[valueIndex]))
                                                                                 : invert; // this is a little clumsy - it means no subject + invert is still denied
-                                      return (invert ? !equal : equal) ? pass(ctx,
-                                                                              deadboltHandler,
-                                                                              pass,
-                                                                              constraintPoint,
-                                                                              "pattern - equality")
-                                                                       : fail.apply(ctx,
-                                                                                    deadboltHandler,
-                                                                                    content);
+                                      return (invert ? !equal : equal) ? (successCallAgain(mode, values, valueIndex) ? equality(ctx,
+                                                                                                                                deadboltHandler,
+                                                                                                                                content,
+                                                                                                                                values,
+                                                                                                                                valueIndex + 1,
+                                                                                                                                mode,
+                                                                                                                                invert,
+                                                                                                                                pass,
+                                                                                                                                fail,
+                                                                                                                                constraintPoint)
+                                                                                                                     : pass(ctx,
+                                                                                                                            deadboltHandler,
+                                                                                                                            pass,
+                                                                                                                            constraintPoint,
+                                                                                                                            "pattern - equality"))
+                                                                       : (failCallAgain(mode, values, valueIndex) ? equality(ctx,
+                                                                                                                             deadboltHandler,
+                                                                                                                             content,
+                                                                                                                             values,
+                                                                                                                             valueIndex + 1,
+                                                                                                                             mode,
+                                                                                                                             invert,
+                                                                                                                             pass,
+                                                                                                                             fail,
+                                                                                                                             constraintPoint)
+                                                                                                                  : fail.apply(ctx,
+                                                                                                                               deadboltHandler,
+                                                                                                                               content));
                 });
     }
 
@@ -329,13 +396,15 @@ public class ConstraintLogic
     private <T> CompletionStage<T> regex(final Http.Context ctx,
                                          final DeadboltHandler deadboltHandler,
                                          final Optional<String> content,
-                                         final String value,
+                                         final String[] values,
+                                         final int valueIndex,
+                                         final ConstraintMode mode,
                                          final boolean invert,
                                          final Function<Http.Context, CompletionStage<T>> pass,
                                          final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                          final ConstraintPoint constraintPoint)
     {
-        return CompletableFuture.completedFuture(patternCache.apply(value))
+        return CompletableFuture.completedFuture(patternCache.apply(values[valueIndex]))
                                 .thenCombine(getSubject(ctx,
                                                              deadboltHandler),
                                              (patternValue, subject) ->
@@ -343,14 +412,54 @@ public class ConstraintLogic
                                                                                                       Optional.ofNullable(patternValue))
                                                                          : invert) // this is a little clumsy - it means no subject + invert is still denied
 
-                                .thenCompose(hasPassed -> (invert ? !hasPassed : hasPassed) ? pass(ctx,
-                                                                                                   deadboltHandler,
-                                                                                                   pass,
-                                                                                                   constraintPoint,
-                                                                                                   "pattern - regex")
-                                                                                            : fail.apply(ctx,
-                                                                                                         deadboltHandler,
-                                                                                                         content));
+                                .thenCompose(hasPassed -> (invert ? !hasPassed : hasPassed) ? (successCallAgain(mode, values, valueIndex) ? regex(ctx,
+                                                                                                                                                  deadboltHandler,
+                                                                                                                                                  content,
+                                                                                                                                                  values,
+                                                                                                                                                  valueIndex + 1,
+                                                                                                                                                  mode,
+                                                                                                                                                  invert,
+                                                                                                                                                  pass,
+                                                                                                                                                  fail,
+                                                                                                                                                  constraintPoint)
+                                                                                                                                          : pass(ctx,
+                                                                                                                                                 deadboltHandler,
+                                                                                                                                                 pass,
+                                                                                                                                                 constraintPoint,
+                                                                                                                                                 "pattern - regex"))
+                                                                                            : (failCallAgain(mode, values, valueIndex) ? regex(ctx,
+                                                                                                                                               deadboltHandler,
+                                                                                                                                               content,
+                                                                                                                                               values,
+                                                                                                                                               valueIndex + 1,
+                                                                                                                                               mode,
+                                                                                                                                               invert,
+                                                                                                                                               pass,
+                                                                                                                                               fail,
+                                                                                                                                               constraintPoint)
+                                                                                                                                       : fail.apply(ctx,
+                                                                                                                                                    deadboltHandler,
+                                                                                                                                                    content)));
+    }
+
+    private static boolean successCallAgain(final ConstraintMode mode, final String values[], final int valueIndex) {
+        if(mode == null || ConstraintMode.AND.equals(mode)) { // null check because AND is the default mode
+            if(values.length > (valueIndex + 1)) {
+                // there is at least another check left - that one has to pass too in AND mode
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean failCallAgain(final ConstraintMode mode, final String values[], final int valueIndex) {
+        if(ConstraintMode.OR.equals(mode)) {
+            if(values.length > (valueIndex + 1)) {
+                // there is at least another check left - give that one the chance to pass
+                return true;
+            }
+        }
+        return false;
     }
 
     private <T> CompletionStage<T> pass(final Http.Context context,

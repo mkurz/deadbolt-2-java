@@ -53,6 +53,10 @@ public class TestUserDao implements UserDao {
                   new User("steve",
                            Collections.singletonList(barRole),
                            Collections.singletonList(cmiPermission)));
+        users.put("tom",
+                new User("tom",
+                         Collections.singletonList(barRole),
+                         Arrays.asList(cmiPermission, kuzPermission)));
         users.put("mani",
                   new User("mani",
                            Arrays.asList(fooRole, barRole, hurdyRole),

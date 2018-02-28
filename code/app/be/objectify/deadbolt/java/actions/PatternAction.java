@@ -69,6 +69,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
                                        deadboltHandler,
                                        getContent(),
                                        configuration.value(),
+                                       configuration.mode(),
                                        configuration.patternType(),
                                        Optional.ofNullable(configuration.meta()),
                                        configuration.invert(),

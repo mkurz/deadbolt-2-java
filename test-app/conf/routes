@@ -69,6 +69,11 @@ GET        /pattern/invert/custom/m/checkCustom                                 
 GET        /pattern/invert/custom/c/checkCustom                                          be.objectify.deadbolt.java.test.controllers.pattern.InvertedCustomForController.protectedByControllerLevelCustom()
 GET        /pattern/invert/custom/c/checkCustom/open                                     be.objectify.deadbolt.java.test.controllers.pattern.InvertedCustomForController.unrestricted()
 
+# Pattern constraints modes
+GET        /pattern/mode/default                                                         be.objectify.deadbolt.java.test.controllers.pattern.PatternModes.modeDefault()
+GET        /pattern/mode/and                                                             be.objectify.deadbolt.java.test.controllers.pattern.PatternModes.modeAnd()
+GET        /pattern/mode/or                                                              be.objectify.deadbolt.java.test.controllers.pattern.PatternModes.modeOr()
+
 # Composite constraints
 GET        /composite/m/foo                                                              be.objectify.deadbolt.java.test.controllers.composite.CompositeForMethod.foo()
 GET        /composite/m/fooInUnrestrictedController                                      be.objectify.deadbolt.java.test.controllers.composite.ExplicitlyUnrestrictedControllerWithCompositeForMethod.foo()
