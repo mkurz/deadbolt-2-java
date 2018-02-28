@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintMode;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
@@ -42,7 +43,9 @@ public class PatternActionTest
     {
         final Pattern pattern = Mockito.mock(Pattern.class);
         Mockito.when(pattern.value())
-               .thenReturn("foo");
+               .thenReturn(new String[] {"foo"});
+        Mockito.when(pattern.mode())
+                .thenReturn(ConstraintMode.AND);
         Mockito.when(pattern.meta())
                .thenReturn("bar");
         Mockito.when(pattern.content())
@@ -67,7 +70,8 @@ public class PatternActionTest
         Mockito.verify(constraintLogic).pattern(Mockito.eq(ctx),
                                                 Mockito.eq(handler),
                                                 Mockito.eq(Optional.of("x/y")),
-                                                Mockito.eq("foo"),
+                                                Mockito.eq(new String[] {"foo"}),
+                                                Mockito.eq(ConstraintMode.AND),
                                                 Mockito.eq(PatternType.EQUALITY),
                                                 Mockito.eq(Optional.of("bar")),
                                                 Mockito.eq(false),
