@@ -15,7 +15,9 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConstraintAnnotationMode;
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
@@ -71,4 +73,46 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
 
     public abstract CompletionStage<Result> applyRestriction(Http.Context ctx,
                                                              DeadboltHandler deadboltHandler);
+
+    protected CompletionStage<Result> applyRestriction(final Http.Context ctx,
+                                       final DeadboltHandler deadboltHandler,
+                                       final int valueIndex,
+                                       final Pattern configuration) {
+    return constraintLogic.pattern(ctx,
+                deadboltHandler,
+                getContent(),
+                configuration.value()[valueIndex],
+                configuration.patternType(),
+                Optional.ofNullable(configuration.meta()),
+                configuration.invert(),
+                context -> { // the current check passed
+                    if(ConstraintAnnotationMode.AND.equals(configuration.mode())) { // AND mode
+                        if(configuration.value().length > (valueIndex + 1)) {
+                            // there is at least another check left - that one has to pass to in AND mode
+                            return this.applyRestriction(ctx, deadboltHandler, valueIndex + 1, configuration);
+                        } else {
+                            // there is no other check left - we can finish ;)
+                            return this.authorizeAndExecute(context);
+                        }
+                    } else { // OR mode
+                        // No need to look at the next (if there would be any), just finish ;)
+                        return this.authorizeAndExecute(context);
+                    }
+                },
+                (context, handler, content) -> { // the current check failed
+                    if(ConstraintAnnotationMode.AND.equals(configuration.mode())) { // AND mode
+                        // No need to look at the next (if there would be any), just fail ;(
+                        return this.unauthorizeAndFail(context, handler, content);
+                    } else { // OR mode
+                        if(configuration.value().length > (valueIndex + 1)) {
+                            // there is at least another check left - give that one the chance to pass
+                            return this.applyRestriction(ctx, deadboltHandler, valueIndex + 1, configuration);
+                        } else {
+                            // if lastone else look at the next one....
+                            return this.unauthorizeAndFail(context, handler, content);
+                        }
+                    }
+                },
+                ConstraintPoint.CONTROLLER);
+    }
 }

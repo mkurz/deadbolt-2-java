@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.ConstraintAnnotationMode;
 import be.objectify.deadbolt.java.models.PatternType;
 import play.mvc.With;
 
@@ -43,7 +44,12 @@ public @interface Pattern
      *
      * @return the pattern
      */
-    String value();
+    String[] value();
+
+    /**
+     * If multiple values should be AND (default) or OR
+     */
+    ConstraintAnnotationMode mode() default ConstraintAnnotationMode.AND;
 
     /**
      * The type of pattern matching

@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import be.objectify.deadbolt.java.ConstraintAnnotationMode;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
@@ -65,16 +66,7 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     public CompletionStage<Result> applyRestriction(final Http.Context ctx,
                                                     final DeadboltHandler deadboltHandler)
     {
-        return constraintLogic.pattern(ctx,
-                                       deadboltHandler,
-                                       getContent(),
-                                       configuration.value(),
-                                       configuration.patternType(),
-                                       Optional.ofNullable(configuration.meta()),
-                                       configuration.invert(),
-                                       this::authorizeAndExecute,
-                                       this::unauthorizeAndFail,
-                                       ConstraintPoint.CONTROLLER);
+        return this.applyRestriction(ctx, deadboltHandler, 0, configuration);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class PatternActionTest
     {
         final Pattern pattern = Mockito.mock(Pattern.class);
         Mockito.when(pattern.value())
-               .thenReturn("foo");
+               .thenReturn(new String[]{"foo"});
         Mockito.when(pattern.meta())
                .thenReturn("bar");
         Mockito.when(pattern.content())
