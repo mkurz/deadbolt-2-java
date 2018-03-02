@@ -63,7 +63,7 @@ public @interface BeforeAccess
      *
      * @return true if beforeAuthCheck should always be executed, otherwise false
      */
-    boolean alwaysExecute() default false;
+    boolean alwaysExecute() default true;
 
     /**
      * If true, the annotation will only be run if there is a {@link DeferredDeadbolt} annotation at the class level.
