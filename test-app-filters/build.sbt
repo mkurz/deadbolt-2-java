@@ -1,6 +1,6 @@
 name := """test-app-filters"""
 
-version := "2.5.7-SNAPSHOT"
+version := "2.5.8-SNAPSHOT"
 
 scalaVersion := "2.11.7"
 
