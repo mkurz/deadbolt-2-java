@@ -76,7 +76,7 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
                                                                     request());
-        ((CompletableFuture) eventualResult).get();
+        ((CompletableFuture<Result>) eventualResult).get();
         Assert.assertTrue(flag[0]);
     }
 
@@ -118,7 +118,7 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
                                                                     request());
-        ((CompletableFuture) eventualResult).get();
+        ((CompletableFuture<Result>) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -164,7 +164,7 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
                                                                     request());
-        ((CompletableFuture) eventualResult).get();
+        ((CompletableFuture<Result>) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
                        Mockito.times(1))
@@ -209,7 +209,7 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
                                                                     request());
-        ((CompletableFuture) eventualResult).get();
+        ((CompletableFuture<Result>) eventualResult).get();
         Assert.assertTrue(flag[0]);
         Mockito.verifyZeroInteractions(defaultHandler);
     }
@@ -254,7 +254,7 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
                                                                     request());
-        ((CompletableFuture) eventualResult).get();
+        ((CompletableFuture<Result>) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))
@@ -303,7 +303,7 @@ public class DeadboltRoutePathFilterTest extends AbstractDeadboltFilterTest
                                                                         return CompletableFuture.completedFuture(Results.ok());
                                                                     },
                                                                     request());
-        ((CompletableFuture) eventualResult).get();
+        ((CompletableFuture<Result>) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(specificHandler,
                        Mockito.times(1))

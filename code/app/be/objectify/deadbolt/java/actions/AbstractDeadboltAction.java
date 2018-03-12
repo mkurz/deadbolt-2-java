@@ -234,7 +234,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param action the action to defer
      */
     protected void defer(final Http.Context ctx,
-                         final AbstractDeadboltAction action)
+                         final AbstractDeadboltAction<T> action)
     {
         if (action != null)
         {
@@ -262,13 +262,14 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param ctx the request context
      * @return the deferred action, or null if it doesn't exist
      */
-    public AbstractDeadboltAction getDeferredAction(final Http.Context ctx)
+    @SuppressWarnings("unchecked")
+    public AbstractDeadboltAction<T> getDeferredAction(final Http.Context ctx)
     {
-        AbstractDeadboltAction action = null;
+        AbstractDeadboltAction<T> action = null;
         final Object o = ctx.args.get(ACTION_DEFERRED);
         if (o != null)
         {
-            action = (AbstractDeadboltAction) o;
+            action = (AbstractDeadboltAction<T>) o;
             action.delegate = this;
 
             ctx.args.remove(ACTION_DEFERRED);

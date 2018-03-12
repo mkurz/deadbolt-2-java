@@ -36,7 +36,7 @@ public abstract class AbstractDeadboltFilter extends Filter
 
     Http.Context context(final Http.RequestHeader requestHeader)
     {
-        final Http.RequestBuilder requestBuilder = new Http.RequestBuilder().headers(requestHeader.headers())
+        final Http.RequestBuilder requestBuilder = new Http.RequestBuilder().headers(requestHeader.getHeaders())
                                                                             .host(requestHeader.host())
                                                                             .method(requestHeader.method())
                                                                             .path(requestHeader.path())
