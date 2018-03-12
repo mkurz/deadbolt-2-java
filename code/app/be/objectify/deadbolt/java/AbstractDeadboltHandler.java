@@ -56,14 +56,6 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     @Override
     public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context, Optional<String> content)
     {
-        return beforeAuthCheck(context);
-    }
-
-    /**
-     * @deprecated Just use the overloaded beforeAuthCheck method that also takes an Optional<String> content
-     */
-    @Deprecated
-    public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context) {
         return CompletableFuture.completedFuture(Optional.empty());
     }
 
