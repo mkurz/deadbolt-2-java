@@ -93,12 +93,13 @@ public class ViewSupport
     public boolean viewRestrict(final List<String[]> roles,
                                 final DeadboltHandler handler,
                                 final Optional<String> content,
-                                final long timeoutInMillis) throws Throwable
+                                final long timeoutInMillis,
+                                final Http.Context context) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.restrict(Http.Context.current(),
+            allowed = constraintLogic.restrict(context,
                                                handler(handler),
                                                content,
                                                () -> roles,
@@ -129,12 +130,13 @@ public class ViewSupport
                                final Optional<String> meta,
                                final DeadboltHandler handler,
                                final Optional<String> content,
-                               final long timeoutInMillis) throws Throwable
+                               final long timeoutInMillis,
+                               final Http.Context context) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.dynamic(Http.Context.current(),
+            allowed = constraintLogic.dynamic(context,
                                               handler(handler),
                                               content,
                                               name,
@@ -161,12 +163,13 @@ public class ViewSupport
      */
     public boolean viewSubjectPresent(final DeadboltHandler handler,
                                       final Optional<String> content,
-                                      final long timeoutInMillis) throws Throwable
+                                      final long timeoutInMillis,
+                                      final Http.Context context) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.subjectPresent(Http.Context.current(),
+            allowed = constraintLogic.subjectPresent(context,
                                                      handler == null ? handlerCache.get()
                                                                      : handler,
                                                      content,
@@ -192,12 +195,13 @@ public class ViewSupport
      */
     public boolean viewSubjectNotPresent(final DeadboltHandler handler,
                                          final Optional<String> content,
-                                         final long timeoutInMillis) throws Throwable
+                                         final long timeoutInMillis,
+                                         final Http.Context context) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.subjectNotPresent(Http.Context.current(),
+            allowed = constraintLogic.subjectNotPresent(context,
                                                         handler(handler),
                                                         content,
                                                         (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
@@ -221,12 +225,13 @@ public class ViewSupport
                                final boolean invert,
                                final DeadboltHandler handler,
                                final Optional<String> content,
-                               final long timeoutInMillis) throws Exception
+                               final long timeoutInMillis,
+                               final Http.Context context) throws Exception
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.pattern(Http.Context.current(),
+            allowed = constraintLogic.pattern(context,
                                               handler(handler),
                                               content,
                                               value,
@@ -258,12 +263,13 @@ public class ViewSupport
     public boolean viewRoleBasedPermissions(final String roleName,
                                             final DeadboltHandler handler,
                                             final Optional<String> content,
-                                            final long timeoutInMillis) throws Throwable
+                                            final long timeoutInMillis,
+                                            final Http.Context context) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.roleBasedPermissions(Http.Context.current(),
+            allowed = constraintLogic.roleBasedPermissions(context,
                                                            handler(handler),
                                                            content,
                                                            roleName,

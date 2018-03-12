@@ -105,7 +105,8 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                                       false,
                                       handlerCache.apply("noDrh"),
                                       Optional.empty(),
-                                      1000L);
+                                      1000L,
+                                      context());
         }
         catch (Exception e)
         {
@@ -123,7 +124,8 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                                                          false,
                                                          handlerCache.get(),
                                                          Optional.empty(),
-                                                         1000L);
+                                                         1000L,
+                                                         context());
         Assert.assertFalse(result);
     }
 
@@ -136,7 +138,8 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                                                          false,
                                                          handlerCache.get(),
                                                          Optional.empty(),
-                                                         1000L);
+                                                         1000L,
+                                                         context());
         Assert.assertTrue(result);
     }
 

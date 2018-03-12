@@ -52,7 +52,8 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> true)));
             }
         };
-        final Content html = dynamicOrContent().render("foo",
+        final Content html = dynamicOrContent().render(context(),
+                                                       "foo",
                                                        Optional.of("bar"),
                                                        deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -73,7 +74,8 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> "foo".equals(name))));
             }
         };
-        final Content html = dynamicOrContent().render("foo",
+        final Content html = dynamicOrContent().render(context(),
+                                                       "foo",
                                                        Optional.of("bar"),
                                                        deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -94,7 +96,8 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> meta.map("bar"::equals).orElse(false))));
             }
         };
-        final Content html = dynamicOrContent().render("foo",
+        final Content html = dynamicOrContent().render(context(),
+                                                       "foo",
                                                        Optional.of("bar"),
                                                        deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -115,7 +118,8 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> false)));
             }
         };
-        final Content html = dynamicOrContent().render("foo",
+        final Content html = dynamicOrContent().render(context(),
+                                                       "foo",
                                                        Optional.of("bar"),
                                                        deadboltHandler);
         final String content = Helpers.contentAsString(html);
