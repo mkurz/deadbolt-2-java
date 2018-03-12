@@ -20,3 +20,5 @@ releasePublishArtifactsAction := PgpKeys.publishSigned.value
 scalacOptions in (Compile, doc) ++= {
   if (scalaBinaryVersion.value == "2.12") Seq("-no-java-comments") else Nil
 }
+
+resolvers += Resolver.sonatypeRepo("snapshots")
