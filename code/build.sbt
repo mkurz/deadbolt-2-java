@@ -17,8 +17,6 @@ releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 // workaround for scaladoc error https://github.com/scala/scala-dev/issues/249
 // also see http://www.scala-lang.org/news/2.12.0/#scaladoc-can-be-used-to-document-java-sources
-scalacOptions in (Compile, doc) ++= {
-  if (scalaBinaryVersion.value == "2.12") Seq("-no-java-comments") else Nil
-}
+scalacOptions in (Compile, doc) += "-no-java-comments"
 
 resolvers += Resolver.sonatypeRepo("snapshots")
