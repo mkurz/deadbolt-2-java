@@ -16,9 +16,7 @@
 package be.objectify.deadbolt.java.cache;
 
 import be.objectify.deadbolt.java.ConfigKeys;
-import be.objectify.deadbolt.java.DeadboltExecutionContextProvider;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -38,18 +36,15 @@ import java.util.concurrent.CompletionStage;
 public class DefaultSubjectCache implements SubjectCache
 {
     private final boolean cacheUserPerRequestEnabled;
-    private final DeadboltExecutionContextProvider executionContextProvider;
 
     @Inject
-    public DefaultSubjectCache(final Config config,
-                               final ExecutionContextProvider ecProvider)
+    public DefaultSubjectCache(final Config config)
     {
         final HashMap<String, Object> defaults = new HashMap<>();
         defaults.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
                      ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._2);
         final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
         this.cacheUserPerRequestEnabled = configWithFallback.getBoolean(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1);
-        this.executionContextProvider = ecProvider.get();
     }
 
     @Override

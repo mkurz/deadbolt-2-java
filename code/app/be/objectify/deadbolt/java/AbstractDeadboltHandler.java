@@ -33,15 +33,8 @@ import java.util.concurrent.CompletionStage;
  */
 public abstract class AbstractDeadboltHandler extends Results implements DeadboltHandler
 {
-    protected final DeadboltExecutionContextProvider executionContextProvider;
-
     private static final AtomicLong NEXT_ID = new AtomicLong(0);
     private final long id = NEXT_ID.getAndIncrement();
-
-    public AbstractDeadboltHandler(final ExecutionContextProvider ecProvider)
-    {
-        this.executionContextProvider = ecProvider.get();
-    }
 
     /**
      * {@inheritDoc}

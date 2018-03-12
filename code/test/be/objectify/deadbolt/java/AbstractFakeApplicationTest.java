@@ -24,7 +24,6 @@ import org.mockito.Mockito;
 import play.Application;
 import play.Mode;
 import play.api.mvc.RequestHeader;
-import play.core.j.HttpExecutionContext;
 import play.core.j.JavaContextComponents;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Http;
@@ -36,7 +35,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static play.inject.Bindings.bind;
@@ -83,17 +81,9 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
 
     protected abstract HandlerCache handlers();
 
-    protected ExecutionContextProvider ecProvider()
-    {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get())
-               .thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
-        return ecProvider;
-    }
-
     protected DeadboltHandler handler(final Supplier<Subject> getSubject)
     {
-        return new NoPreAuthDeadboltHandler(ecProvider())
+        return new NoPreAuthDeadboltHandler()
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -106,7 +96,7 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
     protected DeadboltHandler handler(final Supplier<Subject> getSubject,
                                       final List<? extends Permission> associatedPermissions)
     {
-        return new NoPreAuthDeadboltHandler(ecProvider())
+        return new NoPreAuthDeadboltHandler()
         {
             @Override
             public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
@@ -124,7 +114,7 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
 
     protected DeadboltHandler withDrh(final Supplier<DynamicResourceHandler> drh)
     {
-        return new NoPreAuthDeadboltHandler(ecProvider())
+        return new NoPreAuthDeadboltHandler()
         {
             @Override
             public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)

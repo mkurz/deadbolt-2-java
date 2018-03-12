@@ -19,8 +19,6 @@ import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.cache.DefaultBeforeAuthCheckCache;
@@ -41,7 +39,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import play.core.j.HttpExecutionContext;
 import play.libs.typedmap.TypedEntry;
 import play.libs.typedmap.TypedMap;
 import play.mvc.Http;
@@ -55,7 +52,6 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -73,10 +69,6 @@ public class FilterConstraintsTest
     @Before
     public void setUp()
     {
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get())
-               .thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
-
         handler = Mockito.mock(DeadboltHandler.class);
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
@@ -85,8 +77,7 @@ public class FilterConstraintsTest
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         context = Mockito.mock(Http.Context.class);
-        subjectCache = new DefaultSubjectCache(ConfigFactory.empty(),
-                                               ecProvider);
+        subjectCache = new DefaultSubjectCache(ConfigFactory.empty());
 
         constraintLogic = new ConstraintLogic(analyzer,
                                               subjectCache,

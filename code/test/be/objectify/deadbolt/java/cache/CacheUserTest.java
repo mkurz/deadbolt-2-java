@@ -18,7 +18,6 @@ package be.objectify.deadbolt.java.cache;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -27,10 +26,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.DefaultDeadboltExecutionContextProvider;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Subject;
-import play.core.j.HttpExecutionContext;
 import play.mvc.Http;
 
 /**
@@ -85,10 +81,7 @@ public class CacheUserTest
 
         final Config config = ConfigFactory.parseString(setting);
 
-        final ExecutionContextProvider ecProvider = Mockito.mock(ExecutionContextProvider.class);
-        Mockito.when(ecProvider.get()).thenReturn(new DefaultDeadboltExecutionContextProvider(HttpExecutionContext.fromThread(Executors.newSingleThreadExecutor())));
-
-        final SubjectCache subjectCache = new DefaultSubjectCache(config, ecProvider);
+        final SubjectCache subjectCache = new DefaultSubjectCache(config);
 
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
         Mockito.when(handler.getSubject(ctx))

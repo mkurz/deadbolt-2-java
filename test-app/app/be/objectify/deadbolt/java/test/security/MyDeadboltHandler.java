@@ -17,7 +17,6 @@ package be.objectify.deadbolt.java.test.security;
 
 import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.ConstraintPoint;
-import be.objectify.deadbolt.java.ExecutionContextProvider;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
@@ -50,10 +49,9 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     private final UserDao userDao;
 
     @Inject
-    public MyDeadboltHandler(final ExecutionContextProvider ecProvider,
-                             final UserDao userDao)
+    public MyDeadboltHandler(final UserDao userDao)
     {
-        super(ecProvider);
+        super();
         Map<String, DynamicResourceHandler> delegates = new HashMap<>();
         delegates.put("niceName",
                       new NiceNameDynamicResourceHandler());
