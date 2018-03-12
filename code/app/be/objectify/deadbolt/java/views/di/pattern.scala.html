@@ -1,5 +1,5 @@
 @this(viewSupport: be.objectify.deadbolt.java.ViewSupport, handlerCache: be.objectify.deadbolt.java.cache.HandlerCache)
-@(value: String, patternType: be.objectify.deadbolt.java.models.PatternType = be.objectify.deadbolt.java.models.PatternType.EQUALITY, meta: Optional[String] = Optional.empty(), invert: java.lang.Boolean = false, handler: be.objectify.deadbolt.java.DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)
-@if(viewSupport.viewPattern(value, patternType, meta, invert, handler, content, timeout.get())) {
+@(context: Http.Context, value: String, patternType: be.objectify.deadbolt.java.models.PatternType = be.objectify.deadbolt.java.models.PatternType.EQUALITY, meta: Optional[String] = Optional.empty(), invert: java.lang.Boolean = false, handler: be.objectify.deadbolt.java.DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)
+@if(viewSupport.viewPattern(value, patternType, meta, invert, handler, content, timeout.get(), context)) {
     @body
 }

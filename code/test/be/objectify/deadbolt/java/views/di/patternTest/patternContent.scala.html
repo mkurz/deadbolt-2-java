@@ -1,9 +1,9 @@
 @this(pattern: be.objectify.deadbolt.java.views.html.di.pattern)
-@(value: String, patternType: be.objectify.deadbolt.java.models.PatternType, deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+@(ctx: Http.Context, value: String, patternType: be.objectify.deadbolt.java.models.PatternType, deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
 
 This is before the constraint.
 
-@pattern(value = value, patternType = patternType, handler = deadboltHandler) {
+@pattern(context = ctx, value = value, patternType = patternType, handler = deadboltHandler) {
     This is protected by the constraint.
 }
 

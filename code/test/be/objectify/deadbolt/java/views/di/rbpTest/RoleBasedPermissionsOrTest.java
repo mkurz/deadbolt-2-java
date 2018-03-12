@@ -62,7 +62,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.emptyList());
             }
         };
-        final Content html = roleBasedPermissionsOrContent().render("foo",
+        final Content html = roleBasedPermissionsOrContent().render(context(),
+                                                                    "foo",
                                                                     deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -89,7 +90,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
             }
         };
-        final Content html = roleBasedPermissionsOrContent().render("foo",
+        final Content html = roleBasedPermissionsOrContent().render(context(),
+                                                                    "foo",
                                                                     deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -116,7 +118,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("hurdy")));
             }
         };
-        final Content html = roleBasedPermissionsOrContent().render("foo",
+        final Content html = roleBasedPermissionsOrContent().render(context(),
+                                                                    "foo",
                                                                     deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -142,7 +145,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("hurdy")));
             }
         };
-        final Content html = roleBasedPermissionsOrContent().render("foo",
+        final Content html = roleBasedPermissionsOrContent().render(context(),
+                                                                    "foo",
                                                                     deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));

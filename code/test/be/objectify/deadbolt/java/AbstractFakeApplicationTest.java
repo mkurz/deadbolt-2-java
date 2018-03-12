@@ -44,6 +44,8 @@ import static play.inject.Bindings.bind;
  */
 public abstract class AbstractFakeApplicationTest extends WithApplication
 {
+    private Http.Context ctx;
+
     @Override
     protected Application provideApplication()
     {
@@ -57,13 +59,13 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
     public void startPlay()
     {
         super.startPlay();
-        Http.Context.current.set(new Http.Context(1L,
-                                                  Mockito.mock(RequestHeader.class),
-                                                  Mockito.mock(Http.Request.class),
-                                                  Collections.emptyMap(),
-                                                  Collections.emptyMap(),
-                                                  Collections.emptyMap(),
-                                                  Mockito.mock(JavaContextComponents.class)));
+        ctx = new Http.Context(1L,
+                               Mockito.mock(RequestHeader.class),
+                               Mockito.mock(Http.Request.class),
+                               Collections.emptyMap(),
+                               Collections.emptyMap(),
+                               Collections.emptyMap(),
+                               Mockito.mock(JavaContextComponents.class));
     }
 
     public DeadboltHandler init(final Supplier<Subject> getSubject)
@@ -138,6 +140,6 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
 
     public Http.Context context()
     {
-        return Http.Context.current.get();
+        return this.ctx;
     }
 }

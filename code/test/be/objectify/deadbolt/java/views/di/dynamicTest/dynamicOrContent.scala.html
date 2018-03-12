@@ -1,9 +1,9 @@
 @this(dynamicOr: be.objectify.deadbolt.java.views.html.di.dynamicOr)
-@(name: String, meta: Optional[String] = Optional.empty(), deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+@(ctx: Http.Context, name: String, meta: Optional[String] = Optional.empty(), deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
 
 This is before the constraint.
 
-@dynamicOr(name, meta, handler = deadboltHandler) {
+@dynamicOr(ctx, name, meta, handler = deadboltHandler) {
     This is protected by the constraint.
 } {
     This is default content in case the constraint denies access to the protected content.

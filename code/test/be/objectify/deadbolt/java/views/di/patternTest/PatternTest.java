@@ -57,7 +57,8 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = patternContent().render("killer.undead.zombie",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.zombie",
                                                      PatternType.EQUALITY,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -79,7 +80,8 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = patternContent().render("killer.undead.zombie",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.zombie",
                                                      PatternType.EQUALITY,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -100,7 +102,8 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = patternContent().render("killer.undead.zombie",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.zombie",
                                                      PatternType.EQUALITY,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -112,7 +115,8 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testEquality_noSubject()
     {
-        final Content html = patternContent().render("killer.undead.zombie",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.zombie",
                                                      PatternType.EQUALITY,
                                                      new NoPreAuthDeadboltHandler()
                                                      {
@@ -136,7 +140,8 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = patternContent().render("killer.undead.*",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.*",
                                                      PatternType.REGEX,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -158,7 +163,8 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = patternContent().render("killer.*",
+        final Content html = patternContent().render(context(),
+                                                     "killer.*",
                                                      PatternType.REGEX,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -180,7 +186,8 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = patternContent().render("killer.pixies.*",
+        final Content html = patternContent().render(context(),
+                                                     "killer.pixies.*",
                                                      PatternType.REGEX,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -201,7 +208,8 @@ public class PatternTest extends AbstractFakeApplicationTest
             }
 
         };
-        final Content html = patternContent().render("killer.undead.zombie",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.zombie",
                                                      PatternType.REGEX,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -213,7 +221,8 @@ public class PatternTest extends AbstractFakeApplicationTest
     @Test
     public void testRegex_noSubject()
     {
-        final Content html = patternContent().render("killer.undead.zombie",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.zombie",
                                                      PatternType.REGEX,
                                                      new NoPreAuthDeadboltHandler()
                                                      {
@@ -245,7 +254,8 @@ public class PatternTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = patternContent().render("killer.undead.zombie",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.zombie",
                                                      PatternType.CUSTOM,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -275,7 +285,8 @@ public class PatternTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = patternContent().render("killer.undead.zombie",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.zombie",
                                                      PatternType.CUSTOM,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -305,7 +316,8 @@ public class PatternTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = patternContent().render("killer.undead.zombie",
+        final Content html = patternContent().render(context(),
+                                                     "killer.undead.zombie",
                                                      PatternType.CUSTOM,
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);

@@ -61,7 +61,8 @@ public class DynamicTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = dynamicContent().render("foo",
+        final Content html = dynamicContent().render(context(),
+                                                     "foo",
                                                      Optional.of("bar"),
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -91,7 +92,8 @@ public class DynamicTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = dynamicContent().render("foo",
+        final Content html = dynamicContent().render(context(),
+                                                     "foo",
                                                      Optional.of("bar"),
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -121,7 +123,8 @@ public class DynamicTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = dynamicContent().render("foo",
+        final Content html = dynamicContent().render(context(),
+                                                     "foo",
                                                      Optional.of("bar"),
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -151,7 +154,8 @@ public class DynamicTest extends AbstractFakeApplicationTest
                 }));
             }
         };
-        final Content html = dynamicContent().render("foo",
+        final Content html = dynamicContent().render(context(),
+                                                     "foo",
                                                      Optional.of("bar"),
                                                      deadboltHandler);
         final String content = Helpers.contentAsString(html);
