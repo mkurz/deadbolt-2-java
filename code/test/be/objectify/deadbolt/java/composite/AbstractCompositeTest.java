@@ -21,7 +21,6 @@ import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
-import org.mockito.Mockito;
 import play.mvc.Http;
 import play.mvc.Result;
 
