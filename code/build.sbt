@@ -2,9 +2,9 @@ name := "deadbolt-java"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava).disablePlugins(PlayFilters)
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.5"
 
-crossScalaVersions := Seq("2.12.4", "2.13.0-M3")
+crossScalaVersions := Seq("2.12.5", "2.13.0-M3")
 
 organization := "be.objectify"
 
