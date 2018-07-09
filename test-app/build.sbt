@@ -2,7 +2,7 @@ name := """test-app"""
 
 version := "2.7.0-SNAPSHOT"
 
-scalaVersion := "2.12.5"
+scalaVersion := "2.12.6"
 
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
 

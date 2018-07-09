@@ -2,15 +2,15 @@ language: scala
 jdk:
 - oraclejdk8
 scala:
-- 2.12.4
+- 2.12.6
 script:
 - cd code
 - sbt --info ++$TRAVIS_SCALA_VERSION +publishLocal
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-2018-03-18-683e8c0-SNAPSHOT +test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-M1 +test
 - cd ../test-app
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-2018-03-18-683e8c0-SNAPSHOT +test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-M1 +test
 - cd ../test-app-filters
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-2018-03-18-683e8c0-SNAPSHOT +test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-M1 +test
 - cd ../code
 after_success:
 - ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt --info +publish; };'
