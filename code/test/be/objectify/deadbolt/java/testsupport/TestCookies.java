@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.testsupport;
 import play.mvc.Http;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -25,8 +26,8 @@ import java.util.ArrayList;
 public class TestCookies extends ArrayList<Http.Cookie> implements Http.Cookies
 {
     @Override
-    public Http.Cookie get(final String name)
+    public Optional<Http.Cookie> getCookie(final String name)
     {
-        return null;
+        return Optional.empty();
     }
 }
