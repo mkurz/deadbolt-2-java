@@ -76,8 +76,7 @@ public class FilterConstraints
      */
     public FilterFunction subjectPresent(final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, context, content)
@@ -111,8 +110,7 @@ public class FilterConstraints
      */
     public FilterFunction subjectNotPresent(final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, context, content)
@@ -150,8 +148,7 @@ public class FilterConstraints
     public FilterFunction restrict(final List<String[]> roleGroups,
                                    final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, context, content)
@@ -247,8 +244,7 @@ public class FilterConstraints
                                   final boolean invert,
                                   final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, context, content)
@@ -311,8 +307,7 @@ public class FilterConstraints
                                   final Optional<String> meta,
                                   final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, context, content)
@@ -384,8 +379,7 @@ public class FilterConstraints
     public FilterFunction composite(final Constraint constraint,
                                     final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, context, content)
@@ -411,8 +405,7 @@ public class FilterConstraints
     public FilterFunction roleBasedPermissions(final String roleName,
                                                final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, context, content)
