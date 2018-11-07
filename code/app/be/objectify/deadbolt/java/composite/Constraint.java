@@ -47,21 +47,21 @@ public interface Constraint
     default Constraint and(final Constraint other)
     {
         Objects.requireNonNull(other);
-        return (ctx, handler, global, fMeta) ->
-                test(ctx, handler, global, fMeta).thenCompose(passed1 -> passed1 ? other.test(ctx, handler, global, fMeta).thenApply(passed2 -> passed2)
+        return (rh, handler, global, fMeta) ->
+                test(rh, handler, global, fMeta).thenCompose(passed1 -> passed1 ? other.test(rh, handler, global, fMeta).thenApply(passed2 -> passed2)
                                                                                  : CompletableFuture.completedFuture(false));
     }
 
     default Constraint negate()
     {
-        return (ctx, handler, global, fMeta) -> test(ctx, handler, global, fMeta).thenApply(p -> !p);
+        return (rh, handler, global, fMeta) -> test(rh, handler, global, fMeta).thenApply(p -> !p);
     }
 
     default Constraint or(final Constraint other)
     {
         Objects.requireNonNull(other);
-        return (ctx, handler, global, fMeta) ->
-                test(ctx, handler, global, fMeta).thenCompose(passed1 -> passed1 ? CompletableFuture.completedFuture(true)
-                                                                                                : other.test(ctx, handler, global, fMeta).thenApply(passed2 -> passed2));
+        return (rh, handler, global, fMeta) ->
+                test(rh, handler, global, fMeta).thenCompose(passed1 -> passed1 ? CompletableFuture.completedFuture(true)
+                                                                                                : other.test(rh, handler, global, fMeta).thenApply(passed2 -> passed2));
     }
 }
