@@ -20,6 +20,8 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.models.Subject;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import play.libs.F;
+import play.libs.typedmap.TypedKey;
 import play.mvc.Http;
 
 import javax.inject.Inject;
@@ -28,6 +30,8 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -36,6 +40,7 @@ import java.util.concurrent.CompletionStage;
 public class DefaultSubjectCache implements SubjectCache
 {
     private final boolean cacheUserPerRequestEnabled;
+    private final ConcurrentMap<Long, TypedKey<Subject>> typedKeyCache = new ConcurrentHashMap<>();
 
     @Inject
     public DefaultSubjectCache(final Config config)
@@ -48,34 +53,22 @@ public class DefaultSubjectCache implements SubjectCache
     }
 
     @Override
-    public CompletionStage<Optional<? extends Subject>> apply(final DeadboltHandler deadboltHandler,
-                                                              final Http.Context context)
+    public CompletionStage<F.Tuple<Optional<? extends Subject>, Http.RequestHeader>> apply(final DeadboltHandler deadboltHandler,
+                                                                       final Http.RequestHeader requestHeader)
     {
-        final CompletionStage<Optional<? extends Subject>> promise;
         if (cacheUserPerRequestEnabled)
         {
-            final String deadboltHandlerCacheId = ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1 + "." + deadboltHandler.getId(); // results into "deadbolt.java.cache-user.0"
-            final Optional<? extends Subject> cachedUser = Optional.ofNullable((Subject) context.args.get(deadboltHandlerCacheId));
+            final TypedKey<Subject> deadboltHandlerCacheId = this.typedKeyCache.computeIfAbsent(deadboltHandler.getId(), k -> TypedKey.create(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1 + "." + k)); // results into "deadbolt.java.cache-user.0"
+            final Optional<? extends Subject> cachedUser = requestHeader.attrs().getOptional(deadboltHandlerCacheId);
             if (cachedUser.isPresent())
             {
-                promise = CompletableFuture.completedFuture(cachedUser);
+                return CompletableFuture.completedFuture(F.Tuple(cachedUser, requestHeader));
             }
             else
             {
-                promise = deadboltHandler.getSubject(context)
-                                         .thenApply(subjectOption ->
-                                                         {
-                                                             subjectOption.ifPresent(subject -> context.args.put(deadboltHandlerCacheId,
-                                                                                                                 subject));
-                                                             return subjectOption;
-                                                         });
+                return deadboltHandler.getSubject(requestHeader).thenApply(subjectOption -> subjectOption.map(s -> F.<Optional<? extends Subject>, Http.RequestHeader>Tuple(Optional.of(s), requestHeader.addAttr(deadboltHandlerCacheId, s))).orElseGet(() -> F.Tuple(Optional.empty(), requestHeader)));
             }
         }
-        else
-        {
-            promise = deadboltHandler.getSubject(context);
-        }
-
-        return promise;
+        return deadboltHandler.getSubject(requestHeader).thenApply(subjectOption -> subjectOption.map(s -> F.<Optional<? extends Subject>, Http.RequestHeader>Tuple(Optional.of(s), requestHeader)).orElseGet(() -> F.Tuple(Optional.empty(), requestHeader)));
     }
 }

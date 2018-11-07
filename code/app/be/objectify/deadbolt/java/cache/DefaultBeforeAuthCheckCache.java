@@ -19,6 +19,8 @@ import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import play.libs.F;
+import play.libs.typedmap.TypedKey;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -28,6 +30,8 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Matthias Kurz (m.kurz@irregular.at)
@@ -36,6 +40,7 @@ import java.util.concurrent.CompletionStage;
 public class DefaultBeforeAuthCheckCache implements BeforeAuthCheckCache
 {
     private final boolean cacheBeforeAuthCheckPerRequestEnabled;
+    private final ConcurrentMap<Long, TypedKey<Boolean>> typedKeyCache = new ConcurrentHashMap<>();
 
     @Inject
     public DefaultBeforeAuthCheckCache(final Config config)
@@ -48,36 +53,24 @@ public class DefaultBeforeAuthCheckCache implements BeforeAuthCheckCache
     }
 
     @Override
-    public CompletionStage<Optional<Result>> apply(final DeadboltHandler deadboltHandler,
-                                                              final Http.Context context,
-                                                              final Optional<String> content)
+    public CompletionStage<F.Tuple<Optional<Result>, Http.RequestHeader>> apply(final DeadboltHandler deadboltHandler,
+                                                                          final Http.RequestHeader requestHeader,
+                                                                          final Optional<String> content)
     {
         final CompletionStage<Optional<Result>> promise;
         if (cacheBeforeAuthCheckPerRequestEnabled)
         {
-            final String deadboltHandlerCacheId = ConfigKeys.CACHE_BEFORE_AUTH_CHECK_DEFAULT._1 + "." + deadboltHandler.getId(); // results into "deadbolt.java.cache-before-auth-check.0"
-            if (context.args.containsKey(deadboltHandlerCacheId))
+            final TypedKey<Boolean> deadboltHandlerCacheId = this.typedKeyCache.computeIfAbsent(deadboltHandler.getId(), k -> TypedKey.create(ConfigKeys.CACHE_BEFORE_AUTH_CHECK_DEFAULT._1 + "." + k)); // results into "deadbolt.java.cache-before-auth-check.0"
+            if (requestHeader.attrs().containsKey(deadboltHandlerCacheId))
             {
-                promise = CompletableFuture.completedFuture(Optional.empty());
+                return CompletableFuture.completedFuture(F.Tuple(Optional.empty(), requestHeader));
             }
             else
             {
-                promise = deadboltHandler.beforeAuthCheck(context, content)
-                                         .thenApply(beforeAuthCheckOption ->
-                                                         {
-                                                             if(!beforeAuthCheckOption.isPresent())
-                                                             {
-                                                                 context.args.put(deadboltHandlerCacheId, true);
-                                                             }
-                                                             return beforeAuthCheckOption;
-                                                         });
+                return deadboltHandler.beforeAuthCheck(requestHeader, content)
+                                         .thenApply(beforeAuthCheckOption -> beforeAuthCheckOption.map(r -> F.Tuple(Optional.of(r), requestHeader)).orElse(F.Tuple(Optional.empty(), requestHeader.addAttr(deadboltHandlerCacheId, true))));
             }
         }
-        else
-        {
-            promise = deadboltHandler.beforeAuthCheck(context, content);
-        }
-
-        return promise;
+        return deadboltHandler.beforeAuthCheck(requestHeader, content).thenApply(beforeAuthCheckOption -> beforeAuthCheckOption.map(r -> F.Tuple(Optional.of(r), requestHeader)).orElseGet(() -> F.Tuple(Optional.empty(), requestHeader)));
     }
 }

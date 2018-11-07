@@ -17,6 +17,7 @@ package be.objectify.deadbolt.java.cache;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.models.Subject;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.Optional;
@@ -26,6 +27,6 @@ import java.util.function.BiFunction;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public interface SubjectCache extends BiFunction<DeadboltHandler, Http.Context, CompletionStage<Optional<? extends Subject>>>
+public interface SubjectCache extends BiFunction<DeadboltHandler, Http.RequestHeader, CompletionStage<F.Tuple<Optional<? extends Subject>, Http.RequestHeader>>>
 {
 }
