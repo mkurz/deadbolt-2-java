@@ -37,7 +37,7 @@ import play.routing.Router;
 /**
  * Filters all incoming HTTP requests and applies constraints based on the route's comment.  If a comment is present, the constraint
  * for that route will be applied.  If access is allowed, the next filter in the chain is invoked; if access is not allowed,
- * {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} is invoked.
+ * {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} is invoked.
  * <p>
  * The format of the comment is deadbolt:constraintType:config.  Individual configurations have the form :label[value] - to omit an optional config,
  * remove :label[value],
@@ -126,7 +126,7 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
                                                     {
                                                         LOGGER.error("Unknown Deadbolt route comment [{}], denying access with default handler",
                                                                      requestHeader.attrs().get(Router.Attrs.HANDLER_DEF).comments());
-                                                        return dh.onAuthFailure(context, Optional.empty());
+                                                        return dh.onAuthFailure(requestHeader, Optional.empty());
                                                     }, handler);
     }
 
