@@ -180,20 +180,20 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param deadboltHandler the Deadbolt handler
      * @param content         the content type hint
-     * @param ctx             th request context
+     * @param request         the request
      * @return the result of {@link DeadboltHandler#onAuthFailure}
      */
     protected CompletionStage<Result> onAuthFailure(final DeadboltHandler deadboltHandler,
                                                     final Optional<String> content,
-                                                    final Http.Context ctx)
+                                                    final Http.Request request)
     {
         LOGGER.info("Deadbolt: Access failure on [{}]",
-                    ctx.request().uri());
+                    request.uri());
 
         CompletionStage<Result> result;
         try
         {
-            result = deadboltHandler.onAuthFailure(ctx,
+            result = deadboltHandler.onAuthFailure(request,
                                                    content);
         }
         catch (Exception e)
@@ -208,73 +208,73 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     /**
      * Marks the current action as authorised.  This allows method-level annotations to override controller-level annotations.
      *
-     * @param ctx the request context
+     * @param request the request
      */
-    private void markActionAsAuthorised(final Http.Context ctx)
+    private void markActionAsAuthorised(final Http.Request request)
     {
-        ctx.args.put(ACTION_AUTHORISED,
+        request.args.put(ACTION_AUTHORISED,
                      true);
     }
 
     /**
      * Checks if an action is authorised.  This allows controller-level annotations to cede control to method-level annotations.
      *
-     * @param ctx the request context
+     * @param request the request
      * @return true if a more-specific annotation has authorised access, otherwise false
      */
-    protected boolean isActionAuthorised(final Http.Context ctx)
+    protected boolean isActionAuthorised(final Http.Request request)
     {
-        final Object o = ctx.args.get(ACTION_AUTHORISED);
+        final Object o = request.args.get(ACTION_AUTHORISED);
         return o != null && (Boolean) o;
     }
 
     /**
      * Defer execution until a later point.
      *
-     * @param ctx    the request context
+     * @param request    the request
      * @param action the action to defer
      */
-    protected void defer(final Http.Context ctx,
+    protected void defer(final Http.Request request,
                          final AbstractDeadboltAction<T> action)
     {
         if (action != null)
         {
             LOGGER.info("Deferring action [{}]",
                         this.getClass().getName());
-            ctx.args.put(ACTION_DEFERRED,
+            request.args.put(ACTION_DEFERRED,
                          action);
         }
     }
 
     /**
-     * Check if there is a deferred action in the context.
+     * Check if there is a deferred action in the request.
      *
-     * @param ctx the request context
-     * @return true iff there is a deferred action in the context
+     * @param request the request
+     * @return true if there is a deferred action in the request
      */
-    public boolean isDeferred(final Http.Context ctx)
+    public boolean isDeferred(final Http.Request request)
     {
-        return ctx.args.containsKey(ACTION_DEFERRED);
+        return request.args.containsKey(ACTION_DEFERRED);
     }
 
     /**
-     * Get the deferred action from the context.
+     * Get the deferred action from the request.
      *
-     * @param ctx the request context
+     * @param request the request
      * @return the deferred action, or null if it doesn't exist
      */
     @SuppressWarnings("unchecked")
-    public AbstractDeadboltAction<T> getDeferredAction(final Http.Context ctx)
+    public AbstractDeadboltAction<T> getDeferredAction(final Http.Request request)
     {
         AbstractDeadboltAction<T> action = null;
-        final Object o = ctx.args.get(ACTION_DEFERRED);
+        final Object o = request.args.get(ACTION_DEFERRED);
         if (o != null)
         {
             action = (AbstractDeadboltAction<T>) o;
             action.delegate = this;
 
-            ctx.args.remove(ACTION_DEFERRED);
-            ctx.args.put(IGNORE_DEFERRED_FLAG,
+            request.args.remove(ACTION_DEFERRED);
+            request.args.put(IGNORE_DEFERRED_FLAG,
                          true);
         }
         return action;
@@ -290,44 +290,44 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     }
 
     /**
-     * Add a flag to the context to indicate the action has passed the constraint
+     * Add a flag to the request to indicate the action has passed the constraint
      * and call the delegate.
      *
-     * @param context the context
+     * @param request the request
      * @return the result
      */
-    protected CompletionStage<Result> authorizeAndExecute(final Http.Context context)
+    protected CompletionStage<Result> authorizeAndExecute(final Http.Request request)
     {
         if(constraintAnnotationMode != ConstraintAnnotationMode.AND)
         {
             // In AND mode we don't mark an action as authorised because we want ALL (remaining) constraints to be evaluated as well!
-            markActionAsAuthorised(context);
+            markActionAsAuthorised(request);
         }
-        return delegate.call(context);
+        return delegate.call(request);
     }
 
     /**
-     * Add a flag to the context to indicate the action has been blocked by the
+     * Add a flag to the request to indicate the action has been blocked by the
      * constraint and call {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional<String>)}.
      *
-     * @param context the context
+     * @param request the request
      * @param handler the relevant handler
      * @param content the content type
      * @return the result
      */
-    protected CompletionStage<Result> unauthorizeAndFail(final Http.Context context,
+    protected CompletionStage<Result> unauthorizeAndFail(final Http.Request request,
                                                          final DeadboltHandler handler,
                                                          final Optional<String> content)
     {
         if(constraintAnnotationMode == ConstraintAnnotationMode.OR && deadboltActionLeftInActionChain(this))
         {
             // In OR mode we don't fail immediately but also check remaining constraints (it there is any left). Maybe one of these next ones authorizes...
-            return delegate.call(context);
+            return delegate.call(request);
         }
 
         return onAuthFailure(handler,
                              content,
-                             context);
+                             request);
     }
 
     private CompletionStage<Result> maybeBlock(CompletionStage<Result> eventualResult) throws InterruptedException,
