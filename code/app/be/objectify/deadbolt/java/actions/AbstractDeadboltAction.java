@@ -24,6 +24,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -279,13 +280,13 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         return action;
     }
 
-    public CompletionStage<Optional<Result>> preAuth(final boolean forcePreAuthCheck,
-                                                     final Http.Context ctx,
-                                                     final Optional<String> content,
-                                                     final DeadboltHandler deadboltHandler)
+    public CompletionStage<F.Tuple<Optional<Result>, Http.RequestHeader>> preAuth(final boolean forcePreAuthCheck,
+                                                                                  final Http.RequestHeader requestHeader,
+                                                                                  final Optional<String> content,
+                                                                                  final DeadboltHandler deadboltHandler)
     {
-        return forcePreAuthCheck ? beforeAuthCheckCache.apply(deadboltHandler, ctx, content)
-                                 : CompletableFuture.completedFuture(Optional.empty());
+        return forcePreAuthCheck ? beforeAuthCheckCache.apply(deadboltHandler, requestHeader, content)
+                                 : CompletableFuture.completedFuture(F.Tuple(Optional.empty(), requestHeader));
     }
 
     /**

@@ -20,6 +20,7 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.utils.TriFunction;
+import play.libs.F;
 import play.mvc.Http;
 
 import javax.inject.Inject;
@@ -378,11 +379,11 @@ public class ConstraintLogic
                 });
     }
 
-    protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
-                                                                      final DeadboltHandler deadboltHandler)
+    protected CompletionStage<F.Tuple<Optional<? extends Subject>, Http.RequestHeader>> getSubject(final Http.RequestHeader requestHeader,
+                                                                                                   final DeadboltHandler deadboltHandler)
     {
         return subjectCache.apply(deadboltHandler,
-                                  ctx);
+                                  requestHeader);
     }
 
     /**
