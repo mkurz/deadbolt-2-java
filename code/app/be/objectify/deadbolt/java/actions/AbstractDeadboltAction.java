@@ -307,7 +307,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     /**
      * Add a flag to the context to indicate the action has been blocked by the
-     * constraint and call {@link DeadboltHandler#onAuthFailure(Http.Context, Optional<String>)}.
+     * constraint and call {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional<String>)}.
      *
      * @param context the context
      * @param handler the relevant handler

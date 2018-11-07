@@ -70,7 +70,7 @@ public class FilterConstraints
     /**
      * A constraint that requires a subject to be present.
      *
-     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
      * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
@@ -105,7 +105,7 @@ public class FilterConstraints
     /**
      * A constraint that requires a subject to not be present.
      *
-     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
      * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
@@ -143,7 +143,7 @@ public class FilterConstraints
      * A constraint that requires the subject to hold certain roles.
      *
      * @param roleGroups
-     * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
      * @see ConstraintLogic#restrict(Http.Context, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
      */
@@ -237,7 +237,7 @@ public class FilterConstraints
      * @param patternType the type of pattern matching
      * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)}
      * @param invert      invert the meaning of the constraint, where a successful match results in authorization failing
-     * @param content     is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content     is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
      * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
@@ -303,7 +303,7 @@ public class FilterConstraints
      *
      * @param name    the name of the constraint
      * @param meta    additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
-     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
      * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
@@ -347,7 +347,7 @@ public class FilterConstraints
      * tree of constraints.
      *
      * @param name    the name of the composite constraint defined in {@link CompositeCache}.
-     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
      * @throws IllegalStateException if no constraint with the given name is present in the composite cache
      */
@@ -378,7 +378,7 @@ public class FilterConstraints
      * tree of constraints.
      *
      * @param constraint the composite constraint
-     * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
      */
     public FilterFunction composite(final Constraint constraint,
