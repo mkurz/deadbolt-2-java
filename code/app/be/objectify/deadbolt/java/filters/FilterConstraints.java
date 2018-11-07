@@ -84,8 +84,8 @@ public class FilterConstraints
                                                                 .orElseGet(() -> constraintLogic.subjectPresent(maybePreAuth._2,
                                                                                                                 handler,
                                                                                                                 content,
-                                                                                                                (ctx, hdlr, cntent) -> next.apply(requestHeader),
-                                                                                                                (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                                (rh, hdlr, cntent) -> next.apply(rh),
+                                                                                                                (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                           cntent),
                                                                                                                 ConstraintPoint.FILTER)));
     }
@@ -118,9 +118,9 @@ public class FilterConstraints
                                                                 .orElseGet(() -> constraintLogic.subjectNotPresent(maybePreAuth._2,
                                                                                                                    handler,
                                                                                                                    content,
-                                                                                                                   (ctx, hdlr, cntent) -> hdlr.onAuthFailure(context,
+                                                                                                                   (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                              cntent),
-                                                                                                                   (ctx, hdlr, cntent) -> next.apply(requestHeader),
+                                                                                                                   (rh, hdlr, cntent) -> next.apply(rh),
                                                                                                                    ConstraintPoint.FILTER)));
     }
 
@@ -157,8 +157,8 @@ public class FilterConstraints
                                                                                                           handler,
                                                                                                           content,
                                                                                                           () -> roleGroups,
-                                                                                                          ctx -> next.apply(requestHeader),
-                                                                                                          (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                          rh -> next.apply(rh),
+                                                                                                          (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                     cntent),
                                                                                                           ConstraintPoint.FILTER)));
     }
@@ -256,8 +256,8 @@ public class FilterConstraints
                                                                                                          patternType,
                                                                                                          meta,
                                                                                                          invert,
-                                                                                                         ctx -> next.apply(requestHeader),
-                                                                                                         (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                         rh -> next.apply(rh),
+                                                                                                         (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                    cntent),
                                                                                                          ConstraintPoint.FILTER)));
     }
@@ -317,8 +317,8 @@ public class FilterConstraints
                                                                                                          content,
                                                                                                          name,
                                                                                                          meta,
-                                                                                                              ctx -> next.apply(requestHeader),
-                                                                                                         (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                         rh -> next.apply(rh),
+                                                                                                         (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                    cntent),
                                                                                                          ConstraintPoint.FILTER)));
     }
@@ -390,7 +390,7 @@ public class FilterConstraints
                                                                                                handler.onAuthSuccess(maybePreAuth._2,
                                                                                                                      "composite",
                                                                                                                      ConstraintPoint.FILTER);
-                                                                                               return next.apply(requestHeader);
+                                                                                               return next.apply(maybePreAuth._2);
                                                                                            }).get()
                                                                                                                            : handler.onAuthFailure(maybePreAuth._2,
                                                                                                                                                    content))));
@@ -414,8 +414,8 @@ public class FilterConstraints
                                                                                                                       handler,
                                                                                                                       content,
                                                                                                                       roleName,
-                                                                                                                      ctx -> next.apply(requestHeader),
-                                                                                                                      (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                                      rh -> next.apply(rh),
+                                                                                                                      (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                                 cntent),
                                                                                                                       ConstraintPoint.FILTER)));
     }
