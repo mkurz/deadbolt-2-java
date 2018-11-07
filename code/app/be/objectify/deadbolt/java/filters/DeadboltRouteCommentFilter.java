@@ -125,7 +125,7 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
         this.handler = handlerCache.get();
         this.filterConstraints = filterConstraints;
 
-        this.unknownDeadboltComment = new F.Tuple<>((context, requestHeader, dh, onSuccess) ->
+        this.unknownDeadboltComment = new F.Tuple<>((requestHeader, dh, onSuccess) ->
                                                     {
                                                         LOGGER.error("Unknown Deadbolt route comment [{}], denying access with default handler",
                                                                      requestHeader.attrs().get(Router.Attrs.HANDLER_DEF).comments());
@@ -157,8 +157,7 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
                                             .orElseGet(() -> pattern(comment)
                                                     .orElseGet(() -> roleBasedPermissionsComment(comment)
                                                             .orElse(unknownDeadboltComment)))))));
-            result = tuple._1.apply(context(requestHeader),
-                                    requestHeader,
+            result = tuple._1.apply(requestHeader,
                                     tuple._2,
                                     next);
         }

@@ -65,8 +65,7 @@ public class DeadboltRoutePathFilter extends AbstractDeadboltFilter
     {
         final Optional<AuthorizedRoute> maybeAuthRoute = authorizedRoutes.apply(requestHeader.method(),
                                                                                 requestHeader.attrs().get(Router.Attrs.HANDLER_DEF).path());
-        return maybeAuthRoute.map(authRoute -> authRoute.constraint().apply(context(requestHeader),
-                                                                            requestHeader,
+        return maybeAuthRoute.map(authRoute -> authRoute.constraint().apply(requestHeader,
                                                                             authRoute.handler().orElse(handler),
                                                                             next)
         ).orElseGet(() -> next.apply(requestHeader));
