@@ -52,8 +52,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     static final TypedKey<Boolean> ACTION_AUTHORISED = TypedKey.create("deadbolt.action-authorised");
 
-    private static final String ACTION_DEFERRED = "deadbolt.action-deferred";
-    private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
+    static final TypedKey<AbstractDeadboltAction<?>> ACTION_DEFERRED = TypedKey.create("deadbolt.action-deferred");
+    static final TypedKey<Boolean> IGNORE_DEFERRED_FLAG = TypedKey.create("deadbolt.ignore-deferred-flag");
 
     final HandlerCache handlerCache;
 
@@ -115,16 +115,15 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         {
             if (isDeferred(request))
             {
-                final AbstractDeadboltAction<?> deferredAction = getDeferredAction(request);
-                LOGGER.debug("Executing deferred action [{}]", deferredAction.getClass().getName());
-                result = deferredAction.call(request);
+                final F.Tuple<AbstractDeadboltAction<?>, Http.Request> deferredAction = getDeferredAction(request);
+                LOGGER.debug("Executing deferred action [{}]", deferredAction._1.getClass().getName());
+                result = deferredAction._1.call(deferredAction._2);
             }
-            else if (!request.args.containsKey(IGNORE_DEFERRED_FLAG)
+            else if (!request.attrs().containsKey(IGNORE_DEFERRED_FLAG)
                     && deferred())
             {
-                defer(request,
-                      this);
-                result = delegate.call(request);
+                result = delegate.call(defer(request,
+                        this));
             }
             else
             {
@@ -228,16 +227,17 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param request    the request
      * @param action the action to defer
      */
-    protected void defer(final Http.Request request,
+    protected Http.Request defer(final Http.Request request,
                          final AbstractDeadboltAction<T> action)
     {
         if (action != null)
         {
             LOGGER.info("Deferring action [{}]",
                         this.getClass().getName());
-            request.args.put(ACTION_DEFERRED,
+            return request.addAttr(ACTION_DEFERRED,
                          action);
         }
+        return request;
     }
 
     /**
@@ -248,30 +248,22 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      */
     public boolean isDeferred(final Http.Request request)
     {
-        return request.args.containsKey(ACTION_DEFERRED);
+        return request.attrs().containsKey(ACTION_DEFERRED);
     }
 
     /**
      * Get the deferred action from the request.
      *
      * @param request the request
-     * @return the deferred action, or null if it doesn't exist
+     * @return a tuple containing the deferred action (or null if it doesn't exist) and the cleaned up request you should pass on
      */
     @SuppressWarnings("unchecked")
-    public AbstractDeadboltAction<T> getDeferredAction(final Http.Request request)
+    public F.Tuple<AbstractDeadboltAction<?>, Http.Request> getDeferredAction(final Http.Request request)
     {
-        AbstractDeadboltAction<T> action = null;
-        final Object o = request.args.get(ACTION_DEFERRED);
-        if (o != null)
-        {
-            action = (AbstractDeadboltAction<T>) o;
+        return request.attrs().getOptional(ACTION_DEFERRED).map(action -> {
             action.delegate = this;
-
-            request.args.remove(ACTION_DEFERRED);
-            request.args.put(IGNORE_DEFERRED_FLAG,
-                         true);
-        }
-        return action;
+            return F.<AbstractDeadboltAction<?>, Http.Request>Tuple(action, request.removeAttr(ACTION_DEFERRED).addAttr(IGNORE_DEFERRED_FLAG, true));
+        }).orElseGet(() -> F.Tuple(null, request));
     }
 
     public CompletionStage<F.Tuple<Optional<Result>, Http.RequestHeader>> preAuth(final boolean forcePreAuthCheck,
