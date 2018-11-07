@@ -60,7 +60,7 @@ public class FilterConstraints
      * A constraint that requires a subject to be present.
      *
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#subjectPresent(Http.RequestHeader, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectPresent()
     {
@@ -72,7 +72,7 @@ public class FilterConstraints
      *
      * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#subjectPresent(Http.RequestHeader, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectPresent(final Optional<String> content)
     {
@@ -95,7 +95,7 @@ public class FilterConstraints
      * A constraint that requires a subject to not be present.
      *
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#subjectPresent(Http.RequestHeader, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectNotPresent()
     {
@@ -107,7 +107,7 @@ public class FilterConstraints
      *
      * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#subjectPresent(Http.RequestHeader, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectNotPresent(final Optional<String> content)
     {
@@ -131,7 +131,7 @@ public class FilterConstraints
      *
      * @param roleGroups
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#restrict(Http.Context, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#restrict(Http.RequestHeader, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction restrict(final List<String[]> roleGroups)
     {
@@ -145,7 +145,7 @@ public class FilterConstraints
      * @param roleGroups
      * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#restrict(Http.Context, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#restrict(Http.RequestHeader, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction restrict(final List<String[]> roleGroups,
                                    final Optional<String> content)
@@ -168,13 +168,13 @@ public class FilterConstraints
 
     /**
      * A constraint that checks the permissions of a subject (if using {@link PatternType#EQUALITY} or {@link PatternType#REGEX}) or
-     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)} (if
+     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)} (if
      * using {@link PatternType#CUSTOM}).
      *
      * @param value       the constraint value
      * @param patternType the type of pattern matching
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#pattern(Http.RequestHeader, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType)
@@ -186,14 +186,14 @@ public class FilterConstraints
 
     /**
      * A constraint that checks the permissions of a subject (if using {@link PatternType#EQUALITY} or {@link PatternType#REGEX}) or
-     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)} (if
+     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)} (if
      * using {@link PatternType#CUSTOM}).
      *
      * @param value       the constraint value
      * @param patternType the type of pattern matching
-     * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)}
+     * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#pattern(Http.RequestHeader, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType,
@@ -208,14 +208,14 @@ public class FilterConstraints
 
     /**
      * A constraint that checks the permissions of a subject (if using {@link PatternType#EQUALITY} or {@link PatternType#REGEX}) or
-     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)} (if
+     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)} (if
      * using {@link PatternType#CUSTOM}).
      *
      * @param value       the constraint value
      * @param patternType the type of pattern matching
      * @param invert      invert the meaning of the constraint, where a successful match results in authorization failing
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#pattern(Http.RequestHeader, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType,
@@ -230,16 +230,16 @@ public class FilterConstraints
 
     /**
      * A constraint that checks the permissions of a subject (if using {@link PatternType#EQUALITY} or {@link PatternType#REGEX}) or
-     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)} (if
+     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)} (if
      * using {@link PatternType#CUSTOM}).
      *
      * @param value       the constraint value
      * @param patternType the type of pattern matching
-     * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)}
+     * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * @param invert      invert the meaning of the constraint, where a successful match results in authorization failing
      * @param content     is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#pattern(Http.RequestHeader, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType,
@@ -267,12 +267,12 @@ public class FilterConstraints
     }
 
     /**
-     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
+     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * to determine access.
      *
      * @param name the name of the constraint
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#dynamic(Http.RequestHeader, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction dynamic(final String name)
     {
@@ -281,13 +281,13 @@ public class FilterConstraints
     }
 
     /**
-     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
+     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * to determine access.
      *
      * @param name the name of the constraint
-     * @param meta additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
+     * @param meta additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#dynamic(Http.RequestHeader, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction dynamic(final String name,
                                   final Optional<String> meta)
@@ -298,14 +298,14 @@ public class FilterConstraints
     }
 
     /**
-     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
+     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * to determine access.
      *
      * @param name    the name of the constraint
-     * @param meta    additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
+     * @param meta    additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#dynamic(Http.RequestHeader, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction dynamic(final String name,
                                   final Optional<String> meta,
