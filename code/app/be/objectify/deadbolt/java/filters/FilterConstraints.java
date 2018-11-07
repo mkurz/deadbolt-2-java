@@ -80,8 +80,8 @@ public class FilterConstraints
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, requestHeader, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.subjectPresent(context,
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.subjectPresent(maybePreAuth._2,
                                                                                                                 handler,
                                                                                                                 content,
                                                                                                                 (ctx, hdlr, cntent) -> next.apply(requestHeader),
@@ -114,8 +114,8 @@ public class FilterConstraints
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, requestHeader, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.subjectNotPresent(context,
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.subjectNotPresent(maybePreAuth._2,
                                                                                                                    handler,
                                                                                                                    content,
                                                                                                                    (ctx, hdlr, cntent) -> hdlr.onAuthFailure(context,
@@ -152,8 +152,8 @@ public class FilterConstraints
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, requestHeader, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.restrict(context,
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.restrict(maybePreAuth._2,
                                                                                                           handler,
                                                                                                           content,
                                                                                                           () -> roleGroups,
@@ -248,8 +248,8 @@ public class FilterConstraints
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, requestHeader, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.pattern(context,
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.pattern(maybePreAuth._2,
                                                                                                          handler,
                                                                                                          content,
                                                                                                          value,
@@ -311,8 +311,8 @@ public class FilterConstraints
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, requestHeader, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.dynamic(context,
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.dynamic(maybePreAuth._2,
                                                                                                          handler,
                                                                                                          content,
                                                                                                          name,
@@ -383,16 +383,16 @@ public class FilterConstraints
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, requestHeader, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraint.test(context,
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraint.test(maybePreAuth._2,
                                                                                                  handler)
                                                                                            .thenCompose(allowed -> allowed ? ((Supplier<CompletionStage<Result>>) () -> {
-                                                                                               handler.onAuthSuccess(context,
+                                                                                               handler.onAuthSuccess(maybePreAuth._2,
                                                                                                                      "composite",
                                                                                                                      ConstraintPoint.FILTER);
                                                                                                return next.apply(requestHeader);
                                                                                            }).get()
-                                                                                                                           : handler.onAuthFailure(context,
+                                                                                                                           : handler.onAuthFailure(maybePreAuth._2,
                                                                                                                                                    content))));
     }
 
@@ -409,8 +409,8 @@ public class FilterConstraints
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
                 beforeAuthCheckCache.apply(handler, requestHeader, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.roleBasedPermissions(context,
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.roleBasedPermissions(maybePreAuth._2,
                                                                                                                       handler,
                                                                                                                       content,
                                                                                                                       roleName,
