@@ -30,16 +30,16 @@ import java.util.function.BiFunction;
 @FunctionalInterface
 public interface Constraint
 {
-    default CompletionStage<Boolean> test(Http.Context context,
+    default CompletionStage<Boolean> test(Http.RequestHeader requestHeader,
                                           DeadboltHandler handler)
     {
-        return test(context,
+        return test(requestHeader,
                     handler,
                     Optional.empty(),
                     (globalMeta, localMeta) -> localMeta);
     }
 
-    CompletionStage<Boolean> test(Http.Context context,
+    CompletionStage<Boolean> test(Http.RequestHeader requestHeader,
                                   DeadboltHandler handler,
                                   Optional<String> globalMetaData,
                                   BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn);
