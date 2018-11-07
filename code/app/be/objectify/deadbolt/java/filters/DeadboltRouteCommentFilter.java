@@ -29,7 +29,6 @@ import be.objectify.deadbolt.java.models.PatternType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.api.routing.HandlerDef;
-import play.core.j.JavaContextComponents;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -115,12 +114,10 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
 
     @Inject
     public DeadboltRouteCommentFilter(final Materializer mat,
-                                      final JavaContextComponents javaContextComponents,
                                       final HandlerCache handlerCache,
                                       final FilterConstraints filterConstraints)
     {
-        super(mat,
-              javaContextComponents);
+        super(mat);
         this.handlerCache = handlerCache;
         this.handler = handlerCache.get();
         this.filterConstraints = filterConstraints;

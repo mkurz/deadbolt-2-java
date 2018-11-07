@@ -16,7 +16,6 @@
 package be.objectify.deadbolt.java.filters;
 
 import akka.stream.Materializer;
-import play.core.j.JavaContextComponents;
 import play.mvc.Filter;
 
 /**
@@ -24,12 +23,9 @@ import play.mvc.Filter;
  */
 public abstract class AbstractDeadboltFilter extends Filter
 {
-    private final JavaContextComponents javaContextComponents;
 
-    public AbstractDeadboltFilter(final Materializer mat,
-                                  final JavaContextComponents javaContextComponents)
+    public AbstractDeadboltFilter(final Materializer mat)
     {
         super(mat);
-        this.javaContextComponents = javaContextComponents;
     }
 }
