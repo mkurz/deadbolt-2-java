@@ -163,11 +163,11 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     /**
      * Execute the action.
      *
-     * @param ctx the request context
+     * @param requestHeader the request header
      * @return the result
      * @throws Exception if something bad happens
      */
-    public abstract CompletionStage<Result> execute(final Http.Context ctx) throws Exception;
+    public abstract CompletionStage<Result> execute(final Http.RequestHeader requestHeader) throws Exception;
 
     /**
      * If a constraint is deferrable, i.e. method-level constraints are not applied until controller-level annotations are applied.
