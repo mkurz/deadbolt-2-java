@@ -108,10 +108,10 @@ public class ConstraintLogic
     {
         return getSubject(requestHeader,
                           deadboltHandler)
-                .thenCompose(maybeSubject -> maybeSubject.map(subject -> present.apply(requestHeader,
+                .thenCompose(maybeSubject -> maybeSubject._1.map(subject -> present.apply(maybeSubject._2,
                                                                                        deadboltHandler,
                                                                                        content))
-                                                         .orElseGet(() -> notPresent.apply(requestHeader,
+                                                         .orElseGet(() -> notPresent.apply(maybeSubject._2,
                                                                                            deadboltHandler,
                                                                                            content)));
     }
@@ -129,21 +129,21 @@ public class ConstraintLogic
                 .thenCompose(subjectOption ->
                                   {
                                       boolean roleOk = false;
-                                      if (subjectOption.isPresent())
+                                      if (subjectOption._1.isPresent())
                                       {
                                           final List<String[]> roleGroups = roleGroupSupplier.get();
                                           for (int i = 0; !roleOk && i < roleGroups.size(); i++)
                                           {
-                                              roleOk = analyzer.checkRole(subjectOption,
+                                              roleOk = analyzer.checkRole(subjectOption._1,
                                                                           roleGroups.get(i));
                                           }
                                       }
-                                      return roleOk ? pass(requestHeader,
+                                      return roleOk ? pass(subjectOption._2,
                                                            deadboltHandler,
                                                            pass,
                                                            constraintPoint,
                                                            "restrict")
-                                                    : fail.apply(requestHeader,
+                                                    : fail.apply(subjectOption._2,
                                                                  deadboltHandler,
                                                                  content);
                                   });
@@ -159,22 +159,22 @@ public class ConstraintLogic
     {
         return getSubject(requestHeader,
                           deadboltHandler)
-                .thenCompose(maybeSubject -> maybeSubject.isPresent() ? deadboltHandler.getPermissionsForRole(roleName)
-                                                                                       .thenApply(permissions -> permissions.stream()
+                .thenCompose(maybeSubject -> maybeSubject._1.isPresent() ? deadboltHandler.getPermissionsForRole(roleName)
+                                                                                       .thenApply(permissions -> F.Tuple(permissions.stream()
                                                                                                                             .map(permission -> Optional.ofNullable(patternCache.apply(permission.getValue())))
-                                                                                                                            .map(maybePattern -> analyzer.checkRegexPattern(maybeSubject,
+                                                                                                                            .map(maybePattern -> analyzer.checkRegexPattern(maybeSubject._1,
                                                                                                                                                                                       maybePattern))
                                                                                                                             .filter(matches -> matches)
                                                                                                                             .findFirst()
-                                                                                                                            .isPresent())
+                                                                                                                            .isPresent(), maybeSubject._2))
 
-                                                                      : CompletableFuture.completedFuture(false))
-                .thenCompose(allowed -> allowed ? pass(requestHeader,
+                                                                      : CompletableFuture.completedFuture(F.Tuple(false, maybeSubject._2)))
+                .thenCompose(allowed -> allowed._1 ? pass(allowed._2,
                                                             deadboltHandler,
                                                             pass,
                                                             constraintPoint,
                                                             "roleBasedPermissions")
-                                                     : fail.apply(requestHeader,
+                                                     : fail.apply(allowed._2,
                                                                   deadboltHandler,
                                                                   content));
 
@@ -345,10 +345,10 @@ public class ConstraintLogic
         return getSubject(requestHeader,
                           deadboltHandler)
                 .thenCompose(subject -> {
-                                      final boolean equal = subject.isPresent() ? analyzer.checkPatternEquality(subject,
+                                      final boolean equal = subject._1.isPresent() ? analyzer.checkPatternEquality(subject._1,
                                                                                                                 Optional.ofNullable(values[valueIndex]))
                                                                                 : invert; // this is a little clumsy - it means no subject + invert is still denied
-                                      return (invert ? !equal : equal) ? (successCallAgain(mode, values, valueIndex) ? equality(requestHeader,
+                                      return (invert ? !equal : equal) ? (successCallAgain(mode, values, valueIndex) ? equality(subject._2,
                                                                                                                                 deadboltHandler,
                                                                                                                                 content,
                                                                                                                                 values,
@@ -358,12 +358,12 @@ public class ConstraintLogic
                                                                                                                                 pass,
                                                                                                                                 fail,
                                                                                                                                 constraintPoint)
-                                                                                                                     : pass(requestHeader,
+                                                                                                                     : pass(subject._2,
                                                                                                                             deadboltHandler,
                                                                                                                             pass,
                                                                                                                             constraintPoint,
                                                                                                                             "pattern - equality"))
-                                                                       : (failCallAgain(mode, values, valueIndex) ? equality(requestHeader,
+                                                                       : (failCallAgain(mode, values, valueIndex) ? equality(subject._2,
                                                                                                                              deadboltHandler,
                                                                                                                              content,
                                                                                                                              values,
@@ -373,7 +373,7 @@ public class ConstraintLogic
                                                                                                                              pass,
                                                                                                                              fail,
                                                                                                                              constraintPoint)
-                                                                                                                  : fail.apply(requestHeader,
+                                                                                                                  : fail.apply(subject._2,
                                                                                                                                deadboltHandler,
                                                                                                                                content));
                 });
@@ -409,11 +409,11 @@ public class ConstraintLogic
                                 .thenCombine(getSubject(requestHeader,
                                                              deadboltHandler),
                                              (patternValue, subject) ->
-                                                     subject.isPresent() ? analyzer.checkRegexPattern(subject,
+                                                     F.Tuple(subject._1.isPresent() ? analyzer.checkRegexPattern(subject._1,
                                                                                                       Optional.ofNullable(patternValue))
-                                                                         : invert) // this is a little clumsy - it means no subject + invert is still denied
+                                                                         : invert, subject._2)) // this is a little clumsy - it means no subject + invert is still denied
 
-                                .thenCompose(hasPassed -> (invert ? !hasPassed : hasPassed) ? (successCallAgain(mode, values, valueIndex) ? regex(requestHeader,
+                                .thenCompose(hasPassed -> (invert ? !hasPassed._1 : hasPassed._1) ? (successCallAgain(mode, values, valueIndex) ? regex(hasPassed._2,
                                                                                                                                                   deadboltHandler,
                                                                                                                                                   content,
                                                                                                                                                   values,
@@ -423,12 +423,12 @@ public class ConstraintLogic
                                                                                                                                                   pass,
                                                                                                                                                   fail,
                                                                                                                                                   constraintPoint)
-                                                                                                                                          : pass(requestHeader,
+                                                                                                                                          : pass(hasPassed._2,
                                                                                                                                                  deadboltHandler,
                                                                                                                                                  pass,
                                                                                                                                                  constraintPoint,
                                                                                                                                                  "pattern - regex"))
-                                                                                            : (failCallAgain(mode, values, valueIndex) ? regex(requestHeader,
+                                                                                            : (failCallAgain(mode, values, valueIndex) ? regex(hasPassed._2,
                                                                                                                                                deadboltHandler,
                                                                                                                                                content,
                                                                                                                                                values,
@@ -438,7 +438,7 @@ public class ConstraintLogic
                                                                                                                                                pass,
                                                                                                                                                fail,
                                                                                                                                                constraintPoint)
-                                                                                                                                       : fail.apply(requestHeader,
+                                                                                                                                       : fail.apply(hasPassed._2,
                                                                                                                                                     deadboltHandler,
                                                                                                                                                     content)));
     }
