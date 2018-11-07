@@ -94,17 +94,17 @@ public class ViewSupport
                                 final DeadboltHandler handler,
                                 final Optional<String> content,
                                 final long timeoutInMillis,
-                                final Http.Context context) throws Throwable
+                                final Http.RequestHeader requestHeader) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.restrict(context,
+            allowed = constraintLogic.restrict(requestHeader,
                                                handler(handler),
                                                content,
                                                () -> roles,
-                                               ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                               (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                               rh -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                               (rh, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
                                                ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
@@ -131,18 +131,18 @@ public class ViewSupport
                                final DeadboltHandler handler,
                                final Optional<String> content,
                                final long timeoutInMillis,
-                               final Http.Context context) throws Throwable
+                               final Http.RequestHeader requestHeader) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.dynamic(context,
+            allowed = constraintLogic.dynamic(requestHeader,
                                               handler(handler),
                                               content,
                                               name,
                                               meta,
-                                              ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                              rh -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                              (rh, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
                                               ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
@@ -164,17 +164,17 @@ public class ViewSupport
     public boolean viewSubjectPresent(final DeadboltHandler handler,
                                       final Optional<String> content,
                                       final long timeoutInMillis,
-                                      final Http.Context context) throws Throwable
+                                      final Http.RequestHeader requestHeader) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.subjectPresent(context,
+            allowed = constraintLogic.subjectPresent(requestHeader,
                                                      handler == null ? handlerCache.get()
                                                                      : handler,
                                                      content,
-                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                                     (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                                     (rh, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                                     (rh, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
                                                      ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
@@ -196,16 +196,16 @@ public class ViewSupport
     public boolean viewSubjectNotPresent(final DeadboltHandler handler,
                                          final Optional<String> content,
                                          final long timeoutInMillis,
-                                         final Http.Context context) throws Throwable
+                                         final Http.RequestHeader requestHeader) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.subjectNotPresent(context,
+            allowed = constraintLogic.subjectNotPresent(requestHeader,
                                                         handler(handler),
                                                         content,
-                                                        (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
-                                                        (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                                        (rh, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                                        (rh, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE),
                                                         ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
@@ -226,20 +226,20 @@ public class ViewSupport
                                final DeadboltHandler handler,
                                final Optional<String> content,
                                final long timeoutInMillis,
-                               final Http.Context context) throws Exception
+                               final Http.RequestHeader requestHeader) throws Exception
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.pattern(context,
+            allowed = constraintLogic.pattern(requestHeader,
                                               handler(handler),
                                               content,
                                               value,
                                               patternType,
                                               meta,
                                               invert,
-                                              ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                              (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                              rh -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                              (rh, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
                                               ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
@@ -264,17 +264,17 @@ public class ViewSupport
                                             final DeadboltHandler handler,
                                             final Optional<String> content,
                                             final long timeoutInMillis,
-                                            final Http.Context context) throws Throwable
+                                            final Http.RequestHeader requestHeader) throws Throwable
     {
         boolean allowed;
         try
         {
-            allowed = constraintLogic.roleBasedPermissions(context,
+            allowed = constraintLogic.roleBasedPermissions(requestHeader,
                                                            handler(handler),
                                                            content,
                                                            roleName,
-                                                           ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                                           (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                                           rh -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                                           (rh, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
                                                            ConstraintPoint.TEMPLATE)
                                      .toCompletableFuture()
                                      .get(timeoutInMillis,
