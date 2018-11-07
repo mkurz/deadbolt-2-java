@@ -18,7 +18,6 @@ package be.objectify.deadbolt.java.filters;
 import akka.stream.Materializer;
 import play.core.j.JavaContextComponents;
 import play.mvc.Filter;
-import play.mvc.Http;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -32,26 +31,5 @@ public abstract class AbstractDeadboltFilter extends Filter
     {
         super(mat);
         this.javaContextComponents = javaContextComponents;
-    }
-
-    Http.Context context(final Http.RequestHeader requestHeader)
-    {
-        final Http.RequestBuilder requestBuilder = new Http.RequestBuilder().headers(requestHeader.getHeaders())
-                                                                            .host(requestHeader.host())
-                                                                            .method(requestHeader.method())
-                                                                            .path(requestHeader.path())
-                                                                            .remoteAddress(requestHeader.remoteAddress())
-                                                                            .secure(requestHeader.secure())
-                                                                            .attrs(requestHeader.attrs())
-                                                                            .host(requestHeader.host())
-                                                                            .uri(requestHeader.uri())
-                                                                            .version(requestHeader.version());
-        requestHeader.clientCertificateChain().ifPresent(requestBuilder::clientCertificateChain);
-        for (Http.Cookie cookie : requestHeader.cookies())
-        {
-            requestBuilder.cookie(cookie);
-        }
-        return new Http.Context(requestBuilder,
-                                javaContextComponents);
     }
 }
