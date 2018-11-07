@@ -31,10 +31,11 @@ public abstract class AbstractDynamicResourceHandler implements DynamicResourceH
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompletionStage<Boolean> isAllowed(final String name,
                                               final Optional<String> meta,
                                               final DeadboltHandler deadboltHandler,
-                                              final Http.Context ctx)
+                                              final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(false);
     }
@@ -42,10 +43,11 @@ public abstract class AbstractDynamicResourceHandler implements DynamicResourceH
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                     final Optional<String> meta,
                                                     final DeadboltHandler deadboltHandler,
-                                                    final Http.Context ctx)
+                                                    final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(false);
     }
