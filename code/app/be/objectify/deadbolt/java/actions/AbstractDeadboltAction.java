@@ -106,48 +106,48 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * {@inheritDoc}
      */
     @Override
-    public CompletionStage<Result> call(final Http.Context ctx)
+    public CompletionStage<Result> call(final Http.Request request)
     {
         CompletionStage<Result> result;
 
         // The first deadbolt-annotations that runs saves how many constraints in the action chain are, so we know that for later
         // Be aware: Not every deadbolt-annotation is a constraint, but every constraint is a deadbolt-annotation ;)
         // @BeforeAccess and @DeferredDeadboltAction do NOT count as constraint, because they just pass trough (=they do NOT call markActionAsAuthorised() in success case)
-        ctx.args.computeIfAbsent(CONSTRAINT_COUNT, key -> constraintsCountInActionChain(this, 0));
+        request.args.computeIfAbsent(CONSTRAINT_COUNT, key -> constraintsCountInActionChain(this, 0));
 
         try
         {
-            if (isDeferred(ctx))
+            if (isDeferred(request))
             {
-                final AbstractDeadboltAction<?> deferredAction = getDeferredAction(ctx);
+                final AbstractDeadboltAction<?> deferredAction = getDeferredAction(request);
                 LOGGER.debug("Executing deferred action [{}]", deferredAction.getClass().getName());
-                result = deferredAction.call(ctx);
+                result = deferredAction.call(request);
             }
-            else if (!ctx.args.containsKey(IGNORE_DEFERRED_FLAG)
+            else if (!request.args.containsKey(IGNORE_DEFERRED_FLAG)
                     && deferred())
             {
-                defer(ctx,
+                defer(request,
                       this);
-                result = delegate.call(ctx);
+                result = delegate.call(request);
             }
             else
             {
-                if (isActionAuthorised(ctx) && !alwaysExecute())
+                if (isActionAuthorised(request) && !alwaysExecute())
                 {
-                    result = delegate.call(ctx);
+                    result = delegate.call(request);
                 }
                 else
                 {
-                    result = maybeBlock(execute(ctx));
+                    result = maybeBlock(execute(request));
                 }
             }
             return result.thenCompose(r -> {
-                if(constraintAnnotationMode == ConstraintAnnotationMode.OR && !deadboltActionLeftInActionChain(this) && !isActionAuthorised(ctx) && ((Integer)ctx.args.get(CONSTRAINT_COUNT)) > 0) {
+                if(constraintAnnotationMode == ConstraintAnnotationMode.OR && !deadboltActionLeftInActionChain(this) && !isActionAuthorised(request) && ((Integer)request.args.get(CONSTRAINT_COUNT)) > 0) {
                     // We are in OR mode and "this" was the last deadbolt-action that ran and no constraint marked the targeted action-method as authorised yet -> we finally have to fail now.
                     // If there was no "real" constraint, we don't come here, e.g. just calling @BeforeAccess or/and @DeferredDeadboltAction doesn't count as constraint
                     return onAuthFailure(getDeadboltHandler(getHandlerKey()),
                             getContent(),
-                            ctx);
+                            request);
                 }
                 return CompletableFuture.completedFuture(r);
             });
