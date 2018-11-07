@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java;
 
 import play.libs.F;
+import play.libs.typedmap.TypedKey;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -46,7 +47,7 @@ public class ConfigKeys
     public static final F.Tuple<String, String> CONSTRAINT_MODE_DEFAULT = new F.Tuple<>(CONSTRAINT_MODE,
                                                                                    ConstraintAnnotationMode.PROCESS_FIRST_CONSTRAINT_ONLY.toString());
 
-    public static final String PATTERN_INVERT = "deadbolt.pattern.invert";
+    public static final TypedKey<Boolean> PATTERN_INVERT = TypedKey.create("deadbolt.pattern.invert");
 
     private ConfigKeys()
     {

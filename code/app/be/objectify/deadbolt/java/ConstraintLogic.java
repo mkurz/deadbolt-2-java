@@ -291,15 +291,15 @@ public class ConstraintLogic
                                           final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                           final ConstraintPoint constraintPoint)
     {
-        requestHeader.args.put(ConfigKeys.PATTERN_INVERT,
+        final Http.RequestHeader requestHeaderWithAttr = requestHeader.addAttr(ConfigKeys.PATTERN_INVERT,
                      invert);
-        return deadboltHandler.getDynamicResourceHandler(requestHeader)
+        return deadboltHandler.getDynamicResourceHandler(requestHeaderWithAttr)
                               .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
                               .thenCompose(resourceHandler -> resourceHandler.checkPermission(values[valueIndex],
                                                                                               meta,
                                                                                               deadboltHandler,
-                                                                                              requestHeader))
-                              .thenCompose(allowed -> (invert ? !allowed : allowed) ? (successCallAgain(mode, values, valueIndex) ? custom(requestHeader,
+                                                                                              requestHeaderWithAttr))
+                              .thenCompose(allowed -> (invert ? !allowed : allowed) ? (successCallAgain(mode, values, valueIndex) ? custom(requestHeaderWithAttr,
                                                                                                                                            deadboltHandler,
                                                                                                                                            content,
                                                                                                                                            values,
@@ -310,12 +310,12 @@ public class ConstraintLogic
                                                                                                                                            pass,
                                                                                                                                            fail,
                                                                                                                                            constraintPoint)
-                                                                                                                                  : pass(requestHeader,
+                                                                                                                                  : pass(requestHeaderWithAttr,
                                                                                                                                          deadboltHandler,
                                                                                                                                          pass,
                                                                                                                                          constraintPoint,
                                                                                                                                          "pattern - custom"))
-                                                                                    : (failCallAgain(mode, values, valueIndex) ? custom(requestHeader,
+                                                                                    : (failCallAgain(mode, values, valueIndex) ? custom(requestHeaderWithAttr,
                                                                                                                                         deadboltHandler,
                                                                                                                                         content,
                                                                                                                                         values,
@@ -326,7 +326,7 @@ public class ConstraintLogic
                                                                                                                                         pass,
                                                                                                                                         fail,
                                                                                                                                         constraintPoint)
-                                                                                                                               : fail.apply(requestHeader,
+                                                                                                                               : fail.apply(requestHeaderWithAttr,
                                                                                                                                             deadboltHandler,
                                                                                                                                             content)));
     }
