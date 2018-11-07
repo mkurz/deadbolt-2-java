@@ -47,7 +47,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
      * {@inheritDoc}
      */
     @Override
-    public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context, Optional<String> content)
+    public CompletionStage<Optional<Result>> beforeAuthCheck(Http.RequestHeader requestHeader, Optional<String> content)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
@@ -56,7 +56,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
      * {@inheritDoc}
      */
     @Override
-    public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+    public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
@@ -65,10 +65,10 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
      * {@inheritDoc}
      */
     @Override
-    public CompletionStage<Result> onAuthFailure(final Http.Context context,
+    public CompletionStage<Result> onAuthFailure(final Http.RequestHeader requestHeader,
                                                  final Optional<String> content)
     {
-        return CompletableFuture.completedFuture(unauthorized.render())
+        return CompletableFuture.completedFuture(unauthorized.render(requestHeader.asScala()))
                                 .thenApply(Results::unauthorized);
     }
 
@@ -76,7 +76,7 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
      * {@inheritDoc}
      */
     @Override
-    public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+    public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
