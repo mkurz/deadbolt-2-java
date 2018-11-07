@@ -25,6 +25,7 @@ import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.libs.F;
+import play.libs.typedmap.TypedKey;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -49,7 +50,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDeadboltAction.class);
 
-    private static final String ACTION_AUTHORISED = "deadbolt.action-authorised";
+    static final TypedKey<Boolean> ACTION_AUTHORISED = TypedKey.create("deadbolt.action-authorised");
 
     private static final String ACTION_DEFERRED = "deadbolt.action-deferred";
     private static final String IGNORE_DEFERRED_FLAG = "deadbolt.ignore-deferred-flag";
@@ -204,9 +205,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param request the request
      */
-    private void markActionAsAuthorised(final Http.Request request)
+    private Http.Request markActionAsAuthorised(final Http.Request request)
     {
-        request.args.put(ACTION_AUTHORISED,
+        return request.addAttr(ACTION_AUTHORISED,
                      true);
     }
 
@@ -218,8 +219,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      */
     protected boolean isActionAuthorised(final Http.Request request)
     {
-        final Object o = request.args.get(ACTION_AUTHORISED);
-        return o != null && (Boolean) o;
+        return request.attrs().getOptional(ACTION_AUTHORISED).orElse(false);
     }
 
     /**
@@ -295,7 +295,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         if(constraintAnnotationMode != ConstraintAnnotationMode.AND)
         {
             // In AND mode we don't mark an action as authorised because we want ALL (remaining) constraints to be evaluated as well!
-            markActionAsAuthorised(request);
+            return delegate.call(markActionAsAuthorised(request));
         }
         return delegate.call(request);
     }
