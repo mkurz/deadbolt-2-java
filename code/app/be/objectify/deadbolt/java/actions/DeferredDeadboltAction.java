@@ -46,9 +46,9 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
     }
 
     @Override
-    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
+    public CompletionStage<Result> execute(final Http.RequestHeader request) throws Exception
     {
-        return delegate.call(ctx);
+        return delegate.call((Http.Request)request);
     }
 
     /**

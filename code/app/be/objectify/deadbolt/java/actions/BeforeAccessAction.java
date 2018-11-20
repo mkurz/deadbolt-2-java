@@ -49,15 +49,15 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
      * {@inheritDoc}
      */
     @Override
-    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
+    public CompletionStage<Result> execute(final Http.RequestHeader request) throws Exception
     {
         final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
         return preAuth(true,
-                         ctx,
+                         request,
                          getContent(),
                          deadboltHandler)
-                .thenCompose(preAuthResult -> preAuthResult.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
-                                                           .orElseGet(() -> delegate.call(ctx)));
+                .thenCompose(preAuthResult -> preAuthResult._1.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
+                                                           .orElseGet(() -> delegate.call((Http.Request)preAuthResult._2)));
     }
 
     /**

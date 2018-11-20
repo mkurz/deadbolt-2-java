@@ -67,10 +67,10 @@ public class RestrictAction extends AbstractRestrictiveAction<Restrict>
     }
 
     @Override
-    public CompletionStage<Result> applyRestriction(final Http.Context ctx,
+    public CompletionStage<Result> applyRestriction(final Http.RequestHeader request,
                                                     final DeadboltHandler deadboltHandler)
     {
-        return constraintLogic.restrict(ctx,
+        return constraintLogic.restrict(request,
                                         deadboltHandler,
                                         getContent(),
                                         this::getRoleGroups,

@@ -65,10 +65,10 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     }
 
     @Override
-    public CompletionStage<Result> applyRestriction(final Http.Context ctx,
+    public CompletionStage<Result> applyRestriction(final Http.RequestHeader request,
                                                     final DeadboltHandler deadboltHandler)
     {
-        return constraintLogic.dynamic(ctx,
+        return constraintLogic.dynamic(request,
                                        deadboltHandler,
                                        getContent(),
                                        configuration.value(),
