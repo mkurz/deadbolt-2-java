@@ -63,9 +63,9 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                                                              Optional.ofNullable(configuration.meta()),
                                                              (globalMd, localMd) -> preferGlobalMeta ? globalMd.isPresent() ? globalMd : localMd
                                                                                                      : localMd.isPresent() ? localMd : globalMd)
-                                                       .thenCompose(allowed -> allowed ? authorizeAndExecute(request,
+                                                       .thenCompose(allowed -> allowed._1 ? authorizeAndExecute(allowed._2,
                                                                                                              handler)
-                                                                                       : unauthorizeAndFail(request,
+                                                                                       : unauthorizeAndFail(allowed._2,
                                                                                                             handler,
                                                                                                             getContent()));
                                   })

@@ -386,11 +386,11 @@ public class FilterConstraints
                        .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
                                                                 .orElseGet(() -> constraint.test(maybePreAuth._2,
                                                                                                  handler)
-                                                                                           .thenCompose(allowed -> allowed ? ((Supplier<CompletionStage<Result>>) () -> {
-                                                                                               handler.onAuthSuccess(maybePreAuth._2,
+                                                                                           .thenCompose(allowed -> allowed._1 ? ((Supplier<CompletionStage<Result>>) () -> {
+                                                                                               handler.onAuthSuccess(allowed._2,
                                                                                                                      "composite",
                                                                                                                      ConstraintPoint.FILTER);
-                                                                                               return next.apply(maybePreAuth._2);
+                                                                                               return next.apply(allowed._2);
                                                                                            }).get()
                                                                                                                            : handler.onAuthFailure(maybePreAuth._2,
                                                                                                                                                    content))));
