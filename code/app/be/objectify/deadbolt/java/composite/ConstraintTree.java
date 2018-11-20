@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.composite;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.Arrays;
@@ -49,15 +50,15 @@ public class ConstraintTree implements Constraint
     }
 
     @Override
-    public CompletionStage<Boolean> test(final Http.Context context,
+    public CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> test(final Http.RequestHeader requestHeader,
                                          final DeadboltHandler handler,
                                          final Optional<String> globalMetaData,
                                          final BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn)
     {
-        final CompletionStage<Boolean> result;
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result;
         if (constraints.isEmpty())
         {
-            result = CompletableFuture.completedFuture(false);
+            result = CompletableFuture.completedFuture(F.Tuple(false, requestHeader));
         }
         else
         {
@@ -67,7 +68,7 @@ public class ConstraintTree implements Constraint
                 current = operator.apply(current,
                                          constraints.get(i));
             }
-            result = current.test(context,
+            result = current.test(requestHeader,
                                   handler,
                                   globalMetaData,
                                   metaFn);

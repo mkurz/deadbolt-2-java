@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.composite;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.Objects;
@@ -30,7 +31,7 @@ import java.util.function.BiFunction;
 @FunctionalInterface
 public interface Constraint
 {
-    default CompletionStage<Boolean> test(Http.RequestHeader requestHeader,
+    default CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> test(Http.RequestHeader requestHeader,
                                           DeadboltHandler handler)
     {
         return test(requestHeader,
@@ -39,7 +40,7 @@ public interface Constraint
                     (globalMeta, localMeta) -> localMeta);
     }
 
-    CompletionStage<Boolean> test(Http.RequestHeader requestHeader,
+    CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> test(Http.RequestHeader requestHeader,
                                   DeadboltHandler handler,
                                   Optional<String> globalMetaData,
                                   BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn);
@@ -48,20 +49,20 @@ public interface Constraint
     {
         Objects.requireNonNull(other);
         return (rh, handler, global, fMeta) ->
-                test(rh, handler, global, fMeta).thenCompose(passed1 -> passed1 ? other.test(rh, handler, global, fMeta).thenApply(passed2 -> passed2)
-                                                                                 : CompletableFuture.completedFuture(false));
+                test(rh, handler, global, fMeta).thenCompose(passed1 -> passed1._1 ? other.test(passed1._2, handler, global, fMeta).thenApply(passed2 -> passed2)
+                                                                                 : CompletableFuture.completedFuture(F.Tuple(false, passed1._2)));
     }
 
     default Constraint negate()
     {
-        return (rh, handler, global, fMeta) -> test(rh, handler, global, fMeta).thenApply(p -> !p);
+        return (rh, handler, global, fMeta) -> test(rh, handler, global, fMeta).thenApply(p -> F.Tuple(!p._1, p._2));
     }
 
     default Constraint or(final Constraint other)
     {
         Objects.requireNonNull(other);
         return (rh, handler, global, fMeta) ->
-                test(rh, handler, global, fMeta).thenCompose(passed1 -> passed1 ? CompletableFuture.completedFuture(true)
-                                                                                                : other.test(rh, handler, global, fMeta).thenApply(passed2 -> passed2));
+                test(rh, handler, global, fMeta).thenCompose(passed1 -> passed1._1 ? CompletableFuture.completedFuture(F.Tuple(true, passed1._2))
+                                                                                                : other.test(passed1._2, handler, global, fMeta).thenApply(passed2 -> passed2));
     }
 }

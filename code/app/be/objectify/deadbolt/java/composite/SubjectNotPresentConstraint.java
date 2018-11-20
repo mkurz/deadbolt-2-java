@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.composite;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.Optional;
@@ -40,16 +41,17 @@ public class SubjectNotPresentConstraint implements Constraint
         this.constraintLogic = constraintLogic;
     }
 
-    public CompletionStage<Boolean> test(final Http.Context context,
+    @Override
+    public CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> test(final Http.RequestHeader requestHeader,
                                          final DeadboltHandler handler,
                                          final Optional<String> globalMetaData,
                                          final BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn)
     {
-        return constraintLogic.subjectNotPresent(context,
+        return constraintLogic.subjectNotPresent(requestHeader,
                                                  handler,
                                                  content,
-                                                 (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.FALSE),
-                                                 (ctx, dh, cnt) -> CompletableFuture.completedFuture(Boolean.TRUE),
+                                                 (rh, dh, cnt) -> CompletableFuture.completedFuture(F.Tuple(Boolean.FALSE, rh)),
+                                                 (rh, dh, cnt) -> CompletableFuture.completedFuture(F.Tuple(Boolean.TRUE, rh)),
                                                  ConstraintPoint.CONTROLLER);
 
     }

@@ -19,6 +19,7 @@ import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.models.PatternType;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.Optional;
@@ -54,20 +55,20 @@ public class PatternConstraint implements Constraint
     }
 
     @Override
-    public CompletionStage<Boolean> test(final Http.Context context,
+    public CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> test(final Http.RequestHeader requestHeader,
                                          final DeadboltHandler handler,
                                          final Optional<String> globalMetaData,
                                          final BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn)
     {
-        return constraintLogic.pattern(context,
+        return constraintLogic.pattern(requestHeader,
                                        handler,
                                        content,
                                        value,
                                        patternType,
                                        metaFn.apply(globalMetaData, meta),
                                        invert,
-                                       ctx -> CompletableFuture.completedFuture(Boolean.TRUE),
-                                       (ctx, dh, ctn) -> CompletableFuture.completedFuture(Boolean.FALSE),
+                                       rh -> CompletableFuture.completedFuture(F.Tuple(Boolean.TRUE, rh)),
+                                       (rh, dh, ctn) -> CompletableFuture.completedFuture(F.Tuple(Boolean.FALSE, rh)),
                                        ConstraintPoint.CONTROLLER);
     }
 }
