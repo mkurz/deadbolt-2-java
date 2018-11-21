@@ -19,4 +19,7 @@ releasePublishArtifactsAction := PgpKeys.publishSigned.value
 // also see http://www.scala-lang.org/news/2.12.0/#scaladoc-can-be-used-to-document-java-sources
 scalacOptions in (Compile, doc) += "-no-java-comments"
 
+javacOptions += "-Xlint:deprecation"
+scalacOptions += "-deprecation"
+
 resolvers += Resolver.sonatypeRepo("snapshots")
