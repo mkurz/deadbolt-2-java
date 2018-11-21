@@ -129,7 +129,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
             }
             else
             {
-                if (isActionAuthorised(request) && !alwaysExecute())
+                if (isAuthorised(request) && !alwaysExecute())
                 {
                     result = delegate.call(request);
                 }
@@ -139,7 +139,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                 }
             }
             return result.thenCompose(r -> {
-                if(constraintAnnotationMode == ConstraintAnnotationMode.OR && !deadboltActionLeftInActionChain(this) && !this.isAuthorised() && !isActionAuthorised(request) && (isConstraintInActionChain(this, action -> action.precursor) || isConstraintInActionChain(this, action -> action.delegate))) {
+                if(constraintAnnotationMode == ConstraintAnnotationMode.OR && !deadboltActionLeftInActionChain(this) && !this.isAuthorised() && !isAuthorised(request) && (isConstraintInActionChain(this, action -> action.precursor) || isConstraintInActionChain(this, action -> action.delegate))) {
                     // We are in OR mode and "this" was the last deadbolt-action that ran and no constraint marked the targeted action-method as authorised yet -> we finally have to fail now.
                     // If there was no "real" constraint, we don't come here, e.g. just calling @BeforeAccess or/and @DeferredDeadboltAction doesn't count as constraint
                     return onAuthFailure(getDeadboltHandler(getHandlerKey()),
@@ -206,7 +206,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      *
      * @param request the request
      */
-    private Http.RequestHeader markActionAsAuthorised(final Http.RequestHeader request)
+    private Http.RequestHeader markAsAuthorised(final Http.RequestHeader request)
     {
         this.authorised = true;
         return request.addAttr(ACTION_AUTHORISED,
@@ -223,7 +223,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @param request the request
      * @return true if a more-specific annotation has authorised access, otherwise false
      */
-    protected boolean isActionAuthorised(final Http.RequestHeader request)
+    protected static boolean isAuthorised(final Http.RequestHeader request)
     {
         return request.attrs().getOptional(ACTION_AUTHORISED).orElse(false);
     }
@@ -294,7 +294,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         if(constraintAnnotationMode != ConstraintAnnotationMode.AND)
         {
             // In AND mode we don't mark an action as authorised because we want ALL (remaining) constraints to be evaluated as well!
-            return delegate.call((Http.Request)markActionAsAuthorised(request));
+            return delegate.call((Http.Request)markAsAuthorised(request));
         }
         return delegate.call((Http.Request)request);
     }
@@ -348,7 +348,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     /**
      * Be aware: Not every deadbolt-annotation is a constraint, but every constraint is a deadbolt-annotation ;)
-     * @BeforeAccess and @DeferredDeadboltAction do NOT count as constraint, because they just pass trough (=they do NOT call markActionAsAuthorised() in success case)
+     * @BeforeAccess and @DeferredDeadboltAction do NOT count as constraint, because they just pass trough (=they do NOT call markAsAuthorised() in success case)
      */
     private static boolean isConstraintInActionChain(final Action<?> action, final Function<Action<?>, Action<?>> nextAction) {
         if(action != null) {
