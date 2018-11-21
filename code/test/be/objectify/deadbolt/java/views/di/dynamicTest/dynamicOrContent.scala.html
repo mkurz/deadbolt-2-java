@@ -1,5 +1,5 @@
 @this(dynamicOr: be.objectify.deadbolt.java.views.html.di.dynamicOr)
-@(name: String, meta: Optional[String] = Optional.empty(), deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+@(name: String, meta: Optional[String] = Optional.empty(), deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)(implicit request: play.mvc.Http.Request)
 
 This is before the constraint.
 
