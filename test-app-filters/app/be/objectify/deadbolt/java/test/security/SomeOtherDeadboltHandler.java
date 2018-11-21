@@ -34,19 +34,19 @@ import java.util.concurrent.CompletionStage;
 public class SomeOtherDeadboltHandler extends AbstractDeadboltHandler
 {
     @Override
-    public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+    public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
 
     @Override
-    public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
+    public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.RequestHeader requestHeader, final Optional<String> content)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
 
     @Override
-    public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+    public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }

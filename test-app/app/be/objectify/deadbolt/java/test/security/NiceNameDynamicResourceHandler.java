@@ -34,9 +34,9 @@ public class NiceNameDynamicResourceHandler implements DynamicResourceHandler
     public CompletionStage<Boolean> isAllowed(final String name,
                                               final Optional<String> meta,
                                               final DeadboltHandler deadboltHandler,
-                                              final Http.Context ctx)
+                                              final Http.RequestHeader requestHeader)
     {
-        return deadboltHandler.getSubject(ctx)
+        return deadboltHandler.getSubject(requestHeader)
                               .thenApply(option -> option.isPresent() && option.get().getIdentifier()
                                                                                .contains("greet"));
     }
@@ -45,7 +45,7 @@ public class NiceNameDynamicResourceHandler implements DynamicResourceHandler
     public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                     final Optional<String> meta,
                                                     final DeadboltHandler deadboltHandler,
-                                                    final Http.Context ctx)
+                                                    final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(false);
     }

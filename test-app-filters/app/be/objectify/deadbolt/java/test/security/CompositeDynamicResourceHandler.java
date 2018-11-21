@@ -46,7 +46,7 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
     public CompletionStage<Boolean> isAllowed(final String name,
                                               final Optional<String> meta,
                                               final DeadboltHandler deadboltHandler,
-                                              final Http.Context ctx)
+                                              final Http.RequestHeader requestHeader)
     {
         final DynamicResourceHandler delegate = delegates.get(name);
         final CompletionStage<Boolean> result;
@@ -61,7 +61,7 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
             result = delegate.isAllowed(name,
                                         meta,
                                         deadboltHandler,
-                                        ctx);
+                                        requestHeader);
         }
         return result;
     }
@@ -70,16 +70,16 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
     public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                     final Optional<String> meta,
                                                     final DeadboltHandler deadboltHandler,
-                                                    final Http.Context ctx)
+                                                    final Http.RequestHeader requestHeader)
     {
         // this can be completely arbitrary, but to keep things simple for testing we're
         // just checking for zombies...just like I do every night before I go to bed
-        return deadboltHandler.getSubject(ctx)
+        return deadboltHandler.getSubject(requestHeader)
                               .thenApply(option -> option.map(subject -> subject.getPermissions()
                                                                                 .stream()
                                                                                 .filter(perm -> perm.getValue().contains("zombie"))
                                                                                 .count() > 0)
-                                                         .orElseGet(() -> (Boolean) ctx.args.getOrDefault(ConfigKeys.PATTERN_INVERT,
-                                                                                                          false)));
+                                                         .orElseGet(() -> (Boolean) requestHeader.attrs().getOptional(ConfigKeys.PATTERN_INVERT)
+                                                                                                                      .orElse(false)));
     }
 }
