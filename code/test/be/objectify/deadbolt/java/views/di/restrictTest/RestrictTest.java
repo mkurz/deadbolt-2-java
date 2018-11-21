@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import play.test.Helpers;
 import play.twirl.api.Content;
+import play.mvc.Http;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,7 +45,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testSingleRole_present()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo"}),
-                                                      handlers.apply("foo"));
+                                                      handlers.apply("foo"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -55,7 +56,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testSingleRole_notPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo"}),
-                                                      handlers.apply("bar"));
+                                                      handlers.apply("bar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -66,7 +67,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testSingleRole_noRolesPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo"}),
-                                                      handlers.apply("noRoles"));
+                                                      handlers.apply("noRoles"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -77,7 +78,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testSingleRole_noSubject()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo"}),
-                                                      handlers.apply("noSubject"));
+                                                      handlers.apply("noSubject"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -89,7 +90,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     {
         final Content html = restrictContent().render(Arrays.asList(new String[]{"foo"},
                                                                     new String[]{"bar"}),
-                                                      handlers.apply("foo"));
+                                                      handlers.apply("foo"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -101,7 +102,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     {
         final Content html = restrictContent().render(Arrays.asList(new String[]{"foo"},
                                                                     new String[]{"bar"}),
-                                                      handlers.apply("bar"));
+                                                      handlers.apply("bar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -113,7 +114,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     {
         final Content html = restrictContent().render(Arrays.asList(new String[]{"foo"},
                                                                     new String[]{"bar"}),
-                                                      handlers.apply("fooBar"));
+                                                      handlers.apply("fooBar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -125,7 +126,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     {
         final Content html = restrictContent().render(Arrays.asList(new String[]{"foo"},
                                                                     new String[]{"bar"}),
-                                                      handlers.apply("noRoles"));
+                                                      handlers.apply("noRoles"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -136,7 +137,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testOr_noSubject()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo"}),
-                                                      handlers.apply("noSubject"));
+                                                      handlers.apply("noSubject"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -147,7 +148,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_fooPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
-                                                      handlers.apply("foo"));
+                                                      handlers.apply("foo"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -158,7 +159,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_barPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
-                                                      handlers.apply("bar"));
+                                                      handlers.apply("bar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -169,7 +170,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_bothPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
-                                                      handlers.apply("fooBar"));
+                                                      handlers.apply("fooBar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -180,7 +181,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_neitherPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
-                                                      handlers.apply("noRoles"));
+                                                      handlers.apply("noRoles"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -191,7 +192,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_noSubject()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
-                                                      handlers.apply("noSubject"));
+                                                      handlers.apply("noSubject"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -202,7 +203,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testNegatedRole_subjectHasRole()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo"}),
-                                                      handlers.apply("foo"));
+                                                      handlers.apply("foo"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -213,7 +214,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testNegatedRole_subjectDoesNotHaveRole()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo"}),
-                                                      handlers.apply("bar"));
+                                                      handlers.apply("bar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -224,7 +225,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testNegatedRole_subjectHasMultipleRole()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo"}),
-                                                      handlers.apply("fooBar"));
+                                                      handlers.apply("fooBar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -235,7 +236,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testNegatedRole_noRolesPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo"}),
-                                                      handlers.apply("noRoles"));
+                                                      handlers.apply("noRoles"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -246,7 +247,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testNegatedRole_noSubject()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo"}),
-                                                      handlers.apply("noSubject"));
+                                                      handlers.apply("noSubject"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -258,7 +259,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     {
         final Content html = restrictContent().render(Arrays.asList(new String[]{"!foo"},
                                                                     new String[]{"bar"}),
-                                                      handlers.apply("foo"));
+                                                      handlers.apply("foo"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -270,7 +271,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     {
         final Content html = restrictContent().render(Arrays.asList(new String[]{"!foo"},
                                                                     new String[]{"bar"}),
-                                                      handlers.apply("bar"));
+                                                      handlers.apply("bar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -282,7 +283,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     {
         final Content html = restrictContent().render(Arrays.asList(new String[]{"!foo"},
                                                                     new String[]{"bar"}),
-                                                      handlers.apply("fooBar"));
+                                                      handlers.apply("fooBar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -294,7 +295,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     {
         final Content html = restrictContent().render(Arrays.asList(new String[]{"!foo"},
                                                                     new String[]{"bar"}),
-                                                      handlers.apply("noRoles"));
+                                                      handlers.apply("noRoles"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -305,7 +306,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testOr_oneSideNegated_noSubject()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo"}),
-                                                      handlers.apply("noSubject"));
+                                                      handlers.apply("noSubject"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -316,7 +317,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_oneSideNegated_fooPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
-                                                      handlers.apply("foo"));
+                                                      handlers.apply("foo"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -327,7 +328,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_oneSideNegated_barPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
-                                                      handlers.apply("bar"));
+                                                      handlers.apply("bar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -338,7 +339,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_oneSideNegated_bothPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
-                                                      handlers.apply("fooBar"));
+                                                      handlers.apply("fooBar"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -349,7 +350,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_oneSideNegated_neitherPresent()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
-                                                      handlers.apply("noRoles"));
+                                                      handlers.apply("noRoles"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -360,7 +361,7 @@ public class RestrictTest extends AbstractFakeApplicationTest
     public void testAnd_oneSideNegated_noSubject()
     {
         final Content html = restrictContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
-                                                      handlers.apply("noSubject"));
+                                                      handlers.apply("noSubject"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));

@@ -59,7 +59,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.undead.zombie",
                                                                       PatternType.EQUALITY,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -82,7 +82,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.undead.zombie",
                                                                       PatternType.EQUALITY,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -104,7 +104,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.undead.zombie",
                                                                       PatternType.EQUALITY,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -119,7 +119,8 @@ public class PatternOrTest extends AbstractFakeApplicationTest
                                                            PatternType.EQUALITY,
                                                            new NoPreAuthDeadboltHandler()
                                                            {
-                                                           });
+                                                           },
+                                                           new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -142,7 +143,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.undead.*",
                                                                       PatternType.REGEX,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -165,7 +166,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.*",
                                                                       PatternType.REGEX,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -188,7 +189,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.pixies.*",
                                                                       PatternType.REGEX,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -210,7 +211,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.undead.zombie",
                                                                       PatternType.REGEX,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -225,7 +226,8 @@ public class PatternOrTest extends AbstractFakeApplicationTest
                                                                       PatternType.REGEX,
                                                                       new NoPreAuthDeadboltHandler()
                                                                       {
-                                                                      });
+                                                                      },
+                                                                      new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -256,7 +258,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.undead.zombie",
                                                                       PatternType.CUSTOM,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -287,7 +289,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.undead.zombie",
                                                                       PatternType.CUSTOM,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -318,7 +320,7 @@ public class PatternOrTest extends AbstractFakeApplicationTest
         };
         final Content html = patternOrContent(deadboltHandler).render("killer.undead.zombie",
                                                                       PatternType.CUSTOM,
-                                                                      deadboltHandler);
+                                                                      deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));

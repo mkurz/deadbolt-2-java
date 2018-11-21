@@ -63,7 +63,7 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
             }
         };
         final Content html = roleBasedPermissionsOrContent().render("foo",
-                                                                    deadboltHandler);
+                                                                    deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -90,7 +90,7 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
             }
         };
         final Content html = roleBasedPermissionsOrContent().render("foo",
-                                                                    deadboltHandler);
+                                                                    deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -117,7 +117,7 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
             }
         };
         final Content html = roleBasedPermissionsOrContent().render("foo",
-                                                                    deadboltHandler);
+                                                                    deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -143,7 +143,7 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
             }
         };
         final Content html = roleBasedPermissionsOrContent().render("foo",
-                                                                    deadboltHandler);
+                                                                    deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));

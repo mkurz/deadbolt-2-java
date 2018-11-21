@@ -26,6 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import play.test.Helpers;
 import play.twirl.api.Content;
+import play.mvc.Http;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class SubjectNotPresentOrTest extends AbstractFakeApplicationTest
     @Test
     public void testWithSubjectPresent()
     {
-        final Content html = subjectNotPresentOrContent().render(handlers.apply("present"));
+        final Content html = subjectNotPresentOrContent().render(handlers.apply("present"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -51,7 +52,7 @@ public class SubjectNotPresentOrTest extends AbstractFakeApplicationTest
     @Test
     public void testWithNoSubjectPresent()
     {
-        final Content html = subjectNotPresentOrContent().render(handlers.apply("notPresent"));
+        final Content html = subjectNotPresentOrContent().render(handlers.apply("notPresent"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
