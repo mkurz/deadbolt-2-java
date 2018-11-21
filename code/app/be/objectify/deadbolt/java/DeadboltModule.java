@@ -25,13 +25,14 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.composite.ConstraintBuilders;
 import be.objectify.deadbolt.java.filters.FilterConstraints;
-import play.api.Configuration;
-import play.api.Environment;
-import play.api.inject.Binding;
-import play.api.inject.Module;
-import scala.collection.Seq;
+import com.typesafe.config.Config;
+import play.Environment;
+import play.inject.Binding;
+import play.inject.Module;
 
 import javax.inject.Singleton;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -39,10 +40,10 @@ import javax.inject.Singleton;
 public class DeadboltModule extends Module
 {
     @Override
-    public Seq<Binding<?>> bindings(final Environment environment,
-                                    final Configuration configuration)
+    public List<Binding<?>> bindings(final Environment environment,
+                                     final Config config)
     {
-        return seq(subjectCache(),
+        return Arrays.asList(subjectCache(),
                    beforeAuthCheckCache(),
                    patternCache(),
                    analyzer(),
@@ -61,7 +62,7 @@ public class DeadboltModule extends Module
      */
     public Binding<TemplateFailureListenerProvider> templateFailureListenerProvider()
     {
-        return bind(TemplateFailureListenerProvider.class).toSelf().in(Singleton.class);
+        return bindClass(TemplateFailureListenerProvider.class).toSelf().in(Singleton.class);
     }
 
     /**
@@ -71,7 +72,7 @@ public class DeadboltModule extends Module
      */
     public Binding<ViewSupport> viewSupport()
     {
-        return bind(ViewSupport.class).toSelf().in(Singleton.class);
+        return bindClass(ViewSupport.class).toSelf().in(Singleton.class);
     }
 
     /**
@@ -81,7 +82,7 @@ public class DeadboltModule extends Module
      */
     public Binding<DeadboltAnalyzer> analyzer()
     {
-        return bind(DeadboltAnalyzer.class).toSelf().in(Singleton.class);
+        return bindClass(DeadboltAnalyzer.class).toSelf().in(Singleton.class);
     }
 
     /**
@@ -91,7 +92,7 @@ public class DeadboltModule extends Module
      */
     public Binding<ConstraintBuilders> constraintBuilders()
     {
-        return bind(ConstraintBuilders.class).toSelf().in(Singleton.class);
+        return bindClass(ConstraintBuilders.class).toSelf().in(Singleton.class);
     }
 
     /**
@@ -101,7 +102,7 @@ public class DeadboltModule extends Module
      */
     public Binding<PatternCache> patternCache()
     {
-        return bind(PatternCache.class).to(DefaultPatternCache.class).in(Singleton.class);
+        return bindClass(PatternCache.class).to(DefaultPatternCache.class).in(Singleton.class);
     }
 
     /**
@@ -111,7 +112,7 @@ public class DeadboltModule extends Module
      */
     public Binding<CompositeCache> compositeCache()
     {
-        return bind(CompositeCache.class).to(DefaultCompositeCache.class).in(Singleton.class);
+        return bindClass(CompositeCache.class).to(DefaultCompositeCache.class).in(Singleton.class);
     }
 
     /**
@@ -121,7 +122,7 @@ public class DeadboltModule extends Module
      */
     public Binding<SubjectCache> subjectCache()
     {
-        return bind(SubjectCache.class).to(DefaultSubjectCache.class).in(Singleton.class);
+        return bindClass(SubjectCache.class).to(DefaultSubjectCache.class).in(Singleton.class);
     }
 
     /**
@@ -131,7 +132,7 @@ public class DeadboltModule extends Module
      */
     public Binding<BeforeAuthCheckCache> beforeAuthCheckCache()
     {
-        return bind(BeforeAuthCheckCache.class).to(DefaultBeforeAuthCheckCache.class).in(Singleton.class);
+        return bindClass(BeforeAuthCheckCache.class).to(DefaultBeforeAuthCheckCache.class).in(Singleton.class);
     }
 
     /**
@@ -141,7 +142,7 @@ public class DeadboltModule extends Module
      */
     public Binding<ConstraintLogic> constraintLogic()
     {
-        return bind(ConstraintLogic.class).toSelf().in(Singleton.class);
+        return bindClass(ConstraintLogic.class).toSelf().in(Singleton.class);
     }
 
     /**
@@ -151,6 +152,6 @@ public class DeadboltModule extends Module
      */
     public Binding<FilterConstraints> filterConstraints()
     {
-        return bind(FilterConstraints.class).toSelf().in(Singleton.class);
+        return bindClass(FilterConstraints.class).toSelf().in(Singleton.class);
     }
 }

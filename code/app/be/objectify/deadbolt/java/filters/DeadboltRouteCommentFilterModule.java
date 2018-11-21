@@ -15,11 +15,13 @@
  */
 package be.objectify.deadbolt.java.filters;
 
-import play.api.Configuration;
-import play.api.Environment;
-import play.api.inject.Binding;
-import play.api.inject.Module;
-import scala.collection.Seq;
+import com.typesafe.config.Config;
+import play.Environment;
+import play.inject.Binding;
+import play.inject.Module;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Provides bindings for {@link DeadboltRouteCommentFilter}.
@@ -30,9 +32,9 @@ import scala.collection.Seq;
 public class DeadboltRouteCommentFilterModule extends Module
 {
     @Override
-    public Seq<Binding<?>> bindings(final Environment environment,
-                                    final Configuration configuration)
+    public List<Binding<?>> bindings(final Environment environment,
+                                     final Config config)
     {
-        return seq(bind(DeadboltRouteCommentFilter.class).toSelf());
+        return Arrays.asList(bindClass(DeadboltRouteCommentFilter.class).toSelf());
     }
 }

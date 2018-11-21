@@ -26,13 +26,14 @@ import be.objectify.deadbolt.java.test.security.MyCustomTemplateFailureListener;
 import be.objectify.deadbolt.java.test.security.MyDeadboltHandler;
 import be.objectify.deadbolt.java.test.security.MyHandlerCache;
 import be.objectify.deadbolt.java.test.security.SomeOtherDeadboltHandler;
-import play.api.Configuration;
-import play.api.Environment;
-import play.api.inject.Binding;
-import play.api.inject.Module;
-import scala.collection.Seq;
+import com.typesafe.config.Config;
+import play.Environment;
+import play.inject.Binding;
+import play.inject.Module;
 
 import javax.inject.Singleton;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
@@ -40,14 +41,14 @@ import javax.inject.Singleton;
 public class CustomDeadboltHook extends Module
 {
     @Override
-    public Seq<Binding<?>> bindings(final Environment environment,
-                                    final Configuration configuration)
+    public List<Binding<?>> bindings(final Environment environment,
+                                     final Config config)
     {
-        return seq(bind(TemplateFailureListener.class).to(MyCustomTemplateFailureListener.class).in(Singleton.class),
-                   bind(UserDao.class).to(DefaultUserDao.class).in(Singleton.class),
-                   bind(DeadboltHandler.class).qualifiedWith(HandlerQualifiers.MainHandler.class).to(MyDeadboltHandler.class).in(Singleton.class),
-                   bind(DeadboltHandler.class).qualifiedWith(HandlerQualifiers.SomeOtherHandler.class).to(SomeOtherDeadboltHandler.class).in(Singleton.class),
-                   bind(HandlerCache.class).to(MyHandlerCache.class).in(Singleton.class),
-                   bind(CompositeConstraints.class).toSelf().eagerly());
+        return Arrays.asList(bindClass(TemplateFailureListener.class).to(MyCustomTemplateFailureListener.class).in(Singleton.class),
+                             bindClass(UserDao.class).to(DefaultUserDao.class).in(Singleton.class),
+                             bindClass(DeadboltHandler.class).qualifiedWith(HandlerQualifiers.MainHandler.class).to(MyDeadboltHandler.class).in(Singleton.class),
+                             bindClass(DeadboltHandler.class).qualifiedWith(HandlerQualifiers.SomeOtherHandler.class).to(SomeOtherDeadboltHandler.class).in(Singleton.class),
+                             bindClass(HandlerCache.class).to(MyHandlerCache.class).in(Singleton.class),
+                             bindClass(CompositeConstraints.class).toSelf().eagerly());
     }
 }
