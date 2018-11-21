@@ -1,9 +1,9 @@
 @this(subjectNotPresent: be.objectify.deadbolt.java.views.html.di.subjectNotPresent)
-@(ctx: Http.Context, deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+@(deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
 
 This is before the constraint.
 
-@subjectNotPresent(context = ctx, handler = deadboltHandler) {
+@subjectNotPresent(handler = deadboltHandler) {
     This is protected by the constraint.
 }
 

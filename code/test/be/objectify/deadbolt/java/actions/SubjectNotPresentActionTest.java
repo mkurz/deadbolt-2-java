@@ -25,11 +25,11 @@ import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import play.libs.typedmap.TypedKey;
 import play.mvc.Action;
+import play.mvc.Controller;
 import play.mvc.Http;
-import play.mvc.Results;
 
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -68,21 +68,16 @@ public class SubjectNotPresentActionTest {
                                                                            Mockito.mock(BeforeAuthCheckCache.class),
                                                                            ConfigFactory.empty(),
                                                                            Mockito.mock(ConstraintLogic.class));
-
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
-        ctx.args = new HashMap<>();
         final Http.Request request = Mockito.mock(Http.Request.class);
         Mockito.when(request.uri())
                .thenReturn("http://localhost/test");
-        Mockito.when(ctx.request())
-               .thenReturn(request);
 
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-        action.present(ctx,
+        action.present(request,
                        handler,
                        Optional.empty());
 
-        Mockito.verify(handler).onAuthFailure(ctx,
+        Mockito.verify(handler).onAuthFailure(request,
                                               Optional.empty());
     }
 
@@ -95,28 +90,26 @@ public class SubjectNotPresentActionTest {
                                                                            Mockito.mock(ConstraintLogic.class));
         action.delegate = Mockito.mock(Action.class);
 
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
-        ctx.args = new HashMap<>();
-
-        action.notPresent(ctx,
+        final Http.Request request = new Http.RequestBuilder().build();
+        action.notPresent(request,
                           Mockito.mock(DeadboltHandler.class),
                           Optional.empty());
 
-        Assert.assertTrue((Boolean)ctx.args.get("deadbolt.action-authorised"));
-        Mockito.verify(action.delegate).call(ctx);
+        Assert.assertTrue(action.isAuthorised());
+        Mockito.verify(action.delegate).call(Mockito.any(Http.Request.class));
     }
 
     @Test
     public void testTestSubject() throws Exception
     {
         final ConstraintLogic constraintLogic = Mockito.mock(ConstraintLogic.class);
-        Mockito.when(constraintLogic.subjectNotPresent(Mockito.any(Http.Context.class),
+        Mockito.when(constraintLogic.subjectNotPresent(Mockito.any(Http.Request.class),
                                                        Mockito.any(DeadboltHandler.class),
                                                        Mockito.eq(Optional.empty()),
                                                        Mockito.any(TriFunction.class),
                                                        Mockito.any(TriFunction.class),
                                                        Mockito.eq(ConstraintPoint.CONTROLLER)))
-               .thenReturn(CompletableFuture.completedFuture(Results.TODO));
+               .thenReturn(CompletableFuture.completedFuture(Controller.TODO(new Http.RequestBuilder().build())));
 
         final SubjectNotPresentAction action = new SubjectNotPresentAction(Mockito.mock(HandlerCache.class),
                                                                            Mockito.mock(BeforeAuthCheckCache.class),
@@ -125,9 +118,9 @@ public class SubjectNotPresentActionTest {
         action.configuration = Mockito.mock(SubjectNotPresent.class);
 
         action.testSubject(constraintLogic,
-                           Mockito.mock(Http.Context.class),
+                           Mockito.mock(Http.Request.class),
                            Mockito.mock(DeadboltHandler.class)).get();
-        Mockito.verify(constraintLogic).subjectNotPresent(Mockito.any(Http.Context.class),
+        Mockito.verify(constraintLogic).subjectNotPresent(Mockito.any(Http.Request.class),
                                                           Mockito.any(DeadboltHandler.class),
                                                           Mockito.eq(Optional.empty()),
                                                           Mockito.any(TriFunction.class),

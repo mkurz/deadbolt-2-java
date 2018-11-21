@@ -21,6 +21,7 @@ import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Role;
 import be.objectify.deadbolt.java.models.Subject;
+import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -42,13 +43,13 @@ public abstract class AbstractCompositeTest
         return new AbstractDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context, Optional<String> content)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(Http.RequestHeader requestHeader, Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
 
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.completedFuture(Optional.of(drh));
             }
@@ -60,13 +61,13 @@ public abstract class AbstractCompositeTest
         return new AbstractDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.RequestHeader requestHeader, final Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
 
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.completedFuture(Optional.ofNullable(subject.get()));
             }
@@ -91,9 +92,9 @@ public abstract class AbstractCompositeTest
                        Collections::emptyList);
     }
 
-    protected boolean toBoolean(final CompletionStage<Boolean> cs) throws Exception
+    protected boolean toBoolean(final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> cs) throws Exception
     {
-        return ((CompletableFuture<Boolean>) cs).get();
+        return ((CompletableFuture<F.Tuple<Boolean, Http.RequestHeader>>) cs).get()._1;
     }
 
     protected Subject subject(Supplier<List<? extends Role>> roles,

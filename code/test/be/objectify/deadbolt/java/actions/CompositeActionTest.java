@@ -49,7 +49,7 @@ public class CompositeActionTest
         final CompositeCache compositeCache = Mockito.mock(CompositeCache.class);
 
         final Constraint constraint = Mockito.mock(Constraint.class);
-        Mockito.when(constraint.test(Mockito.any(Http.Context.class),
+        Mockito.when(constraint.test(Mockito.any(Http.Request.class),
                                      Mockito.any(DeadboltHandler.class),
                                      Mockito.eq(Optional.of("bar")),
                                      Mockito.any(BiFunction.class)))
@@ -67,12 +67,12 @@ public class CompositeActionTest
                                                            Mockito.mock(ConstraintLogic.class));
         action.configuration = composite;
 
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
+        final Http.Request request = Mockito.mock(Http.Request.class);
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-        action.applyRestriction(ctx,
+        action.applyRestriction(request,
                                 handler);
 
-        Mockito.verify(constraint).test(Mockito.eq(ctx),
+        Mockito.verify(constraint).test(Mockito.eq(request),
                                         Mockito.eq(handler),
                                         Mockito.eq(Optional.of("bar")),
                                         Mockito.any(BiFunction.class));

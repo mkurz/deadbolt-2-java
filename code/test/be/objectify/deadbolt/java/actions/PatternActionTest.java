@@ -62,12 +62,12 @@ public class PatternActionTest
                                                        Mockito.mock(Action.class),
                                                        constraintLogic);
 
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
+        final Http.Request request = Mockito.mock(Http.Request.class);
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-        action.applyRestriction(ctx,
+        action.applyRestriction(request,
                                 handler);
 
-        Mockito.verify(constraintLogic).pattern(Mockito.eq(ctx),
+        Mockito.verify(constraintLogic).pattern(Mockito.eq(request),
                                                 Mockito.eq(handler),
                                                 Mockito.eq(Optional.of("x/y")),
                                                 Mockito.eq(new String[] {"foo"}),

@@ -19,6 +19,7 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import org.junit.Assert;
 import org.junit.Test;
 import play.libs.F;
+import play.mvc.Http;
 
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
@@ -32,7 +33,7 @@ public abstract class AbstractSubjectPresentConstraintTest extends AbstractConst
     public void testSubjectPresent() throws Exception
     {
         final Constraint constraint = constraint(withSubject(this::subject));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(this::subject));
         Assert.assertTrue(toBoolean(result));
     }
@@ -41,7 +42,7 @@ public abstract class AbstractSubjectPresentConstraintTest extends AbstractConst
     public void testSubjectNotPresent() throws Exception
     {
         final Constraint constraint = constraint(withSubject(() -> null));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(() -> null));
         Assert.assertFalse(toBoolean(result));
     }
@@ -49,10 +50,10 @@ public abstract class AbstractSubjectPresentConstraintTest extends AbstractConst
     public abstract SubjectPresentConstraint constraint(final DeadboltHandler handler);
 
     @Override
-    protected F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy()
+    protected F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy()
     {
         return new F.Tuple<>(constraint(withSubject(this::subject)),
-                             c -> c.test(context,
+                             c -> c.test(new Http.RequestBuilder().build(),
                                          withSubject(this::subject)));
     }
 }

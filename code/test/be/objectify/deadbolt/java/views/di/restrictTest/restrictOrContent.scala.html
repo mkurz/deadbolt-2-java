@@ -1,9 +1,9 @@
 @this(restrictOr: be.objectify.deadbolt.java.views.html.di.restrictOr)
-@(ctx: Http.Context, roles: List[Array[String]], deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+@(roles: List[Array[String]], deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
 
 This is before the constraint.
 
-@restrictOr(context = ctx, roles = roles, handler = deadboltHandler) {
+@restrictOr(roles = roles, handler = deadboltHandler) {
     This is protected by the constraint.
 } {
     This is default content in case the constraint denies access to the protected content.

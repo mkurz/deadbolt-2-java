@@ -22,6 +22,7 @@ import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.ConfigFactory;
 import org.junit.Test;
 import org.mockito.Mockito;
+import play.libs.typedmap.TypedKey;
 import play.mvc.Action;
 import play.mvc.Http;
 
@@ -37,13 +38,10 @@ public class BeforeAccessActionTest
     @Test
     public void testExecute_alreadyAuthorised_alwaysExecuteTrue() throws Exception
     {
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
-        ctx.args = new HashMap<>();
-        ctx.args.put("deadbolt.action-authorised",
-                     true);
+        final Http.Request request = new Http.RequestBuilder().build().addAttr(AbstractDeadboltAction.ACTION_AUTHORISED, true);
 
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-        Mockito.when(handler.beforeAuthCheck(ctx, Optional.empty()))
+        Mockito.when(handler.beforeAuthCheck(request, Optional.empty()))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
         final HandlerCache handlerCache = Mockito.mock(HandlerCache.class);
@@ -60,22 +58,19 @@ public class BeforeAccessActionTest
                .thenReturn(true);
         action.delegate = Mockito.mock(Action.class);
 
-        action.call(ctx);
+        action.call(request);
 
-        Mockito.verify(handler).beforeAuthCheck(ctx, Optional.empty());
-        Mockito.verify(action.delegate).call(ctx);
+        Mockito.verify(handler).beforeAuthCheck(request, Optional.empty());
+        Mockito.verify(action.delegate).call(request);
     }
 
     @Test
     public void testExecute_alreadyAuthorised_alwaysExecuteFalse() throws Exception
     {
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
-        ctx.args = new HashMap<>();
-        ctx.args.put("deadbolt.action-authorised",
-                     true);
+        final Http.Request request = new Http.RequestBuilder().build().addAttr(AbstractDeadboltAction.ACTION_AUTHORISED, true);
 
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-        Mockito.when(handler.beforeAuthCheck(ctx, Optional.empty()))
+        Mockito.when(handler.beforeAuthCheck(request, Optional.empty()))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
         final HandlerCache handlerCache = Mockito.mock(HandlerCache.class);
@@ -89,12 +84,12 @@ public class BeforeAccessActionTest
         Mockito.when(action.configuration.alwaysExecute())
                .thenReturn(false);
         action.delegate = Mockito.mock(Action.class);
-        Mockito.when(action.delegate.call(ctx))
+        Mockito.when(action.delegate.call(request))
                .thenReturn(CompletableFuture.completedFuture(null));
 
-        action.call(ctx);
+        action.call(request);
 
-        Mockito.verify(handler, Mockito.never()).beforeAuthCheck(ctx, Optional.empty());
-        Mockito.verify(action.delegate).call(ctx);
+        Mockito.verify(handler, Mockito.never()).beforeAuthCheck(request, Optional.empty());
+        Mockito.verify(action.delegate).call(request);
     }
 }

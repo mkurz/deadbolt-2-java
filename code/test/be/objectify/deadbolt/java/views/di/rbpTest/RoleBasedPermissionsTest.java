@@ -50,7 +50,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
                                                                                                 .build()));
@@ -62,8 +62,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.emptyList());
             }
         };
-        final Content html = roleBasedPermissionsContent().render(context(),
-                                                                  "foo",
+        final Content html = roleBasedPermissionsContent().render("foo",
                                                                   deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -77,7 +76,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
                                                                                                 .build()));
@@ -89,8 +88,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
             }
         };
-        final Content html = roleBasedPermissionsContent().render(context(),
-                                                                  "foo",
+        final Content html = roleBasedPermissionsContent().render("foo",
                                                                   deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -104,7 +102,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
                                                                                                 .build()));
@@ -116,8 +114,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("hurdy")));
             }
         };
-        final Content html = roleBasedPermissionsContent().render(context(),
-                                                                  "foo",
+        final Content html = roleBasedPermissionsContent().render("foo",
                                                                   deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -131,7 +128,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
@@ -142,8 +139,7 @@ public class RoleBasedPermissionsTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("hurdy")));
             }
         };
-        final Content html = roleBasedPermissionsContent().render(context(),
-                                                                  "foo",
+        final Content html = roleBasedPermissionsContent().render("foo",
                                                                   deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));

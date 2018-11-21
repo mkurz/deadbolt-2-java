@@ -50,14 +50,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -72,14 +71,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -94,13 +92,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -115,13 +112,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -136,14 +132,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Arrays.asList(new String[]{"foo"},
+        final Content html = restrictOrContent().render(Arrays.asList(new String[]{"foo"},
                                                                       new String[]{"bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -159,14 +154,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Arrays.asList(new String[]{"foo"},
+        final Content html = restrictOrContent().render(Arrays.asList(new String[]{"foo"},
                                                                       new String[]{"bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -182,15 +176,14 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Arrays.asList(new String[]{"foo"},
+        final Content html = restrictOrContent().render(Arrays.asList(new String[]{"foo"},
                                                                       new String[]{"bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -206,13 +199,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Arrays.asList(new String[]{"foo"},
+        final Content html = restrictOrContent().render(Arrays.asList(new String[]{"foo"},
                                                                       new String[]{"bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -228,13 +220,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -249,14 +240,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -271,14 +261,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -293,15 +282,14 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -316,13 +304,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -337,13 +324,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -358,14 +344,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -380,14 +365,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -402,15 +386,14 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -425,13 +408,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -446,13 +428,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -467,14 +448,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Arrays.asList(new String[]{"!foo"},
+        final Content html = restrictOrContent().render(Arrays.asList(new String[]{"!foo"},
                                                                       new String[]{"bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -490,14 +470,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Arrays.asList(new String[]{"!foo"},
+        final Content html = restrictOrContent().render(Arrays.asList(new String[]{"!foo"},
                                                                       new String[]{"bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -513,15 +492,14 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Arrays.asList(new String[]{"!foo"},
+        final Content html = restrictOrContent().render(Arrays.asList(new String[]{"!foo"},
                                                                       new String[]{"bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -537,13 +515,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Arrays.asList(new String[]{"!foo"},
+        final Content html = restrictOrContent().render(Arrays.asList(new String[]{"!foo"},
                                                                       new String[]{"bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
@@ -559,13 +536,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -580,14 +556,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -602,14 +577,13 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -624,15 +598,14 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().role(new TestRole("foo"))
                                                                                                 .role(new TestRole("bar"))
                                                                                                 .build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -647,13 +620,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().build()));
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
@@ -668,13 +640,12 @@ public class RestrictOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(Optional::empty);
             }
         };
-        final Content html = restrictOrContent().render(context(),
-                                                        Collections.singletonList(new String[]{"!foo", "bar"}),
+        final Content html = restrictOrContent().render(Collections.singletonList(new String[]{"!foo", "bar"}),
                                                         deadboltHandler);
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));

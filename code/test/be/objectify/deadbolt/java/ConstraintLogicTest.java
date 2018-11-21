@@ -27,6 +27,7 @@ import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.Arrays;
@@ -86,18 +87,18 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
     {
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
-                                        Mockito.any(Http.Context.class)))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
+                                        Mockito.any(Http.Request.class)))
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build()), new Http.RequestBuilder().build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
                                                           new DefaultPatternCache());
 
-        final CompletionStage<Boolean> result = logic.restrict(context(),
+        final CompletionStage<Boolean> result = logic.restrict(new Http.RequestBuilder().build(),
                                                                handler(() -> new TestSubject.Builder().role(new TestRole("foo")).build()),
                                                                Optional.of("json"),
                                                                () -> Collections.singletonList(requiredRoles),
-                                                               ctx -> CompletableFuture.completedFuture(true),
-                                                               (ctx, handler, context) -> CompletableFuture.completedFuture(false),
+                                                               rh -> CompletableFuture.completedFuture(true),
+                                                               (rh, handler, content) -> CompletableFuture.completedFuture(false),
                                                                ConstraintPoint.CONTROLLER);
         test.accept(result);
 
@@ -122,20 +123,20 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
     {
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
-                                        Mockito.any(Http.Context.class)))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
+                                        Mockito.any(Http.Request.class)))
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build()), new Http.RequestBuilder().build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
                                                           new DefaultPatternCache());
 
-        final CompletionStage<Boolean> result = logic.dynamic(context(),
+        final CompletionStage<Boolean> result = logic.dynamic(new Http.RequestBuilder().build(),
                                                               withDrh(() -> new AbstractDynamicResourceHandler()
                                                               {
                                                                   @Override
                                                                   public CompletionStage<Boolean> isAllowed(final String name,
                                                                                                             final Optional<String> meta,
                                                                                                             final DeadboltHandler deadboltHandler,
-                                                                                                            final Http.Context ctx)
+                                                                                                            final Http.RequestHeader requestHeader)
                                                                   {
                                                                       return CompletableFuture.completedFuture(allow);
                                                                   }
@@ -143,8 +144,8 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
                                                               Optional.of("json"),
                                                               "foo",
                                                               Optional.of("bar"),
-                                                              ctx -> CompletableFuture.completedFuture(true),
-                                                              (ctx, handler, context) -> CompletableFuture.completedFuture(false),
+                                                              rh -> CompletableFuture.completedFuture(true),
+                                                              (rh, handler, content) -> CompletableFuture.completedFuture(false),
                                                               ConstraintPoint.CONTROLLER);
         test.accept(result);
 
@@ -225,19 +226,19 @@ public class ConstraintLogicTest extends AbstractFakeApplicationTest
     {
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
-                                        Mockito.any(Http.Context.class)))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
+                                        Mockito.any(Http.Request.class)))
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(Optional.of(subject), new Http.RequestBuilder().build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
                                                           new DefaultPatternCache());
 
-        final CompletionStage<Boolean> result = logic.roleBasedPermissions(context(),
+        final CompletionStage<Boolean> result = logic.roleBasedPermissions(new Http.RequestBuilder().build(),
                                                                            handler(() -> subject,
                                                                                    associatedPermissions),
                                                                            Optional.of("json"),
                                                                            roleName,
-                                                                           ctx -> CompletableFuture.completedFuture(true),
-                                                                           (ctx, handler, context) -> CompletableFuture.completedFuture(false),
+                                                                           rh -> CompletableFuture.completedFuture(true),
+                                                                           (rh, handler, content) -> CompletableFuture.completedFuture(false),
                                                                            ConstraintPoint.CONTROLLER);
         test.accept(result);
     }

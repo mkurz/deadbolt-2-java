@@ -34,12 +34,17 @@ import java.util.function.Function;
  */
 public abstract class AbstractPatternConstraintTest extends AbstractConstraintTest
 {
+
+    private Http.Request newRequest() {
+        return new Http.RequestBuilder().build();
+    }
+
     @Test
     public void testEquality_subjectHasPermission() throws Exception
     {
         final Constraint constraint = constraint(PatternType.EQUALITY,
                                                  withSubject(() -> subject(new TestPermission("foo"))));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(newRequest(),
                                                                 withSubject(() -> subject(new TestPermission("foo"))));
         Assert.assertTrue(toBoolean(result));
     }
@@ -49,7 +54,7 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
     {
         final Constraint constraint = constraint(PatternType.EQUALITY,
                                                  withSubject(() -> subject(new TestPermission("bar"))));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(newRequest(),
                                                                 withSubject(() -> subject(new TestPermission("bar"))));
         Assert.assertFalse(toBoolean(result));
     }
@@ -59,7 +64,7 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
     {
         final Constraint constraint = constraint(PatternType.REGEX,
                                                  withSubject(() -> subject(new TestPermission("1"))));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(newRequest(),
                                                                 withSubject(() -> subject(new TestPermission("1"))));
         Assert.assertTrue(toBoolean(result));
     }
@@ -69,7 +74,7 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
     {
         final Constraint constraint = constraint(PatternType.REGEX,
                                                  withSubject(() -> subject(new TestPermission("3"))));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(newRequest(),
                                                                 withSubject(() -> subject(new TestPermission("3"))));
         Assert.assertFalse(toBoolean(result));
     }
@@ -83,14 +88,14 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
             public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                             final Optional<String> meta,
                                                             final DeadboltHandler deadboltHandler,
-                                                            final Http.Context ctx)
+                                                            final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.completedFuture(true);
             }
         });
         final Constraint constraint = constraint(PatternType.CUSTOM,
                                                  handler);
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(newRequest(),
                                                                 handler);
         Assert.assertTrue(toBoolean(result));
     }
@@ -104,14 +109,14 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
             public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                             final Optional<String> meta,
                                                             final DeadboltHandler deadboltHandler,
-                                                            final Http.Context ctx)
+                                                            final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.completedFuture(false);
             }
         });
         final Constraint constraint = constraint(PatternType.CUSTOM,
                                                  handler);
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(newRequest(),
                                                                 handler);
         Assert.assertFalse(toBoolean(result));
     }
@@ -120,11 +125,11 @@ public abstract class AbstractPatternConstraintTest extends AbstractConstraintTe
                                                     final DeadboltHandler handler);
 
     @Override
-    protected F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy()
+    protected F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy()
     {
         return new F.Tuple<>(constraint(PatternType.EQUALITY,
                                         withSubject(() -> subject(new TestPermission("foo")))),
-                             c -> c.test(context,
+                             c -> c.test(newRequest(),
                                          withSubject(() -> subject(new TestPermission("foo")))));
     }
 }

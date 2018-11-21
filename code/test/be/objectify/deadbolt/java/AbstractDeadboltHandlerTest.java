@@ -40,15 +40,15 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.RequestHeader requestHeader, final Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
         };
 
-        final Http.Context context = Mockito.mock(Http.Context.class);
+        final Http.RequestHeader requestHeader = Mockito.mock(Http.Request.class);
 
-        final CompletionStage<Optional<? extends Subject>> promise = deadboltHandler.getSubject(context);
+        final CompletionStage<Optional<? extends Subject>> promise = deadboltHandler.getSubject(requestHeader);
         Assert.assertNotNull(promise);
 
         final Optional<? extends Subject> option = promise.toCompletableFuture().get(1000,
@@ -63,15 +63,15 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.RequestHeader requestHeader, final Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
         };
 
-        final Http.Context context = Mockito.mock(Http.Context.class);
+        final Http.RequestHeader requestHeader = new Http.RequestBuilder().build();
 
-        final CompletionStage<Result> promise = deadboltHandler.onAuthFailure(context,
+        final CompletionStage<Result> promise = deadboltHandler.onAuthFailure(requestHeader,
                                                                               Optional.of("foo"));
         Assert.assertNotNull(promise);
 
@@ -88,15 +88,15 @@ public class AbstractDeadboltHandlerTest
         DeadboltHandler deadboltHandler = new AbstractDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
+            public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.RequestHeader requestHeader, final Optional<String> content)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
         };
 
-        final Http.Context context = Mockito.mock(Http.Context.class);
+        final Http.RequestHeader requestHeader = Mockito.mock(Http.Request.class);
 
-        final CompletionStage<Optional<DynamicResourceHandler>> promise = deadboltHandler.getDynamicResourceHandler(context);
+        final CompletionStage<Optional<DynamicResourceHandler>> promise = deadboltHandler.getDynamicResourceHandler(requestHeader);
         Assert.assertNotNull(promise);
 
         final Optional<DynamicResourceHandler> option = promise.toCompletableFuture().get(1000,

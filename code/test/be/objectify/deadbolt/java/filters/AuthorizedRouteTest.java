@@ -35,7 +35,7 @@ public class AuthorizedRouteTest
     @Test
     public void constructorWithDefaultHandler()
     {
-        final FilterFunction constraint = (context, requestHeader, handler, onSuccess) -> CompletableFuture.completedFuture(Results.ok());
+        final FilterFunction constraint = (requestHeader, handler, onSuccess) -> CompletableFuture.completedFuture(Results.ok());
         final AuthorizedRoute route = new AuthorizedRoute(GET,
                                                           "/foo",
                                                           constraint);
@@ -53,7 +53,7 @@ public class AuthorizedRouteTest
     @Test
     public void constructorWithSpecificHandler()
     {
-        final FilterFunction constraint = (context, requestHeader, handler, onSuccess) -> CompletableFuture.completedFuture(Results.ok());
+        final FilterFunction constraint = (requestHeader, handler, onSuccess) -> CompletableFuture.completedFuture(Results.ok());
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
         final AuthorizedRoute route = new AuthorizedRoute(GET,
                                                           "/foo",

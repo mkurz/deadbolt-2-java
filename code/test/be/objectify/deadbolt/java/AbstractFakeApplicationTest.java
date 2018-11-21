@@ -20,17 +20,14 @@ import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
 import com.typesafe.config.ConfigFactory;
-import org.mockito.Mockito;
 import play.Application;
 import play.Mode;
-import play.api.mvc.RequestHeader;
-import play.core.j.JavaContextComponents;
 import play.inject.guice.GuiceApplicationBuilder;
+import play.libs.F;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.test.WithApplication;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -44,7 +41,6 @@ import static play.inject.Bindings.bind;
  */
 public abstract class AbstractFakeApplicationTest extends WithApplication
 {
-    private Http.Context ctx;
 
     @Override
     protected Application provideApplication()
@@ -53,19 +49,6 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
                                             .bindings(bind(HandlerCache.class).toInstance(handlers()))
                                             .in(Mode.TEST)
                                             .build();
-    }
-
-    @Override
-    public void startPlay()
-    {
-        super.startPlay();
-        ctx = new Http.Context(1L,
-                               Mockito.mock(RequestHeader.class),
-                               Mockito.mock(Http.Request.class),
-                               Collections.emptyMap(),
-                               Collections.emptyMap(),
-                               Collections.emptyMap(),
-                               Mockito.mock(JavaContextComponents.class));
     }
 
     public DeadboltHandler init(final Supplier<Subject> getSubject)
@@ -88,7 +71,7 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
         return new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.ofNullable(getSubject.get()));
             }
@@ -101,7 +84,7 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
         return new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.ofNullable(getSubject.get()));
             }
@@ -119,7 +102,7 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
         return new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.ofNullable(drh.get()));
             }
@@ -129,17 +112,12 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
     public ViewSupport viewSupport()
     {
         final ConstraintLogic constraintLogic = new ConstraintLogic(new DeadboltAnalyzer(),
-                                                                    DeadboltHandler::getSubject,
+                                                                    (handler, rh) -> handler.getSubject(rh).thenApply(maybeSubject -> F.Tuple(maybeSubject, rh)),
                                                                     new DefaultPatternCache());
 
         return new ViewSupport(ConfigFactory.empty(),
                                handlers(),
                                new TemplateFailureListenerProvider(provideApplication().injector()),
                                constraintLogic);
-    }
-
-    public Http.Context context()
-    {
-        return this.ctx;
     }
 }

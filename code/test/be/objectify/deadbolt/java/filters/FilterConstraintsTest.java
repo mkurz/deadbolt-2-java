@@ -62,7 +62,6 @@ public class FilterConstraintsTest
     private FilterConstraints filterConstraints;
     private Http.RequestHeader requestHeader;
     private SubjectCache subjectCache;
-    private Http.Context context;
     private DeadboltHandler handler;
     private ConstraintLogic constraintLogic;
 
@@ -70,13 +69,12 @@ public class FilterConstraintsTest
     public void setUp()
     {
         handler = Mockito.mock(DeadboltHandler.class);
-        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.Context.class), Mockito.any(Optional.class)))
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.RequestHeader.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-        Mockito.when(handler.onAuthFailure(Mockito.any(Http.Context.class),
+        Mockito.when(handler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                            Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        context = Mockito.mock(Http.Context.class);
         subjectCache = new DefaultSubjectCache(ConfigFactory.empty());
 
         constraintLogic = new ConstraintLogic(analyzer,
@@ -121,11 +119,10 @@ public class FilterConstraintsTest
     public void testSubjectPresent_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         final CompletionStage<Result> eventualResult = filterConstraints.subjectPresent()
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -140,11 +137,10 @@ public class FilterConstraintsTest
     public void testSubjectPresent_withContent_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         final CompletionStage<Result> eventualResult = filterConstraints.subjectPresent(Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -159,11 +155,10 @@ public class FilterConstraintsTest
     public void testSubjectPresent_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         final CompletionStage<Result> eventualResult = filterConstraints.subjectPresent()
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -173,7 +168,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -181,11 +176,10 @@ public class FilterConstraintsTest
     public void testSubjectPresent_withContent_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         final CompletionStage<Result> eventualResult = filterConstraints.subjectPresent(Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -195,7 +189,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -203,11 +197,10 @@ public class FilterConstraintsTest
     public void testSubjectNotPresent_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         final CompletionStage<Result> eventualResult = filterConstraints.subjectNotPresent()
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -222,11 +215,10 @@ public class FilterConstraintsTest
     public void testSubjectNotPresent_withContent_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         final CompletionStage<Result> eventualResult = filterConstraints.subjectNotPresent(Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -241,11 +233,10 @@ public class FilterConstraintsTest
     public void testSubjectNotPresent_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         final CompletionStage<Result> eventualResult = filterConstraints.subjectNotPresent()
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -255,7 +246,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -263,11 +254,10 @@ public class FilterConstraintsTest
     public void testSubjectNotPresent_withContent_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         final CompletionStage<Result> eventualResult = filterConstraints.subjectNotPresent(Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -277,7 +267,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -287,11 +277,10 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().role(new TestRole("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.restrict(Collections.singletonList(new String[]{"foo"}))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -308,12 +297,11 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().role(new TestRole("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.restrict(Collections.singletonList(new String[]{"foo"}),
                                                                                   Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -330,11 +318,10 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().role(new TestRole("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.restrict(Collections.singletonList(new String[]{"hurdy"}))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -344,7 +331,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -354,12 +341,11 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().role(new TestRole("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.restrict(Collections.singletonList(new String[]{"hurdy"}),
                                                                                   Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -369,7 +355,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -379,12 +365,11 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.EQUALITY)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -401,12 +386,11 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -421,25 +405,24 @@ public class FilterConstraintsTest
     public void testPattern_custom_pass() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+        
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(Boolean.TRUE);
                    }
                })));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.CUSTOM)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -456,12 +439,11 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("bar",
                                                                                  PatternType.EQUALITY)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -471,7 +453,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -481,12 +463,11 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -496,7 +477,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -504,25 +485,24 @@ public class FilterConstraintsTest
     public void testPattern_custom_fail() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(Boolean.FALSE);
                    }
                })));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.CUSTOM)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -532,7 +512,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -542,13 +522,12 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.EQUALITY,
                                                                                  Optional.of("moo"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -565,13 +544,12 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX,
                                                                                  Optional.of("moo"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -586,17 +564,17 @@ public class FilterConstraintsTest
     public void testPattern_custom_withMeta_pass() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
@@ -604,8 +582,7 @@ public class FilterConstraintsTest
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.CUSTOM,
                                                                                  Optional.of("moo"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -622,13 +599,12 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("bar",
                                                                                  PatternType.EQUALITY,
                                                                                  Optional.of("moo"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -638,7 +614,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -648,13 +624,12 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX,
                                                                                  Optional.of("moo"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -664,7 +639,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -672,17 +647,17 @@ public class FilterConstraintsTest
     public void testPattern_custom_withMeta_fail() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
@@ -690,8 +665,7 @@ public class FilterConstraintsTest
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.CUSTOM,
                                                                                  Optional.of("bluergh"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -701,7 +675,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -711,13 +685,12 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.EQUALITY,
                                                                                  true)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -727,7 +700,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -737,13 +710,12 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX,
                                                                                  true)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -753,7 +725,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -761,17 +733,17 @@ public class FilterConstraintsTest
     public void testPattern_custom_invert_pass() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(Boolean.TRUE);
                    }
@@ -779,8 +751,7 @@ public class FilterConstraintsTest
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.CUSTOM,
                                                                                  true)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -790,7 +761,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -800,13 +771,12 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("bar",
                                                                                  PatternType.EQUALITY,
                                                                                  true)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -823,13 +793,12 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX,
                                                                                  true)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -844,17 +813,17 @@ public class FilterConstraintsTest
     public void testPattern_custom_invert_fail() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(Boolean.FALSE);
                    }
@@ -862,8 +831,7 @@ public class FilterConstraintsTest
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.CUSTOM,
                                                                                  true)
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -880,15 +848,14 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.EQUALITY,
                                                                                  Optional.of("moo"),
                                                                                  false,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -905,15 +872,14 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX,
                                                                                  Optional.of("moo"),
                                                                                  false,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -928,17 +894,17 @@ public class FilterConstraintsTest
     public void testPattern_custom_allArgs_pass() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
@@ -948,8 +914,7 @@ public class FilterConstraintsTest
                                                                                  Optional.of("moo"),
                                                                                  false,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -966,15 +931,14 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("bar",
                                                                                  PatternType.EQUALITY,
                                                                                  Optional.of("moo"),
                                                                                  false,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -984,7 +948,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -994,15 +958,14 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX,
                                                                                  Optional.of("moo"),
                                                                                  false,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1012,7 +975,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -1020,17 +983,17 @@ public class FilterConstraintsTest
     public void testPattern_custom_allArgs_fail() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
@@ -1040,8 +1003,7 @@ public class FilterConstraintsTest
                                                                                  Optional.of("bluergh"),
                                                                                  false,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1051,7 +1013,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -1061,15 +1023,14 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo",
                                                                                  PatternType.EQUALITY,
                                                                                  Optional.of("moo"),
                                                                                  true,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1079,7 +1040,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -1089,15 +1050,14 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo.bar"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX,
                                                                                  Optional.of("moo"),
                                                                                  true,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1107,7 +1067,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -1115,17 +1075,17 @@ public class FilterConstraintsTest
     public void testPattern_custom_allArgs_invert_pass() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
@@ -1135,8 +1095,7 @@ public class FilterConstraintsTest
                                                                                  Optional.of("moo"),
                                                                                  true,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1146,7 +1105,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -1156,15 +1115,14 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("bar",
                                                                                  PatternType.EQUALITY,
                                                                                  Optional.of("moo"),
                                                                                  true,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1181,15 +1139,14 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar.foo"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         final CompletionStage<Result> eventualResult = filterConstraints.pattern("foo.*",
                                                                                  PatternType.REGEX,
                                                                                  Optional.of("moo"),
                                                                                  true,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1204,17 +1161,17 @@ public class FilterConstraintsTest
     public void testPattern_custom_allArgs_invert_fail() throws Exception
     {
         final boolean[] flag = {false};
-        context.args = new HashMap<>();
-        Mockito.when(handler.getSubject(context))
+
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                    final Optional<String> meta,
                                                                    final DeadboltHandler deadboltHandler,
-                                                                   final Http.Context ctx)
+                                                                   final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
@@ -1224,8 +1181,7 @@ public class FilterConstraintsTest
                                                                                  Optional.of("bluergh"),
                                                                                  true,
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1240,23 +1196,22 @@ public class FilterConstraintsTest
     public void testDynamic_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx)
+                                                             final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(Boolean.TRUE);
                    }
                })));
         final CompletionStage<Result> eventualResult = filterConstraints.dynamic("foo")
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1271,24 +1226,23 @@ public class FilterConstraintsTest
     public void testDynamic_withMeta_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx)
+                                                             final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
         final CompletionStage<Result> eventualResult = filterConstraints.dynamic("foo",
                                                                                  Optional.of("moo"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1303,16 +1257,16 @@ public class FilterConstraintsTest
     public void testDynamic_withMetaAndContent_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx)
+                                                             final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
@@ -1320,8 +1274,7 @@ public class FilterConstraintsTest
         final CompletionStage<Result> eventualResult = filterConstraints.dynamic("foo",
                                                                                  Optional.of("moo"),
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1336,23 +1289,22 @@ public class FilterConstraintsTest
     public void testDynamic_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx)
+                                                             final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(Boolean.FALSE);
                    }
                })));
         final CompletionStage<Result> eventualResult = filterConstraints.dynamic("foo")
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1362,7 +1314,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -1370,24 +1322,23 @@ public class FilterConstraintsTest
     public void testDynamic_withMeta_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx)
+                                                             final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
                })));
         final CompletionStage<Result> eventualResult = filterConstraints.dynamic("foo",
                                                                                  Optional.of("bleurgh"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1397,7 +1348,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -1405,16 +1356,16 @@ public class FilterConstraintsTest
     public void testDynamic_withMetaAndContent_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
-        Mockito.when(handler.getDynamicResourceHandler(context))
+        Mockito.when(handler.getDynamicResourceHandler(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(new AbstractDynamicResourceHandler()
                {
                    @Override
                    public CompletionStage<Boolean> isAllowed(final String name,
                                                              final Optional<String> meta,
                                                              final DeadboltHandler deadboltHandler,
-                                                             final Http.Context ctx)
+                                                             final Http.RequestHeader requestHeader)
                    {
                        return CompletableFuture.completedFuture(meta.orElse("meh").equals("moo"));
                    }
@@ -1422,8 +1373,7 @@ public class FilterConstraintsTest
         final CompletionStage<Result> eventualResult = filterConstraints.dynamic("foo",
                                                                                  Optional.of("bleurgh"),
                                                                                  Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1433,7 +1383,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -1441,11 +1391,10 @@ public class FilterConstraintsTest
     public void testComposite_byName_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         final CompletionStage<Result> eventualResult = filterConstraints.composite("testConstraint")
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1460,12 +1409,11 @@ public class FilterConstraintsTest
     public void testComposite_byName_withContent_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         final CompletionStage<Result> eventualResult = filterConstraints.composite("testConstraint",
                                                                                    Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1480,11 +1428,10 @@ public class FilterConstraintsTest
     public void testComposite_byName_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         final CompletionStage<Result> eventualResult = filterConstraints.composite("testConstraint")
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1494,7 +1441,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -1502,12 +1449,11 @@ public class FilterConstraintsTest
     public void testComposite_byName_withContent_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         final CompletionStage<Result> eventualResult = filterConstraints.composite("testConstraint",
                                                                                    Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1517,7 +1463,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -1525,12 +1471,11 @@ public class FilterConstraintsTest
     public void testComposite_byConstraint_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         final CompletionStage<Result> eventualResult = filterConstraints.composite(new SubjectPresentConstraint(Optional.empty(),
                                                                                                                 constraintLogic))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1545,13 +1490,12 @@ public class FilterConstraintsTest
     public void testComposite_byConstraint_withContent_pass() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         final CompletionStage<Result> eventualResult = filterConstraints.composite(new SubjectPresentConstraint(Optional.empty(),
                                                                                                                 constraintLogic),
                                                                                    Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1566,14 +1510,13 @@ public class FilterConstraintsTest
     public void testComposite_byConstraint_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getPermissionsForRole("foo"))
                .then(invocation -> Collections.singletonList(new TestPermission("bar")));
         final CompletionStage<Result> eventualResult = filterConstraints.composite(new SubjectPresentConstraint(Optional.empty(),
                                                                                                                 constraintLogic))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1583,7 +1526,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -1591,15 +1534,14 @@ public class FilterConstraintsTest
     public void testComposite_byConstraint_withContent_fail() throws Exception
     {
         final boolean[] flag = {false};
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.getPermissionsForRole("foo"))
                .then(invocation -> Collections.singletonList(new TestPermission("bar")));
         final CompletionStage<Result> eventualResult = filterConstraints.composite(new SubjectPresentConstraint(Optional.empty(),
                                                                                                                 constraintLogic),
                                                                                    Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1609,7 +1551,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 
@@ -1619,13 +1561,12 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo")
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1642,14 +1583,13 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("bar"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo",
                                                                                               Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1666,14 +1606,13 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("hurdy"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
 
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo")
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1683,7 +1622,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.empty()));
     }
 
@@ -1693,15 +1632,14 @@ public class FilterConstraintsTest
         final boolean[] flag = {false};
         final TestSubject subject = new TestSubject.Builder().permission(new TestPermission("hurdy"))
                                                              .build();
-        Mockito.when(handler.getSubject(context))
+        Mockito.when(handler.getSubject(requestHeader))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(subject)));
         Mockito.when(handler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
 
         final CompletionStage<Result> eventualResult = filterConstraints.roleBasedPermissions("foo",
                                                                                               Optional.of("json"))
-                                                                        .apply(context,
-                                                                               requestHeader,
+                                                                        .apply(requestHeader,
                                                                                handler,
                                                                                rh ->
                                                                                {
@@ -1711,7 +1649,7 @@ public class FilterConstraintsTest
         ((CompletableFuture) eventualResult).get();
         Assert.assertFalse(flag[0]);
         Mockito.verify(handler,
-                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.Context.class),
+                       Mockito.times(1)).onAuthFailure(Mockito.any(Http.RequestHeader.class),
                                                        Mockito.eq(Optional.of("json")));
     }
 }

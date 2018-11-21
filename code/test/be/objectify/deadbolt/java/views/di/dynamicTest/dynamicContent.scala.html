@@ -1,9 +1,9 @@
 @this(dynamic: be.objectify.deadbolt.java.views.html.di.dynamic)
-@(ctx: Http.Context, name: String, meta: Optional[String] = Optional.empty(), deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+@(name: String, meta: Optional[String] = Optional.empty(), deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
 
 This is before the constraint.
 
-@dynamic(context = ctx, name = name, meta = meta, handler = deadboltHandler) {
+@dynamic(name = name, meta = meta, handler = deadboltHandler) {
     This is protected by the constraint.
 }
 
