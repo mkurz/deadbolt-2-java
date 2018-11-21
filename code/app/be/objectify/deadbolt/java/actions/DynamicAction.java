@@ -78,9 +78,6 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
                                        ConstraintPoint.CONTROLLER);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();

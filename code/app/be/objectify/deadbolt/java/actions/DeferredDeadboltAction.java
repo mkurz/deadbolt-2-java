@@ -51,9 +51,6 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
         return delegate.call((Http.Request)request);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return false; // you can't defer a DeferredDeadboltAction, makes absolutely no sense

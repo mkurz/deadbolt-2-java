@@ -74,9 +74,6 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                                                                  getContent()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();

@@ -84,9 +84,6 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return Optional.ofNullable(configuration.content());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();

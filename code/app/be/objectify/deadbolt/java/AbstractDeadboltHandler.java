@@ -36,34 +36,22 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     private static final AtomicLong NEXT_ID = new AtomicLong(0);
     private final long id = NEXT_ID.getAndIncrement();
 
-    /**
-     * {@inheritDoc}
-     */
     public long getId() {
         return this.id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompletionStage<Optional<Result>> beforeAuthCheck(Http.RequestHeader requestHeader, Optional<String> content)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompletionStage<Result> onAuthFailure(final Http.RequestHeader requestHeader,
                                                  final Optional<String> content)
@@ -72,9 +60,6 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
                                 .thenApply(Results::unauthorized);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
     {

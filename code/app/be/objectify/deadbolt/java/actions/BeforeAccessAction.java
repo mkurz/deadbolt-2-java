@@ -45,9 +45,6 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
               config);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompletionStage<Result> execute(final Http.RequestHeader request) throws Exception
     {
@@ -60,9 +57,6 @@ public class BeforeAccessAction extends AbstractDeadboltAction<BeforeAccess>
                                                            .orElseGet(() -> delegate.call((Http.Request)preAuthResult._2)));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();

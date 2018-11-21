@@ -49,9 +49,6 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
               constraintLogic);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     CompletionStage<Result> present(final Http.RequestHeader request,
                                     final DeadboltHandler handler,
@@ -60,9 +57,6 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
         return authorizeAndExecute(request);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     CompletionStage<Result> notPresent(final Http.RequestHeader request,
                                        final DeadboltHandler handler,
@@ -86,9 +80,6 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
                                                      ConstraintPoint.CONTROLLER).toCompletableFuture();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();

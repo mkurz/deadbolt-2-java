@@ -105,9 +105,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
                                                                                        : handlerCache.apply(handlerKey);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompletionStage<Result> call(final Http.Request request)
     {

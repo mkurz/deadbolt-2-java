@@ -45,9 +45,6 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
         this.constraintLogic = constraintLogic;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompletionStage<Result> execute(final Http.RequestHeader request) throws Exception
     {
