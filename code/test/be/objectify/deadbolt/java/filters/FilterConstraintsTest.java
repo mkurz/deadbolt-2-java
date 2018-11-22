@@ -75,7 +75,7 @@ public class FilterConstraintsTest
                                            Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        subjectCache = new DefaultSubjectCache(ConfigFactory.empty());
+        subjectCache = new DefaultSubjectCache(ConfigFactory.load());
 
         constraintLogic = new ConstraintLogic(analyzer,
                                               subjectCache,
@@ -86,7 +86,7 @@ public class FilterConstraintsTest
                                 new SubjectPresentConstraint(Optional.empty(),
                                                              constraintLogic));
 
-        final BeforeAuthCheckCache beforeAuthCheckCache = new DefaultBeforeAuthCheckCache(ConfigFactory.empty());
+        final BeforeAuthCheckCache beforeAuthCheckCache = new DefaultBeforeAuthCheckCache(ConfigFactory.load());
 
         filterConstraints = new FilterConstraints(constraintLogic,
                                                   compositeCache,

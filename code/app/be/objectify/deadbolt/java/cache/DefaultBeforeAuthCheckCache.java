@@ -15,10 +15,8 @@
  */
 package be.objectify.deadbolt.java.cache;
 
-import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import play.libs.F;
 import play.libs.typedmap.TypedKey;
 import play.mvc.Http;
@@ -26,7 +24,6 @@ import play.mvc.Result;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -45,11 +42,7 @@ public class DefaultBeforeAuthCheckCache implements BeforeAuthCheckCache
     @Inject
     public DefaultBeforeAuthCheckCache(final Config config)
     {
-        final HashMap<String, Object> defaults = new HashMap<>();
-        defaults.put(ConfigKeys.CACHE_BEFORE_AUTH_CHECK_DEFAULT._1,
-                     ConfigKeys.CACHE_BEFORE_AUTH_CHECK_DEFAULT._2);
-        final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
-        this.cacheBeforeAuthCheckPerRequestEnabled = configWithFallback.getBoolean(ConfigKeys.CACHE_BEFORE_AUTH_CHECK_DEFAULT._1);
+        this.cacheBeforeAuthCheckPerRequestEnabled = config.getBoolean("deadbolt.java.cache-before-auth-check");
     }
 
     @Override
@@ -60,7 +53,7 @@ public class DefaultBeforeAuthCheckCache implements BeforeAuthCheckCache
         final CompletionStage<Optional<Result>> promise;
         if (cacheBeforeAuthCheckPerRequestEnabled)
         {
-            final TypedKey<Boolean> deadboltHandlerCacheId = this.typedKeyCache.computeIfAbsent(deadboltHandler.getId(), k -> TypedKey.create(ConfigKeys.CACHE_BEFORE_AUTH_CHECK_DEFAULT._1 + "." + k)); // results into "deadbolt.java.cache-before-auth-check.0"
+            final TypedKey<Boolean> deadboltHandlerCacheId = this.typedKeyCache.computeIfAbsent(deadboltHandler.getId(), k -> TypedKey.create("deadbolt.java.cache-before-auth-check." + k));
             if (requestHeader.attrs().containsKey(deadboltHandlerCacheId))
             {
                 return CompletableFuture.completedFuture(F.Tuple(Optional.empty(), requestHeader));

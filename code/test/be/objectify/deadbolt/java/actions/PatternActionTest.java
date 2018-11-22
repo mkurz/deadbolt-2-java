@@ -57,7 +57,7 @@ public class PatternActionTest
         final ConstraintLogic constraintLogic = Mockito.mock(ConstraintLogic.class);
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
                                                        Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
+                                                       ConfigFactory.load(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
                                                        constraintLogic);
@@ -88,7 +88,7 @@ public class PatternActionTest
                .thenReturn("foo");
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
                                                        Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
+                                                       ConfigFactory.load(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ConstraintLogic.class));

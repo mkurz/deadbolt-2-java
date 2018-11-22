@@ -52,7 +52,7 @@ public class SubjectPresentActionTest {
                .thenReturn("x/y");
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
                                                                      Mockito.mock(BeforeAuthCheckCache.class),
-                                                                     ConfigFactory.empty(),
+                                                                     ConfigFactory.load(),
                                                                      Mockito.mock(ConstraintLogic.class));
         action.configuration = subjectPresent;
 
@@ -68,7 +68,7 @@ public class SubjectPresentActionTest {
     {
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
                                                                      Mockito.mock(BeforeAuthCheckCache.class),
-                                                                     ConfigFactory.empty(),
+                                                                     ConfigFactory.load(),
                                                                      Mockito.mock(ConstraintLogic.class));
         action.delegate = Mockito.mock(Action.class);
 
@@ -86,7 +86,7 @@ public class SubjectPresentActionTest {
     {
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
                                                                      Mockito.mock(BeforeAuthCheckCache.class),
-                                                                     ConfigFactory.empty(),
+                                                                     ConfigFactory.load(),
                                                                      Mockito.mock(ConstraintLogic.class));
 
         final Http.Request request = Mockito.mock(Http.Request.class);
@@ -115,7 +115,7 @@ public class SubjectPresentActionTest {
 
         final SubjectPresentAction action = new SubjectPresentAction(Mockito.mock(HandlerCache.class),
                                                                      Mockito.mock(BeforeAuthCheckCache.class),
-                                                                     ConfigFactory.empty(),
+                                                                     ConfigFactory.load(),
                                                                      constraintLogic);
         action.configuration = Mockito.mock(SubjectPresent.class);
 

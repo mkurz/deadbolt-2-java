@@ -15,18 +15,15 @@
  */
 package be.objectify.deadbolt.java.cache;
 
-import be.objectify.deadbolt.java.ConfigKeys;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.models.Subject;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import play.libs.F;
 import play.libs.typedmap.TypedKey;
 import play.mvc.Http;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -45,11 +42,7 @@ public class DefaultSubjectCache implements SubjectCache
     @Inject
     public DefaultSubjectCache(final Config config)
     {
-        final HashMap<String, Object> defaults = new HashMap<>();
-        defaults.put(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1,
-                     ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._2);
-        final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
-        this.cacheUserPerRequestEnabled = configWithFallback.getBoolean(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1);
+        this.cacheUserPerRequestEnabled = config.getBoolean("deadbolt.java.cache-user");
     }
 
     @Override
@@ -58,7 +51,7 @@ public class DefaultSubjectCache implements SubjectCache
     {
         if (cacheUserPerRequestEnabled)
         {
-            final TypedKey<Subject> deadboltHandlerCacheId = this.typedKeyCache.computeIfAbsent(deadboltHandler.getId(), k -> TypedKey.create(ConfigKeys.CACHE_DEADBOLT_USER_DEFAULT._1 + "." + k)); // results into "deadbolt.java.cache-user.0"
+            final TypedKey<Subject> deadboltHandlerCacheId = this.typedKeyCache.computeIfAbsent(deadboltHandler.getId(), k -> TypedKey.create("deadbolt.java.cache-user." + k));
             final Optional<? extends Subject> cachedUser = requestHeader.attrs().getOptional(deadboltHandlerCacheId);
             if (cachedUser.isPresent())
             {

@@ -115,9 +115,10 @@ public abstract class AbstractFakeApplicationTest extends WithApplication
                                                                     (handler, rh) -> handler.getSubject(rh).thenApply(maybeSubject -> F.Tuple(maybeSubject, rh)),
                                                                     new DefaultPatternCache());
 
-        return new ViewSupport(ConfigFactory.empty(),
+        final Application app = provideApplication();
+        return new ViewSupport(app.config(),
                                handlers(),
-                               new TemplateFailureListenerProvider(provideApplication().injector()),
+                               new TemplateFailureListenerProvider(app.injector()),
                                constraintLogic);
     }
 }

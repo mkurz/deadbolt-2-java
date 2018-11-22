@@ -18,14 +18,12 @@ package be.objectify.deadbolt.java;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.mvc.Http;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -63,12 +61,7 @@ public class ViewSupport
         this.handlerCache = handlerCache;
         this.failureListener = failureListener.get();
         this.constraintLogic = constraintLogic;
-
-        final HashMap<String, Object> defaults = new HashMap<>();
-        defaults.put(ConfigKeys.DEFAULT_VIEW_TIMEOUT_DEFAULT._1,
-                     ConfigKeys.DEFAULT_VIEW_TIMEOUT_DEFAULT._2);
-        final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
-        final Long timeout = configWithFallback.getLong(ConfigKeys.DEFAULT_VIEW_TIMEOUT_DEFAULT._1);
+        final Long timeout = config.getLong("deadbolt.java.view-timeout");
         LOGGER.info("Default timeout period for blocking views is [{}]ms",
                     timeout);
         this.defaultTimeout = () -> timeout;

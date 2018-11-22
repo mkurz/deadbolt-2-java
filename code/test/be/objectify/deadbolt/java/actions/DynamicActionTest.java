@@ -49,7 +49,7 @@ public class DynamicActionTest
         final ConstraintLogic constraintLogic = Mockito.mock(ConstraintLogic.class);
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
                                                        Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
+                                                       ConfigFactory.load(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
                                                        constraintLogic);
@@ -77,7 +77,7 @@ public class DynamicActionTest
                .thenReturn("foo");
         final DynamicAction action = new DynamicAction(Mockito.mock(HandlerCache.class),
                                                        Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
+                                                       ConfigFactory.load(),
                                                        dynamic,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ConstraintLogic.class));

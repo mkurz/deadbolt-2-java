@@ -62,7 +62,7 @@ public class CompositeActionTest
 
         final CompositeAction action = new CompositeAction(Mockito.mock(HandlerCache.class),
                                                            Mockito.mock(BeforeAuthCheckCache.class),
-                                                           ConfigFactory.empty(),
+                                                           ConfigFactory.load(),
                                                            compositeCache,
                                                            Mockito.mock(ConstraintLogic.class));
         action.configuration = composite;
@@ -86,7 +86,7 @@ public class CompositeActionTest
                .thenReturn("foo");
         final CompositeAction action = new CompositeAction(Mockito.mock(HandlerCache.class),
                                                            Mockito.mock(BeforeAuthCheckCache.class),
-                                                           ConfigFactory.empty(),
+                                                           ConfigFactory.load(),
                                                            Mockito.mock(CompositeCache.class),
                                                            Mockito.mock(ConstraintLogic.class));
         action.configuration = composite;

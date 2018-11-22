@@ -15,42 +15,14 @@
  */
 package be.objectify.deadbolt.java;
 
-import play.libs.F;
 import play.libs.typedmap.TypedKey;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class ConfigKeys
+public final class ConfigKeys
 {
     public static final String DEFAULT_HANDLER_KEY = "defaultHandler";
 
-    public static final String CACHE_DEADBOLT_USER = "deadbolt.java.cache-user";
-    public static final F.Tuple<String, Boolean> CACHE_DEADBOLT_USER_DEFAULT = new F.Tuple<>(CACHE_DEADBOLT_USER,
-                                                                                             false);
-
-    public static final String CACHE_BEFORE_AUTH_CHECK = "deadbolt.java.cache-before-auth-check";
-    public static final F.Tuple<String, Boolean> CACHE_BEFORE_AUTH_CHECK_DEFAULT = new F.Tuple<>(CACHE_BEFORE_AUTH_CHECK,
-                                                                                             false);
-
-    public static final String DEFAULT_VIEW_TIMEOUT = "deadbolt.java.view-timeout";
-    public static final F.Tuple<String, Long> DEFAULT_VIEW_TIMEOUT_DEFAULT = new F.Tuple<>(DEFAULT_VIEW_TIMEOUT,
-                                                                                           1000L);
-    public static final String BLOCKING = "deadbolt.java.blocking";
-    public static final F.Tuple<String, Boolean> BLOCKING_DEFAULT = new F.Tuple<>(BLOCKING,
-                                                                                  false);
-    public static final String DEFAULT_BLOCKING_TIMEOUT = "deadbolt.java.blocking-timeout";
-    public static final F.Tuple<String, Long> DEFAULT_BLOCKING_TIMEOUT_DEFAULT = new F.Tuple<>(DEFAULT_BLOCKING_TIMEOUT,
-                                                                                               1000L);
-
-    public static final String CONSTRAINT_MODE = "deadbolt.java.constraint-mode";
-    public static final F.Tuple<String, String> CONSTRAINT_MODE_DEFAULT = new F.Tuple<>(CONSTRAINT_MODE,
-                                                                                   ConstraintAnnotationMode.PROCESS_FIRST_CONSTRAINT_ONLY.toString());
-
     public static final TypedKey<Boolean> PATTERN_INVERT = TypedKey.create("deadbolt.pattern.invert");
-
-    private ConfigKeys()
-    {
-        // no-op
-    }
 }

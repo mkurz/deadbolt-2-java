@@ -50,7 +50,7 @@ public class SubjectNotPresentActionTest {
                .thenReturn("x/y");
         final SubjectNotPresentAction action = new SubjectNotPresentAction(Mockito.mock(HandlerCache.class),
                                                                            Mockito.mock(BeforeAuthCheckCache.class),
-                                                                           ConfigFactory.empty(),
+                                                                           ConfigFactory.load(),
                                                                            Mockito.mock(ConstraintLogic.class));
         action.configuration = subjectNotPresent;
 
@@ -66,7 +66,7 @@ public class SubjectNotPresentActionTest {
     {
         final SubjectNotPresentAction action = new SubjectNotPresentAction(Mockito.mock(HandlerCache.class),
                                                                            Mockito.mock(BeforeAuthCheckCache.class),
-                                                                           ConfigFactory.empty(),
+                                                                           ConfigFactory.load(),
                                                                            Mockito.mock(ConstraintLogic.class));
         final Http.Request request = Mockito.mock(Http.Request.class);
         Mockito.when(request.uri())
@@ -86,7 +86,7 @@ public class SubjectNotPresentActionTest {
     {
         final SubjectNotPresentAction action = new SubjectNotPresentAction(Mockito.mock(HandlerCache.class),
                                                                            Mockito.mock(BeforeAuthCheckCache.class),
-                                                                           ConfigFactory.empty(),
+                                                                           ConfigFactory.load(),
                                                                            Mockito.mock(ConstraintLogic.class));
         action.delegate = Mockito.mock(Action.class);
 
@@ -113,7 +113,7 @@ public class SubjectNotPresentActionTest {
 
         final SubjectNotPresentAction action = new SubjectNotPresentAction(Mockito.mock(HandlerCache.class),
                                                                            Mockito.mock(BeforeAuthCheckCache.class),
-                                                                           ConfigFactory.empty(),
+                                                                           ConfigFactory.load(),
                                                                            constraintLogic);
         action.configuration = Mockito.mock(SubjectNotPresent.class);
 

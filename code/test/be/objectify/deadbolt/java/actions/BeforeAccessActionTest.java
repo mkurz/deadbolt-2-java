@@ -48,11 +48,11 @@ public class BeforeAccessActionTest
         Mockito.when(handlerCache.get())
                .thenReturn(handler);
 
-        final BeforeAuthCheckCache beforeAuthCheckCache = new DefaultBeforeAuthCheckCache(ConfigFactory.empty());
+        final BeforeAuthCheckCache beforeAuthCheckCache = new DefaultBeforeAuthCheckCache(ConfigFactory.load());
 
         final BeforeAccessAction action = new BeforeAccessAction(handlerCache,
                                                                  beforeAuthCheckCache,
-                                                                 ConfigFactory.empty());
+                                                                 ConfigFactory.load());
         action.configuration = Mockito.mock(BeforeAccess.class);
         Mockito.when(action.configuration.alwaysExecute())
                .thenReturn(true);
@@ -79,7 +79,7 @@ public class BeforeAccessActionTest
 
         final BeforeAccessAction action = new BeforeAccessAction(handlerCache,
                                                                  Mockito.mock(BeforeAuthCheckCache.class),
-                                                                 ConfigFactory.empty());
+                                                                 ConfigFactory.load());
         action.configuration = Mockito.mock(BeforeAccess.class);
         Mockito.when(action.configuration.alwaysExecute())
                .thenReturn(false);

@@ -21,7 +21,6 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.libs.F;
@@ -31,7 +30,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -59,8 +57,6 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
 
     final BeforeAuthCheckCache beforeAuthCheckCache;
 
-    final Config config;
-
     public final boolean blocking;
     public final long blockingTimeout;
     public final ConstraintAnnotationMode constraintAnnotationMode;
@@ -73,19 +69,9 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         this.handlerCache = handlerCache;
         this.beforeAuthCheckCache = beforeAuthCheckCache;
-        this.config = config;
-
-        final HashMap<String, Object> defaults = new HashMap<>();
-        defaults.put(ConfigKeys.BLOCKING_DEFAULT._1,
-                     ConfigKeys.BLOCKING_DEFAULT._2);
-        defaults.put(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1,
-                     ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._2);
-        defaults.put(ConfigKeys.CONSTRAINT_MODE_DEFAULT._1,
-                     ConfigKeys.CONSTRAINT_MODE_DEFAULT._2);
-        final Config configWithFallback = config.withFallback(ConfigFactory.parseMap(defaults));
-        this.blocking = configWithFallback.getBoolean(ConfigKeys.BLOCKING_DEFAULT._1);
-        this.blockingTimeout = configWithFallback.getLong(ConfigKeys.DEFAULT_BLOCKING_TIMEOUT_DEFAULT._1);
-        this.constraintAnnotationMode = ConstraintAnnotationMode.valueOf(configWithFallback.getString(ConfigKeys.CONSTRAINT_MODE_DEFAULT._1));
+        this.blocking = config.getBoolean("deadbolt.java.blocking");
+        this.blockingTimeout = config.getLong("deadbolt.java.blocking-timeout");
+        this.constraintAnnotationMode = ConstraintAnnotationMode.valueOf(config.getString("deadbolt.java.constraint-mode"));
     }
 
     /**
