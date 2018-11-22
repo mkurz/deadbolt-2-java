@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.test.controllers.comment;
+package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
-import be.objectify.deadbolt.java.test.controllers.RestrictTest;
+import be.objectify.deadbolt.java.test.controllers.DynamicTest;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentRestrictTest extends RestrictTest
+public class CommentDynamicTest extends DynamicTest
 {
     @Override
     public String pathComponent()

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.test.controllers.comment;
+package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
-import be.objectify.deadbolt.java.test.controllers.PatternEqualityTest;
+import be.objectify.deadbolt.java.test.controllers.SubjectPresentTest;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentPatternEqualityTest extends PatternEqualityTest
+public class CommentSubjectPresentTest extends SubjectPresentTest
 {
     @Override
     public String pathComponent()

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.test.controllers.comment;
+package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
 import be.objectify.deadbolt.java.test.controllers.PatternCustomTest;
 

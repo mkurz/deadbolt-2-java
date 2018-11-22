@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.test.controllers.comment;
+package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
-import be.objectify.deadbolt.java.test.controllers.DynamicTest;
+import be.objectify.deadbolt.java.test.controllers.RoleBasedPermissionsTest;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentDynamicTest extends DynamicTest
+public class CommentRoleBasedPermissionsTest extends RoleBasedPermissionsTest
 {
     @Override
     public String pathComponent()
