@@ -1,6 +1,6 @@
 @this(viewSupport: be.objectify.deadbolt.java.ViewSupport, handlerCache: be.objectify.deadbolt.java.cache.HandlerCache)
-@(value: String, patternType: be.objectify.deadbolt.java.models.PatternType = be.objectify.deadbolt.java.models.PatternType.EQUALITY, meta: Optional[String] = Optional.empty(), invert: java.lang.Boolean = false, handler: be.objectify.deadbolt.java.DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)(alternativeBody: => Html)(implicit requestHeader: play.api.mvc.RequestHeader)
-@if(viewSupport.viewPattern(value, patternType, meta, invert, handler, content, timeout.get(), requestHeader.asJava)) {
+@(value: String, patternType: be.objectify.deadbolt.java.models.PatternType = be.objectify.deadbolt.java.models.PatternType.EQUALITY, meta: Optional[String] = Optional.empty(), invert: java.lang.Boolean = false, handler: be.objectify.deadbolt.java.DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: Long = viewSupport.timeout)(body: => Html)(alternativeBody: => Html)(implicit requestHeader: play.api.mvc.RequestHeader)
+@if(viewSupport.viewPattern(value, patternType, meta, invert, handler, content, timeout, requestHeader.asJava)) {
     @body
 } else {
     @alternativeBody

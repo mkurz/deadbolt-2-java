@@ -42,7 +42,7 @@ public class ViewSupport
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ViewSupport.class);
 
-    public final Supplier<Long> defaultTimeout;
+    public final long timeout;
 
     private final HandlerCache handlerCache;
 
@@ -61,12 +61,9 @@ public class ViewSupport
         this.handlerCache = handlerCache;
         this.failureListener = failureListener.get();
         this.constraintLogic = constraintLogic;
-        final Long timeout = config.getLong("deadbolt.java.view-timeout");
-        LOGGER.info("Default timeout period for blocking views is [{}]ms",
-                    timeout);
-        this.defaultTimeout = () -> timeout;
-
-        timeoutHandler = (timeoutInMillis, e) ->
+        this.timeout = config.getLong("deadbolt.java.view-timeout");
+        LOGGER.info("Default timeout period for blocking views is [{}]ms", this.timeout);
+        this.timeoutHandler = (timeoutInMillis, e) ->
         {
             LOGGER.error("Timeout when attempting to complete future within [{}]ms.  Denying access to resource.",
                          timeoutInMillis,

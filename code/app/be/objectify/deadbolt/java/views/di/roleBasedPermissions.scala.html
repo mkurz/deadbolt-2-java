@@ -1,5 +1,5 @@
 @this(viewSupport: be.objectify.deadbolt.java.ViewSupport, handlerCache: be.objectify.deadbolt.java.cache.HandlerCache)
-@(roleName: String, handler: be.objectify.deadbolt.java.DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: java.util.function.Supplier[Long] = viewSupport.defaultTimeout)(body: => Html)(implicit requestHeader: play.api.mvc.RequestHeader)
-@if(viewSupport.viewRoleBasedPermissions(roleName, handler, content, timeout.get(), requestHeader.asJava)) {
+@(roleName: String, handler: be.objectify.deadbolt.java.DeadboltHandler = handlerCache.get(), content: Optional[String] = Optional.empty(), timeout: Long = viewSupport.timeout)(body: => Html)(implicit requestHeader: play.api.mvc.RequestHeader)
+@if(viewSupport.viewRoleBasedPermissions(roleName, handler, content, timeout, requestHeader.asJava)) {
     @body
 }
