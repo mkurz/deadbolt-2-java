@@ -20,7 +20,7 @@ import play.libs.typedmap.TypedKey;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public final class ConfigKeys
+public final class Constants
 {
     public static final String DEFAULT_HANDLER_KEY = "defaultHandler";
 

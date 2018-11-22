@@ -291,7 +291,7 @@ public class ConstraintLogic
                                           final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                           final ConstraintPoint constraintPoint)
     {
-        final Http.RequestHeader requestHeaderWithAttr = requestHeader.addAttr(ConfigKeys.PATTERN_INVERT,
+        final Http.RequestHeader requestHeaderWithAttr = requestHeader.addAttr(Constants.PATTERN_INVERT,
                      invert);
         return deadboltHandler.getDynamicResourceHandler(requestHeaderWithAttr)
                               .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))

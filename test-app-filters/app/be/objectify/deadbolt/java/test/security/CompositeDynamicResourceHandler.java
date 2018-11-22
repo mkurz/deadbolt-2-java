@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.test.security;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.Constants;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import org.slf4j.Logger;
@@ -79,7 +79,7 @@ public class CompositeDynamicResourceHandler implements DynamicResourceHandler
                                                                                 .stream()
                                                                                 .filter(perm -> perm.getValue().contains("zombie"))
                                                                                 .count() > 0)
-                                                         .orElseGet(() -> (Boolean) requestHeader.attrs().getOptional(ConfigKeys.PATTERN_INVERT)
+                                                         .orElseGet(() -> (Boolean) requestHeader.attrs().getOptional(Constants.PATTERN_INVERT)
                                                                                                                       .orElse(false)));
     }
 }

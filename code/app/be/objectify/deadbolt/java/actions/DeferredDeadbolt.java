@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.*;
 import java.lang.annotation.Target;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.Constants;
 
 /**
  * If a method-level Deadbolt annotation is marked as deferred, it can be run by adding this annotation to the class level.
@@ -56,7 +56,7 @@ public @interface DeferredDeadbolt
      *
      * @return the ky of the handler
      */
-    String handlerKey() default ConfigKeys.DEFAULT_HANDLER_KEY;
+    String handlerKey() default Constants.DEFAULT_HANDLER_KEY;
 
     /**
      * Defines several {@code DeferredDeadbolt} annotations on the same element.

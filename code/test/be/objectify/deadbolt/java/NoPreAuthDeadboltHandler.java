@@ -36,6 +36,6 @@ public class NoPreAuthDeadboltHandler extends AbstractDeadboltHandler
     @Override
     public String handlerName()
     {
-        return ConfigKeys.DEFAULT_HANDLER_KEY;
+        return Constants.DEFAULT_HANDLER_KEY;
     }
 }

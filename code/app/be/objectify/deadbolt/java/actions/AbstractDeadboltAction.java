@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.Constants;
 import be.objectify.deadbolt.java.ConstraintAnnotationMode;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
@@ -87,7 +87,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     {
         LOGGER.debug("Getting Deadbolt handler with key [{}]",
                      handlerKey);
-        return handlerKey == null || ConfigKeys.DEFAULT_HANDLER_KEY.equals(handlerKey) ? handlerCache.get()
+        return handlerKey == null || Constants.DEFAULT_HANDLER_KEY.equals(handlerKey) ? handlerCache.get()
                                                                                        : handlerCache.apply(handlerKey);
     }
 

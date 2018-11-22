@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.test.security;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.Constants;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
@@ -86,7 +86,7 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     @Override
     public String handlerName()
     {
-        return ConfigKeys.DEFAULT_HANDLER_KEY;
+        return Constants.DEFAULT_HANDLER_KEY;
     }
 
     @Override

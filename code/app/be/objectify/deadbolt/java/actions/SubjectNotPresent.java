@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.Constants;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import play.mvc.With;
 
@@ -55,7 +55,7 @@ public @interface SubjectNotPresent
      *
      * @return the key of the handler
      */
-    String handlerKey() default ConfigKeys.DEFAULT_HANDLER_KEY;
+    String handlerKey() default Constants.DEFAULT_HANDLER_KEY;
 
     /**
      * If true, the annotation will only be run if there is a {@link DeferredDeadbolt} annotation at the class level.
