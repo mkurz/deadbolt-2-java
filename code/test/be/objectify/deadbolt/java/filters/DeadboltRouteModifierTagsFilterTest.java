@@ -46,7 +46,7 @@ import play.test.Helpers;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
+public class DeadboltRouteModifierTagsFilterTest extends AbstractDeadboltFilterTest
 {
     @Test
     public void testSubjectPresent_subjectIsPresent_defaultHandler() throws ExecutionException, InterruptedException
@@ -67,7 +67,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                 Mockito.any(Optional.class)))
                 .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -105,7 +105,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -143,7 +143,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -182,7 +182,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                 Mockito.any(Optional.class)))
                 .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -222,7 +222,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -262,7 +262,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -302,7 +302,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -341,7 +341,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -380,7 +380,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                 Mockito.any(Optional.class)))
                 .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -419,7 +419,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -459,7 +459,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -499,7 +499,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -544,7 +544,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                 Mockito.any(Optional.class)))
                 .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -588,7 +588,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -632,7 +632,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -677,7 +677,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                 Mockito.any(Optional.class)))
                 .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -723,7 +723,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -769,7 +769,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                    Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -800,7 +800,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -842,7 +842,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                 Mockito.any(Optional.class)))
                 .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -883,7 +883,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.empty())))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -925,7 +925,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                            Mockito.eq(Optional.of("bar"))))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -968,7 +968,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                 Mockito.any(Optional.class)))
                 .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -1011,7 +1011,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};
@@ -1054,7 +1054,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
-        final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
                                                              filterConstraints);
         final boolean[] flag = {false};

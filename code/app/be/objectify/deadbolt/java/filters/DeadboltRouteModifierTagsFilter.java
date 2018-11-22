@@ -96,9 +96,9 @@ import play.routing.Router;
  * @since 2.5.1
  */
 @Singleton
-public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
+public class DeadboltRouteModifierTagsFilter extends AbstractDeadboltFilter
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeadboltRouteCommentFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeadboltRouteModifierTagsFilter.class);
 
     final Pattern subjectPresentModifierTag = Pattern.compile("deadbolt\\:(subjectPresent)(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
     final Pattern subjectNotPresentModifierTag = Pattern.compile("deadbolt\\:(subjectNotPresent)(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
@@ -115,9 +115,9 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
     private final F.Tuple<FilterFunction, DeadboltHandler> unknownDeadboltModifierTag;
 
     @Inject
-    public DeadboltRouteCommentFilter(final Materializer mat,
-                                      final HandlerCache handlerCache,
-                                      final FilterConstraints filterConstraints)
+    public DeadboltRouteModifierTagsFilter(final Materializer mat,
+                                           final HandlerCache handlerCache,
+                                           final FilterConstraints filterConstraints)
     {
         super(mat);
         this.handlerCache = handlerCache;

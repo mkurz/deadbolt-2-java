@@ -24,17 +24,17 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Provides bindings for {@link DeadboltRouteCommentFilter}.
+ * Provides bindings for {@link DeadboltRouteModifierTagsFilter}.
  *
  * @author Steve Chaloner (steve@objectify.be)
  * @since 2.5.1
  */
-public class DeadboltRouteCommentFilterModule extends Module
+public class DeadboltRouteModifierTagsFilterModule extends Module
 {
     @Override
     public List<Binding<?>> bindings(final Environment environment,
                                      final Config config)
     {
-        return Arrays.asList(bindClass(DeadboltRouteCommentFilter.class).toSelf());
+        return Arrays.asList(bindClass(DeadboltRouteModifierTagsFilter.class).toSelf());
     }
 }
