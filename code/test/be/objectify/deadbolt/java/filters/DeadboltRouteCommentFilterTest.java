@@ -61,6 +61,9 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.RequestHeader.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+        Mockito.when(handler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
@@ -75,6 +78,10 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                .toCompletableFuture();
         await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
+        Mockito.verify(handler,
+                Mockito.never())
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.any(Optional.class));
     }
 
     @Test
@@ -169,6 +176,9 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
         Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.RequestHeader.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+        Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
@@ -183,6 +193,10 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              .toCompletableFuture();
         await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
+        Mockito.verify(specificHandler,
+                Mockito.never())
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.any(Optional.class));
         Mockito.verifyZeroInteractions(defaultHandler);
     }
 
@@ -360,6 +374,9 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.RequestHeader.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+        Mockito.when(handler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
@@ -374,6 +391,10 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              .toCompletableFuture();
         await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
+        Mockito.verify(handler,
+                Mockito.never())
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.any(Optional.class));
     }
 
     @Test
@@ -473,7 +494,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         Mockito.when(specificHandler.beforeAuthCheck(Mockito.any(Http.RequestHeader.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
-                                                   Mockito.eq(Optional.empty())))
+                                                   Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
@@ -489,6 +510,10 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              .toCompletableFuture();
         await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
+        Mockito.verify(specificHandler,
+                Mockito.never())
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.any(Optional.class));
         Mockito.verifyZeroInteractions(defaultHandler);
     }
 
@@ -513,6 +538,9 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                    Mockito.eq(handler),
                                    Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Boolean.TRUE));
+        Mockito.when(handler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
@@ -527,6 +555,10 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              .toCompletableFuture();
         await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
+        Mockito.verify(handler,
+                Mockito.never())
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.any(Optional.class));
     }
 
     @Test
@@ -639,6 +671,9 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                    Mockito.eq(specificHandler),
                                    Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Boolean.TRUE));
+        Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
@@ -653,6 +688,10 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              .toCompletableFuture();
         await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
+        Mockito.verify(specificHandler,
+                Mockito.never())
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.any(Optional.class));
         Mockito.verifyZeroInteractions(defaultHandler);
     }
 
@@ -797,6 +836,9 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
         Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.RequestHeader.class), Mockito.any(Optional.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+        Mockito.when(handler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
@@ -809,6 +851,10 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                                     request("deadbolt:rbp:name[foo]"))
                                                              .toCompletableFuture();
         await().until(eventualResult::isDone);
+        Mockito.verify(handler,
+                Mockito.never())
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.any(Optional.class));
         Assert.assertTrue(flag[0]);
     }
 
@@ -916,6 +962,9 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
         Mockito.when(specificHandler.getPermissionsForRole("foo"))
                .then(invocation -> CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar"))));
+        Mockito.when(specificHandler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
 
         final Filter filter = new DeadboltRouteCommentFilter(Mockito.mock(Materializer.class),
                                                              handlerCache,
@@ -930,6 +979,10 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                                              .toCompletableFuture();
         await().until(eventualResult::isDone);
         Assert.assertTrue(flag[0]);
+        Mockito.verify(specificHandler,
+                Mockito.never())
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.any(Optional.class));
         Mockito.verifyZeroInteractions(defaultHandler);
     }
 
