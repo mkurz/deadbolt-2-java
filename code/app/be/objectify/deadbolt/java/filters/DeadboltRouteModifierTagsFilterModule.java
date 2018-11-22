@@ -20,6 +20,7 @@ import play.Environment;
 import play.inject.Binding;
 import play.inject.Module;
 
+import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +36,6 @@ public class DeadboltRouteModifierTagsFilterModule extends Module
     public List<Binding<?>> bindings(final Environment environment,
                                      final Config config)
     {
-        return Arrays.asList(bindClass(DeadboltRouteModifierTagsFilter.class).toSelf());
+        return Arrays.asList(bindClass(DeadboltRouteModifierTagsFilter.class).toSelf().in(Singleton.class));
     }
 }

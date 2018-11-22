@@ -24,6 +24,7 @@ import play.routing.Router;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
@@ -34,6 +35,7 @@ import java.util.function.Function;
  * @author Steve Chaloner (steve@objectify.be)
  * @since 2.5.1
  */
+@Singleton
 public class DeadboltRoutePathFilter extends AbstractDeadboltFilter
 {
     private final DeadboltHandler handler;
