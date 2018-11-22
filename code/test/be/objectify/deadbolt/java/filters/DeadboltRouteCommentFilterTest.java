@@ -790,7 +790,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
     }
 
     @Test
-    public void testUnknownDeadboltComment() throws ExecutionException, InterruptedException
+    public void testUnknownDeadboltModifierTag() throws ExecutionException, InterruptedException
     {
         final HandlerCache handlerCache = Mockito.mock(HandlerCache.class);
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);

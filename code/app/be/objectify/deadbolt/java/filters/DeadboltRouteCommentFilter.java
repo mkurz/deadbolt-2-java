@@ -37,11 +37,11 @@ import play.mvc.Result;
 import play.routing.Router;
 
 /**
- * Filters all incoming HTTP requests and applies constraints based on the route's comment.  If a comment is present, the constraint
+ * Filters all incoming HTTP requests and applies constraints based on the routes' modifier tags.  If deadbolt modifier tags are present, the constraints
  * for that route will be applied.  If access is allowed, the next filter in the chain is invoked; if access is not allowed,
  * {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} is invoked.
  * <p>
- * The format of the comment is deadbolt:constraintType:config.  Individual configurations have the form :label[value] - to omit an optional config,
+ * The format of a modifier tag is deadbolt:constraintType:config.  Individual configurations have the form :label[value] - to omit an optional config,
  * remove :label[value],
  * <p>
  * <ul>
@@ -100,19 +100,19 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeadboltRouteCommentFilter.class);
 
-    final Pattern subjectPresentComment = Pattern.compile("deadbolt\\:(subjectPresent)(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
-    final Pattern subjectNotPresentComment = Pattern.compile("deadbolt\\:(subjectNotPresent)(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
-    final Pattern dynamicComment = Pattern.compile("deadbolt\\:(dynamic)\\:name\\[(?<name>.+?)\\](?:\\:meta\\[(?<meta>.+?)\\]){0,1}(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
-    final Pattern patternComment = Pattern.compile("deadbolt\\:(pattern)\\:value\\[(?<value>.+?)\\]\\:type\\[(?<type>EQUALITY|REGEX|CUSTOM)\\](?:\\:meta\\[(?<meta>.+?)\\]){0,1}(?:\\:invert\\[(?<invert>true|false)\\]){0,1}(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
-    final Pattern compositeComment = Pattern.compile("deadbolt\\:(composite)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
-    final Pattern restrictComment = Pattern.compile("deadbolt\\:(restrict)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
-    final Pattern roleBasedPermissionsComment = Pattern.compile("deadbolt\\:(rbp)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
+    final Pattern subjectPresentModifierTag = Pattern.compile("deadbolt\\:(subjectPresent)(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
+    final Pattern subjectNotPresentModifierTag = Pattern.compile("deadbolt\\:(subjectNotPresent)(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
+    final Pattern dynamicModifierTag = Pattern.compile("deadbolt\\:(dynamic)\\:name\\[(?<name>.+?)\\](?:\\:meta\\[(?<meta>.+?)\\]){0,1}(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
+    final Pattern patternModifierTag = Pattern.compile("deadbolt\\:(pattern)\\:value\\[(?<value>.+?)\\]\\:type\\[(?<type>EQUALITY|REGEX|CUSTOM)\\](?:\\:meta\\[(?<meta>.+?)\\]){0,1}(?:\\:invert\\[(?<invert>true|false)\\]){0,1}(?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
+    final Pattern compositeModifierTag = Pattern.compile("deadbolt\\:(composite)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
+    final Pattern restrictModifierTag = Pattern.compile("deadbolt\\:(restrict)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
+    final Pattern roleBasedPermissionsModifierTag = Pattern.compile("deadbolt\\:(rbp)\\:name\\[(?<name>.+?)\\](?:\\:content\\[(?<content>.+?)\\]){0,1}(?:\\:handler\\[(?<handler>.+?)\\]){0,1}");
 
     private final HandlerCache handlerCache;
     private final DeadboltHandler handler;
     private final FilterConstraints filterConstraints;
 
-    private final F.Tuple<FilterFunction, DeadboltHandler> unknownDeadboltComment;
+    private final F.Tuple<FilterFunction, DeadboltHandler> unknownDeadboltModifierTag;
 
     @Inject
     public DeadboltRouteCommentFilter(final Materializer mat,
@@ -124,7 +124,7 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
         this.handler = handlerCache.get();
         this.filterConstraints = filterConstraints;
 
-        this.unknownDeadboltComment = new F.Tuple<>((requestHeader, dh, onSuccess) ->
+        this.unknownDeadboltModifierTag = new F.Tuple<>((requestHeader, dh, onSuccess) ->
                                                     {
                                                         LOGGER.error("Unknown Deadbolt route modifier tag in [{}], denying access with default handler",
                                                                      requestHeader.attrs().get(Router.Attrs.HANDLER_DEF)
@@ -160,8 +160,8 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
                             .orElseGet(() -> composite(modifierTag)
                                     .orElseGet(() -> restrict(modifierTag)
                                             .orElseGet(() -> pattern(modifierTag)
-                                                    .orElseGet(() -> roleBasedPermissionsComment(modifierTag)
-                                                            .orElse(unknownDeadboltComment)))))));
+                                                    .orElseGet(() -> roleBasedPermissions(modifierTag)
+                                                            .orElse(unknownDeadboltModifierTag)))))));
             return tuple._1.apply(requestHeader,
                                   tuple._2,
                                   rh -> processModifierTags(deadboltModifierTags, index + 1, rh, lastNext));
@@ -172,25 +172,25 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
         }
     }
 
-    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> subjectPresent(final String comment)
+    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> subjectPresent(final String modifierTag)
     {
-        final Matcher matcher = subjectPresentComment.matcher(comment);
+        final Matcher matcher = subjectPresentModifierTag.matcher(modifierTag);
         return matcher.matches() ? Optional.of(new F.Tuple<>(filterConstraints.subjectPresent(Optional.ofNullable(matcher.group("content"))),
                                                              handler(matcher)))
                                  : Optional.empty();
     }
 
-    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> subjectNotPresent(final String comment)
+    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> subjectNotPresent(final String modifierTag)
     {
-        final Matcher matcher = subjectNotPresentComment.matcher(comment);
+        final Matcher matcher = subjectNotPresentModifierTag.matcher(modifierTag);
         return matcher.matches() ? Optional.of(new F.Tuple<>(filterConstraints.subjectNotPresent(Optional.ofNullable(matcher.group("content"))),
                                                              handler(matcher)))
                                  : Optional.empty();
     }
 
-    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> dynamic(final String comment)
+    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> dynamic(final String modifierTag)
     {
-        final Matcher matcher = dynamicComment.matcher(comment);
+        final Matcher matcher = dynamicModifierTag.matcher(modifierTag);
         return matcher.matches() ? Optional.of(new F.Tuple<>(filterConstraints.dynamic(matcher.group("name"),
                                                                                        Optional.ofNullable(matcher.group("meta")),
                                                                                        Optional.ofNullable(matcher.group("content"))),
@@ -198,36 +198,36 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
                                  : Optional.empty();
     }
 
-    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> composite(final String comment)
+    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> composite(final String modifierTag)
     {
-        final Matcher matcher = compositeComment.matcher(comment);
+        final Matcher matcher = compositeModifierTag.matcher(modifierTag);
         return matcher.matches() ? Optional.of(new F.Tuple<>(filterConstraints.composite(matcher.group("name"),
                                                                                          Optional.ofNullable(matcher.group("content"))),
                                                              handler(matcher)))
                                  : Optional.empty();
     }
 
-    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> restrict(final String comment)
+    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> restrict(final String modifierTag)
     {
-        final Matcher matcher = restrictComment.matcher(comment);
+        final Matcher matcher = restrictModifierTag.matcher(modifierTag);
         return matcher.matches() ? Optional.of(new F.Tuple<>(filterConstraints.composite(matcher.group("name"),
                                                                                          Optional.ofNullable(matcher.group("content"))),
                                                              handler(matcher)))
                                  : Optional.empty();
     }
 
-    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> roleBasedPermissionsComment(final String comment)
+    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> roleBasedPermissions(final String modifierTag)
     {
-        final Matcher matcher = roleBasedPermissionsComment.matcher(comment);
+        final Matcher matcher = roleBasedPermissionsModifierTag.matcher(modifierTag);
         return matcher.matches() ? Optional.of(new F.Tuple<>(filterConstraints.roleBasedPermissions(matcher.group("name"),
                                                                                                     Optional.ofNullable(matcher.group("content"))),
                                                              handler(matcher)))
                                  : Optional.empty();
     }
 
-    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> pattern(final String comment)
+    private Optional<F.Tuple<FilterFunction, DeadboltHandler>> pattern(final String modifierTag)
     {
-        final Matcher matcher = patternComment.matcher(comment);
+        final Matcher matcher = patternModifierTag.matcher(modifierTag);
         if (matcher.matches())
         {
             final String invertStr = matcher.group("invert");
