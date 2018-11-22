@@ -15,12 +15,12 @@
  */
 package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
-import be.objectify.deadbolt.java.test.controllers.PatternRegexTest;
+import be.objectify.deadbolt.java.test.controllers.PatternEqualityTest;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentPatternRegexTest extends PatternRegexTest
+public class ModifierTagsPatternEqualityTest extends PatternEqualityTest
 {
     @Override
     public String pathComponent()

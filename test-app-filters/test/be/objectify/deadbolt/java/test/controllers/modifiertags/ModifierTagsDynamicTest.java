@@ -15,12 +15,12 @@
  */
 package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
-import be.objectify.deadbolt.java.test.controllers.CompositeConstraintsTest;
+import be.objectify.deadbolt.java.test.controllers.DynamicTest;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentCompositeConstraintsTest extends CompositeConstraintsTest
+public class ModifierTagsDynamicTest extends DynamicTest
 {
     @Override
     public String pathComponent()

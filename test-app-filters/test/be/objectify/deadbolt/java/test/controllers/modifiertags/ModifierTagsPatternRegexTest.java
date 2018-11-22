@@ -15,12 +15,12 @@
  */
 package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
-import be.objectify.deadbolt.java.test.controllers.SubjectNotPresentTest;
+import be.objectify.deadbolt.java.test.controllers.PatternRegexTest;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentSubjectNotPresentTest extends SubjectNotPresentTest
+public class ModifierTagsPatternRegexTest extends PatternRegexTest
 {
     @Override
     public String pathComponent()

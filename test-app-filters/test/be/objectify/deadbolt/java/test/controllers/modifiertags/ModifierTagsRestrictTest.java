@@ -20,7 +20,7 @@ import be.objectify.deadbolt.java.test.controllers.RestrictTest;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentRestrictTest extends RestrictTest
+public class ModifierTagsRestrictTest extends RestrictTest
 {
     @Override
     public String pathComponent()

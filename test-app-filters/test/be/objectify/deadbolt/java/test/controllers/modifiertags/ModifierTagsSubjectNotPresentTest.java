@@ -15,12 +15,12 @@
  */
 package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
-import be.objectify.deadbolt.java.test.controllers.DynamicTest;
+import be.objectify.deadbolt.java.test.controllers.SubjectNotPresentTest;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentDynamicTest extends DynamicTest
+public class ModifierTagsSubjectNotPresentTest extends SubjectNotPresentTest
 {
     @Override
     public String pathComponent()

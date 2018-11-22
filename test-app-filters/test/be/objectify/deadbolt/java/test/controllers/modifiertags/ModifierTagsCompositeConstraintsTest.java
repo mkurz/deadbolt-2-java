@@ -15,12 +15,12 @@
  */
 package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
-import be.objectify.deadbolt.java.test.controllers.PatternEqualityTest;
+import be.objectify.deadbolt.java.test.controllers.CompositeConstraintsTest;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentPatternEqualityTest extends PatternEqualityTest
+public class ModifierTagsCompositeConstraintsTest extends CompositeConstraintsTest
 {
     @Override
     public String pathComponent()

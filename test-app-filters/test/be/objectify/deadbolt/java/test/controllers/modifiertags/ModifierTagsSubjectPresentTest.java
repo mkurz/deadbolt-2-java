@@ -20,7 +20,7 @@ import be.objectify.deadbolt.java.test.controllers.SubjectPresentTest;
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentSubjectPresentTest extends SubjectPresentTest
+public class ModifierTagsSubjectPresentTest extends SubjectPresentTest
 {
     @Override
     public String pathComponent()

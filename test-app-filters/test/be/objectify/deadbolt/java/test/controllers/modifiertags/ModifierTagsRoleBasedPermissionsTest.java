@@ -15,12 +15,12 @@
  */
 package be.objectify.deadbolt.java.test.controllers.modifiertags;
 
-import be.objectify.deadbolt.java.test.controllers.PatternCustomTest;
+import be.objectify.deadbolt.java.test.controllers.RoleBasedPermissionsTest;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public class CommentPatternCustomTest extends PatternCustomTest
+public class ModifierTagsRoleBasedPermissionsTest extends RoleBasedPermissionsTest
 {
     @Override
     public String pathComponent()
