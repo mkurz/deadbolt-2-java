@@ -17,6 +17,7 @@ package be.objectify.deadbolt.java.filters;
 
 import static org.awaitility.Awaitility.await;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -34,6 +35,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import play.api.routing.HandlerDef;
 import play.libs.F;
+import play.libs.Scala;
 import play.mvc.Filter;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -1072,7 +1074,7 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
         Mockito.verifyZeroInteractions(defaultHandler);
     }
 
-    private Http.RequestImpl request(final String comment) {
+    private Http.RequestImpl request(final String modifierTags) {
         return Helpers.fakeRequest("GET", "http://localhost/foo")
                       .attr(Router.Attrs.HANDLER_DEF,
                             HandlerDef.apply(getClass().getClassLoader(),
@@ -1082,8 +1084,8 @@ public class DeadboltRouteCommentFilterTest extends AbstractDeadboltFilterTest
                                              null,
                                              "",
                                              "",
-                                             comment,
-                                             null))
+                                             "",
+                                             Scala.asScala(Arrays.asList(modifierTags.split(" ")))))
                       .build();
     }
 }

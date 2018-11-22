@@ -15,11 +15,13 @@
  */
 package be.objectify.deadbolt.java.filters;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import akka.stream.Materializer;
@@ -124,8 +126,9 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
 
         this.unknownDeadboltComment = new F.Tuple<>((requestHeader, dh, onSuccess) ->
                                                     {
-                                                        LOGGER.error("Unknown Deadbolt route comment [{}], denying access with default handler",
-                                                                     requestHeader.attrs().get(Router.Attrs.HANDLER_DEF).comments());
+                                                        LOGGER.error("Unknown Deadbolt route modifier tag in [{}], denying access with default handler",
+                                                                     requestHeader.attrs().get(Router.Attrs.HANDLER_DEF)
+                                                                             .getModifiers().stream().collect(Collectors.joining(" ")));
                                                         return dh.onAuthFailure(requestHeader, Optional.empty());
                                                     }, handler);
     }
@@ -142,27 +145,31 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
                                          final Http.RequestHeader requestHeader)
     {
         final HandlerDef handlerDef = requestHeader.attrs().get(Router.Attrs.HANDLER_DEF);
-        final CompletionStage<Result> result;
-        final String comment = handlerDef.comments();
-        if (comment != null && comment.startsWith("deadbolt:"))
+        final List<String> deadboltModifierTags = handlerDef.getModifiers().stream().filter(mt -> mt != null && mt.startsWith("deadbolt:")).collect(Collectors.toList());
+        return processModifierTags(deadboltModifierTags, 0, requestHeader, next);
+    }
+
+    private CompletionStage<Result> processModifierTags(final List<String> deadboltModifierTags, int index, final Http.RequestHeader requestHeader, final Function<Http.RequestHeader, CompletionStage<Result>> lastNext)
+    {
+        if(index < deadboltModifierTags.size())
         {
+            final String modifierTag = deadboltModifierTags.get(index);
             // this is horrible
-            final F.Tuple<FilterFunction, DeadboltHandler> tuple = subjectPresent(comment).orElseGet(() -> subjectNotPresent(comment)
-                    .orElseGet(() -> dynamic(comment)
-                            .orElseGet(() -> composite(comment)
-                                    .orElseGet(() -> restrict(comment)
-                                            .orElseGet(() -> pattern(comment)
-                                                    .orElseGet(() -> roleBasedPermissionsComment(comment)
+            final F.Tuple<FilterFunction, DeadboltHandler> tuple = subjectPresent(modifierTag).orElseGet(() -> subjectNotPresent(modifierTag)
+                    .orElseGet(() -> dynamic(modifierTag)
+                            .orElseGet(() -> composite(modifierTag)
+                                    .orElseGet(() -> restrict(modifierTag)
+                                            .orElseGet(() -> pattern(modifierTag)
+                                                    .orElseGet(() -> roleBasedPermissionsComment(modifierTag)
                                                             .orElse(unknownDeadboltComment)))))));
-            result = tuple._1.apply(requestHeader,
-                                    tuple._2,
-                                    next);
+            return tuple._1.apply(requestHeader,
+                                  tuple._2,
+                                  rh -> processModifierTags(deadboltModifierTags, index + 1, rh, lastNext));
         }
         else
         {
-            result = next.apply(requestHeader);
+            return lastNext.apply(requestHeader);
         }
-        return result;
     }
 
     private Optional<F.Tuple<FilterFunction, DeadboltHandler>> subjectPresent(final String comment)
