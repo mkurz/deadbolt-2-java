@@ -283,6 +283,82 @@ public class DeadboltRouteModifierTagsFilterTest extends AbstractDeadboltFilterT
     }
 
     @Test
+    public void testMultipleModifierTags_SubjectPresent_SubjectPresent_subjectIsPresent_defaultHandler() throws ExecutionException, InterruptedException
+    {
+        Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
+                Mockito.any(Http.RequestHeader.class)))
+                .thenReturn(CompletableFuture.completedFuture(F.Tuple(Optional.of(Mockito.mock(Subject.class)), Mockito.mock(Http.RequestHeader.class))));
+
+        final HandlerCache handlerCache = Mockito.mock(HandlerCache.class);
+        final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
+        Mockito.when(handlerCache.get())
+                .thenReturn(handler);
+        Mockito.when(handler.getSubject(Mockito.any(Http.RequestHeader.class)))
+                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.RequestHeader.class), Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+        Mockito.when(handler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
+
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
+                handlerCache,
+                filterConstraints);
+        final boolean[] flag = {false};
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
+                {
+                    flag[0] = true;
+                    return CompletableFuture.completedFuture(Results.ok());
+                },
+                request("deadbolt:subjectPresent deadbolt:subjectPresent"))
+                .toCompletableFuture();
+        await().until(eventualResult::isDone);
+        Assert.assertTrue(flag[0]);
+        Mockito.verify(handler,
+                Mockito.never())
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.any(Optional.class));
+    }
+
+    @Test
+    public void testMultipleModifierTags_SubjectPresent_SubjectNotPresent_subjectIsPresent_defaultHandler() throws ExecutionException, InterruptedException
+    {
+        Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
+                Mockito.any(Http.RequestHeader.class)))
+                .thenReturn(CompletableFuture.completedFuture(F.Tuple(Optional.of(Mockito.mock(Subject.class)), Mockito.mock(Http.RequestHeader.class))));
+
+        final HandlerCache handlerCache = Mockito.mock(HandlerCache.class);
+        final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
+        Mockito.when(handlerCache.get())
+                .thenReturn(handler);
+        Mockito.when(handler.getSubject(Mockito.any(Http.RequestHeader.class)))
+                .thenReturn(CompletableFuture.completedFuture(Optional.of(Mockito.mock(Subject.class))));
+        Mockito.when(handler.beforeAuthCheck(Mockito.any(Http.RequestHeader.class), Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+        Mockito.when(handler.onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                Mockito.any(Optional.class)))
+                .thenReturn(CompletableFuture.completedFuture(Results.forbidden()));
+
+        final Filter filter = new DeadboltRouteModifierTagsFilter(Mockito.mock(Materializer.class),
+                handlerCache,
+                filterConstraints);
+        final boolean[] flag = {false};
+        final CompletableFuture<Result> eventualResult = filter.apply(rh ->
+                {
+                    flag[0] = true;
+                    return CompletableFuture.completedFuture(Results.ok());
+                },
+                request("deadbolt:subjectPresent deadbolt:subjectNotPresent"))
+                .toCompletableFuture();
+        await().until(eventualResult::isDone);
+        Assert.assertFalse(flag[0]);
+        Mockito.verify(handler,
+                Mockito.times(1))
+                .onAuthFailure(Mockito.any(Http.RequestHeader.class),
+                        Mockito.eq(Optional.empty()));
+    }
+
+    @Test
     public void testSubjectNotPresent_subjectIsPresent_defaultHandler() throws ExecutionException, InterruptedException
     {
 
