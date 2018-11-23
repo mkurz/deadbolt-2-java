@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import akka.stream.Materializer;
+import akka.util.ByteString;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import be.objectify.deadbolt.java.models.PatternType;
@@ -32,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.api.routing.HandlerDef;
 import play.libs.F;
+import play.libs.streams.Accumulator;
+import play.mvc.EssentialAction;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.routing.Router;
@@ -119,7 +122,6 @@ public class DeadboltRouteModifierTagsFilter extends AbstractDeadboltFilter
                                            final HandlerCache handlerCache,
                                            final FilterConstraints filterConstraints)
     {
-        super(mat);
         this.handlerCache = handlerCache;
         this.handler = handlerCache.get();
         this.filterConstraints = filterConstraints;
@@ -137,19 +139,19 @@ public class DeadboltRouteModifierTagsFilter extends AbstractDeadboltFilter
      * If a constraint is defined for a given route, test that constraint before allowing the request to proceed.
      *
      * @param next          the next step in the filter chain
-     * @param requestHeader the request header
      * @return a future for the result
      */
     @Override
-    public CompletionStage<Result> apply(final Function<Http.RequestHeader, CompletionStage<Result>> next,
-                                         final Http.RequestHeader requestHeader)
+    public EssentialAction apply(final EssentialAction next)
     {
-        final HandlerDef handlerDef = requestHeader.attrs().get(Router.Attrs.HANDLER_DEF);
-        final List<String> deadboltModifierTags = handlerDef.getModifiers().stream().filter(mt -> mt != null && mt.startsWith("deadbolt:")).collect(Collectors.toList());
-        return processModifierTags(deadboltModifierTags, 0, requestHeader, next);
+        return EssentialAction.of(requestHeader -> {
+            final HandlerDef handlerDef = requestHeader.attrs().get(Router.Attrs.HANDLER_DEF);
+            final List<String> deadboltModifierTags = handlerDef.getModifiers().stream().filter(mt -> mt != null && mt.startsWith("deadbolt:")).collect(Collectors.toList());
+            return processModifierTags(deadboltModifierTags, 0, requestHeader, next);
+        });
     }
 
-    private CompletionStage<Result> processModifierTags(final List<String> deadboltModifierTags, int index, final Http.RequestHeader requestHeader, final Function<Http.RequestHeader, CompletionStage<Result>> lastNext)
+    private Accumulator<ByteString, Result> processModifierTags(final List<String> deadboltModifierTags, int index, final Http.RequestHeader requestHeader, final EssentialAction lastNext)
     {
         if(index < deadboltModifierTags.size())
         {
@@ -162,9 +164,7 @@ public class DeadboltRouteModifierTagsFilter extends AbstractDeadboltFilter
                                             .orElseGet(() -> pattern(modifierTag)
                                                     .orElseGet(() -> roleBasedPermissions(modifierTag)
                                                             .orElse(unknownDeadboltModifierTag)))))));
-            return tuple._1.apply(requestHeader,
-                                  tuple._2,
-                                  rh -> processModifierTags(deadboltModifierTags, index + 1, rh, lastNext));
+            return Accumulator.flatten(tuple._1.apply(requestHeader, tuple._2, rh -> processModifierTags(deadboltModifierTags, index + 1, rh, lastNext)), null);
         }
         else
         {

@@ -16,16 +16,12 @@
 package be.objectify.deadbolt.java.filters;
 
 import akka.stream.Materializer;
+import play.mvc.EssentialFilter;
 import play.mvc.Filter;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public abstract class AbstractDeadboltFilter extends Filter
+public abstract class AbstractDeadboltFilter extends EssentialFilter
 {
-
-    public AbstractDeadboltFilter(final Materializer mat)
-    {
-        super(mat);
-    }
 }

@@ -15,11 +15,15 @@
  */
 package be.objectify.deadbolt.java.filters;
 
+import akka.util.ByteString;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.utils.TriFunction;
+import play.libs.streams.Accumulator;
+import play.mvc.EssentialAction;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
@@ -27,7 +31,7 @@ import java.util.function.Function;
  * @author Steve Chaloner (steve@objectify.be)
  * @since 2.5.1
  */
-public interface FilterFunction extends TriFunction<Http.RequestHeader, DeadboltHandler, Function<Http.RequestHeader, CompletionStage<Result>>, CompletionStage<Result>>
+public interface FilterFunction extends TriFunction<Http.RequestHeader, DeadboltHandler, Function<Http.RequestHeader, Accumulator<ByteString, Result>>, CompletionStage<Accumulator<ByteString, Result>>>
 {
     /**
      * Test the constraint against the current request.
@@ -38,7 +42,7 @@ public interface FilterFunction extends TriFunction<Http.RequestHeader, Deadbolt
      * @return a future for the result
      */
     @Override
-    CompletionStage<Result> apply(Http.RequestHeader requestHeader,
+    CompletionStage<Accumulator<ByteString, Result>> apply(Http.RequestHeader requestHeader,
                                   DeadboltHandler handler,
-                                  Function<Http.RequestHeader, CompletionStage<Result>> onSuccess);
+                                  Function<Http.RequestHeader, Accumulator<ByteString, Result>> onSuccess);
 }

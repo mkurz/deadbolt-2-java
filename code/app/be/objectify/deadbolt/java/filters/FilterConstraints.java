@@ -15,6 +15,7 @@
  */
 package be.objectify.deadbolt.java.filters;
 
+import akka.util.ByteString;
 import be.objectify.deadbolt.java.ConstraintLogic;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.DeadboltHandler;
@@ -23,6 +24,8 @@ import be.objectify.deadbolt.java.cache.CompositeCache;
 import be.objectify.deadbolt.java.composite.Constraint;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.utils.TriFunction;
+import play.libs.streams.Accumulator;
+import play.mvc.EssentialAction;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -78,16 +81,15 @@ public class FilterConstraints
     {
         return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
-                Function<Http.RequestHeader, CompletionStage<Result>> next) ->
+                Function<Http.RequestHeader,  Accumulator<ByteString, Result>> next) ->
                 beforeAuthCheckCache.apply(handler, requestHeader, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.subjectPresent(maybePreAuth._2,
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> CompletableFuture.completedFuture(preAuthResult).thenApply(fu -> Accumulator.<ByteString, Result>done(fu)))
+                                                                .orElseGet(() -> constraintLogic.<Accumulator<ByteString, Result>>subjectPresent(maybePreAuth._2,
                                                                                                                 handler,
                                                                                                                 content,
-                                                                                                                (rh, hdlr, cntent) -> next.apply(rh),
-                                                                                                                (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
-                                                                                                                                                          cntent),
-                                                                                                                ConstraintPoint.FILTER)));
+                                                                                                                (rh, hdlr, cntent) -> CompletableFuture.completedFuture(next.apply(rh)),
+                                                                                                                (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh, cntent).thenApply(x -> Accumulator.done(x)),
+                                                                                                                ConstraintPoint.FILTER).toCompletableFuture()));
     }
 
     /**
