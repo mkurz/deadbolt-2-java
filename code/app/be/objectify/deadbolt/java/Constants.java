@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.objectify.deadbolt.java.filters;
+package be.objectify.deadbolt.java;
 
-import akka.stream.Materializer;
-import play.mvc.Filter;
+import play.libs.typedmap.TypedKey;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
  */
-public abstract class AbstractDeadboltFilter extends Filter
+public final class Constants
 {
+    public static final String DEFAULT_HANDLER_KEY = "defaultHandler";
 
-    public AbstractDeadboltFilter(final Materializer mat)
-    {
-        super(mat);
-    }
+    public static final TypedKey<Boolean> PATTERN_INVERT = TypedKey.create("deadbolt.pattern.invert");
 }

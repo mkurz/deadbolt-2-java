@@ -66,10 +66,10 @@ public class RoleBasedPermissionsAction extends AbstractRestrictiveAction<RoleBa
     }
 
     @Override
-    public CompletionStage<Result> applyRestriction(final Http.Context ctx,
+    public CompletionStage<Result> applyRestriction(final Http.RequestHeader request,
                                                     final DeadboltHandler deadboltHandler)
     {
-        return constraintLogic.roleBasedPermissions(ctx,
+        return constraintLogic.roleBasedPermissions(request,
                                                     deadboltHandler,
                                                     getContent(),
                                                     configuration.value(),
@@ -78,9 +78,6 @@ public class RoleBasedPermissionsAction extends AbstractRestrictiveAction<RoleBa
                                                     ConstraintPoint.CONTROLLER);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();

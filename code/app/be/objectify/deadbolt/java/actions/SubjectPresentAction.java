@@ -49,36 +49,30 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
               constraintLogic);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    CompletionStage<Result> present(final Http.Context context,
+    CompletionStage<Result> present(final Http.RequestHeader request,
                                     final DeadboltHandler handler,
                                     final Optional<String> content)
     {
-        return authorizeAndExecute(context);
+        return authorizeAndExecute(request);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    CompletionStage<Result> notPresent(final Http.Context context,
+    CompletionStage<Result> notPresent(final Http.RequestHeader request,
                                        final DeadboltHandler handler,
                                        final Optional<String> content)
     {
-        return unauthorizeAndFail(context,
+        return unauthorizeAndFail(request,
                                   handler,
                                   content);
     }
 
     @Override
     protected Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
-                                                              final Http.Context context,
+                                                              final Http.RequestHeader request,
                                                               final DeadboltHandler deadboltHandler)
     {
-        return () -> constraintLogic.subjectPresent(context,
+        return () -> constraintLogic.subjectPresent(request,
                                                      deadboltHandler,
                                                      getContent(),
                                                      this::present,
@@ -86,9 +80,6 @@ public class SubjectPresentAction extends AbstractSubjectAction<SubjectPresent>
                                                      ConstraintPoint.CONTROLLER).toCompletableFuture();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();

@@ -1,9 +1,9 @@
 @this(patternOr: be.objectify.deadbolt.java.views.html.di.patternOr)
-@(ctx: Http.Context, value: String, patternType: be.objectify.deadbolt.java.models.PatternType, deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+@(value: String, patternType: be.objectify.deadbolt.java.models.PatternType, deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)(implicit request: play.mvc.Http.Request)
 
 This is before the constraint.
 
-@patternOr(context = ctx, value = value, patternType = patternType, handler = deadboltHandler) {
+@patternOr(value = value, patternType = patternType, handler = deadboltHandler) {
     This is protected by the constraint.
 } {
     This is default content in case the constraint denies access to the protected content.

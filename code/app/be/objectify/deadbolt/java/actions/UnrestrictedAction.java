@@ -42,18 +42,12 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
               config);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
+    public CompletionStage<Result> execute(final Http.RequestHeader request) throws Exception
     {
-        return authorizeAndExecute(ctx);
+        return authorizeAndExecute(request);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();

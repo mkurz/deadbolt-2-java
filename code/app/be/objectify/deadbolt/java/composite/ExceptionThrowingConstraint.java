@@ -16,6 +16,7 @@
 package be.objectify.deadbolt.java.composite;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class ExceptionThrowingConstraint implements Constraint
     }
 
     @Override
-    public CompletionStage<Boolean> test(final Http.Context context,
+    public CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> test(final Http.RequestHeader requestHeader,
                                          final DeadboltHandler handler,
                                          final Optional<String> globalMetaData,
                                          final BiFunction<Optional<String>, Optional<String>, Optional<String>> metaFn)

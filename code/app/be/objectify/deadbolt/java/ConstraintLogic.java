@@ -20,6 +20,7 @@ import be.objectify.deadbolt.java.cache.SubjectCache;
 import be.objectify.deadbolt.java.models.PatternType;
 import be.objectify.deadbolt.java.models.Subject;
 import be.objectify.deadbolt.java.utils.TriFunction;
+import play.libs.F;
 import play.mvc.Http;
 
 import javax.inject.Inject;
@@ -55,145 +56,145 @@ public class ConstraintLogic
         this.patternCache = patternCache;
     }
 
-    public <T> CompletionStage<T> subjectPresent(final Http.Context ctx,
+    public <T> CompletionStage<T> subjectPresent(final Http.RequestHeader requestHeader,
                                                  final DeadboltHandler deadboltHandler,
                                                  final Optional<String> content,
-                                                 final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> present,
-                                                 final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> notPresent,
+                                                 final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> present,
+                                                 final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> notPresent,
                                                  final ConstraintPoint constraintPoint)
     {
-        return subjectTest(ctx,
+        return subjectTest(requestHeader,
                            deadboltHandler,
                            content,
-                           (context, handler, cnt) ->
+                           (rh, handler, cnt) ->
                            {
-                               handler.onAuthSuccess(context,
+                               handler.onAuthSuccess(rh,
                                                      "subjectPresent",
                                                      constraintPoint);
-                               return present.apply(context,
+                               return present.apply(rh,
                                                     handler,
                                                     cnt);
                            },
                            notPresent);
     }
 
-    public <T> CompletionStage<T> subjectNotPresent(final Http.Context ctx,
+    public <T> CompletionStage<T> subjectNotPresent(final Http.RequestHeader requestHeader,
                                                     final DeadboltHandler deadboltHandler,
                                                     final Optional<String> content,
-                                                    final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> present,
-                                                    final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> notPresent,
+                                                    final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> present,
+                                                    final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> notPresent,
                                                     final ConstraintPoint constraintPoint)
     {
-        return subjectTest(ctx,
+        return subjectTest(requestHeader,
                            deadboltHandler,
                            content,
                            present,
-                           (context, handler, cnt) ->
+                           (rh, handler, cnt) ->
                            {
-                               handler.onAuthSuccess(context,
+                               handler.onAuthSuccess(rh,
                                                      "subjectNotPresent",
                                                      constraintPoint);
-                               return notPresent.apply(context,
+                               return notPresent.apply(rh,
                                                     handler,
                                                     cnt);
                            });
     }
 
-    private <T> CompletionStage<T> subjectTest(final Http.Context ctx,
+    private <T> CompletionStage<T> subjectTest(final Http.RequestHeader requestHeader,
                                                final DeadboltHandler deadboltHandler,
                                                final Optional<String> content,
-                                               final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> present,
-                                               final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> notPresent)
+                                               final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> present,
+                                               final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> notPresent)
     {
-        return getSubject(ctx,
+        return getSubject(requestHeader,
                           deadboltHandler)
-                .thenCompose(maybeSubject -> maybeSubject.map(subject -> present.apply(ctx,
+                .thenCompose(maybeSubject -> maybeSubject._1.map(subject -> present.apply(maybeSubject._2,
                                                                                        deadboltHandler,
                                                                                        content))
-                                                         .orElseGet(() -> notPresent.apply(ctx,
+                                                         .orElseGet(() -> notPresent.apply(maybeSubject._2,
                                                                                            deadboltHandler,
                                                                                            content)));
     }
 
-    public <T> CompletionStage<T> restrict(final Http.Context ctx,
+    public <T> CompletionStage<T> restrict(final Http.RequestHeader requestHeader,
                                            final DeadboltHandler deadboltHandler,
                                            final Optional<String> content,
                                            final Supplier<List<String[]>> roleGroupSupplier,
-                                           final Function<Http.Context, CompletionStage<T>> pass,
-                                           final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
+                                           final Function<Http.RequestHeader, CompletionStage<T>> pass,
+                                           final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                            final ConstraintPoint constraintPoint)
     {
-        return getSubject(ctx,
+        return getSubject(requestHeader,
                           deadboltHandler)
                 .thenCompose(subjectOption ->
                                   {
                                       boolean roleOk = false;
-                                      if (subjectOption.isPresent())
+                                      if (subjectOption._1.isPresent())
                                       {
                                           final List<String[]> roleGroups = roleGroupSupplier.get();
                                           for (int i = 0; !roleOk && i < roleGroups.size(); i++)
                                           {
-                                              roleOk = analyzer.checkRole(subjectOption,
+                                              roleOk = analyzer.checkRole(subjectOption._1,
                                                                           roleGroups.get(i));
                                           }
                                       }
-                                      return roleOk ? pass(ctx,
+                                      return roleOk ? pass(subjectOption._2,
                                                            deadboltHandler,
                                                            pass,
                                                            constraintPoint,
                                                            "restrict")
-                                                    : fail.apply(ctx,
+                                                    : fail.apply(subjectOption._2,
                                                                  deadboltHandler,
                                                                  content);
                                   });
     }
 
-    public <T> CompletionStage<T> roleBasedPermissions(final Http.Context ctx,
+    public <T> CompletionStage<T> roleBasedPermissions(final Http.RequestHeader requestHeader,
                                                        final DeadboltHandler deadboltHandler,
                                                        final Optional<String> content,
                                                        final String roleName,
-                                                       final Function<Http.Context, CompletionStage<T>> pass,
-                                                       final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
+                                                       final Function<Http.RequestHeader, CompletionStage<T>> pass,
+                                                       final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                                        final ConstraintPoint constraintPoint)
     {
-        return getSubject(ctx,
+        return getSubject(requestHeader,
                           deadboltHandler)
-                .thenCompose(maybeSubject -> maybeSubject.isPresent() ? deadboltHandler.getPermissionsForRole(roleName)
-                                                                                       .thenApply(permissions -> permissions.stream()
+                .thenCompose(maybeSubject -> maybeSubject._1.isPresent() ? deadboltHandler.getPermissionsForRole(roleName)
+                                                                                       .thenApply(permissions -> F.Tuple(permissions.stream()
                                                                                                                             .map(permission -> Optional.ofNullable(patternCache.apply(permission.getValue())))
-                                                                                                                            .map(maybePattern -> analyzer.checkRegexPattern(maybeSubject,
+                                                                                                                            .map(maybePattern -> analyzer.checkRegexPattern(maybeSubject._1,
                                                                                                                                                                                       maybePattern))
                                                                                                                             .filter(matches -> matches)
                                                                                                                             .findFirst()
-                                                                                                                            .isPresent())
+                                                                                                                            .isPresent(), maybeSubject._2))
 
-                                                                      : CompletableFuture.completedFuture(false))
-                .thenCompose(allowed -> allowed ? pass(ctx,
+                                                                      : CompletableFuture.completedFuture(F.Tuple(false, maybeSubject._2)))
+                .thenCompose(allowed -> allowed._1 ? pass(allowed._2,
                                                             deadboltHandler,
                                                             pass,
                                                             constraintPoint,
                                                             "roleBasedPermissions")
-                                                     : fail.apply(ctx,
+                                                     : fail.apply(allowed._2,
                                                                   deadboltHandler,
                                                                   content));
 
     }
 
-    public <T> CompletionStage<T> pattern(final Http.Context ctx,
+    public <T> CompletionStage<T> pattern(final Http.RequestHeader requestHeader,
                                           final DeadboltHandler deadboltHandler,
                                           final Optional<String> content,
                                           final String value,
                                           final PatternType patternType,
                                           final Optional<String> meta,
                                           final boolean invert,
-                                          final Function<Http.Context, CompletionStage<T>> pass,
-                                          final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
+                                          final Function<Http.RequestHeader, CompletionStage<T>> pass,
+                                          final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                           final ConstraintPoint constraintPoint)
     {
-        return pattern(ctx, deadboltHandler, content, new String[] {value}, null, patternType, meta, invert, pass, fail, constraintPoint);
+        return pattern(requestHeader, deadboltHandler, content, new String[] {value}, null, patternType, meta, invert, pass, fail, constraintPoint);
     }
 
-    public <T> CompletionStage<T> pattern(final Http.Context ctx,
+    public <T> CompletionStage<T> pattern(final Http.RequestHeader requestHeader,
                                           final DeadboltHandler deadboltHandler,
                                           final Optional<String> content,
                                           final String[] values,
@@ -201,8 +202,8 @@ public class ConstraintLogic
                                           final PatternType patternType,
                                           final Optional<String> meta,
                                           final boolean invert,
-                                          final Function<Http.Context, CompletionStage<T>> pass,
-                                          final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
+                                          final Function<Http.RequestHeader, CompletionStage<T>> pass,
+                                          final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                           final ConstraintPoint constraintPoint)
     {
         final CompletionStage<T> result;
@@ -210,7 +211,7 @@ public class ConstraintLogic
         switch (patternType)
         {
             case EQUALITY:
-                result = equality(ctx,
+                result = equality(requestHeader,
                                   deadboltHandler,
                                   content,
                                   values,
@@ -222,7 +223,7 @@ public class ConstraintLogic
                                   constraintPoint);
                 break;
             case REGEX:
-                result = regex(ctx,
+                result = regex(requestHeader,
                                deadboltHandler,
                                content,
                                values,
@@ -234,7 +235,7 @@ public class ConstraintLogic
                                constraintPoint);
                 break;
             case CUSTOM:
-                result = custom(ctx,
+                result = custom(requestHeader,
                                 deadboltHandler,
                                 content,
                                 values,
@@ -253,32 +254,32 @@ public class ConstraintLogic
         return result;
     }
 
-    public <T> CompletionStage<T> dynamic(final Http.Context ctx,
+    public <T> CompletionStage<T> dynamic(final Http.RequestHeader requestHeader,
                                           final DeadboltHandler deadboltHandler,
                                           final Optional<String> content,
                                           final String name,
                                           final Optional<String> meta,
-                                          final Function<Http.Context, CompletionStage<T>> pass,
-                                          final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
+                                          final Function<Http.RequestHeader, CompletionStage<T>> pass,
+                                          final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                           final ConstraintPoint constraintPoint)
     {
-        return deadboltHandler.getDynamicResourceHandler(ctx)
+        return deadboltHandler.getDynamicResourceHandler(requestHeader)
                               .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
                               .thenCompose(drh -> drh.isAllowed(name,
                                                                 meta,
                                                                 deadboltHandler,
-                                                                ctx))
-                              .thenCompose(allowed -> allowed ? pass(ctx,
+                                                                requestHeader))
+                              .thenCompose(allowed -> allowed ? pass(requestHeader,
                                                                           deadboltHandler,
                                                                           pass,
                                                                           constraintPoint,
                                                                           "dynamic")
-                                                                   : fail.apply(ctx,
+                                                                   : fail.apply(requestHeader,
                                                                                 deadboltHandler,
                                                                                 content));
     }
 
-    private <T> CompletionStage<T> custom(final Http.Context ctx,
+    private <T> CompletionStage<T> custom(final Http.RequestHeader requestHeader,
                                           final DeadboltHandler deadboltHandler,
                                           final Optional<String> content,
                                           final String[] values,
@@ -286,19 +287,19 @@ public class ConstraintLogic
                                           final ConstraintMode mode,
                                           final Optional<String> meta,
                                           final boolean invert,
-                                          final Function<Http.Context, CompletionStage<T>> pass,
-                                          final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
+                                          final Function<Http.RequestHeader, CompletionStage<T>> pass,
+                                          final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                           final ConstraintPoint constraintPoint)
     {
-        ctx.args.put(ConfigKeys.PATTERN_INVERT,
+        final Http.RequestHeader requestHeaderWithAttr = requestHeader.addAttr(Constants.PATTERN_INVERT,
                      invert);
-        return deadboltHandler.getDynamicResourceHandler(ctx)
+        return deadboltHandler.getDynamicResourceHandler(requestHeaderWithAttr)
                               .thenApply(option -> option.orElseGet(() -> ExceptionThrowingDynamicResourceHandler.INSTANCE))
                               .thenCompose(resourceHandler -> resourceHandler.checkPermission(values[valueIndex],
                                                                                               meta,
                                                                                               deadboltHandler,
-                                                                                              ctx))
-                              .thenCompose(allowed -> (invert ? !allowed : allowed) ? (successCallAgain(mode, values, valueIndex) ? custom(ctx,
+                                                                                              requestHeaderWithAttr))
+                              .thenCompose(allowed -> (invert ? !allowed : allowed) ? (successCallAgain(mode, values, valueIndex) ? custom(requestHeaderWithAttr,
                                                                                                                                            deadboltHandler,
                                                                                                                                            content,
                                                                                                                                            values,
@@ -309,12 +310,12 @@ public class ConstraintLogic
                                                                                                                                            pass,
                                                                                                                                            fail,
                                                                                                                                            constraintPoint)
-                                                                                                                                  : pass(ctx,
+                                                                                                                                  : pass(requestHeaderWithAttr,
                                                                                                                                          deadboltHandler,
                                                                                                                                          pass,
                                                                                                                                          constraintPoint,
                                                                                                                                          "pattern - custom"))
-                                                                                    : (failCallAgain(mode, values, valueIndex) ? custom(ctx,
+                                                                                    : (failCallAgain(mode, values, valueIndex) ? custom(requestHeaderWithAttr,
                                                                                                                                         deadboltHandler,
                                                                                                                                         content,
                                                                                                                                         values,
@@ -325,29 +326,29 @@ public class ConstraintLogic
                                                                                                                                         pass,
                                                                                                                                         fail,
                                                                                                                                         constraintPoint)
-                                                                                                                               : fail.apply(ctx,
+                                                                                                                               : fail.apply(requestHeaderWithAttr,
                                                                                                                                             deadboltHandler,
                                                                                                                                             content)));
     }
 
-    private <T> CompletionStage<T> equality(final Http.Context ctx,
+    private <T> CompletionStage<T> equality(final Http.RequestHeader requestHeader,
                                             final DeadboltHandler deadboltHandler,
                                             final Optional<String> content,
                                             final String[] values,
                                             final int valueIndex,
                                             final ConstraintMode mode,
                                             final boolean invert,
-                                            final Function<Http.Context, CompletionStage<T>> pass,
-                                            final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
+                                            final Function<Http.RequestHeader, CompletionStage<T>> pass,
+                                            final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                             final ConstraintPoint constraintPoint)
     {
-        return getSubject(ctx,
+        return getSubject(requestHeader,
                           deadboltHandler)
                 .thenCompose(subject -> {
-                                      final boolean equal = subject.isPresent() ? analyzer.checkPatternEquality(subject,
+                                      final boolean equal = subject._1.isPresent() ? analyzer.checkPatternEquality(subject._1,
                                                                                                                 Optional.ofNullable(values[valueIndex]))
                                                                                 : invert; // this is a little clumsy - it means no subject + invert is still denied
-                                      return (invert ? !equal : equal) ? (successCallAgain(mode, values, valueIndex) ? equality(ctx,
+                                      return (invert ? !equal : equal) ? (successCallAgain(mode, values, valueIndex) ? equality(subject._2,
                                                                                                                                 deadboltHandler,
                                                                                                                                 content,
                                                                                                                                 values,
@@ -357,12 +358,12 @@ public class ConstraintLogic
                                                                                                                                 pass,
                                                                                                                                 fail,
                                                                                                                                 constraintPoint)
-                                                                                                                     : pass(ctx,
+                                                                                                                     : pass(subject._2,
                                                                                                                             deadboltHandler,
                                                                                                                             pass,
                                                                                                                             constraintPoint,
                                                                                                                             "pattern - equality"))
-                                                                       : (failCallAgain(mode, values, valueIndex) ? equality(ctx,
+                                                                       : (failCallAgain(mode, values, valueIndex) ? equality(subject._2,
                                                                                                                              deadboltHandler,
                                                                                                                              content,
                                                                                                                              values,
@@ -372,47 +373,47 @@ public class ConstraintLogic
                                                                                                                              pass,
                                                                                                                              fail,
                                                                                                                              constraintPoint)
-                                                                                                                  : fail.apply(ctx,
+                                                                                                                  : fail.apply(subject._2,
                                                                                                                                deadboltHandler,
                                                                                                                                content));
                 });
     }
 
-    protected CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context ctx,
-                                                                      final DeadboltHandler deadboltHandler)
+    protected CompletionStage<F.Tuple<Optional<? extends Subject>, Http.RequestHeader>> getSubject(final Http.RequestHeader requestHeader,
+                                                                                                   final DeadboltHandler deadboltHandler)
     {
         return subjectCache.apply(deadboltHandler,
-                                  ctx);
+                                  requestHeader);
     }
 
     /**
      * Checks access to the resource based on the regex
      *
-     * @param ctx             the HTTP context
+     * @param requestHeader             the HTTP request header
      * @param deadboltHandler the Deadbolt handler
      * @param invert          if true, invert the application of the constraint
      * @return the necessary result
      */
-    private <T> CompletionStage<T> regex(final Http.Context ctx,
+    private <T> CompletionStage<T> regex(final Http.RequestHeader requestHeader,
                                          final DeadboltHandler deadboltHandler,
                                          final Optional<String> content,
                                          final String[] values,
                                          final int valueIndex,
                                          final ConstraintMode mode,
                                          final boolean invert,
-                                         final Function<Http.Context, CompletionStage<T>> pass,
-                                         final TriFunction<Http.Context, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
+                                         final Function<Http.RequestHeader, CompletionStage<T>> pass,
+                                         final TriFunction<Http.RequestHeader, DeadboltHandler, Optional<String>, CompletionStage<T>> fail,
                                          final ConstraintPoint constraintPoint)
     {
         return CompletableFuture.completedFuture(patternCache.apply(values[valueIndex]))
-                                .thenCombine(getSubject(ctx,
+                                .thenCombine(getSubject(requestHeader,
                                                              deadboltHandler),
                                              (patternValue, subject) ->
-                                                     subject.isPresent() ? analyzer.checkRegexPattern(subject,
+                                                     F.Tuple(subject._1.isPresent() ? analyzer.checkRegexPattern(subject._1,
                                                                                                       Optional.ofNullable(patternValue))
-                                                                         : invert) // this is a little clumsy - it means no subject + invert is still denied
+                                                                         : invert, subject._2)) // this is a little clumsy - it means no subject + invert is still denied
 
-                                .thenCompose(hasPassed -> (invert ? !hasPassed : hasPassed) ? (successCallAgain(mode, values, valueIndex) ? regex(ctx,
+                                .thenCompose(hasPassed -> (invert ? !hasPassed._1 : hasPassed._1) ? (successCallAgain(mode, values, valueIndex) ? regex(hasPassed._2,
                                                                                                                                                   deadboltHandler,
                                                                                                                                                   content,
                                                                                                                                                   values,
@@ -422,12 +423,12 @@ public class ConstraintLogic
                                                                                                                                                   pass,
                                                                                                                                                   fail,
                                                                                                                                                   constraintPoint)
-                                                                                                                                          : pass(ctx,
+                                                                                                                                          : pass(hasPassed._2,
                                                                                                                                                  deadboltHandler,
                                                                                                                                                  pass,
                                                                                                                                                  constraintPoint,
                                                                                                                                                  "pattern - regex"))
-                                                                                            : (failCallAgain(mode, values, valueIndex) ? regex(ctx,
+                                                                                            : (failCallAgain(mode, values, valueIndex) ? regex(hasPassed._2,
                                                                                                                                                deadboltHandler,
                                                                                                                                                content,
                                                                                                                                                values,
@@ -437,7 +438,7 @@ public class ConstraintLogic
                                                                                                                                                pass,
                                                                                                                                                fail,
                                                                                                                                                constraintPoint)
-                                                                                                                                       : fail.apply(ctx,
+                                                                                                                                       : fail.apply(hasPassed._2,
                                                                                                                                                     deadboltHandler,
                                                                                                                                                     content)));
     }
@@ -462,15 +463,15 @@ public class ConstraintLogic
         return false;
     }
 
-    private <T> CompletionStage<T> pass(final Http.Context context,
+    private <T> CompletionStage<T> pass(final Http.RequestHeader requestHeader,
                                         final DeadboltHandler handler,
-                                        final Function<Http.Context, CompletionStage<T>> pass,
+                                        final Function<Http.RequestHeader, CompletionStage<T>> pass,
                                         final ConstraintPoint constraintPoint,
                                         final String constraintType)
     {
-        handler.onAuthSuccess(context,
+        handler.onAuthSuccess(requestHeader,
                               constraintType,
                               constraintPoint);
-        return pass.apply(context);
+        return pass.apply(requestHeader);
     }
 }

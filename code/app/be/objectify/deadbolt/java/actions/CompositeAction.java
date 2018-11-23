@@ -51,44 +51,41 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
     }
 
     @Override
-    public CompletionStage<Result> applyRestriction(final Http.Context ctx,
+    public CompletionStage<Result> applyRestriction(final Http.RequestHeader request,
                                                     final DeadboltHandler handler)
     {
         return compositeCache.apply(configuration.value())
                              .map(constraint ->
                                   {
                                       final boolean preferGlobalMeta = configuration.preferGlobalMeta();
-                                      return constraint.test(ctx,
+                                      return constraint.test(request,
                                                              handler,
                                                              Optional.ofNullable(configuration.meta()),
                                                              (globalMd, localMd) -> preferGlobalMeta ? globalMd.isPresent() ? globalMd : localMd
                                                                                                      : localMd.isPresent() ? localMd : globalMd)
-                                                       .thenCompose(allowed -> allowed ? authorizeAndExecute(ctx,
+                                                       .thenCompose(allowed -> allowed._1 ? authorizeAndExecute(allowed._2,
                                                                                                              handler)
-                                                                                       : unauthorizeAndFail(ctx,
+                                                                                       : unauthorizeAndFail(allowed._2,
                                                                                                             handler,
                                                                                                             getContent()));
                                   })
-                             .orElseGet(() -> unauthorizeAndFail(ctx,
+                             .orElseGet(() -> unauthorizeAndFail(request,
                                                                  handler,
                                                                  getContent()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();
     }
 
-    private CompletionStage<Result> authorizeAndExecute(final Http.Context context,
+    private CompletionStage<Result> authorizeAndExecute(final Http.RequestHeader request,
                                                         final DeadboltHandler handler) 
     {
-        handler.onAuthSuccess(context,
+        handler.onAuthSuccess(request,
                               "composite",
                               ConstraintPoint.CONTROLLER);
-        return authorizeAndExecute(context);
+        return authorizeAndExecute(request);
     }
 
     @Override

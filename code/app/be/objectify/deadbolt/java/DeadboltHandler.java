@@ -48,39 +48,39 @@ public interface DeadboltHandler
      * Invoked immediately before controller restrictions are checked. This forms the integration with any
      * authentication actions that may need to occur.
      *
-     * @param context the HTTP context
+     * @param requestHeader the HTTP request header
      * @return the action result if an action other than the delegate must be taken, otherwise null. For a case where
      * the user is authenticated (or whatever your test condition is), this will be null otherwise the restriction
      * won't be applied.
      */
-    CompletionStage<Optional<Result>> beforeAuthCheck(Http.Context context, Optional<String> content);
+    CompletionStage<Optional<Result>> beforeAuthCheck(Http.RequestHeader requestHeader, Optional<String> content);
 
     /**
      * Gets the current {@link Subject}, e.g. the current user.
      *
-     * @param context the HTTP context
+     * @param requestHeader the HTTP request header
      * @return the current subject
      */
-    CompletionStage<Optional<? extends Subject>> getSubject(Http.Context context);
+    CompletionStage<Optional<? extends Subject>> getSubject(Http.RequestHeader requestHeader);
 
     /**
      * Invoked when an access failure is detected on <i>controllerClassName</i>.
      *
-     * @param context the HTTP context
+     * @param requestHeader the HTTP request header
      * @param content the content type hint.  This can be used to return a response in the appropriate content
      *                type, e.g. JSON
      * @return the action result
      */
-    CompletionStage<Result> onAuthFailure(Http.Context context,
+    CompletionStage<Result> onAuthFailure(Http.RequestHeader requestHeader,
                                           Optional<String> content);
 
     /**
      * Gets the handler used for dealing with resources restricted to specific users/groups.
      *
-     * @param context the HTTP context
+     * @param requestHeader the HTTP request header
      * @return the handler for restricted resources. May be null.
      */
-    CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.Context context);
+    CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(Http.RequestHeader requestHeader);
 
     /**
      * Gets the canonical name of the handler.  Defaults to the class name.
@@ -95,11 +95,11 @@ public interface DeadboltHandler
     /**
      * Invoked when access to a resource is authorized.
      *
-     * @param context the context, can be used to get various bits of information such as the route and method
+     * @param requestHeader the request header, can be used to get various bits of information such as the route and method
      * @param constraintType the type of constraint, e.g. Dynamic, etc
      * @param constraintPoint the point at which the constraint was applied
      */
-    default void onAuthSuccess(final Http.Context context,
+    default void onAuthSuccess(final Http.RequestHeader requestHeader,
                                final String constraintType,
                                final ConstraintPoint constraintPoint) {
         // no-op

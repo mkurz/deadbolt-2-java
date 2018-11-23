@@ -43,13 +43,13 @@ public abstract class AbstractDynamicConstraintTest extends AbstractConstraintTe
             public CompletionStage<Boolean> isAllowed(final String name,
                                                       final Optional<String> meta,
                                                       final DeadboltHandler deadboltHandler,
-                                                      final Http.Context ctx)
+                                                      final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.completedFuture(true);
             }
         });
         final DynamicConstraint constraint = constraint(handler);
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 handler);
         Assert.assertTrue(toBoolean(result));
     }
@@ -63,19 +63,19 @@ public abstract class AbstractDynamicConstraintTest extends AbstractConstraintTe
             public CompletionStage<Boolean> isAllowed(final String name,
                                                       final Optional<String> meta,
                                                       final DeadboltHandler deadboltHandler,
-                                                      final Http.Context ctx)
+                                                      final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.completedFuture(false);
             }
         });
         final DynamicConstraint constraint = constraint(handler);
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 handler);
         Assert.assertFalse(toBoolean(result));
     }
 
     @Override
-    protected F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy()
+    protected F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy()
     {
         final DeadboltHandler handler = withDrh(new AbstractDynamicResourceHandler()
         {
@@ -83,13 +83,13 @@ public abstract class AbstractDynamicConstraintTest extends AbstractConstraintTe
             public CompletionStage<Boolean> isAllowed(final String name,
                                                       final Optional<String> meta,
                                                       final DeadboltHandler deadboltHandler,
-                                                      final Http.Context ctx)
+                                                      final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.completedFuture(true);
             }
         });
         return new F.Tuple<>(constraint(handler),
-                             c -> c.test(context,
+                             c -> c.test(new Http.RequestBuilder().build(),
                                          handler));
     }
 }

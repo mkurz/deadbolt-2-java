@@ -29,7 +29,6 @@ import be.objectify.deadbolt.java.models.PatternType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.api.routing.HandlerDef;
-import play.core.j.JavaContextComponents;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -38,7 +37,7 @@ import play.routing.Router;
 /**
  * Filters all incoming HTTP requests and applies constraints based on the route's comment.  If a comment is present, the constraint
  * for that route will be applied.  If access is allowed, the next filter in the chain is invoked; if access is not allowed,
- * {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} is invoked.
+ * {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} is invoked.
  * <p>
  * The format of the comment is deadbolt:constraintType:config.  Individual configurations have the form :label[value] - to omit an optional config,
  * remove :label[value],
@@ -115,21 +114,19 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
 
     @Inject
     public DeadboltRouteCommentFilter(final Materializer mat,
-                                      final JavaContextComponents javaContextComponents,
                                       final HandlerCache handlerCache,
                                       final FilterConstraints filterConstraints)
     {
-        super(mat,
-              javaContextComponents);
+        super(mat);
         this.handlerCache = handlerCache;
         this.handler = handlerCache.get();
         this.filterConstraints = filterConstraints;
 
-        this.unknownDeadboltComment = new F.Tuple<>((context, requestHeader, dh, onSuccess) ->
+        this.unknownDeadboltComment = new F.Tuple<>((requestHeader, dh, onSuccess) ->
                                                     {
                                                         LOGGER.error("Unknown Deadbolt route comment [{}], denying access with default handler",
                                                                      requestHeader.attrs().get(Router.Attrs.HANDLER_DEF).comments());
-                                                        return dh.onAuthFailure(context, Optional.empty());
+                                                        return dh.onAuthFailure(requestHeader, Optional.empty());
                                                     }, handler);
     }
 
@@ -157,8 +154,7 @@ public class DeadboltRouteCommentFilter extends AbstractDeadboltFilter
                                             .orElseGet(() -> pattern(comment)
                                                     .orElseGet(() -> roleBasedPermissionsComment(comment)
                                                             .orElse(unknownDeadboltComment)))))));
-            result = tuple._1.apply(context(requestHeader),
-                                    requestHeader,
+            result = tuple._1.apply(requestHeader,
                                     tuple._2,
                                     next);
         }

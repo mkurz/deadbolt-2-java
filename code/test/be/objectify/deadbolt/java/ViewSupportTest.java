@@ -46,7 +46,7 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                              public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                              final Optional<String> meta,
                                                                              final DeadboltHandler deadboltHandler,
-                                                                             final Http.Context ctx)
+                                                                             final Http.RequestHeader requestHeader)
                              {
                                  return CompletableFuture.completedFuture(true);
                              }
@@ -58,7 +58,7 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                              public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                                              final Optional<String> meta,
                                                                              final DeadboltHandler deadboltHandler,
-                                                                             final Http.Context ctx)
+                                                                             final Http.RequestHeader requestHeader)
                              {
                                  return CompletableFuture.completedFuture(false);
                              }
@@ -71,21 +71,21 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
             public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                             final Optional<String> meta,
                                                             final DeadboltHandler deadboltHandler,
-                                                            final Http.Context ctx)
+                                                            final Http.RequestHeader requestHeader)
             {
                 return specificDrhs.get(permissionValue).checkPermission(permissionValue,
                                                                          meta,
                                                                          deadboltHandler,
-                                                                         ctx);
+                                                                         requestHeader);
             }
         };
 
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.Context.class)))
+        Mockito.when(handler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.of(drh)));
 
         final DeadboltHandler noDrhHandler = Mockito.mock(DeadboltHandler.class);
-        Mockito.when(noDrhHandler.getDynamicResourceHandler(Mockito.any(Http.Context.class)))
+        Mockito.when(noDrhHandler.getDynamicResourceHandler(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
         Map<String, DeadboltHandler> handlers = new HashMap<>();
@@ -106,7 +106,7 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                                       handlerCache.apply("noDrh"),
                                       Optional.empty(),
                                       1000L,
-                                      context());
+                                      new Http.RequestBuilder().build());
         }
         catch (Exception e)
         {
@@ -125,7 +125,7 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                                                          handlerCache.get(),
                                                          Optional.empty(),
                                                          1000L,
-                                                         context());
+                                                         new Http.RequestBuilder().build());
         Assert.assertFalse(result);
     }
 
@@ -139,7 +139,7 @@ public class ViewSupportTest extends AbstractFakeApplicationTest
                                                          handlerCache.get(),
                                                          Optional.empty(),
                                                          1000L,
-                                                         context());
+                                                         new Http.RequestBuilder().build());
         Assert.assertTrue(result);
     }
 

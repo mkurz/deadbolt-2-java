@@ -47,15 +47,14 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> true)));
             }
         };
-        final Content html = dynamicOrContent().render(context(),
-                                                       "foo",
+        final Content html = dynamicOrContent().render("foo",
                                                        Optional.of("bar"),
-                                                       deadboltHandler);
+                                                       deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -69,15 +68,14 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> "foo".equals(name))));
             }
         };
-        final Content html = dynamicOrContent().render(context(),
-                                                       "foo",
+        final Content html = dynamicOrContent().render("foo",
                                                        Optional.of("bar"),
-                                                       deadboltHandler);
+                                                       deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -91,15 +89,14 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> meta.map("bar"::equals).orElse(false))));
             }
         };
-        final Content html = dynamicOrContent().render(context(),
-                                                       "foo",
+        final Content html = dynamicOrContent().render("foo",
                                                        Optional.of("bar"),
-                                                       deadboltHandler);
+                                                       deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -113,15 +110,14 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestDynamicResourceHandler((name, meta) -> false)));
             }
         };
-        final Content html = dynamicOrContent().render(context(),
-                                                       "foo",
+        final Content html = dynamicOrContent().render("foo",
                                                        Optional.of("bar"),
-                                                       deadboltHandler);
+                                                       deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -154,7 +150,7 @@ public class DynamicOrTest extends AbstractFakeApplicationTest
         public CompletionStage<Boolean> isAllowed(final String name,
                                                   final Optional<String> meta,
                                                   final DeadboltHandler deadboltHandler,
-                                                  final Http.Context ctx)
+                                                  final Http.RequestHeader requestHeader)
         {
             return CompletableFuture.completedFuture(test.apply(name,
                                                                 meta));

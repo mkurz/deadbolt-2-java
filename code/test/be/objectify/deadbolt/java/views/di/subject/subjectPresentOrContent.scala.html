@@ -1,9 +1,9 @@
 @this(subjectPresentOr: be.objectify.deadbolt.java.views.html.di.subjectPresentOr)
-@(ctx: Http.Context, deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)
+@(deadboltHandler: be.objectify.deadbolt.java.DeadboltHandler)(implicit request: play.mvc.Http.Request)
 
 This is before the constraint.
 
-@subjectPresentOr(context = ctx, handler = deadboltHandler) {
+@subjectPresentOr(handler = deadboltHandler) {
     This is protected by the constraint.
 } {
     This is default content in case the constraint denies access to the protected content.

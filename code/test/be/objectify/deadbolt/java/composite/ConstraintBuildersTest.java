@@ -25,6 +25,7 @@ import be.objectify.deadbolt.java.testsupport.TestSubject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import play.libs.F;
 import play.mvc.Http;
 
 import java.util.List;
@@ -41,8 +42,8 @@ public class ConstraintBuildersTest extends AbstractCompositeTest
     {
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
-                                        Mockito.any(Http.Context.class)))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
+                                        Mockito.any(Http.Request.class)))
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build()), new Http.RequestBuilder().build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
                                                           new DefaultPatternCache());
@@ -64,8 +65,8 @@ public class ConstraintBuildersTest extends AbstractCompositeTest
     {
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
-                                        Mockito.any(Http.Context.class)))
-               .thenReturn(CompletableFuture.completedFuture(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build())));
+                                        Mockito.any(Http.Request.class)))
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(Optional.of(new TestSubject.Builder().role(new TestRole("foo")).build()), new Http.RequestBuilder().build())));
         final ConstraintLogic logic = new ConstraintLogic(new DeadboltAnalyzer(),
                                                           subjectCache,
                                                           new DefaultPatternCache());

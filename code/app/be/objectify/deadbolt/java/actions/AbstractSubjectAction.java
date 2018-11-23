@@ -45,32 +45,29 @@ public abstract class AbstractSubjectAction<T> extends AbstractDeadboltAction<T>
         this.constraintLogic = constraintLogic;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
+    public CompletionStage<Result> execute(final Http.RequestHeader request) throws Exception
     {
         final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
         return preAuth(isForceBeforeAuthCheck(),
-                         ctx,
+                         request,
                          getContent(),
                          deadboltHandler)
-                .thenCompose(preAuthResult -> preAuthResult.map(CompletableFuture::completedFuture)
+                .thenCompose(preAuthResult -> preAuthResult._1.map(CompletableFuture::completedFuture)
                                                            .orElseGet(testSubject(constraintLogic,
-                                                                                  ctx,
+                                                                                  preAuthResult._2,
                                                                                   deadboltHandler)));
     }
 
     abstract Supplier<CompletableFuture<Result>> testSubject(final ConstraintLogic constraintLogic,
-                                                              final Http.Context context,
+                                                              final Http.RequestHeader request,
                                                               final DeadboltHandler deadboltHandler);
 
-    abstract CompletionStage<Result> present(Http.Context context,
+    abstract CompletionStage<Result> present(Http.RequestHeader request,
                                              DeadboltHandler handler,
                                              Optional<String> content);
 
-    abstract CompletionStage<Result> notPresent(Http.Context context,
+    abstract CompletionStage<Result> notPresent(Http.RequestHeader request,
                                                 DeadboltHandler handler,
                                                 Optional<String> content);
 

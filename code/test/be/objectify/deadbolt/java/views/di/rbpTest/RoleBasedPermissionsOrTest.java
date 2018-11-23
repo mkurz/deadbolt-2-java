@@ -50,7 +50,7 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
                                                                                                 .build()));
@@ -62,9 +62,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.emptyList());
             }
         };
-        final Content html = roleBasedPermissionsOrContent().render(context(),
-                                                                    "foo",
-                                                                    deadboltHandler);
+        final Content html = roleBasedPermissionsOrContent().render("foo",
+                                                                    deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -78,7 +77,7 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
                                                                                                 .build()));
@@ -90,9 +89,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("bar")));
             }
         };
-        final Content html = roleBasedPermissionsOrContent().render(context(),
-                                                                    "foo",
-                                                                    deadboltHandler);
+        final Content html = roleBasedPermissionsOrContent().render("foo",
+                                                                    deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -106,7 +104,7 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new TestSubject.Builder().permission(new TestPermission("bar"))
                                                                                                 .build()));
@@ -118,9 +116,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("hurdy")));
             }
         };
-        final Content html = roleBasedPermissionsOrContent().render(context(),
-                                                                    "foo",
-                                                                    deadboltHandler);
+        final Content html = roleBasedPermissionsOrContent().render("foo",
+                                                                    deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));
@@ -134,7 +131,7 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+            public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.completedFuture(Optional.empty());
             }
@@ -145,9 +142,8 @@ public class RoleBasedPermissionsOrTest extends AbstractFakeApplicationTest
                 return CompletableFuture.completedFuture(Collections.singletonList(new TestPermission("hurdy")));
             }
         };
-        final Content html = roleBasedPermissionsOrContent().render(context(),
-                                                                    "foo",
-                                                                    deadboltHandler);
+        final Content html = roleBasedPermissionsOrContent().render("foo",
+                                                                    deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));

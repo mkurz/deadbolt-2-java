@@ -24,6 +24,7 @@ import be.objectify.deadbolt.java.views.html.di.subject.subjectPresentContent;
 import be.objectify.deadbolt.java.views.html.di.subjectPresent;
 import org.junit.Assert;
 import org.junit.Test;
+import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
 
@@ -40,7 +41,7 @@ public class SubjectPresentTest extends AbstractFakeApplicationTest
     @Test
     public void testWithSubjectPresent()
     {
-        final Content html = subjectPresentContent().render(context(), handlers.apply("present"));
+        final Content html = subjectPresentContent().render(handlers.apply("present"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -50,7 +51,7 @@ public class SubjectPresentTest extends AbstractFakeApplicationTest
     @Test
     public void testWithNoSubjectPresent()
     {
-        final Content html = subjectPresentContent().render(context(), handlers.apply("notPresent"));
+        final Content html = subjectPresentContent().render(handlers.apply("notPresent"), new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));

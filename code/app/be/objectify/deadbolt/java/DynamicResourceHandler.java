@@ -63,13 +63,13 @@ public interface DynamicResourceHandler
      * @param name            the resource name
      * @param meta            additional information on the resource
      * @param deadboltHandler the current {@link DeadboltHandler}
-     * @param ctx             the context of the current request
+     * @param requestHeader             the current request header
      * @return true if access to the resource is allowed, otherwise false
      */
     CompletionStage<Boolean> isAllowed(String name,
                                        Optional<String> meta,
                                        DeadboltHandler deadboltHandler,
-                                       Http.Context ctx);
+                                       Http.RequestHeader requestHeader);
 
     /**
      * Invoked when a custom pattern needs checking..
@@ -77,11 +77,11 @@ public interface DynamicResourceHandler
      * @param permissionValue the permission value
      * @param meta            additional information on the resource
      * @param deadboltHandler the current {@link DeadboltHandler}
-     * @param ctx             the context of the current request
+     * @param requestHeader             the current request header
      * @return true if access based on the permission is  allowed, otherwise false
      */
     CompletionStage<Boolean> checkPermission(String permissionValue,
                                              Optional<String> meta,
                                              DeadboltHandler deadboltHandler,
-                                             Http.Context ctx);
+                                             Http.RequestHeader requestHeader);
 }

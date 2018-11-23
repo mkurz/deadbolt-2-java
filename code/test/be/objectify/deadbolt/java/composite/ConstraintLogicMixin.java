@@ -21,6 +21,7 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.DefaultPatternCache;
 import be.objectify.deadbolt.java.cache.SubjectCache;
 import org.mockito.Mockito;
+import play.libs.F;
 import play.mvc.Http;
 
 /**
@@ -32,8 +33,8 @@ public interface ConstraintLogicMixin
     {
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
-                                        Mockito.any(Http.Context.class)))
-               .thenReturn(deadboltHandler.getSubject(Mockito.mock(Http.Context.class)));
+                                        Mockito.any(Http.RequestHeader.class)))
+               .thenReturn(deadboltHandler.getSubject(Mockito.mock(Http.RequestHeader.class)).thenApply(maybeSubject ->F.Tuple(maybeSubject, Mockito.mock(Http.RequestHeader.class))));
         return new ConstraintLogic(new DeadboltAnalyzer(),
                                    subjectCache,
                                    new DefaultPatternCache());

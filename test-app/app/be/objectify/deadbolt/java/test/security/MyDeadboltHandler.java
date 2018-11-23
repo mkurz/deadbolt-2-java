@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.test.security;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.Constants;
 import be.objectify.deadbolt.java.ConstraintPoint;
 import be.objectify.deadbolt.java.models.Permission;
 import be.objectify.deadbolt.java.models.Subject;
@@ -60,20 +60,20 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     }
 
     @Override
-    public CompletionStage<Optional<? extends Subject>> getSubject(final Http.Context context)
+    public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
     {
-        final Optional<Http.Cookie> maybeUserCookie = Optional.ofNullable(context.request().cookie("user"));
+        final Optional<Http.Cookie> maybeUserCookie = Optional.ofNullable(requestHeader.cookie("user"));
         return CompletableFuture.supplyAsync(() -> maybeUserCookie.flatMap(cookie -> userDao.getByUserName(cookie.value())));
     }
 
     @Override
-    public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.Context context, final Optional<String> content)
+    public CompletionStage<Optional<Result>> beforeAuthCheck(final Http.RequestHeader requestHeader, final Optional<String> content)
     {
         return CompletableFuture.completedFuture(Optional.empty());
     }
 
     @Override
-    public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+    public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.supplyAsync(() -> Optional.of(dynamicHandler));
     }
@@ -86,17 +86,17 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     @Override
     public String handlerName()
     {
-        return ConfigKeys.DEFAULT_HANDLER_KEY;
+        return Constants.DEFAULT_HANDLER_KEY;
     }
 
     @Override
-    public void onAuthSuccess(Http.Context context,
+    public void onAuthSuccess(Http.RequestHeader requestHeader,
                               String constraintType,
                               ConstraintPoint constraintPoint)
     {
         LOGGER.info("[{} - {}] - authorization succeeded for [{}]",
                     constraintPoint,
                     constraintType,
-                    context.args);
+                    requestHeader.attrs());
     }
 }

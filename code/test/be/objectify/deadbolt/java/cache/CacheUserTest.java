@@ -38,75 +38,75 @@ public class CacheUserTest
     @Test
     public void testCacheUserWithSubjectPresent() throws Exception
     {
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
-        final DeadboltHandler handler = getHandler("deadbolt.java.cache-user = true", ctx, Mockito.mock(Subject.class));
+        final Http.Request request = new Http.RequestBuilder().build();
+        final DeadboltHandler handler = getHandler("deadbolt.java.cache-user = true", request, Mockito.mock(Subject.class));
 
         // should be called only once per handler
-        Mockito.verify(handler, Mockito.times(2)).getSubject(ctx);
+        Mockito.verify(handler, Mockito.times(2)).getSubject(Mockito.any(Http.RequestHeader.class));
     }
 
     @Test
     public void testCacheUserWithSubjectNotPresent() throws Exception
     {
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
-        final DeadboltHandler handler = getHandler("deadbolt.java.cache-user = true", ctx, null);
+        final Http.Request request = new Http.RequestBuilder().build();
+        final DeadboltHandler handler = getHandler("deadbolt.java.cache-user = true", request, null);
 
         // even though we cache, there is not user so we try each time
-        Mockito.verify(handler, Mockito.times(9)).getSubject(ctx);
+        Mockito.verify(handler, Mockito.times(9)).getSubject(request);
     }
 
     @Test
     public void testDontCacheUserWithSubjectPresent() throws Exception
     {
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
-        final DeadboltHandler handler = getHandler("deadbolt.java.cache-user = false", ctx, Mockito.mock(Subject.class));
+        final Http.Request request = Mockito.mock(Http.Request.class);
+        final DeadboltHandler handler = getHandler("deadbolt.java.cache-user = false", request, Mockito.mock(Subject.class));
 
         // we don't cache, so even there is a user we run the method each time
-        Mockito.verify(handler, Mockito.times(9)).getSubject(ctx);
+        Mockito.verify(handler, Mockito.times(9)).getSubject(request);
     }
 
     @Test
     public void testDontCacheUserWithSubjectNotPresent() throws Exception
     {
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
-        final DeadboltHandler handler = getHandler("deadbolt.java.cache-user = false", ctx, null);
+        final Http.Request request = Mockito.mock(Http.Request.class);
+        final DeadboltHandler handler = getHandler("deadbolt.java.cache-user = false", request, null);
 
         // we don't cache and even there is no user, of course run the method each time
-        Mockito.verify(handler, Mockito.times(9)).getSubject(ctx);
+        Mockito.verify(handler, Mockito.times(9)).getSubject(request);
     }
 
-    private static DeadboltHandler getHandler(final String setting, final Http.Context ctx, final Subject subject) throws Exception
+    private static DeadboltHandler getHandler(final String setting, final Http.Request request, final Subject subject) throws Exception
     {
-        ctx.args = new HashMap<>();
-
         final Config config = ConfigFactory.parseString(setting);
 
         final SubjectCache subjectCache = new DefaultSubjectCache(config);
 
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-        Mockito.when(handler.getSubject(ctx))
+        Mockito.when(handler.getSubject(Mockito.any(Http.RequestHeader.class)))
                .thenReturn(CompletableFuture.completedFuture(Optional.ofNullable(subject)));
 
         // Fake the first handler
         Mockito.when(handler.getId())
                 .thenReturn(Long.valueOf(0));
 
+        Http.RequestHeader rh = request;
+
         // Lets call apply a couple of times for the first handler
-        subjectCache.apply(handler, ctx);
-        subjectCache.apply(handler, ctx);
-        subjectCache.apply(handler, ctx);
-        subjectCache.apply(handler, ctx);
+        rh = subjectCache.apply(handler, rh).toCompletableFuture().get()._2;
+        rh = subjectCache.apply(handler, rh).toCompletableFuture().get()._2;
+        rh = subjectCache.apply(handler, rh).toCompletableFuture().get()._2;
+        rh = subjectCache.apply(handler, rh).toCompletableFuture().get()._2;
 
         // Let's fake a second handler
         Mockito.when(handler.getId())
             .thenReturn(Long.valueOf(1));
 
         // Lets call apply a couple of times for the second handler
-        subjectCache.apply(handler, ctx);
-        subjectCache.apply(handler, ctx);
-        subjectCache.apply(handler, ctx);
-        subjectCache.apply(handler, ctx);
-        subjectCache.apply(handler, ctx);
+        rh = subjectCache.apply(handler, rh).toCompletableFuture().get()._2;
+        rh = subjectCache.apply(handler, rh).toCompletableFuture().get()._2;
+        rh = subjectCache.apply(handler, rh).toCompletableFuture().get()._2;
+        rh = subjectCache.apply(handler, rh).toCompletableFuture().get()._2;
+        rh = subjectCache.apply(handler, rh).toCompletableFuture().get()._2;
 
         return handler;
     }

@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.actions;
 
-import be.objectify.deadbolt.java.ConfigKeys;
+import be.objectify.deadbolt.java.Constants;
 import play.mvc.With;
 
 import java.lang.annotation.Documented;
@@ -66,7 +66,7 @@ public @interface Restrict
      *
      * @return the ky of the handler
      */
-    String handlerKey() default ConfigKeys.DEFAULT_HANDLER_KEY;
+    String handlerKey() default Constants.DEFAULT_HANDLER_KEY;
 
     /**
      * If true, the annotation will only be run if there is a {@link DeferredDeadbolt} annotation at the class level.

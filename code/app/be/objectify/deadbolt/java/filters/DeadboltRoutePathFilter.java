@@ -18,7 +18,6 @@ package be.objectify.deadbolt.java.filters;
 import akka.stream.Materializer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
-import play.core.j.JavaContextComponents;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.routing.Router;
@@ -42,12 +41,10 @@ public class DeadboltRoutePathFilter extends AbstractDeadboltFilter
 
     @Inject
     public DeadboltRoutePathFilter(final Materializer mat,
-                                   final JavaContextComponents javaContextComponents,
                                    final HandlerCache handlerCache,
                                    final Provider<AuthorizedRoutes> authorizedRoutes)
     {
-        super(mat,
-              javaContextComponents);
+        super(mat);
         this.handler = handlerCache.get();
         this.authorizedRoutes = authorizedRoutes.get();
     }
@@ -65,8 +62,7 @@ public class DeadboltRoutePathFilter extends AbstractDeadboltFilter
     {
         final Optional<AuthorizedRoute> maybeAuthRoute = authorizedRoutes.apply(requestHeader.method(),
                                                                                 requestHeader.attrs().get(Router.Attrs.HANDLER_DEF).path());
-        return maybeAuthRoute.map(authRoute -> authRoute.constraint().apply(context(requestHeader),
-                                                                            requestHeader,
+        return maybeAuthRoute.map(authRoute -> authRoute.constraint().apply(requestHeader,
                                                                             authRoute.handler().orElse(handler),
                                                                             next)
         ).orElseGet(() -> next.apply(requestHeader));

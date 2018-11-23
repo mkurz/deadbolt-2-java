@@ -16,15 +16,12 @@
 package be.objectify.deadbolt.java.composite;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import play.libs.F;
 import play.mvc.Http;
 
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -36,40 +33,25 @@ import java.util.function.Function;
  */
 public abstract class AbstractConstraintTest extends AbstractCompositeTest
 {
-    protected final Http.Context context = Mockito.mock(Http.Context.class);
-    protected final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-
-    @Before
-    public void setUp()
-    {
-        context.args = new HashMap<>();
-    }
-
-    @After
-    public void tearDown()
-    {
-        Mockito.reset(context,
-                      handler);
-    }
 
     @Test
     public void testAnd() throws Exception
     {
         final Constraint c2 = Mockito.mock(Constraint.class);
-        Mockito.when(c2.test(Mockito.any(Http.Context.class),
+        Mockito.when(c2.test(Mockito.any(Http.Request.class),
                              Mockito.any(DeadboltHandler.class),
                              Mockito.any(Optional.class),
                              Mockito.any(BiFunction.class)))
-               .thenReturn(CompletableFuture.completedFuture(false));
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(false, Mockito.mock(Http.Request.class))));
         final Constraint negated = Mockito.mock(Constraint.class);
-        Mockito.when(negated.test(Mockito.any(Http.Context.class),
+        Mockito.when(negated.test(Mockito.any(Http.Request.class),
                                   Mockito.any(DeadboltHandler.class),
                                   Mockito.any(Optional.class),
                                   Mockito.any(BiFunction.class)))
-               .thenReturn(CompletableFuture.completedFuture(true));
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(true, Mockito.mock(Http.Request.class))));
         Mockito.when(c2.negate())
                .thenReturn(negated);
-        final F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy = satisfy();
+        final F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy = satisfy();
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1)));
         Assert.assertFalse(toBoolean(satisfy._2.apply(satisfy._1.and(c2))));
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1.and(c2.negate()))));
@@ -79,12 +61,12 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
     public void testOr() throws Exception
     {
         final Constraint c2 = Mockito.mock(Constraint.class);
-        Mockito.when(c2.test(Mockito.any(Http.Context.class),
+        Mockito.when(c2.test(Mockito.any(Http.Request.class),
                              Mockito.any(DeadboltHandler.class),
                              Mockito.any(Optional.class),
                              Mockito.any(BiFunction.class)))
-               .thenReturn(CompletableFuture.completedFuture(false));
-        final F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy = satisfy();
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(false, Mockito.mock(Http.Request.class))));
+        final F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy = satisfy();
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1)));
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1.or(c2))));
         Assert.assertFalse(toBoolean(satisfy._2.apply(satisfy._1.negate().or(c2))));
@@ -93,10 +75,10 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
     @Test
     public void testNegate() throws Exception
     {
-        final F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy = satisfy();
+        final F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy = satisfy();
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1)));
         Assert.assertFalse(toBoolean(satisfy._2.apply(satisfy._1.negate())));
     }
 
-    protected abstract F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy();
+    protected abstract F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy();
 }

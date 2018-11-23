@@ -48,15 +48,15 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
     }
 
     @Override
-    public CompletionStage<Result> execute(final Http.Context ctx) throws Exception
+    public CompletionStage<Result> execute(final Http.RequestHeader request) throws Exception
     {
         final DeadboltHandler deadboltHandler = getDeadboltHandler(getHandlerKey());
         return preAuth(true,
-                         ctx,
+                         request,
                          getContent(),
                          deadboltHandler)
-                .thenCompose(preAuthResult -> preAuthResult.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
-                                                           .orElseGet(() -> applyRestriction(ctx,
+                .thenCompose(preAuthResult -> preAuthResult._1.map(value -> (CompletionStage<Result>) CompletableFuture.completedFuture(value))
+                                                           .orElseGet(() -> applyRestriction(preAuthResult._2,
                                                                                              deadboltHandler)));
     }
 
@@ -69,6 +69,6 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
      */
     public abstract String getHandlerKey();
 
-    public abstract CompletionStage<Result> applyRestriction(Http.Context ctx,
+    public abstract CompletionStage<Result> applyRestriction(Http.RequestHeader request,
                                                              DeadboltHandler deadboltHandler);
 }

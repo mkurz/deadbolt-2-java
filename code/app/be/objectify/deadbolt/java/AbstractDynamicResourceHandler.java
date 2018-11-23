@@ -28,24 +28,21 @@ import java.util.concurrent.CompletionStage;
  */
 public abstract class AbstractDynamicResourceHandler implements DynamicResourceHandler
 {
-    /**
-     * {@inheritDoc}
-     */
+
+    @Override
     public CompletionStage<Boolean> isAllowed(final String name,
                                               final Optional<String> meta,
                                               final DeadboltHandler deadboltHandler,
-                                              final Http.Context ctx)
+                                              final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                     final Optional<String> meta,
                                                     final DeadboltHandler deadboltHandler,
-                                                    final Http.Context ctx)
+                                                    final Http.RequestHeader requestHeader)
     {
         return CompletableFuture.completedFuture(false);
     }

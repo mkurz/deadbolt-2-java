@@ -34,7 +34,7 @@ public class ExceptionThrowingConstraintTest
         try
         {
             new ExceptionThrowingConstraint("testConstraint")
-                    .test(Mockito.mock(Http.Context.class),
+                    .test(Mockito.mock(Http.RequestHeader.class),
                           Mockito.mock(DeadboltHandler.class),
                           Optional.empty(),
                           (md1, md2) -> md1);

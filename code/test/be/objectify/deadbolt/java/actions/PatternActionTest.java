@@ -57,17 +57,17 @@ public class PatternActionTest
         final ConstraintLogic constraintLogic = Mockito.mock(ConstraintLogic.class);
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
                                                        Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
+                                                       ConfigFactory.load(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
                                                        constraintLogic);
 
-        final Http.Context ctx = Mockito.mock(Http.Context.class);
+        final Http.Request request = Mockito.mock(Http.Request.class);
         final DeadboltHandler handler = Mockito.mock(DeadboltHandler.class);
-        action.applyRestriction(ctx,
+        action.applyRestriction(request,
                                 handler);
 
-        Mockito.verify(constraintLogic).pattern(Mockito.eq(ctx),
+        Mockito.verify(constraintLogic).pattern(Mockito.eq(request),
                                                 Mockito.eq(handler),
                                                 Mockito.eq(Optional.of("x/y")),
                                                 Mockito.eq(new String[] {"foo"}),
@@ -88,7 +88,7 @@ public class PatternActionTest
                .thenReturn("foo");
         final PatternAction action = new PatternAction(Mockito.mock(HandlerCache.class),
                                                        Mockito.mock(BeforeAuthCheckCache.class),
-                                                       ConfigFactory.empty(),
+                                                       ConfigFactory.load(),
                                                        pattern,
                                                        Mockito.mock(Action.class),
                                                        Mockito.mock(ConstraintLogic.class));

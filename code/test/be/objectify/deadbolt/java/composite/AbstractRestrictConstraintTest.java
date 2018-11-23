@@ -20,6 +20,7 @@ import be.objectify.deadbolt.java.testsupport.TestRole;
 import org.junit.Assert;
 import org.junit.Test;
 import play.libs.F;
+import play.mvc.Http;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,7 +38,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     {
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"))),
                                                  Collections.singletonList(new String[]{"foo"}));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(() -> subject(new TestRole("foo"))));
         Assert.assertTrue(toBoolean(result));
     }
@@ -47,7 +48,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     {
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("bar"))),
                                                  Collections.singletonList(new String[]{"foo"}));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(() -> subject(new TestRole("bar"))));
         Assert.assertFalse(toBoolean(result));
     }
@@ -57,7 +58,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     {
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"))),
                                                  Collections.singletonList(new String[]{"!foo"}));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(() -> subject(new TestRole("foo"))));
         Assert.assertFalse(toBoolean(result));
     }
@@ -67,7 +68,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
     {
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("bar"))),
                                                  Collections.singletonList(new String[]{"!foo"}));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(() -> subject(new TestRole("bar"))));
         Assert.assertTrue(toBoolean(result));
     }
@@ -78,7 +79,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"),
                                                                            new TestRole("bar"))),
                                                  Collections.singletonList(new String[]{"foo", "bar"}));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(() -> subject(new TestRole("foo"),
                                                                                           new TestRole("bar"))));
         Assert.assertTrue(toBoolean(result));
@@ -90,7 +91,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("foo"),
                                                                            new TestRole("hurdy"))),
                                                  Collections.singletonList(new String[]{"foo", "bar"}));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(() -> subject(new TestRole("foo"),
                                                                                           new TestRole("hurdy"))));
         Assert.assertFalse(toBoolean(result));
@@ -103,7 +104,7 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
                                                                            new TestRole("bar"))),
                                                  Arrays.asList(new String[]{"foo", "bar"},
                                                                new String[]{"hurdy", "gurdy"}));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(() -> subject(new TestRole("foo"),
                                                                                           new TestRole("bar"))));
         Assert.assertTrue(toBoolean(result));
@@ -115,17 +116,17 @@ public abstract class AbstractRestrictConstraintTest extends AbstractConstraintT
         final Constraint constraint = constraint(withSubject(() -> subject(new TestRole("hurdy"))),
                                                  Arrays.asList(new String[]{"foo"},
                                                                new String[]{"bar"}));
-        final CompletionStage<Boolean> result = constraint.test(context,
+        final CompletionStage<F.Tuple<Boolean, Http.RequestHeader>> result = constraint.test(new Http.RequestBuilder().build(),
                                                                 withSubject(() -> subject(new TestRole("hurdy"))));
         Assert.assertFalse(toBoolean(result));
     }
 
     @Override
-    protected F.Tuple<Constraint, Function<Constraint, CompletionStage<Boolean>>> satisfy()
+    protected F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy()
     {
         return new F.Tuple<>(constraint(withSubject(() -> subject(new TestRole("foo"))),
                                         Collections.singletonList(new String[]{"foo"})),
-                             c -> c.test(context,
+                             c -> c.test(new Http.RequestBuilder().build(),
                                          withSubject(() -> subject(new TestRole("foo")))));
     }
 

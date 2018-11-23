@@ -46,7 +46,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
@@ -54,17 +54,16 @@ public class DynamicTest extends AbstractFakeApplicationTest
                     public CompletionStage<Boolean> isAllowed(final String name,
                                                               final Optional<String> meta,
                                                               final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                                                              final Http.RequestHeader rh)
                     {
                         return CompletableFuture.completedFuture(true);
                     }
                 }));
             }
         };
-        final Content html = dynamicContent().render(context(),
-                                                     "foo",
+        final Content html = dynamicContent().render("foo",
                                                      Optional.of("bar"),
-                                                     deadboltHandler);
+                                                     deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -77,7 +76,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
@@ -85,17 +84,16 @@ public class DynamicTest extends AbstractFakeApplicationTest
                     public CompletionStage<Boolean> isAllowed(final String name,
                                                               final Optional<String> meta,
                                                               final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                                                              final Http.RequestHeader rh)
                     {
                         return CompletableFuture.completedFuture("foo".equals(name));
                     }
                 }));
             }
         };
-        final Content html = dynamicContent().render(context(),
-                                                     "foo",
+        final Content html = dynamicContent().render("foo",
                                                      Optional.of("bar"),
-                                                     deadboltHandler);
+                                                     deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -108,7 +106,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
@@ -116,17 +114,16 @@ public class DynamicTest extends AbstractFakeApplicationTest
                     public CompletionStage<Boolean> isAllowed(final String name,
                                                               final Optional<String> meta,
                                                               final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                                                              final Http.RequestHeader rh)
                     {
                         return CompletableFuture.completedFuture(meta.map("bar"::equals).orElse(false));
                     }
                 }));
             }
         };
-        final Content html = dynamicContent().render(context(),
-                                                     "foo",
+        final Content html = dynamicContent().render("foo",
                                                      Optional.of("bar"),
-                                                     deadboltHandler);
+                                                     deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertTrue(content.contains("This is protected by the constraint."));
@@ -139,7 +136,7 @@ public class DynamicTest extends AbstractFakeApplicationTest
         final DeadboltHandler deadboltHandler = new NoPreAuthDeadboltHandler()
         {
             @Override
-            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context)
+            public CompletionStage<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.RequestHeader requestHeader)
             {
                 return CompletableFuture.supplyAsync(() -> Optional.of(new AbstractDynamicResourceHandler()
                 {
@@ -147,17 +144,16 @@ public class DynamicTest extends AbstractFakeApplicationTest
                     public CompletionStage<Boolean> isAllowed(final String name,
                                                               final Optional<String> meta,
                                                               final DeadboltHandler deadboltHandler,
-                                                              final Http.Context ctx)
+                                                              final Http.RequestHeader rh)
                     {
                         return CompletableFuture.completedFuture(false);
                     }
                 }));
             }
         };
-        final Content html = dynamicContent().render(context(),
-                                                     "foo",
+        final Content html = dynamicContent().render("foo",
                                                      Optional.of("bar"),
-                                                     deadboltHandler);
+                                                     deadboltHandler, new Http.RequestBuilder().build());
         final String content = Helpers.contentAsString(html);
         Assert.assertTrue(content.contains("This is before the constraint."));
         Assert.assertFalse(content.contains("This is protected by the constraint."));

@@ -38,7 +38,7 @@ public class ExceptionThrowingDynamicResourceHandler implements DynamicResourceH
     public CompletionStage<Boolean> isAllowed(final String name,
                                               final Optional<String> meta,
                                               final DeadboltHandler deadboltHandler,
-                                              final Http.Context ctx)
+                                              final Http.RequestHeader requestHeader)
     {
         throw new RuntimeException(String.format("A dynamic resource with name [%s] is specified but no dynamic resource handler is provided",
                                                  name));
@@ -48,7 +48,7 @@ public class ExceptionThrowingDynamicResourceHandler implements DynamicResourceH
     public CompletionStage<Boolean> checkPermission(final String permissionValue,
                                                     final Optional<String> meta,
                                                     final DeadboltHandler deadboltHandler,
-                                                    final Http.Context ctx)
+                                                    final Http.RequestHeader requestHeader)
     {
         throw new RuntimeException(String.format("A custom permission type is specified for value [%s] but no dynamic resource handler is provided",
                                                  permissionValue));

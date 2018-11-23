@@ -60,7 +60,7 @@ public class FilterConstraints
      * A constraint that requires a subject to be present.
      *
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#subjectPresent(Http.RequestHeader, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectPresent()
     {
@@ -70,23 +70,22 @@ public class FilterConstraints
     /**
      * A constraint that requires a subject to be present.
      *
-     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#subjectPresent(Http.RequestHeader, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectPresent(final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                beforeAuthCheckCache.apply(handler, context, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.subjectPresent(context,
+                beforeAuthCheckCache.apply(handler, requestHeader, content)
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.subjectPresent(maybePreAuth._2,
                                                                                                                 handler,
                                                                                                                 content,
-                                                                                                                (ctx, hdlr, cntent) -> next.apply(requestHeader),
-                                                                                                                (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                                (rh, hdlr, cntent) -> next.apply(rh),
+                                                                                                                (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                           cntent),
                                                                                                                 ConstraintPoint.FILTER)));
     }
@@ -95,7 +94,7 @@ public class FilterConstraints
      * A constraint that requires a subject to not be present.
      *
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#subjectPresent(Http.RequestHeader, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectNotPresent()
     {
@@ -105,24 +104,23 @@ public class FilterConstraints
     /**
      * A constraint that requires a subject to not be present.
      *
-     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#subjectPresent(Http.Context, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#subjectPresent(Http.RequestHeader, DeadboltHandler, Optional, TriFunction, TriFunction, ConstraintPoint)
      */
     public FilterFunction subjectNotPresent(final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                beforeAuthCheckCache.apply(handler, context, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.subjectNotPresent(context,
+                beforeAuthCheckCache.apply(handler, requestHeader, content)
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.subjectNotPresent(maybePreAuth._2,
                                                                                                                    handler,
                                                                                                                    content,
-                                                                                                                   (ctx, hdlr, cntent) -> hdlr.onAuthFailure(context,
+                                                                                                                   (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                              cntent),
-                                                                                                                   (ctx, hdlr, cntent) -> next.apply(requestHeader),
+                                                                                                                   (rh, hdlr, cntent) -> next.apply(rh),
                                                                                                                    ConstraintPoint.FILTER)));
     }
 
@@ -131,7 +129,7 @@ public class FilterConstraints
      *
      * @param roleGroups
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#restrict(Http.Context, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#restrict(Http.RequestHeader, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction restrict(final List<String[]> roleGroups)
     {
@@ -143,38 +141,37 @@ public class FilterConstraints
      * A constraint that requires the subject to hold certain roles.
      *
      * @param roleGroups
-     * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#restrict(Http.Context, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#restrict(Http.RequestHeader, DeadboltHandler, Optional, Supplier, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction restrict(final List<String[]> roleGroups,
                                    final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                beforeAuthCheckCache.apply(handler, context, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.restrict(context,
+                beforeAuthCheckCache.apply(handler, requestHeader, content)
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.restrict(maybePreAuth._2,
                                                                                                           handler,
                                                                                                           content,
                                                                                                           () -> roleGroups,
-                                                                                                          ctx -> next.apply(requestHeader),
-                                                                                                          (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                          rh -> next.apply(rh),
+                                                                                                          (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                     cntent),
                                                                                                           ConstraintPoint.FILTER)));
     }
 
     /**
      * A constraint that checks the permissions of a subject (if using {@link PatternType#EQUALITY} or {@link PatternType#REGEX}) or
-     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)} (if
+     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)} (if
      * using {@link PatternType#CUSTOM}).
      *
      * @param value       the constraint value
      * @param patternType the type of pattern matching
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#pattern(Http.RequestHeader, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType)
@@ -186,14 +183,14 @@ public class FilterConstraints
 
     /**
      * A constraint that checks the permissions of a subject (if using {@link PatternType#EQUALITY} or {@link PatternType#REGEX}) or
-     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)} (if
+     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)} (if
      * using {@link PatternType#CUSTOM}).
      *
      * @param value       the constraint value
      * @param patternType the type of pattern matching
-     * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)}
+     * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#pattern(Http.RequestHeader, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType,
@@ -208,14 +205,14 @@ public class FilterConstraints
 
     /**
      * A constraint that checks the permissions of a subject (if using {@link PatternType#EQUALITY} or {@link PatternType#REGEX}) or
-     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)} (if
+     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)} (if
      * using {@link PatternType#CUSTOM}).
      *
      * @param value       the constraint value
      * @param patternType the type of pattern matching
      * @param invert      invert the meaning of the constraint, where a successful match results in authorization failing
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#pattern(Http.RequestHeader, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType,
@@ -230,16 +227,16 @@ public class FilterConstraints
 
     /**
      * A constraint that checks the permissions of a subject (if using {@link PatternType#EQUALITY} or {@link PatternType#REGEX}) or
-     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)} (if
+     * {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)} (if
      * using {@link PatternType#CUSTOM}).
      *
      * @param value       the constraint value
      * @param patternType the type of pattern matching
-     * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.Context)}
+     * @param meta        additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#checkPermission(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * @param invert      invert the meaning of the constraint, where a successful match results in authorization failing
-     * @param content     is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content     is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#pattern(Http.Context, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#pattern(Http.RequestHeader, DeadboltHandler, Optional, String, PatternType, Optional, boolean, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction pattern(final String value,
                                   final PatternType patternType,
@@ -247,32 +244,31 @@ public class FilterConstraints
                                   final boolean invert,
                                   final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                beforeAuthCheckCache.apply(handler, context, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.pattern(context,
+                beforeAuthCheckCache.apply(handler, requestHeader, content)
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.pattern(maybePreAuth._2,
                                                                                                          handler,
                                                                                                          content,
                                                                                                          value,
                                                                                                          patternType,
                                                                                                          meta,
                                                                                                          invert,
-                                                                                                         ctx -> next.apply(requestHeader),
-                                                                                                         (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                         rh -> next.apply(rh),
+                                                                                                         (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                    cntent),
                                                                                                          ConstraintPoint.FILTER)));
     }
 
     /**
-     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
+     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * to determine access.
      *
      * @param name the name of the constraint
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#dynamic(Http.RequestHeader, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction dynamic(final String name)
     {
@@ -281,13 +277,13 @@ public class FilterConstraints
     }
 
     /**
-     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
+     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * to determine access.
      *
      * @param name the name of the constraint
-     * @param meta additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
+     * @param meta additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#dynamic(Http.RequestHeader, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction dynamic(final String name,
                                   final Optional<String> meta)
@@ -298,32 +294,31 @@ public class FilterConstraints
     }
 
     /**
-     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
+     * An arbitrary constraint that uses {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
      * to determine access.
      *
      * @param name    the name of the constraint
-     * @param meta    additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.Context)}
-     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param meta    additional information passed to {@link be.objectify.deadbolt.java.DynamicResourceHandler#isAllowed(String, Optional, DeadboltHandler, Http.RequestHeader)}
+     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
-     * @see ConstraintLogic#dynamic(Http.Context, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
+     * @see ConstraintLogic#dynamic(Http.RequestHeader, DeadboltHandler, Optional, String, Optional, Function, TriFunction, ConstraintPoint)
      */
     public FilterFunction dynamic(final String name,
                                   final Optional<String> meta,
                                   final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                beforeAuthCheckCache.apply(handler, context, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.dynamic(context,
+                beforeAuthCheckCache.apply(handler, requestHeader, content)
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.dynamic(maybePreAuth._2,
                                                                                                          handler,
                                                                                                          content,
                                                                                                          name,
                                                                                                          meta,
-                                                                                                              ctx -> next.apply(requestHeader),
-                                                                                                         (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                         rh -> next.apply(rh),
+                                                                                                         (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                    cntent),
                                                                                                          ConstraintPoint.FILTER)));
     }
@@ -347,7 +342,7 @@ public class FilterConstraints
      * tree of constraints.
      *
      * @param name    the name of the composite constraint defined in {@link CompositeCache}.
-     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
      * @throws IllegalStateException if no constraint with the given name is present in the composite cache
      */
@@ -378,27 +373,26 @@ public class FilterConstraints
      * tree of constraints.
      *
      * @param constraint the composite constraint
-     * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.Context, Optional)} if the authorization fails
+     * @param content    is passed to {@link DeadboltHandler#onAuthFailure(Http.RequestHeader, Optional)} if the authorization fails
      * @return a function that wraps the constraint
      */
     public FilterFunction composite(final Constraint constraint,
                                     final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                beforeAuthCheckCache.apply(handler, context, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraint.test(context,
+                beforeAuthCheckCache.apply(handler, requestHeader, content)
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraint.test(maybePreAuth._2,
                                                                                                  handler)
-                                                                                           .thenCompose(allowed -> allowed ? ((Supplier<CompletionStage<Result>>) () -> {
-                                                                                               handler.onAuthSuccess(context,
+                                                                                           .thenCompose(allowed -> allowed._1 ? ((Supplier<CompletionStage<Result>>) () -> {
+                                                                                               handler.onAuthSuccess(allowed._2,
                                                                                                                      "composite",
                                                                                                                      ConstraintPoint.FILTER);
-                                                                                               return next.apply(requestHeader);
+                                                                                               return next.apply(allowed._2);
                                                                                            }).get()
-                                                                                                                           : handler.onAuthFailure(context,
+                                                                                                                           : handler.onAuthFailure(maybePreAuth._2,
                                                                                                                                                    content))));
     }
 
@@ -411,18 +405,17 @@ public class FilterConstraints
     public FilterFunction roleBasedPermissions(final String roleName,
                                                final Optional<String> content)
     {
-        return (Http.Context context,
-                Http.RequestHeader requestHeader,
+        return (Http.RequestHeader requestHeader,
                 DeadboltHandler handler,
                 Function<Http.RequestHeader, CompletionStage<Result>> next) ->
-                beforeAuthCheckCache.apply(handler, context, content)
-                       .thenCompose(maybePreAuth -> maybePreAuth.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
-                                                                .orElseGet(() -> constraintLogic.roleBasedPermissions(context,
+                beforeAuthCheckCache.apply(handler, requestHeader, content)
+                       .thenCompose(maybePreAuth -> maybePreAuth._1.map(preAuthResult -> (CompletionStage<Result>) CompletableFuture.completedFuture(preAuthResult))
+                                                                .orElseGet(() -> constraintLogic.roleBasedPermissions(maybePreAuth._2,
                                                                                                                       handler,
                                                                                                                       content,
                                                                                                                       roleName,
-                                                                                                                      ctx -> next.apply(requestHeader),
-                                                                                                                      (ctx, hdlr, cntent) -> hdlr.onAuthFailure(ctx,
+                                                                                                                      rh -> next.apply(rh),
+                                                                                                                      (rh, hdlr, cntent) -> hdlr.onAuthFailure(rh,
                                                                                                                                                                 cntent),
                                                                                                                       ConstraintPoint.FILTER)));
     }

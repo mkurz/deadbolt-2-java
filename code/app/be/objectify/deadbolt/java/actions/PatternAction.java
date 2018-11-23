@@ -62,10 +62,10 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     }
 
     @Override
-    public CompletionStage<Result> applyRestriction(final Http.Context ctx,
+    public CompletionStage<Result> applyRestriction(final Http.RequestHeader request,
                                                     final DeadboltHandler deadboltHandler)
     {
-        return constraintLogic.pattern(ctx,
+        return constraintLogic.pattern(request,
                                        deadboltHandler,
                                        getContent(),
                                        configuration.value(),
@@ -84,9 +84,6 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return Optional.ofNullable(configuration.content());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean deferred() {
         return configuration.deferred();

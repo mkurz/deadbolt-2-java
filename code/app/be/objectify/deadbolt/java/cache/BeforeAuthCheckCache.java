@@ -17,6 +17,7 @@ package be.objectify.deadbolt.java.cache;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.utils.TriFunction;
+import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -26,6 +27,6 @@ import java.util.concurrent.CompletionStage;
 /**
  * @author Matthias Kurz (m.kurz@irregular.at)
  */
-public interface BeforeAuthCheckCache extends TriFunction<DeadboltHandler, Http.Context, Optional<String>, CompletionStage<Optional<Result>>>
+public interface BeforeAuthCheckCache extends TriFunction<DeadboltHandler, Http.RequestHeader, Optional<String>, CompletionStage<F.Tuple<Optional<Result>, Http.RequestHeader>>>
 {
 }

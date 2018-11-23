@@ -16,7 +16,7 @@
 package be.objectify.deadbolt.java.filters;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
-import be.objectify.deadbolt.java.utils.QuadFunction;
+import be.objectify.deadbolt.java.utils.TriFunction;
 import play.mvc.Http;
 import play.mvc.Result;
 
@@ -27,20 +27,18 @@ import java.util.function.Function;
  * @author Steve Chaloner (steve@objectify.be)
  * @since 2.5.1
  */
-public interface FilterFunction extends QuadFunction<Http.Context, Http.RequestHeader, DeadboltHandler, Function<Http.RequestHeader, CompletionStage<Result>>, CompletionStage<Result>>
+public interface FilterFunction extends TriFunction<Http.RequestHeader, DeadboltHandler, Function<Http.RequestHeader, CompletionStage<Result>>, CompletionStage<Result>>
 {
     /**
      * Test the constraint against the current request.
      *
-     * @param context       the HTTP context
      * @param requestHeader the request header
      * @param handler       the deadbolt handler
      * @param onSuccess     a function to process the request if the constraint test passes
      * @return a future for the result
      */
     @Override
-    CompletionStage<Result> apply(Http.Context context,
-                                  Http.RequestHeader requestHeader,
+    CompletionStage<Result> apply(Http.RequestHeader requestHeader,
                                   DeadboltHandler handler,
                                   Function<Http.RequestHeader, CompletionStage<Result>> onSuccess);
 }

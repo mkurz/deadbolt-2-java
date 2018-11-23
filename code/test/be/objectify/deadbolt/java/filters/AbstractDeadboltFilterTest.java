@@ -31,7 +31,7 @@ public abstract class AbstractDeadboltFilterTest {
                                                                     subjectCache,
                                                                     new DefaultPatternCache());
 
-        final BeforeAuthCheckCache beforeAuthCheckCache = new DefaultBeforeAuthCheckCache(ConfigFactory.empty());
+        final BeforeAuthCheckCache beforeAuthCheckCache = new DefaultBeforeAuthCheckCache(ConfigFactory.load());
 
         filterConstraints = new FilterConstraints(constraintLogic,
                                                   Mockito.mock(CompositeCache.class),
