@@ -4,7 +4,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava).disablePlugins(Pl
 
 scalaVersion := "2.12.7"
 
-crossScalaVersions := Seq("2.12.7", "2.13.0-M5")
+// TODO: Enable as soon Play supports Scala 2.13:
+//crossScalaVersions := Seq("2.12.7", "2.13.0-M5")
 
 organization := "be.objectify"
 
