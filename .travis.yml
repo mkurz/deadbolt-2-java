@@ -6,11 +6,11 @@ scala:
 script:
 - cd code
 - sbt --info ++$TRAVIS_SCALA_VERSION +publishLocal
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-RC8 +test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-RC9 +test
 - cd ../test-app
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-RC8 +test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-RC9 +test
 - cd ../test-app-filters
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-RC8 +test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.7.0-RC9 +test
 - cd ../code
 after_success:
 - ! '[[ $TRAVIS_BRANCH == "master" ]] && { sbt --info +publish; };'
