@@ -2,10 +2,9 @@ name := "deadbolt-java"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava).disablePlugins(PlayFilters)
 
-scalaVersion := "2.12.7"
+scalaVersion := "2.12.8"
 
-// TODO: Enable as soon Play supports Scala 2.13:
-//crossScalaVersions := Seq("2.12.7", "2.13.0-M5")
+crossScalaVersions := Seq("2.11.12", "2.12.8", "2.13.0-M5")
 
 organization := "be.objectify"
 
@@ -26,3 +25,7 @@ javacOptions += "-Xlint:deprecation"
 scalacOptions += "-deprecation"
 
 resolvers += Resolver.sonatypeRepo("snapshots")
+
+// Workaround until omnidoc gets published for Scala 2.13
+// http://central.maven.org/maven2/com/typesafe/play/play-omnidoc_2.13/
+PlayKeys.playOmnidoc := false
