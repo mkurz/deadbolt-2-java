@@ -21,7 +21,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-sbt.Keys.fork in Test := false
+sbt.Keys.fork in Test := true // can be removed with sbt 1.3.0, see https://github.com/sbt/sbt/issues/4609
 
 // Workaround until omnidoc gets published for Scala 2.13
 // http://central.maven.org/maven2/com/typesafe/play/play-omnidoc_2.13/
