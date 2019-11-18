@@ -26,7 +26,7 @@ import java.util.Optional;
 public class TestCookies extends ArrayList<Http.Cookie> implements Http.Cookies
 {
     @Override
-    public Optional<Http.Cookie> getCookie(final String name)
+    public Optional<Http.Cookie> get(final String name)
     {
         return Optional.empty();
     }
