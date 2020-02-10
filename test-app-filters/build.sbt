@@ -1,6 +1,6 @@
 name := """test-app-filters"""
 
-version := "2.8.0-SNAPSHOT"
+version := "2.8.1-SNAPSHOT"
 
 scalaVersion := "2.13.1"
 
@@ -13,7 +13,7 @@ scalacOptions += "-deprecation"
 
 libraryDependencies ++= Seq(
   guice,
-  "be.objectify" %% "deadbolt-java" % "2.8.0-SNAPSHOT",
+  "be.objectify" %% "deadbolt-java" % "2.8.1-SNAPSHOT",
   "com.jayway.restassured" % "rest-assured" % "2.4.0" % "test"
 )
 
