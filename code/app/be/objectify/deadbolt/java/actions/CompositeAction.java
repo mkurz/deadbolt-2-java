@@ -66,13 +66,9 @@ public class CompositeAction extends AbstractRestrictiveAction<Composite>
                                                                                                             handler,
                                                                                                             Optional.ofNullable(configuration.content())));
                                   })
-                             .orElseGet(() ->
-                                        {
-                                            markActionAsUnauthorised(ctx);
-                                            return onAuthFailure(handler,
-                                                                 Optional.ofNullable(configuration.content()),
-                                                                 ctx);
-                                        });
+                            .orElseGet(() -> unauthorizeAndFail(ctx,
+                                                                handler,
+                                                                Optional.ofNullable(configuration.content())));
     }
 
     public String getMeta()
