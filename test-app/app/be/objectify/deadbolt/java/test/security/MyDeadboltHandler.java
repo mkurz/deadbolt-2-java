@@ -62,7 +62,7 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler
     @Override
     public CompletionStage<Optional<? extends Subject>> getSubject(final Http.RequestHeader requestHeader)
     {
-        final Optional<Http.Cookie> maybeUserCookie = Optional.ofNullable(requestHeader.cookie("user"));
+        final Optional<Http.Cookie> maybeUserCookie = requestHeader.cookie("user");
         return CompletableFuture.supplyAsync(() -> maybeUserCookie.flatMap(cookie -> userDao.getByUserName(cookie.value())));
     }
 
