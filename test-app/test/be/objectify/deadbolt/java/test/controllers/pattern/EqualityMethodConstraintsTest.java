@@ -16,7 +16,7 @@
 package be.objectify.deadbolt.java.test.controllers.pattern;
 
 import be.objectify.deadbolt.java.test.controllers.AbstractApplicationTest;
-import com.jayway.restassured.RestAssured;
+import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -9,12 +9,13 @@ scalaVersion := crossScalaVersions.value.head
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
 
 javacOptions += "-Xlint:deprecation"
+
 scalacOptions += "-deprecation"
 
 libraryDependencies ++= Seq(
   guice,
   "be.objectify" %% "deadbolt-java" % "2.9.0",
-  "com.jayway.restassured" % "rest-assured" % "2.9.0" % "test"
+  "io.rest-assured" % "rest-assured" % "5.3.2" % Test
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)

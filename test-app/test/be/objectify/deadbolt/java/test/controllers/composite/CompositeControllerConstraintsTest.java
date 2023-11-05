@@ -16,13 +16,11 @@
 package be.objectify.deadbolt.java.test.controllers.composite;
 
 import be.objectify.deadbolt.java.test.controllers.AbstractApplicationTest;
-import com.jayway.restassured.RestAssured;
+import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
-import static play.test.Helpers.fakeApplication;
-import static play.test.Helpers.running;
-import static play.test.Helpers.testServer;
+import static play.test.Helpers.*;
 
 /**
  * @author Steve Chaloner (steve@objectify.be)
