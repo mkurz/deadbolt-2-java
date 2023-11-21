@@ -2,8 +2,6 @@ name := "deadbolt-java"
 
 lazy val root = (project in file(".")).enablePlugins(PlayWeb).disablePlugins(PlayFilters, PlayLogback, PlayAkkaHttpServer)
 
-version := "2.9.0"
-
 crossScalaVersions := Seq("2.13.12", "3.3.1")
 
 scalaVersion := crossScalaVersions.value.head
