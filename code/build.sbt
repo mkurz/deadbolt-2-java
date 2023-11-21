@@ -20,8 +20,6 @@ releasePublishArtifactsAction := PgpKeys.publishSigned.value
 javacOptions += "-Xlint:deprecation"
 scalacOptions += "-deprecation"
 
-resolvers += Resolver.sonatypeRepo("snapshots")
-
 TwirlKeys.templateImports ++= Seq(
   "java.util.Optional"
 )
