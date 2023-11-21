@@ -5,7 +5,7 @@ scala:
 - 3.3.1
 
 env:
-  - TRAVIS_JDK=21
+  - TRAVIS_JDK=11
 
 before_install: curl -Ls https://git.io/jabba | bash && . ~/.jabba/jabba.sh
 install: jabba install $(jabba ls-remote "adopt@~1.$TRAVIS_JDK.0-0" --latest=patch) && jabba use "$_" && java -Xmx32m -version
