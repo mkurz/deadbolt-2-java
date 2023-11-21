@@ -1,11 +1,11 @@
 language: scala
 
 scala:
-- 2.12.10
-- 2.13.1
+- 2.13.12
+- 3.3.1
 
 env:
-  - TRAVIS_JDK=8
+  - TRAVIS_JDK=21
 
 before_install: curl -Ls https://git.io/jabba | bash && . ~/.jabba/jabba.sh
 install: jabba install $(jabba ls-remote "adopt@~1.$TRAVIS_JDK.0-0" --latest=patch) && jabba use "$_" && java -Xmx32m -version
@@ -13,11 +13,11 @@ install: jabba install $(jabba ls-remote "adopt@~1.$TRAVIS_JDK.0-0" --latest=pat
 script:
 - cd code
 - sbt --info ++$TRAVIS_SCALA_VERSION publishLocal
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.8.0 test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.9.0 test
 - cd ../test-app
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.8.0 test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.9.0 test
 - cd ../test-app-filters
-- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.8.0 test
+- sbt --info ++$TRAVIS_SCALA_VERSION -DplayTestVersion=2.9.0 test
 - cd ../code
 
 after_success:

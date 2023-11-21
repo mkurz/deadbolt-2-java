@@ -18,7 +18,7 @@ package be.objectify.deadbolt.java.test.controllers.modes;
 import be.objectify.deadbolt.java.test.controllers.AbstractApplicationTest;
 
 import com.google.common.collect.ImmutableMap;
-import com.jayway.restassured.RestAssured;
+import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 

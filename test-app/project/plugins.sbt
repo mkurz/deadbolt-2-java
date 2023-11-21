@@ -1,3 +1,3 @@
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % System.getProperty("playTestVersion", "2.8.0"))
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.0")
 
-resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")

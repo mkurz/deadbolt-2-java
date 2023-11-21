@@ -1,5 +1,7 @@
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % Option(System.getProperty("play.version")).getOrElse("2.8.0"))
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.0")
+
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.2-1")
+
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
 
-resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")
