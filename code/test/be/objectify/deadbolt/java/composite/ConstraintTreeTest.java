@@ -188,7 +188,7 @@ public class ConstraintTreeTest extends AbstractConstraintTest
     @Override
     protected F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy()
     {
-        final Constraint constraint = (c, h, gmd, fnM) -> CompletableFuture.completedFuture(F.Tuple(true, Mockito.mock(Http.RequestHeader.class)));
+        final Constraint constraint = (c, h, gmd, fnM) -> CompletableFuture.completedFuture(F.Tuple(true, new Http.RequestBuilder().build()));
         final Constraint tree = new ConstraintTree(Operator.AND,
                                                    constraint,
                                                    constraint);

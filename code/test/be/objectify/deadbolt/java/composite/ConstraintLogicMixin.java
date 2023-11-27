@@ -34,7 +34,7 @@ public interface ConstraintLogicMixin
         final SubjectCache subjectCache = Mockito.mock(SubjectCache.class);
         Mockito.when(subjectCache.apply(Mockito.any(DeadboltHandler.class),
                                         Mockito.any(Http.RequestHeader.class)))
-               .thenReturn(deadboltHandler.getSubject(Mockito.mock(Http.RequestHeader.class)).thenApply(maybeSubject ->F.Tuple(maybeSubject, Mockito.mock(Http.RequestHeader.class))));
+               .thenReturn(deadboltHandler.getSubject(new Http.RequestBuilder().build()).thenApply(maybeSubject ->F.Tuple(maybeSubject, new Http.RequestBuilder().build())));
         return new ConstraintLogic(new DeadboltAnalyzer(),
                                    subjectCache,
                                    new DefaultPatternCache());

@@ -21,7 +21,7 @@ crossScalaVersions := Seq("2.13.12", "3.3.1")
 scalaVersion := crossScalaVersions.value.head
 
 libraryDependencies := libraryDependencies.value.filterNot(m => m.name == "twirl-api" || m.name == "play-server") ++ Seq(
-  "org.mockito" % "mockito-all" % "1.10.19" % "test",
+  "org.mockito" % "mockito-core" % "2.28.2" % "test",
   "org.awaitility" % "awaitility" % "3.0.0" % "test",
   playCore % "provided",
   javaCore % "test",
