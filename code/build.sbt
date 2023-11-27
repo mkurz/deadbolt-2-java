@@ -27,8 +27,8 @@ libraryDependencies := libraryDependencies.value.filterNot(m => m.name == "twirl
   javaCore % "test",
 )
 
-javacOptions += "-Xlint:deprecation"
-scalacOptions += "-deprecation"
+javacOptions ++= Seq("-Xlint:deprecation", "-encoding", "UTF-8", "--release", "11")
+scalacOptions ++= Seq("-deprecation", "-release:11")
 
 TwirlKeys.templateImports ++= Seq(
   "java.util.Optional"
