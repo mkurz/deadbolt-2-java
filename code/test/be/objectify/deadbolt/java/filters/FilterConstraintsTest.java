@@ -17,6 +17,7 @@ package be.objectify.deadbolt.java.filters;
 
 import be.objectify.deadbolt.java.AbstractDynamicResourceHandler;
 import be.objectify.deadbolt.java.ConstraintLogic;
+import be.objectify.deadbolt.java.Constants;
 import be.objectify.deadbolt.java.DeadboltAnalyzer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.BeforeAuthCheckCache;
@@ -104,6 +105,13 @@ public class FilterConstraintsTest
         Mockito.when(requestHeader.uri()).thenReturn("http://localhost/foo");
         Mockito.when(requestHeader.clientCertificateChain()).thenReturn(Optional.empty());
         Mockito.when(requestHeader.cookies()).thenReturn(new TestCookies());
+
+        // The following is not really correct, because we do not make the requestHeader return the PATTERN_INVERT attr,
+        // however for these tests it does not really matter
+        Mockito.when(requestHeader.addAttr(Constants.PATTERN_INVERT, true))
+                .thenReturn(requestHeader);
+        Mockito.when(requestHeader.addAttr(Constants.PATTERN_INVERT, false))
+                .thenReturn(requestHeader);
     }
 
     @After

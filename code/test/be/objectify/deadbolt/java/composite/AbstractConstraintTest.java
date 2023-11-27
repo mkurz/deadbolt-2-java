@@ -42,13 +42,13 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
                              Mockito.any(DeadboltHandler.class),
                              Mockito.any(Optional.class),
                              Mockito.any(BiFunction.class)))
-               .thenReturn(CompletableFuture.completedFuture(F.Tuple(false, Mockito.mock(Http.Request.class))));
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(false, new Http.RequestBuilder().build())));
         final Constraint negated = Mockito.mock(Constraint.class);
         Mockito.when(negated.test(Mockito.any(Http.Request.class),
                                   Mockito.any(DeadboltHandler.class),
                                   Mockito.any(Optional.class),
                                   Mockito.any(BiFunction.class)))
-               .thenReturn(CompletableFuture.completedFuture(F.Tuple(true, Mockito.mock(Http.Request.class))));
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(true, new Http.RequestBuilder().build())));
         Mockito.when(c2.negate())
                .thenReturn(negated);
         final F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy = satisfy();
@@ -65,7 +65,7 @@ public abstract class AbstractConstraintTest extends AbstractCompositeTest
                              Mockito.any(DeadboltHandler.class),
                              Mockito.any(Optional.class),
                              Mockito.any(BiFunction.class)))
-               .thenReturn(CompletableFuture.completedFuture(F.Tuple(false, Mockito.mock(Http.Request.class))));
+               .thenReturn(CompletableFuture.completedFuture(F.Tuple(false, new Http.RequestBuilder().build())));
         final F.Tuple<Constraint, Function<Constraint, CompletionStage<F.Tuple<Boolean, Http.RequestHeader>>>> satisfy = satisfy();
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1)));
         Assert.assertTrue(toBoolean(satisfy._2.apply(satisfy._1.or(c2))));

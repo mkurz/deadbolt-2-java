@@ -1,10 +1,11 @@
 name := """test-app-filters"""
 
-version := "2.9.0-SNAPSHOT"
-
 crossScalaVersions := Seq("2.13.12", "3.3.1")
 
 scalaVersion := crossScalaVersions.value.head
+
+// sync this setting with the one main build.sbt
+ThisBuild / dynverVTagPrefix := false
 
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
 
@@ -14,10 +15,8 @@ scalacOptions += "-deprecation"
 
 libraryDependencies ++= Seq(
   guice,
-  "be.objectify" %% "deadbolt-java" % "2.9.0-SNAPSHOT",
+  "be.objectify" %% "deadbolt-java" % version.value,
   "io.rest-assured" % "rest-assured" % "5.3.2" % Test
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
-
-resolvers ++= Resolver.sonatypeOssRepos("snapshots")
