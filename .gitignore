@@ -16,3 +16,4 @@ server.pid
 atlassian-ide-plugin.xml
 bin/
 .bsp/
+.idea/
