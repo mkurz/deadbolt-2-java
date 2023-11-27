@@ -1,6 +1,6 @@
 name := "deadbolt-java"
 
-lazy val root = (project in file(".")).enablePlugins(PlayWeb).disablePlugins(PlayFilters, PlayLogback, PlayAkkaHttpServer)
+lazy val root = (project in file(".")).enablePlugins(PlayWeb).disablePlugins(PlayFilters, PlayLogback, PlayPekkoHttpServer)
 
 // Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
 ThisBuild / dynverVTagPrefix := false

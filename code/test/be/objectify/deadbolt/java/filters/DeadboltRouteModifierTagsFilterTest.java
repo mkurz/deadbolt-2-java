@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import akka.stream.Materializer;
+import org.apache.pekko.stream.Materializer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;

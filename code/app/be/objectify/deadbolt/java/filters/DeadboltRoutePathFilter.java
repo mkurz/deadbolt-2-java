@@ -15,7 +15,7 @@
  */
 package be.objectify.deadbolt.java.filters;
 
-import akka.stream.Materializer;
+import org.apache.pekko.stream.Materializer;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.cache.HandlerCache;
 import play.mvc.Http;
