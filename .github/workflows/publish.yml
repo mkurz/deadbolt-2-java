@@ -12,7 +12,7 @@ jobs:
   publish-artifacts:
     name: JDK 11
     runs-on: ubuntu-20.04
-    if: ${{ github.repository_owner == 'sbt' }}
+    if: ${{ github.repository_owner == 'mkurz' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
