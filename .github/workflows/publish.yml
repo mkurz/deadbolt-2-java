@@ -30,7 +30,7 @@ jobs:
           jvm: adoptium:11
 
       - name: Publish artifacts
-        run: sbt ci-release
+        run: cd code && sbt ci-release
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
