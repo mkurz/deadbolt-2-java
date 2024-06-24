@@ -22,11 +22,11 @@ jobs:
       cmd: |
         cd code;
         sbt ++$MATRIX_SCALA publishLocal;
-        sbt ++$MATRIX_SCALA -DplayTestVersion=2.9.3 test;
+        sbt ++$MATRIX_SCALA -DplayTestVersion=2.9.4 test;
         cd ../test-app;
-        sbt ++$MATRIX_SCALA -DplayTestVersion=2.9.3 test;
+        sbt ++$MATRIX_SCALA -DplayTestVersion=2.9.4 test;
         cd ../test-app-filters;
-        sbt ++$MATRIX_SCALA -DplayTestVersion=2.9.3 test;
+        sbt ++$MATRIX_SCALA -DplayTestVersion=2.9.4 test;
         cd ../code;
 
   finish:
