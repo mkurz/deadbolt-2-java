@@ -16,7 +16,7 @@ homepage := Some(url("https://github.com/mkurz/deadbolt-2-java")) // Some(url("h
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 organization := "be.objectify"
 
-crossScalaVersions := Seq("2.13.16", "3.3.4")
+crossScalaVersions := Seq("2.13.16", "3.3.5")
 
 scalaVersion := crossScalaVersions.value.head
 
