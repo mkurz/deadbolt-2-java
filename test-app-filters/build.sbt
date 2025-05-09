@@ -1,6 +1,6 @@
 name := """test-app-filters"""
 
-crossScalaVersions := Seq("2.13.16", "3.3.5")
+crossScalaVersions := Seq("2.13.16", "3.3.6")
 
 scalaVersion := crossScalaVersions.value.head
 
