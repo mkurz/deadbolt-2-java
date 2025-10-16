@@ -1,6 +1,6 @@
 name := """test-app"""
 
-crossScalaVersions := Seq("2.13.16", "3.3.6")
+crossScalaVersions := Seq("2.13.17", "3.3.6")
 
 scalaVersion := crossScalaVersions.value.head
 
