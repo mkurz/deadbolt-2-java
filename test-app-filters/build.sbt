@@ -16,7 +16,7 @@ scalacOptions += "-deprecation"
 libraryDependencies ++= Seq(
   guice,
   "be.objectify" %% "deadbolt-java" % version.value,
-  "io.rest-assured" % "rest-assured" % "5.5.7" % Test
+  "io.rest-assured" % "rest-assured" % "6.0.1" % Test
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
